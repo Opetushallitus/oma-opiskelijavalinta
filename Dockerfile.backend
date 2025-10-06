@@ -1,0 +1,5 @@
+FROM amazoncorretto:21-alpine-jdk
+RUN apk add --no-cache maven
+EXPOSE 8555
+WORKDIR /app/oma-opiskelijavalinta-service
+CMD ["mvn", "scala:run", "-DmainClass=fi.oph.opiskelijavalinta.DevApp", "-Dmaven.test.skip=true"]

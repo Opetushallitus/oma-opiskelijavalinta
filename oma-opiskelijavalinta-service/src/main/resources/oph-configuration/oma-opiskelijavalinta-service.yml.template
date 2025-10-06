@@ -1,0 +1,29 @@
+host:
+  cas: {{host_cas}}
+
+web:
+  url:
+    cas: https://${host.cas}/cas
+    cas-login: https://${host.cas}/cas/login
+
+cas-service:
+  service: https://{{host_virkailija}}/oma-opiskelijavalinta
+  sendRenew: false
+  key: oma-opiskelijavalinta
+
+logging:
+  level:
+    root: INFO
+
+server:
+  servlet:
+    context-path: /oma-opiskelijavalinta
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    url: jdbc:postgresql://{{host_postgresql_oma-opiskelijavalinta}}:{{port_postgresql}}/oma-opiskelijavalinta
+    username: {{postgres_app_user}}
+    password: {{host_postgresql_oma-opiskelijavalinta_app_password}}
+  flyway:
+    baseline-on-migrate: true
