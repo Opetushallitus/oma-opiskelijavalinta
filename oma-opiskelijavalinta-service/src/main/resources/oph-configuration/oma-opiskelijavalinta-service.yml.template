@@ -3,8 +3,8 @@ host:
 
 web:
   url:
-    cas: https://${host.cas}/cas
-    cas-login: https://${host.cas}/cas/login
+    cas: https://${host.cas}/cas-opiskelija
+    cas-login: https://${host.cas}/cas-opiskelija/login
 
 cas-service:
   service: https://{{host_virkailija}}/oma-opiskelijavalinta

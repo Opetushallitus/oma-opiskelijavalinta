@@ -9,6 +9,8 @@ services:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
       POSTGRES_DB: oma-opiskelijavalinta
+    ports:
+      - "5555:5432"
   backend:
     build:
       context: .
@@ -38,6 +40,17 @@ services:
       - ~/.m2:/home/appuser/.m2
     depends_on:
       - pgdatabase
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    user: "${USERID}:${GROUPID}"
+    ports:
+      - "3000:3000"
+    networks:
+      - omopnet
+    volumes:
+      - ./oma-opiskelijavalinta-ui:/app
   nginx:
     image: nginx:alpine
     env_file:
