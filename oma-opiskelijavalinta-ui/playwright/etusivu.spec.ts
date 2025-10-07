@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { expectPageAccessibilityOk } from './lib/playwrightUtils';
 
 test('Näyttää etusivun', async ({ page }) => {

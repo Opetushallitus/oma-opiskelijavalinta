@@ -88,7 +88,7 @@ const hasNoContent = (response: Response) => {
 const makeBareRequest = (request: Request) => {
   request.headers.set(
     'Caller-Id',
-    '1.2.246.562.10.00000000001.valintojen-toteuttaminen',
+    '1.2.246.562.10.00000000001.oma-opiskelijavalinta',
   );
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
     const csrfCookie = getCookies()['CSRF'];
