@@ -3,13 +3,12 @@ import {
   SessionExpired,
   useIsSessionExpired,
 } from '@/components/SessionExpired';
-import {Box, Stack} from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { Outlet } from 'react-router';
 import { NavigationSpinner } from './NavigationSpinner';
 
 export default function HomeLayout() {
   const { isSessionExpired } = useIsSessionExpired();
-  console.log('isSessionExpired', isSessionExpired);
   return (
     <QuerySuspenseBoundary>
       {isSessionExpired && <SessionExpired />}
