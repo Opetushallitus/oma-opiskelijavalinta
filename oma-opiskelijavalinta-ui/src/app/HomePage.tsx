@@ -1,7 +1,7 @@
-import {Box} from '@mui/material';
+import { Typography } from '@mui/material';
 
 export default function HomePage() {
-    return (
-        <Box>Tervetuloa Oma-opiskelijavalintaan!</Box>
-    );
+  return (
+    <Typography variant="h1">Tervetuloa Oma-opiskelijavalintaan!</Typography>
+  );
 }
