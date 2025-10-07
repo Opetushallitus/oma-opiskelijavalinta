@@ -5,8 +5,6 @@ import '@/styles/global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionExpiredProvider } from '@/components/SessionExpired';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
-import { use } from 'react';
-import { configPromise } from '@/configuration';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +18,6 @@ const queryClient = new QueryClient({
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const config = use(configPromise);
   return (
     <SessionExpiredProvider>
       <NuqsAdapter>

@@ -1,5 +1,7 @@
 ## Oma Opiskelijavalinta
 
+[![Build](https://github.com/Opetushallitus/oma-opiskelijavalinta/actions/workflows/build.yml/badge.svg)](https://github.com/Opetushallitus/oma-opiskelijavalinta/actions/workflows/build.yml)
+
 Opiskelijan henkilökohtainen palvelu liittyen opiskelijavalintoihin.
 
 ### Lokaali ympäristö
