@@ -4,9 +4,9 @@
 
 Opiskelijan henkilökohtainen palvelu liittyen opiskelijavalintoihin.
 
-### Lokaali ympäristö
+### Taustapalvelu
 
-Lokaalin ympäristön käyttöönotto
+#### Käynnistäminen
 
 1. Käynnistä lokaali sovellus ajamalla luokka fi.oph.suorituspalvelu.DevApp. Käynnistyksen
    yhteydessä käynnistetään myös postgres-kanta
@@ -14,7 +14,17 @@ Lokaalin ympäristön käyttöönotto
    pitäisi pystyä kokeilemaan esimerkkiparametreilla
 3. Järjestelmän tilaa voi seurata kannasta (salasana on "app"): psql -U app --host localhost --port 55455 -d oma-opiskelijavalinta
 
-#### Palvelimen ja käyttölittymän ajaminen yhdessä
+#### Testien ajaminen
+
+Yksikkö- ja integraatiotestit voi ajaa suorittamalla:
+
+`mvn test`
+
+Yksittäisen testiluokan ajaminen submoduulista:
+
+`mvn test -Dtest=HealthCheckIntegraatioTest -pl oma-opiskelijavalinta-service`
+
+### Palvelimen ja käyttölittymän ajaminen yhdessä
 
 Koko sovelluksen ajaminen yhdessä on toteutettu docker composella.
 
@@ -35,6 +45,12 @@ Komento käynnistää backendin, käyttöliittymän, postgreSQL-tietokannan ja n
 Sovelluksen käyttöliittymä löytyy käynnistyksen jälkeen osoitteesta http:/localhost:3000/oma-opiskelijavalinta.
 
 ### Käyttöliittymäkehitys
+
+#### Yksikkötestien ajaminen
+
+Tapahtuu komennolla:
+
+`npm test`
 
 #### Playwright-testien ajaminen lokaalisti
 
