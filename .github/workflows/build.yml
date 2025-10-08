@@ -42,8 +42,7 @@ jobs:
         id: restore-build
         with:
           path: |
-            oma-opiskelijavalinta-service/target
-            oma-opiskelijavalinta-domain/target
+            target
           key: ${{ github.sha }}
   lint-and-test-frontend:
     timeout-minutes: 10
@@ -103,8 +102,7 @@ jobs:
         id: restore-build
         with:
           path: |
-            oma-opiskelijavalinta-service/target
-            oma-opiskelijavalinta-domain/target
+            target
           key: ${{ github.sha }}
 
       - name: Build and deploy Docker container
@@ -117,8 +115,8 @@ jobs:
           source ci-tools/common/setup-tools.sh
 
           export ARTIFACT_NAME="oma-opiskelijavalinta"
-          mv oma-opiskelijavalinta-service/target/oma-opiskelijavalinta-service-exec.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
-          cp -vr oma-opiskelijavalinta-service/src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+          mv target/oma-opiskelijavalinta-exec.jar $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}.jar
+          cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           export BASE_IMAGE="baseimage-fatjar-openjdk21:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME

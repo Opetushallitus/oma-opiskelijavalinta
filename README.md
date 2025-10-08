@@ -22,7 +22,7 @@ Yksikkö- ja integraatiotestit voi ajaa suorittamalla:
 
 Yksittäisen testiluokan ajaminen submoduulista:
 
-`mvn test -Dtest=HealthCheckIntegraatioTest -pl oma-opiskelijavalinta-service`
+`mvn test -Dtest=HealthCheckIntegraatioTest`
 
 ### Palvelimen ja käyttölittymän ajaminen yhdessä
 

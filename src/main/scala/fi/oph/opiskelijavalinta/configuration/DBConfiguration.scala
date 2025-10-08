@@ -1,8 +1,9 @@
 package fi.oph.opiskelijavalinta.configuration
 
-import javax.sql.DataSource
 import org.springframework.context.annotation.{Bean, Configuration}
 import slick.jdbc.JdbcBackend
+
+import javax.sql.DataSource
 
 @Configuration
 class DBConfiguration {

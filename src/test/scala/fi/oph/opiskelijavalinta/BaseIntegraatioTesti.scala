@@ -14,6 +14,7 @@ import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.{UseMainMethod, WebEnvironment}
+import org.springframework.boot.test.system.{CapturedOutput, OutputCaptureExtension}
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.annotation.DirtiesContext
@@ -21,7 +22,6 @@ import org.springframework.test.util.TestSocketUtils
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.{MockHttpServletRequestBuilder, MockMvcRequestBuilders}
 import org.springframework.test.web.servlet.setup.{DefaultMockMvcBuilder, MockMvcBuilders, MockMvcConfigurer}
-import org.springframework.boot.test.system.{CapturedOutput, OutputCaptureExtension}
 import org.springframework.web.context.WebApplicationContext
 import org.testcontainers.containers.PostgreSQLContainer
 import slick.jdbc.JdbcBackend.Database
