@@ -23,6 +23,7 @@
         <spring.boot.version>3.5.6</spring.boot.version>
         <jackson.version>2.20.0</jackson.version>
         <java.cas.version>1.2.4-SNAPSHOT</java.cas.version>
+        <tomcat.version>10.1.47</tomcat.version>
     </properties>
 
     <dependencyManagement>
@@ -55,18 +56,12 @@
             <dependency>
                 <groupId>fi.vm.sade.java-utils</groupId>
                 <artifactId>opintopolku-user-details-service</artifactId>
-                <version>0.5.1-SNAPSHOT</version>
+                <version>0.5.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>opiskelijavalinnat-utils</groupId>
                 <artifactId>java-cas</artifactId>
                 <version>1.2.4-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-simple</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -109,10 +104,6 @@
                 <version>9.2.5-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>org.apache.commons</groupId>
                         <artifactId>commons-lang3</artifactId>
                     </exclusion>
@@ -126,22 +117,22 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-servlet-api</artifactId>
-                <version>10.1.34</version>
+                <version>${tomcat.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>10.1.31</version>
+                <version>${tomcat.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-coyote</artifactId>
-                <version>10.1.31</version>
+                <version>${tomcat.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
-                <version>10.1.31</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <!-- Lisätty enforcer-pluginin takia -->
@@ -150,30 +141,20 @@
                 <artifactId>error_prone_annotations</artifactId>
                 <version>2.40.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.10.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>2.0-rc1</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala3-library_3</artifactId>
-        </dependency>
-        <!-- Test -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.10.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
-            <version>2.0-rc1</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
 
     <build>
         <pluginManagement>
@@ -239,7 +220,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>17</version>
+                                    <version>21</version>
                                 </requireJavaVersion>
                                 <dependencyConvergence>
                                     <excludes>
