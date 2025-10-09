@@ -22,8 +22,8 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://{{host_postgresql_oma-opiskelijavalinta}}:{{port_postgresql}}/oma-opiskelijavalinta
+    url: jdbc:postgresql://{{host_postgresql_omaopiskelijavalinta}}:{{port_postgresql}}/omaopiskelijavalinta
     username: {{postgres_app_user}}
-    password: {{host_postgresql_oma-opiskelijavalinta_app_password}}
+    password: {{host_postgresql_omaopiskelijavalinta_app_password}}
   flyway:
     baseline-on-migrate: true

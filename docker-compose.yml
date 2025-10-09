@@ -1,6 +1,6 @@
 services:
   pgdatabase:
-    image: postgres:15
+    image: postgres:17
     networks:
       - omopnet
     volumes:
@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
-      POSTGRES_DB: oma-opiskelijavalinta
+      POSTGRES_DB: omaopiskelijavalinta
     ports:
       - "5555:5432"
   backend:
@@ -28,7 +28,7 @@ services:
       NO_DB: true
       SPRING_DATASOURCE_USERNAME: app
       SPRING_DATASOURCE_PASSWORD: app
-      SPRING_DATASOURCE_URL: jdbc:postgresql://pgdatabase:5432/oma-opiskelijavalinta
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pgdatabase:5432/omaopiskelijavalinta
       MAVEN_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     ports:
       - "8555:8555"
