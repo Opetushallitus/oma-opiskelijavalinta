@@ -109,8 +109,8 @@
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback.access</groupId>
-                <artifactId>tomcat</artifactId>
-                <version>2.0.3</version>
+                <artifactId>logback-access-tomcat</artifactId>
+                <version>2.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
@@ -199,7 +199,7 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback.access</groupId>
-            <artifactId>tomcat</artifactId>
+            <artifactId>logback-access-tomcat</artifactId>
         </dependency>
         <dependency>
             <groupId>com.typesafe.slick</groupId>
