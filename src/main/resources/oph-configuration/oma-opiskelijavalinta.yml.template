@@ -1,13 +1,14 @@
 host:
   cas: {{host_cas}}
+  oppija: {{host_oppija}}
 
 web:
   url:
-    cas: https://${host.cas}/cas-opiskelija
-    cas-login: https://${host.cas}/cas-opiskelija/login
+    cas: https://{{host_oppija}}/cas-oppija
+    cas-login: https://{{host_oppija}}/cas-oppija/login
 
 cas-service:
-  service: https://{{host_virkailija}}/oma-opiskelijavalinta
+  service: https://{{host_oppija}}/oma-opiskelijavalinta
   sendRenew: false
   key: oma-opiskelijavalinta
 
