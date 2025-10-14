@@ -15,6 +15,7 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
+  
   return (
     <Box>
       <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>

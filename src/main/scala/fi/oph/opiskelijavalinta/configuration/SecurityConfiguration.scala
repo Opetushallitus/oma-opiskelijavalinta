@@ -8,7 +8,7 @@ import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.context.annotation.{Bean, Configuration, Profile}
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
@@ -63,11 +63,12 @@ class SecurityConfiguration {
   def casLoginFilterChain(http: HttpSecurity, casAuthenticationEntryPoint: CasAuthenticationEntryPoint, authenticationFilter: CasAuthenticationFilter): SecurityFilterChain =
     http
       .authorizeHttpRequests(requests => requests
-        .requestMatchers(HttpMethod.GET, ApiConstants.HEALTHCHECK_PATH, "/static/**", "/actuator/health", "/openapi/v3/api-docs/**")
+        .requestMatchers(HttpMethod.GET, ApiConstants.HEALTHCHECK_PATH, "/api/login", "/static/**", "/actuator/health", "/openapi/v3/api-docs/**")
         .permitAll()
         .anyRequest
         .fullyAuthenticated)
       .csrf(c => c.disable())
+      .cors(Customizer.withDefaults)
       .exceptionHandling(c => c.authenticationEntryPoint(casAuthenticationEntryPoint))
       .addFilter(authenticationFilter)
       /* Tehdään ohjaukset käyttöliittymään vasta koko CAS-autentikaation (ja mahdollisen login-uudellenohjauksen) jälkeen.
@@ -75,7 +76,7 @@ class SecurityConfiguration {
        * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
        * filter chainin läpi.
        */
-      .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
+      //.addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .build()
 
   @Bean

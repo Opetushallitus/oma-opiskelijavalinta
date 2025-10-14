@@ -2,10 +2,19 @@ package fi.oph.opiskelijavalinta
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.context.annotation.Bean
+import org.springframework.web.servlet.config.annotation.{CorsRegistry, WebMvcConfigurer}
 
 @SpringBootApplication
 class App {
 
+  //@Profile(Array("dev"))
+  @Bean
+  def corsConfigurer(): WebMvcConfigurer = new WebMvcConfigurer {
+    override def addCorsMappings(registry: CorsRegistry): Unit = {
+      registry.addMapping("/**").allowedOrigins("http://localhost:3000")
+    }
+  }
 }
 
 object App {

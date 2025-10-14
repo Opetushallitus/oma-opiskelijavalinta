@@ -18,7 +18,9 @@
     "typecheck": "react-router typegen && tsc",
     "test-playwright-docker": "./scripts/run-playwright-tests-in-docker.sh",
     "start-and-test-playwright-docker": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test start http://localhost:3000 'npm run test-playwright-docker -- $PLAYWRIGHT_ARGS'",
-    "build-and-copy": "npm run build && ./scripts/copy-ui-bundle-to-backend.sh"
+    "build-and-copy": "npm run build && ./scripts/copy-ui-bundle-to-backend.sh",
+    "create-dev-certs": "mkdir -p certificates && cd certificates && mkcert localhost && mkcert -install",
+    "node-extra-ca-certs": "export NODE_EXTRA_CA_CERTS=\"$(mkcert -CAROOT)/rootCA.pem\""
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -57,6 +59,7 @@
     "eslint-plugin-playwright": "^2.2.2",
     "eslint-plugin-react": "^7.37.5",
     "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.3",
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
     "lint-staged": "^16.2.3",

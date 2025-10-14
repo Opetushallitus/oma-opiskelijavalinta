@@ -2,6 +2,8 @@ import { useConfig } from '@/configuration';
 import { createContext, use, useMemo, useState } from 'react';
 import { OphButton } from '@opetushallitus/oph-design-system';
 import {Box} from "@mui/material";
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { getUser } from '@/lib/session-utils';
 
 export function SessionExpired() {
   const config = useConfig();
@@ -40,7 +42,9 @@ export const SessionExpiredProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [isSessionExpired, setIsSessionExpired] = useState(false);
+  const { data: user} = useSuspenseQuery({queryKey: ['user'], queryFn: getUser});
+
+  const [isSessionExpired, setIsSessionExpired] = useState(!user);
 
   const sessionExpiredState = useMemo(
     () => ({ isSessionExpired, setIsSessionExpired }),
