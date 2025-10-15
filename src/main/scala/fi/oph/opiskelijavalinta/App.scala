@@ -12,7 +12,7 @@ class App {
   @Bean
   def corsConfigurer(): WebMvcConfigurer = new WebMvcConfigurer {
     override def addCorsMappings(registry: CorsRegistry): Unit = {
-      registry.addMapping("/**").allowedOrigins("http://localhost:3000")
+      registry.addMapping("/**").allowedOrigins("https://localhost:3000")
     }
   }
 }

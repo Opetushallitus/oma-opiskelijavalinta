@@ -26,9 +26,10 @@ export default defineConfig({
         https: httpsOptions,
         port: 3000,
         host: 'localhost',
+        //cors: true,
         proxy: {
-            '/oma-opiskelijavalinta/api': 'https://localhost:8555',
             '/cas-oppija/login': {
+                autoRewrite: true,
                 target: hostUrl,
                 changeOrigin: true,
                 secure: false,

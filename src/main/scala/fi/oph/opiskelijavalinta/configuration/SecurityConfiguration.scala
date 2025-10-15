@@ -6,9 +6,10 @@ import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
-import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
+import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, Cas20ServiceTicketValidator, TicketValidator}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.{Bean, Configuration, Profile}
+import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
@@ -30,8 +31,11 @@ import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSeri
  */
 @Configuration
 @EnableWebSecurity
-@EnableJdbcHttpSession
+@EnableJdbcHttpSession(tableName = "SPRING_SESSION")
 class SecurityConfiguration {
+
+  private final val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
+
   private def  isFrontEndRoute: String => Boolean = path =>
     path.equals("/index.html") || path.equals("/")
 
@@ -60,6 +64,7 @@ class SecurityConfiguration {
   }
 
   @Bean
+  @Order(2)
   def casLoginFilterChain(http: HttpSecurity, casAuthenticationEntryPoint: CasAuthenticationEntryPoint, authenticationFilter: CasAuthenticationFilter): SecurityFilterChain =
     http
       .authorizeHttpRequests(requests => requests
@@ -76,12 +81,13 @@ class SecurityConfiguration {
        * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
        * filter chainin läpi.
        */
-      //.addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
+      .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .build()
 
   @Bean
   def cookieSerializer(): CookieSerializer =
     val serializer = new DefaultCookieSerializer()
+    serializer.setUseSecureCookie(true)
     serializer.setCookieName("JSESSIONID")
     serializer
 
@@ -89,8 +95,8 @@ class SecurityConfiguration {
   def serviceProperties(@Value("${cas-service.service}") service: String, @Value("${cas-service.sendRenew}") sendRenew: Boolean): ServiceProperties =
     val serviceProperties = new ServiceProperties()
     serviceProperties.setService(service + ApiConstants.CAS_TICKET_VALIDATION_PATH)
-    serviceProperties.setSendRenew(sendRenew)
-    serviceProperties.setAuthenticateAllArtifacts(true)
+    serviceProperties.setSendRenew(false) //sendRenew)
+    //serviceProperties.setAuthenticateAllArtifacts(true)
     serviceProperties
 
   //
@@ -108,9 +114,13 @@ class SecurityConfiguration {
 
   @Bean
   def ticketValidator(environment: Environment): TicketValidator =
+    new Cas20ServiceTicketValidator(environment.getRequiredProperty("web.url.cas"))
+
+  /*@Bean
+  def ticketValidator(environment: Environment): TicketValidator =
     val ticketValidator = new Cas20ProxyTicketValidator(environment.getRequiredProperty("web.url.cas"))
     ticketValidator.setAcceptAnyProxy(true)
-    ticketValidator
+    ticketValidator*/
 
   //
   // CAS filter
@@ -136,6 +146,19 @@ class SecurityConfiguration {
     http.getSharedObject(classOf[AuthenticationManagerBuilder])
       .authenticationProvider(casAuthenticationProvider)
       .build()
+
+  // api joka ohjaa tarvittaessa kirjautumattoman käyttäjän cas loginiin
+  @Bean
+  @Order(1)
+  def apiLoginFilterChain(http: HttpSecurity, casAuthenticationEntryPoint: CasAuthenticationEntryPoint): SecurityFilterChain = {
+    http
+      .securityMatcher("/api/login")
+      .authorizeHttpRequests(requests =>
+        requests.requestMatchers(SPRING_CAS_SECURITY_CHECK_PATH).permitAll() // päästetään läpi cas-logout
+          .anyRequest.fullyAuthenticated)
+      .exceptionHandling(c => c.authenticationEntryPoint(casAuthenticationEntryPoint))
+      .build()
+  }
 
 }
 

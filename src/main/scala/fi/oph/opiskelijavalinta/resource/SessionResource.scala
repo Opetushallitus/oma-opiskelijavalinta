@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, Request
 
 @RequestMapping(path = Array("/api/session"))
 @RestController
-@CrossOrigin(Array("https://localhost:3000"))
 class SessionResource {
 
   @GetMapping(path = Array(""))
