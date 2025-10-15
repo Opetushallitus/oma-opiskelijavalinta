@@ -46,3 +46,5 @@ test-results
 # react-router
 .react-router
 build
+
+certificates

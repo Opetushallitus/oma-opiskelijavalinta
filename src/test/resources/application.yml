@@ -7,9 +7,9 @@ server:
   port: 8555
   ssl:
     key-store-type: PKCS12
-    key-store: classpath:oma-opiskelijavalinta.p12
-    key-store-password: password
-    key-alias: viestinvalitys
+    key-store: classpath:localhost-keystore.p12
+    key-store-password: oma-opiskelijavalintapass
+    key-alias: oma-opiskelijavalinta
     enabled: true
   servlet:
     context-path: /oma-opiskelijavalinta

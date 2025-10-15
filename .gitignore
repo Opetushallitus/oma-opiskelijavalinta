@@ -43,3 +43,5 @@ cdk.out
 
 ### docker ###
 .env.docker.local
+
+localhost-keystore.p12

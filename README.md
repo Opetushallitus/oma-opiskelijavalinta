@@ -6,6 +6,8 @@ Opiskelijan henkilökohtainen palvelu liittyen opiskelijavalintoihin.
 
 ### Taustapalvelu
 
+Aja juurihakemistossa `./generate_certs.sh` luodaksesi certifikaatit lokaaliin käyttöön.
+
 #### Käynnistäminen
 
 1. Käynnistä lokaali sovellus ajamalla luokka fi.oph.suorituspalvelu.DevApp. Käynnistyksen
