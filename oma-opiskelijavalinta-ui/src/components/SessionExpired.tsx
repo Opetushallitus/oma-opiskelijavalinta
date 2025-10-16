@@ -42,9 +42,8 @@ export const SessionExpiredProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { data: user} = useSuspenseQuery({queryKey: ['user'], queryFn: getUser});
 
-  const [isSessionExpired, setIsSessionExpired] = useState(!user);
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   const sessionExpiredState = useMemo(
     () => ({ isSessionExpired, setIsSessionExpired }),

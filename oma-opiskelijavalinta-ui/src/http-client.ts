@@ -65,6 +65,7 @@ export const createFileResult = async (
 const doFetch = async (request: Request) => {
   try {
     const response = await fetch(request);
+    console.log('doFetch', response.status);
     return response.status >= 400
       ? Promise.reject(new FetchError(response, (await response.text()) ?? ''))
       : Promise.resolve(response);
@@ -91,10 +92,10 @@ const makeBareRequest = (request: Request) => {
     '1.2.246.562.10.00000000001.oma-opiskelijavalinta',
   );
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
-    const csrfCookie = getCookies()['CSRF'];
+    /*const csrfCookie = getCookies()['CSRF'];
     if (csrfCookie) {
       request.headers.set('CSRF', csrfCookie);
-    }
+    }*/
   }
   return doFetch(request);
 };
@@ -140,12 +141,15 @@ const responseToData = async <Result = unknown>(
 
 const makeRequest = async <Result>(request: Request) => {
   try {
+    console.log('making request');
     const response = await makeBareRequest(request);
     const responseUrl = new URL(response.url);
+    console.log(response.status, response.redirected);
     if (
       isRedirected(response) &&
-      responseUrl.pathname.startsWith('/cas/login')
+      responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
+      console.log('REDIRECTED');
       throw new SessionExpiredError();
     }
     return responseToData<Result>(response);

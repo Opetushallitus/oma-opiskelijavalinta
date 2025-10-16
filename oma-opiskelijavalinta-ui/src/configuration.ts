@@ -6,7 +6,7 @@ export const getConfiguration = async () => {
   return {
     routes: {
       yleiset: {
-        casLoginUrl: `${DOMAIN}/cas-oppija/login`,
+        casLoginUrl: `${DOMAIN}/cas-oppija/login?service='https://localhost:8555/oma-opiskelijavalinta/auth/cas'`,
       },
     },
   };

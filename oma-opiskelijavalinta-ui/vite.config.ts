@@ -8,6 +8,7 @@ const apiUrl = 'https://localhost:8555'
 const hostUrl = 'https://untuvaopintopolku.fi';
 
 const httpsOptions = {
+
   key: fs.readFileSync('./certificates/localhost-key.pem'),
   cert: fs.readFileSync('./certificates/localhost.pem'),
 };
@@ -24,10 +25,32 @@ export default defineConfig({
     },
     server: {
         https: httpsOptions,
-        port: 3000,
+        port: 3404,
         host: 'localhost',
-        //cors: true,
+        //cors: {origin: "*", preflightContinue: true},
         proxy: {
+            '/oma-opiskelijavalinta/api': {
+                target: apiUrl,
+                secure: false,
+                changeOrigin: false,
+                cookieDomainRewrite: 'localhost',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+                configure: (proxy, _options) => {
+                    proxy.on('error', (err, _req, _res) => {
+                        console.log('proxy error', err);
+                    });
+                    proxy.on('proxyReq', (proxyReq, req, _res) => {
+
+                        console.log('Sending Request to the Target:', req.method, req.url, proxyReq.host);
+                    });
+                    proxy.on('proxyRes', (proxyRes, req, _res) => {
+                        console.log(proxyRes._read(1000));
+                        console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+                    });
+                },
+            },
             '/cas-oppija/login': {
                 autoRewrite: true,
                 target: hostUrl,

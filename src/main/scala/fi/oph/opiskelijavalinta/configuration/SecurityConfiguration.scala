@@ -81,7 +81,7 @@ class SecurityConfiguration {
        * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
        * filter chainin läpi.
        */
-      .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
+      //.addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .build()
 
   @Bean
@@ -96,7 +96,7 @@ class SecurityConfiguration {
     val serviceProperties = new ServiceProperties()
     serviceProperties.setService(service + ApiConstants.CAS_TICKET_VALIDATION_PATH)
     serviceProperties.setSendRenew(false) //sendRenew)
-    //serviceProperties.setAuthenticateAllArtifacts(true)
+    serviceProperties.setAuthenticateAllArtifacts(true)
     serviceProperties
 
   //
@@ -112,15 +112,15 @@ class SecurityConfiguration {
     casAuthenticationProvider.setKey(key)
     casAuthenticationProvider
 
-  @Bean
-  def ticketValidator(environment: Environment): TicketValidator =
-    new Cas20ServiceTicketValidator(environment.getRequiredProperty("web.url.cas"))
-
   /*@Bean
+  def ticketValidator(environment: Environment): TicketValidator =
+    new Cas20ServiceTicketValidator(environment.getRequiredProperty("web.url.cas"))*/
+
+  @Bean
   def ticketValidator(environment: Environment): TicketValidator =
     val ticketValidator = new Cas20ProxyTicketValidator(environment.getRequiredProperty("web.url.cas"))
     ticketValidator.setAcceptAnyProxy(true)
-    ticketValidator*/
+    ticketValidator
 
   //
   // CAS filter

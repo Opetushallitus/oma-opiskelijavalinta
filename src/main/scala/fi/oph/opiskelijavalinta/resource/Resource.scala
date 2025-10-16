@@ -17,6 +17,9 @@ class Resource {
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
   @GetMapping(path = Array("/login"))
-  def login = RedirectView("https://localhost:3000/oma-opiskelijavalinta")
+  def login = {
+    System.out.println("Login REDIRECT")
+    RedirectView("https://localhost:3404/oma-opiskelijavalinta")
+  }
 
 }
