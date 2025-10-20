@@ -17,7 +17,7 @@
     "test": "vitest",
     "typecheck": "react-router typegen && tsc",
     "test-playwright-docker": "./scripts/run-playwright-tests-in-docker.sh",
-    "start-and-test-playwright-docker": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test start http://localhost:3000 'npm run test-playwright-docker -- $PLAYWRIGHT_ARGS'",
+    "start-and-test-playwright-docker": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test start http://localhost:3404 'npm run test-playwright-docker -- $PLAYWRIGHT_ARGS'",
     "build-and-copy": "npm run build && ./scripts/copy-ui-bundle-to-backend.sh"
   },
   "dependencies": {
