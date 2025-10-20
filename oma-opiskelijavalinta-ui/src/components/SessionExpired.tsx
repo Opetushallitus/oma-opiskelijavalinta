@@ -1,16 +1,14 @@
 import { useConfig } from '@/configuration';
 import { createContext, use, useMemo, useState } from 'react';
 import { OphButton } from '@opetushallitus/oph-design-system';
-import {Box} from "@mui/material";
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getUser } from '@/lib/session-utils';
+import { Box } from "@mui/material";
 
 export function SessionExpired() {
   const config = useConfig();
 
   const loginUrl = new URL(
-    config.routes.yleiset.casLoginUrl,
-    window.location.origin,
+      config.routes.yleiset.loginApiUrl,
+      window.location.origin,
   );
   const serviceUrl = new URL(window.location.href);
   serviceUrl.searchParams.delete('ticket');

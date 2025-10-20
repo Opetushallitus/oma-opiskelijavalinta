@@ -5,7 +5,6 @@ import { vitePluginOptimizeNamedImports } from './vitePluginOptimizeNamedImports
 import fs from 'fs';
 
 const apiUrl = 'https://localhost:8555'
-const hostUrl = 'https://untuvaopintopolku.fi';
 
 const httpsOptions = {
 
@@ -27,7 +26,6 @@ export default defineConfig({
         https: httpsOptions,
         port: 3404,
         host: 'localhost',
-        //cors: {origin: "*", preflightContinue: true},
         proxy: {
             '/oma-opiskelijavalinta/api': {
                 target: apiUrl,
@@ -37,29 +35,6 @@ export default defineConfig({
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                 },
-                configure: (proxy, _options) => {
-                    proxy.on('error', (err, _req, _res) => {
-                        console.log('proxy error', err);
-                    });
-                    proxy.on('proxyReq', (proxyReq, req, _res) => {
-
-                        console.log('Sending Request to the Target:', req.method, req.url, proxyReq.host);
-                    });
-                    proxy.on('proxyRes', (proxyRes, req, _res) => {
-                        console.log(proxyRes._read(1000));
-                        console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
-                    });
-                },
-            },
-            '/cas-oppija/login': {
-                autoRewrite: true,
-                target: hostUrl,
-                changeOrigin: true,
-                secure: false,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                },
-                cookieDomainRewrite: 'localhost',
                 configure: (proxy, _options) => {
                     proxy.on('error', (err, _req, _res) => {
                         console.log('proxy error', err);

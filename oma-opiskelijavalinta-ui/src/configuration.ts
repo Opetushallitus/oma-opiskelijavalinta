@@ -1,12 +1,14 @@
 import { use } from 'react';
 
 export const getConfiguration = async () => {
-  const DOMAIN = 'https://untuvaopintopolku.fi';
+  const apiUrl = import.meta.env.DEV
+      ? 'https://localhost:8555'
+      : 'https://untuvaopintopolku.fi';
 
   return {
     routes: {
       yleiset: {
-        casLoginUrl: `${DOMAIN}/cas-oppija/login?service='https://localhost:8555/oma-opiskelijavalinta/auth/cas'`,
+        loginApiUrl: `${apiUrl}/oma-opiskelijavalinta/api/login`
       },
     },
   };

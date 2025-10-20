@@ -2,7 +2,6 @@ package fi.oph.opiskelijavalinta.configuration
 
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.{Bean, Configuration, Profile}
 import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
-import org.springframework.http.HttpMethod
+import org.springframework.http.{HttpMethod, HttpStatus}
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.cas.ServiceProperties
 import org.springframework.security.cas.authentication.CasAuthenticationProvider
@@ -22,7 +21,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.intercept.AuthorizationFilter
+import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
 
@@ -66,15 +65,24 @@ class SecurityConfiguration {
   @Bean
   @Order(2)
   def casLoginFilterChain(http: HttpSecurity, casAuthenticationEntryPoint: CasAuthenticationEntryPoint, authenticationFilter: CasAuthenticationFilter): SecurityFilterChain =
+    val SWAGGER_WHITELIST = List(
+      "/swagger-resources",
+      "/swagger-resources/**",
+      "/swagger-ui.html",
+      "/openapi/v3/api-docs/**",
+      "/swagger-ui/**"
+    )
     http
       .authorizeHttpRequests(requests => requests
-        .requestMatchers(HttpMethod.GET, ApiConstants.HEALTHCHECK_PATH, "/api/login", "/static/**", "/actuator/health", "/openapi/v3/api-docs/**")
+        .requestMatchers(HttpMethod.GET, ApiConstants.HEALTHCHECK_PATH, "/api/login", "/static/**", "/actuator/health")
+        .permitAll()
+        .requestMatchers(SWAGGER_WHITELIST*)
         .permitAll()
         .anyRequest
         .fullyAuthenticated)
       .csrf(c => c.disable())
       .cors(Customizer.withDefaults)
-      .exceptionHandling(c => c.authenticationEntryPoint(casAuthenticationEntryPoint))
+      .exceptionHandling(c => c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
       .addFilter(authenticationFilter)
       /* Tehdään ohjaukset käyttöliittymään vasta koko CAS-autentikaation (ja mahdollisen login-uudellenohjauksen) jälkeen.
        * Huom! classOf[CasAuthenticationFilter] ei toimi integraatiotesteissä, koska silloin frontendResourceFilter
@@ -105,7 +113,7 @@ class SecurityConfiguration {
   @Bean
   def casAuthenticationProvider(serviceProperties: ServiceProperties, ticketValidator: TicketValidator, environment: Environment, @Value("${cas-service.key}") key: String): CasAuthenticationProvider =
     //val host = environment.getProperty("host.alb", environment.getRequiredProperty("host.virkailija"))
-    val casAuthenticationProvider = new CasAuthenticationProvider()
+    val casAuthenticationProvider = CasAuthenticationProvider()
     casAuthenticationProvider.setAuthenticationUserDetailsService(new OphUserDetailsServiceImpl())
     casAuthenticationProvider.setServiceProperties(serviceProperties)
     casAuthenticationProvider.setTicketValidator(ticketValidator)
@@ -127,8 +135,9 @@ class SecurityConfiguration {
   //
   @Bean
   def casAuthenticationFilter(authenticationManager: AuthenticationManager, serviceProperties: ServiceProperties): CasAuthenticationFilter =
-    val casAuthenticationFilter = new OpintopolkuCasAuthenticationFilter(serviceProperties)
+    val casAuthenticationFilter = CasAuthenticationFilter()
     casAuthenticationFilter.setAuthenticationManager(authenticationManager)
+    casAuthenticationFilter.setServiceProperties(serviceProperties)
     casAuthenticationFilter.setFilterProcessesUrl(ApiConstants.CAS_TICKET_VALIDATION_PATH)
     casAuthenticationFilter
 

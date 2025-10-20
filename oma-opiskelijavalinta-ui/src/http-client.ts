@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { isPlainObject } from 'remeda';
 import { useIsSessionExpired } from './components/SessionExpired';
+import { getConfiguration } from "@/configuration";
 
 export function getCookies() {
   return document.cookie.split('; ').reduce(
@@ -65,7 +66,6 @@ export const createFileResult = async (
 const doFetch = async (request: Request) => {
   try {
     const response = await fetch(request);
-    console.log('doFetch', response.status);
     return response.status >= 400
       ? Promise.reject(new FetchError(response, (await response.text()) ?? ''))
       : Promise.resolve(response);
@@ -141,21 +141,24 @@ const responseToData = async <Result = unknown>(
 
 const makeRequest = async <Result>(request: Request) => {
   try {
-    console.log('making request');
     const response = await makeBareRequest(request);
     const responseUrl = new URL(response.url);
-    console.log(response.status, response.redirected);
     if (
       isRedirected(response) &&
       responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
-      console.log('REDIRECTED');
-      throw new SessionExpiredError();
+      console.info('Redirected to CAS login, let browser handle it');
+      // let the browser handle redirect
+      window.location.href = response.url;
+      // Return a never-resolving promise to stop further processing
+      return new Promise<never>(() => {});
     }
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      throw new SessionExpiredError();
+      const conf = await getConfiguration()
+      window.location.href = conf.routes.yleiset.loginApiUrl
+      return new Promise<never>(() => {});
     }
     return Promise.reject(error);
   }
