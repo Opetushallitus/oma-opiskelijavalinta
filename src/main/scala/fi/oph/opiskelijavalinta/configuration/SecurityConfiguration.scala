@@ -86,6 +86,7 @@ class SecurityConfiguration {
         .permitAll()
         // Allow frontend entry point + assets
         .requestMatchers(
+          "/oma-opiskelijavalinta",
           "/oma-opiskelijavalinta/",
           "/oma-opiskelijavalinta/index.html",
           "/oma-opiskelijavalinta/assets/**",
