@@ -18,7 +18,6 @@ class Resource {
 
   @GetMapping(path = Array("/login"))
   def login = {
-    System.out.println("Login REDIRECT")
     RedirectView("https://localhost:3404/oma-opiskelijavalinta")
   }
 

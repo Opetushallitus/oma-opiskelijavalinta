@@ -15,10 +15,11 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
-
-
-  const { data: user} = useSuspenseQuery({queryKey: ['user'], queryFn: getUser});
-
+  const { data: user } = useSuspenseQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+  });
+  console.debug(user); // temp jotta linter ei herjaa
   return (
     <Box>
       <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>

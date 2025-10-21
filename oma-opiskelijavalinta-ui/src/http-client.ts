@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { isPlainObject } from 'remeda';
 import { useIsSessionExpired } from './components/SessionExpired';
-import { getConfiguration } from "@/configuration";
+import { getConfiguration } from '@/configuration';
 
 export function getCookies() {
   return document.cookie.split('; ').reduce(
@@ -151,14 +151,19 @@ const makeRequest = async <Result>(request: Request) => {
       // let the browser handle redirect
       window.location.href = response.url;
       // Return a never-resolving promise to stop further processing
-      return new Promise<never>(() => {});
+      return new Promise<never>(() => {
+        /* no-op */
+      });
     }
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      const conf = await getConfiguration()
-      window.location.href = conf.routes.yleiset.loginApiUrl
-      return new Promise<never>(() => {});
+      const conf = await getConfiguration();
+      window.location.href = conf.routes.yleiset.loginApiUrl;
+      // Return a never-resolving promise to stop further processing
+      return new Promise<never>(() => {
+        /* no-op */
+      });
     }
     return Promise.reject(error);
   }
