@@ -11,8 +11,6 @@ server:
     context-path: /oma-opiskelijavalinta
 
 spring:
-  profiles:
-    active: test
   datasource:
     url: jdbc:postgresql://localhost:55455/test
     username: app

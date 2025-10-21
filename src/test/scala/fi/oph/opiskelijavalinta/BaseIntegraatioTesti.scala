@@ -18,6 +18,7 @@ import org.springframework.boot.test.system.{CapturedOutput, OutputCaptureExtens
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.util.TestSocketUtils
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.{MockHttpServletRequestBuilder, MockMvcRequestBuilders}
@@ -40,8 +41,9 @@ object BaseIntegraatioTesti {
 /**
  * Integraatiotestien base-luokka. Käynnistää ennen testejä Localstacking, Postgresin ja Rediksen.
  */
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, useMainMethod = UseMainMethod.ALWAYS, classes = Array(classOf[App]))
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(Array(classOf[OutputCaptureExtension]))
+@ActiveProfiles(Array("test"))
 @DirtiesContext
 @TestInstance(Lifecycle.PER_CLASS)
 class BaseIntegraatioTesti {
