@@ -28,6 +28,8 @@ export const DEFAULT_BOX_BORDER = `2px solid ${ophColors.grey100}`;
 
 export const notLarge = (theme: Theme) => theme.breakpoints.down('lg');
 
+export const large = (theme: Theme) => theme.breakpoints.up('md');
+
 export const THEME_OVERRIDES: ThemeOptions = {
   components: {
     MuiDialog: {

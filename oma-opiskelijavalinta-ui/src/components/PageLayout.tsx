@@ -12,7 +12,7 @@ const ContentWrapper = styled(PageContent)(({ theme }) => ({
 
 const BoxWrapper = styled(Box)(() => ({
   backgroundColor: ophColors.white,
-  width: '100%',
+  width: 'fit-content',
 }));
 
 export const PageLayout = ({ children }: { children: React.ReactNode }) => {

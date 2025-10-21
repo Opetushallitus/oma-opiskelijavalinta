@@ -1,9 +1,11 @@
+import Applications from '@/components/Applications';
 import { styled } from '@/lib/theme';
 import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(4),
 }));
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
@@ -37,6 +39,7 @@ export default function HomePage() {
           <BulletItem disablePadding>ottaa opiskelupaikan vastaan</BulletItem>
         </List>
       </StyledBox>
+      <Applications />
     </Box>
   );
 }

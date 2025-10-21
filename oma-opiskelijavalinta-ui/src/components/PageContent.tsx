@@ -6,5 +6,5 @@ const MAX_WIDTH = '1920px';
 export const PageContent = styled(Box)({
   maxWidth: MAX_WIDTH,
   margin: 'auto',
-  width: '100%',
+  width: 'fit-content',
 });
