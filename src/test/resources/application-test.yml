@@ -1,0 +1,22 @@
+logging:
+  level:
+    root: INFO
+
+# ssl-konfiguraatio
+server:
+  port: 8555
+  ssl:
+    enabled: false
+  servlet:
+    context-path: /oma-opiskelijavalinta
+
+spring:
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:postgresql://localhost:55455/test
+    username: app
+    password: app
+  flyway:
+    baseline-on-migrate: true
+

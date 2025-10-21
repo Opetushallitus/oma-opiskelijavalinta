@@ -15,4 +15,19 @@ class HealthCheckIntegraatioTest extends BaseIntegraatioTesti {
       .get(ApiConstants.HEALTHCHECK_PATH))
       .andExpect(status().isOk)
       .andExpect(MockMvcResultMatchers.content().string("OK"));
+
+  @Test
+  def get401ResponseFromAuthenticatedApi(): Unit = {
+    mvc.perform(MockMvcRequestBuilders
+        .get(ApiConstants.SESSION_PATH))
+        .andExpect(status().isUnauthorized)
+  }
+
+  @Test
+  @WithMockUser(username = "testuser", roles = Array("USER"))
+  def get200ResponseFromAuthenticatedApiForAuthenticatedUser(): Unit = {
+    mvc.perform(MockMvcRequestBuilders.
+        get(ApiConstants.SESSION_PATH))
+        .andExpect(status().isOk)
+  }  
 }
