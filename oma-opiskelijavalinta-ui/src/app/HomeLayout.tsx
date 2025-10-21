@@ -3,16 +3,17 @@ import {
   SessionExpired,
   useIsSessionExpired,
 } from '@/components/SessionExpired';
-import { Box, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { Outlet } from 'react-router';
 import { NavigationSpinner } from './NavigationSpinner';
+import { PageLayout } from '@/components/PageLayout';
 
 export default function HomeLayout() {
   const { isSessionExpired } = useIsSessionExpired();
   return (
     <QuerySuspenseBoundary>
       {isSessionExpired && <SessionExpired />}
-      <Box>
+      <PageLayout>
         <title>Oma Opiskelijavalinta</title>
         <Stack direction="row">
           <main style={{ flexGrow: 1 }}>
@@ -23,7 +24,7 @@ export default function HomeLayout() {
             </NavigationSpinner>
           </main>
         </Stack>
-      </Box>
+      </PageLayout>
     </QuerySuspenseBoundary>
   );
 }

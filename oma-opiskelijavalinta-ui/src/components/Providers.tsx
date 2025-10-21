@@ -5,6 +5,8 @@ import '@/styles/global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionExpiredProvider } from '@/components/SessionExpired';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
+import { OphThemeProvider } from '@opetushallitus/oph-design-system/theme';
+import { THEME_OVERRIDES } from '@/lib/theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +24,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <SessionExpiredProvider>
       <NuqsAdapter>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <OphThemeProvider variant="opintopolku" overrides={THEME_OVERRIDES}>
+            {children}
+          </OphThemeProvider>
         </QueryClientProvider>
       </NuqsAdapter>
     </SessionExpiredProvider>
