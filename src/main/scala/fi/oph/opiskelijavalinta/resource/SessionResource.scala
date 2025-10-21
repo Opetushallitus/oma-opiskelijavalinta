@@ -15,6 +15,7 @@ class SessionResource {
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[String] = {
+    LOG.info("Getting session")
     ResponseEntity.ok("")
   }
 }

@@ -97,7 +97,8 @@ const makeBareRequest = (request: Request) => {
       request.headers.set('CSRF', csrfCookie);
     }*/
   }
-  return doFetch(request);
+  const reqWithCreds = new Request(request, { credentials: 'include' });
+  return doFetch(reqWithCreds);
 };
 
 type BodyParser<T> = (res: Response) => Promise<T>;

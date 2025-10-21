@@ -6,6 +6,7 @@ import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, Cas20ServiceTicketValidator, TicketValidator}
+import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.{Bean, Configuration, Profile}
 import org.springframework.core.annotation.Order
@@ -34,6 +35,7 @@ import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSeri
 @EnableJdbcHttpSession(tableName = "SPRING_SESSION")
 class SecurityConfiguration {
 
+  val LOG: Logger = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
   private final val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
 
   private def  isFrontEndRoute: String => Boolean = path =>
@@ -41,6 +43,7 @@ class SecurityConfiguration {
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
+    LOG.info("FrontendResourceFilter invoked")
     val req = request.asInstanceOf[HttpServletRequest]
     val res = response.asInstanceOf[HttpServletResponse]
     val contextPath = req.getContextPath
@@ -52,8 +55,10 @@ class SecurityConfiguration {
 
     // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
     if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
+      LOG.info("strip frontend path, redirecting to: " + strippedPathWithQuery)
       res.sendRedirect(strippedPathWithQuery)
     } else if (!isForwarded && isFrontEndRoute(path)) {
+      LOG.info("forwarding frontend request to index.html")
       // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
       request.setAttribute("custom.forwarded", true)
       // Forwardoidaan frontend-pyyntö html-tiedostoon
