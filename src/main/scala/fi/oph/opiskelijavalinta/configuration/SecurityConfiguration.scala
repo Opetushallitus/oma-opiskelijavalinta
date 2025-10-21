@@ -84,6 +84,15 @@ class SecurityConfiguration {
         .permitAll()
         .requestMatchers(SWAGGER_WHITELIST*)
         .permitAll()
+        // Allow frontend entry point + assets
+        .requestMatchers(
+          "/oma-opiskelijavalinta/",
+          "/oma-opiskelijavalinta/index.html",
+          "/oma-opiskelijavalinta/assets/**",
+          "/js/**",
+          "/css/**",
+          "/favicon.ico"
+        ).permitAll()
         .anyRequest
         .fullyAuthenticated)
       .csrf(c => c.disable())
