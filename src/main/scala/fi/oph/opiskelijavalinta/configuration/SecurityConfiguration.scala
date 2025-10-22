@@ -3,12 +3,10 @@ package fi.oph.opiskelijavalinta.configuration
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl
-import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
-import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
-import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, Cas20ServiceTicketValidator, TicketValidator}
+import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.{Bean, Configuration, Profile}
+import org.springframework.context.annotation.{Bean, Configuration}
 import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
 import org.springframework.http.{HttpMethod, HttpStatus}
@@ -22,7 +20,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
@@ -60,10 +57,17 @@ class SecurityConfiguration {
         .permitAll()
         // Allow frontend entry point + assets
         .requestMatchers(
+          HttpMethod.GET,
           "/oma-opiskelijavalinta",
           "/oma-opiskelijavalinta/",
           "/oma-opiskelijavalinta/index.html",
-          "/oma-opiskelijavalinta/assets/**"
+          "/oma-opiskelijavalinta/assets/**",
+          "/",
+          "/index.html",
+          //"/assets/**",           // in case resources are mapped without the context path
+          //"/js/**", "/css/**",
+          //"/favicon.ico",
+          //"/manifest.json"
         ).permitAll()
         .anyRequest
         .fullyAuthenticated)
