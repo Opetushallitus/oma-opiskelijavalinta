@@ -40,7 +40,7 @@ class SecurityConfiguration {
 
   private def  isFrontEndRoute: String => Boolean = path =>
     path.equals("/index.html") || path.equals("/")
-  
+
 
   @Bean
   @Order(2)
@@ -60,6 +60,7 @@ class SecurityConfiguration {
         .permitAll()
         // Allow frontend entry point + assets
         .requestMatchers(
+          "/oma-opiskelijavalinta",
           "/oma-opiskelijavalinta/",
           "/oma-opiskelijavalinta/index.html",
           "/oma-opiskelijavalinta/assets/**"
