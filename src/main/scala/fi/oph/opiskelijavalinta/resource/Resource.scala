@@ -3,6 +3,7 @@ package fi.oph.opiskelijavalinta.resource
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.{Logger, LoggerFactory}
+import org.springframework.context.annotation.Profile
 import org.springframework.http.ResponseEntity
 import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.web.servlet.view.RedirectView
@@ -19,6 +20,7 @@ class Resource {
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
   @GetMapping(path = Array("/login"))
+  @Profile(Array("dev"))
   def login = {
     LOG.info("Redirecting to frontend")
     RedirectView("https://localhost:3404/oma-opiskelijavalinta")

@@ -9,12 +9,12 @@ import org.springframework.web.servlet.config.annotation.{CorsRegistry, WebMvcCo
 class App {
 
   //@Profile(Array("dev"))
-  @Bean
-  def corsConfigurer(): WebMvcConfigurer = new WebMvcConfigurer {
-    override def addCorsMappings(registry: CorsRegistry): Unit = {
-      registry.addMapping("/**").allowedOrigins("http://localhost:3404")
-    }
-  }
+//  @Bean
+//  def corsConfigurer(): WebMvcConfigurer = new WebMvcConfigurer {
+//    override def addCorsMappings(registry: CorsRegistry): Unit = {
+//      registry.addMapping("/**").allowedOrigins("http://localhost:3404")
+//    }
+//  }
 }
 
 object App {
