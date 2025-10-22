@@ -22,7 +22,6 @@ class Resource {
   @GetMapping(path = Array("/login"))
   @Profile(Array("dev"))
   def login = {
-    LOG.info("Redirecting to frontend")
     RedirectView("https://localhost:3404/oma-opiskelijavalinta")
   }
 

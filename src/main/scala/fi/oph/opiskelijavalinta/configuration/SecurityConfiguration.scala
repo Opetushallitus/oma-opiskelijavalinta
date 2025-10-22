@@ -40,33 +40,7 @@ class SecurityConfiguration {
 
   private def  isFrontEndRoute: String => Boolean = path =>
     path.equals("/index.html") || path.equals("/")
-
-//  @Bean
-//  def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
-//    LOG.info("FrontendResourceFilter invoked")
-//    val req = request.asInstanceOf[HttpServletRequest]
-//    val res = response.asInstanceOf[HttpServletResponse]
-//    val contextPath = req.getContextPath
-//    val path = req.getRequestURI.stripPrefix(contextPath)
-//    val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
-//    val isForwarded = request.getAttribute("custom.forwarded") != null
-//    val fullPathWithQuery = contextPath + path + queryString
-//    val strippedPathWithQuery = contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
-//
-//    // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
-//    if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
-//      LOG.info("strip frontend path, redirecting to: " + strippedPathWithQuery)
-//      res.sendRedirect(strippedPathWithQuery)
-//    } else if (!isForwarded && isFrontEndRoute(path)) {
-//      LOG.info("forwarding frontend request to index.html")
-//      // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
-//      request.setAttribute("custom.forwarded", true)
-//      // Forwardoidaan frontend-pyyntö html-tiedostoon
-//      request.getRequestDispatcher("/index.html").forward(request, response)
-//    } else {
-//      chain.doFilter(request, response)
-//    }
-//  }
+  
 
   @Bean
   @Order(2)
@@ -86,15 +60,9 @@ class SecurityConfiguration {
         .permitAll()
         // Allow frontend entry point + assets
         .requestMatchers(
-          "/", "/index.html",
-          "/oma-opiskelijavalinta", "/oma-opiskelijavalinta/",
+          "/oma-opiskelijavalinta/",
           "/oma-opiskelijavalinta/index.html",
-          "/oma-opiskelijavalinta/assets/**",
-          "/assets/**",           // in case resources are mapped without the context path
-          "/static/**",
-          "/js/**", "/css/**",
-          "/favicon.ico",
-          "/manifest.json", "/robots.txt"
+          "/oma-opiskelijavalinta/assets/**"
         ).permitAll()
         .anyRequest
         .fullyAuthenticated)
@@ -102,12 +70,6 @@ class SecurityConfiguration {
       .cors(Customizer.withDefaults)
       .exceptionHandling(c => c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
       .addFilter(authenticationFilter)
-      /* Tehdään ohjaukset käyttöliittymään vasta koko CAS-autentikaation (ja mahdollisen login-uudellenohjauksen) jälkeen.
-       * Huom! classOf[CasAuthenticationFilter] ei toimi integraatiotesteissä, koska silloin frontendResourceFilter
-       * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
-       * filter chainin läpi.
-       */
-      //.addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .build()
 
   @Bean
