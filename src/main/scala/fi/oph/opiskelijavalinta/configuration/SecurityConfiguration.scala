@@ -86,13 +86,15 @@ class SecurityConfiguration {
         .permitAll()
         // Allow frontend entry point + assets
         .requestMatchers(
-          "/oma-opiskelijavalinta",
-          "/oma-opiskelijavalinta/",
+          "/", "/index.html",
+          "/oma-opiskelijavalinta", "/oma-opiskelijavalinta/",
           "/oma-opiskelijavalinta/index.html",
           "/oma-opiskelijavalinta/assets/**",
-          "/js/**",
-          "/css/**",
-          "/favicon.ico"
+          "/assets/**",           // in case resources are mapped without the context path
+          "/static/**",
+          "/js/**", "/css/**",
+          "/favicon.ico",
+          "/manifest.json", "/robots.txt"
         ).permitAll()
         .anyRequest
         .fullyAuthenticated)
@@ -105,7 +107,7 @@ class SecurityConfiguration {
        * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
        * filter chainin läpi.
        */
-      .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
+      //.addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .build()
 
   @Bean
