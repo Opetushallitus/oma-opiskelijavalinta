@@ -8,7 +8,7 @@ export const getConfiguration = async () => {
   const sessionApiUrl =
     import.meta.env.DEV || import.meta.env.VITE_TEST === 'true'
       ? '/oma-opiskelijavalinta/api/session'
-      : '/api/session';
+      : 'oma-opiskelijavalinta/api/session';
 
   return {
     routes: {

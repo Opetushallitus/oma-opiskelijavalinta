@@ -15,6 +15,7 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
+  console.log('HomePage rendered');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: user } = useSuspenseQuery({
     queryKey: ['user'],

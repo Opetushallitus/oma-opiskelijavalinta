@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.context.annotation.Profile
-import org.springframework.http.ResponseEntity
-import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.web.servlet.view.RedirectView
 import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, RequestMapping, RestController}
 

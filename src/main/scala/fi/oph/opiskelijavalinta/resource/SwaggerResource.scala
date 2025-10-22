@@ -15,5 +15,5 @@ class SwaggerResource {
   @GetMapping(path = Array(""))
   def redirect(response: HttpServletResponse): Unit =
     LOG.info("uudelleenohjaus swaggeriin")
-    response.sendRedirect("/static/swagger-ui/index.html")
+    response.sendRedirect("/oma-opiskelijavalinta/static/swagger-ui/index.html")
 }

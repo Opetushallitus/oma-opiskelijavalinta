@@ -47,7 +47,8 @@ class SecurityConfiguration {
       "/swagger-resources/**",
       "/swagger-ui.html",
       "/openapi/v3/api-docs/**",
-      "/swagger-ui/**"
+      "/swagger-ui/**",
+      "/swagger"
     )
     http
       .authorizeHttpRequests(requests => requests
@@ -58,17 +59,11 @@ class SecurityConfiguration {
         // Allow frontend entry point + assets
         .requestMatchers(
           HttpMethod.GET,
-          //"/oma-opiskelijavalinta",
-          //"/oma-opiskelijavalinta/",
-          //"/oma-opiskelijavalinta/index.html",
-          //"/oma-opiskelijavalinta/assets/**",
           "/",
           "/index.html",
           "/assets/**",
           "/js/**",
-          //"/css/**",
-          //"/favicon.ico",
-          //"/manifest.json"
+          "/oma-opiskelijavalinta", "/oma-opiskelijavalinta/",
         ).permitAll()
         .anyRequest
         .fullyAuthenticated)
