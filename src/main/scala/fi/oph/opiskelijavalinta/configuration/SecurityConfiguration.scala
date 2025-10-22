@@ -65,7 +65,8 @@ class SecurityConfiguration {
           "/",
           "/index.html",
           //"/assets/**",           // in case resources are mapped without the context path
-          //"/js/**", "/css/**",
+          "/js/**",
+          //"/css/**",
           //"/favicon.ico",
           //"/manifest.json"
         ).permitAll()
