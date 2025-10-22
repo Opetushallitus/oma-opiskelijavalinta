@@ -14,8 +14,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <Scripts />
         <ScrollRestoration />
-        <script defer id="apply-raamit" type="text/javascript" src="/js/apply-raamit.js"></script>
-        <script defer id="apply-modal" type="text/javascript" src="/oppija-raamit/js/apply-modal.js"></script>
+        {/*<script defer id="apply-raamit" type="text/javascript" src="/js/apply-raamit.js"></script>*/}
+        {/*<script defer id="apply-modal" type="text/javascript" src="/oppija-raamit/js/apply-modal.js"></script>*/}
       </body>
     </html>
   );
