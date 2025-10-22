@@ -1,45 +1,27 @@
 import Applications from '@/components/Applications';
+import Info from '@/components/Info';
 import { styled } from '@/lib/theme';
-import { Box, List, ListItem } from '@mui/material';
+import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(4),
+  display: 'flex',
+  flexDirection: 'column',
+  rowGap: theme.spacing(4),
 }));
 
-const BulletItem = styled(ListItem)(({ theme }) => ({
-  display: 'list-item',
-  marginLeft: theme.spacing(2.5),
-  '::marker': {
-    fontSize: 'small',
-    verticalAlign: 'top',
-    lineHeight: 'inherit',
-  },
+const StyledHeader = styled(OphTypography)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
 }));
 
 export default function HomePage() {
   return (
     <Box>
-      <OphTypography variant="h1">Oma Opiskelijavalinta</OphTypography>
+      <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>
       <StyledBox>
-        <OphTypography variant="body1">
-          Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit
-        </OphTypography>
-        <List sx={{ listStyleType: 'disc' }}>
-          <BulletItem disablePadding>
-            tarkastella hakemuksiasi ja muokata niitä hakuaikana
-          </BulletItem>
-          <BulletItem disablePadding>
-            lisätä liitteitä hakemuksellesi määräaikaan mennessä
-          </BulletItem>
-          <BulletItem disablePadding>
-            nähdä opiskelijavalinnan tulokset
-          </BulletItem>
-          <BulletItem disablePadding>ottaa opiskelupaikan vastaan</BulletItem>
-        </List>
+        <Info />
+        <Applications />
       </StyledBox>
-      <Applications />
     </Box>
   );
 }

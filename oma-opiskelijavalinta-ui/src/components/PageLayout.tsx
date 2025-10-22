@@ -6,7 +6,8 @@ import { PageContent } from './PageContent';
 const ContentWrapper = styled(PageContent)(({ theme }) => ({
   padding: theme.spacing(4),
   [notLarge(theme)]: {
-    padding: theme.spacing(1, 0, 0, 0),
+    maxWidth: '100vw',
+    padding: theme.spacing(1, 1),
   },
 }));
 
@@ -19,7 +20,6 @@ export const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Stack
       sx={{
-        width: '100%',
         alignItems: 'stretch',
       }}
     >

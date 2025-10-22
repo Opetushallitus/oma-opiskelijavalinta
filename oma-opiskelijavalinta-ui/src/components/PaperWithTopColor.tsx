@@ -8,6 +8,7 @@ export const PaperWithTopColor = styled(Paper, {
   borderTop: `4px solid ${topColor ?? theme.palette.primary.main}`,
   boxShadow: `2px 2px 1px 0px rgba(0,0,0, 0.05)`,
   width: '100%',
+  maxWidth: '95vw',
   position: 'relative',
   borderRadius: '4px',
   padding: theme.spacing(2.5),
