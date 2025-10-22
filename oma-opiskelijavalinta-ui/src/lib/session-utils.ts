@@ -1,7 +1,7 @@
 import { client } from '@/http-client';
 
 async function fetchUser() {
-  const sessionUrl = 'oma-opiskelijavalinta/api/session';
+  const sessionUrl = '/api/session';
   return await client.get(sessionUrl);
 }
 
