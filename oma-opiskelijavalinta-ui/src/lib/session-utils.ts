@@ -1,8 +1,9 @@
 import { client } from '@/http-client';
+import { getConfiguration } from '@/configuration';
 
 async function fetchUser() {
-  const sessionUrl = '/api/session';
-  return await client.get(sessionUrl);
+  const config = await getConfiguration();
+  return await client.get(config.routes.yleiset.sessionApiUrl);
 }
 
 export async function getUser() {
