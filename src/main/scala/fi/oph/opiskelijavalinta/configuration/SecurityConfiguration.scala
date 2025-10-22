@@ -58,13 +58,13 @@ class SecurityConfiguration {
         // Allow frontend entry point + assets
         .requestMatchers(
           HttpMethod.GET,
-          "/oma-opiskelijavalinta",
-          "/oma-opiskelijavalinta/",
-          "/oma-opiskelijavalinta/index.html",
-          "/oma-opiskelijavalinta/assets/**",
+          //"/oma-opiskelijavalinta",
+          //"/oma-opiskelijavalinta/",
+          //"/oma-opiskelijavalinta/index.html",
+          //"/oma-opiskelijavalinta/assets/**",
           "/",
           "/index.html",
-          //"/assets/**",           // in case resources are mapped without the context path
+          "/assets/**",
           "/js/**",
           //"/css/**",
           //"/favicon.ico",
