@@ -6,17 +6,11 @@ logging:
 server:
   port: 8555
   ssl:
-    key-store-type: PKCS12
-    key-store: classpath:localhost-keystore.p12
-    key-store-password: oma-opiskelijavalintapass
-    key-alias: oma-opiskelijavalinta
-    enabled: true
+    enabled: false
   servlet:
     context-path: /oma-opiskelijavalinta
 
 spring:
-  profiles:
-    active: dev
   datasource:
     url: jdbc:postgresql://localhost:55455/test
     username: app

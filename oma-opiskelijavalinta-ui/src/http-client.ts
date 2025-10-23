@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { isPlainObject } from 'remeda';
 import { useIsSessionExpired } from './components/SessionExpired';
+import { getConfiguration } from '@/configuration';
 
 export function getCookies() {
   return document.cookie.split('; ').reduce(
@@ -90,13 +91,8 @@ const makeBareRequest = (request: Request) => {
     'Caller-Id',
     '1.2.246.562.10.00000000001.oma-opiskelijavalinta',
   );
-  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
-    const csrfCookie = getCookies()['CSRF'];
-    if (csrfCookie) {
-      request.headers.set('CSRF', csrfCookie);
-    }
-  }
-  return doFetch(request);
+  const reqWithCreds = new Request(request, { credentials: 'include' });
+  return doFetch(reqWithCreds);
 };
 
 type BodyParser<T> = (res: Response) => Promise<T>;
@@ -144,14 +140,25 @@ const makeRequest = async <Result>(request: Request) => {
     const responseUrl = new URL(response.url);
     if (
       isRedirected(response) &&
-      responseUrl.pathname.startsWith('/cas/login')
+      responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
-      throw new SessionExpiredError();
+      console.debug('Redirected to CAS login, let browser handle it');
+      // let the browser handle redirect
+      window.location.href = response.url;
+      // Return a never-resolving promise to stop further processing
+      return new Promise<never>(() => {
+        /* no-op */
+      });
     }
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      throw new SessionExpiredError();
+      const conf = await getConfiguration();
+      window.location.href = conf.routes.yleiset.loginApiUrl;
+      // Return a never-resolving promise to stop further processing
+      return new Promise<never>(() => {
+        /* no-op */
+      });
     }
     return Promise.reject(error);
   }

@@ -1,14 +1,14 @@
 import { useConfig } from '@/configuration';
 import { createContext, use, useMemo, useState } from 'react';
 import { OphButton } from '@opetushallitus/oph-design-system';
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
 
 export function SessionExpired() {
   const config = useConfig();
 
   const loginUrl = new URL(
-    config.routes.yleiset.casLoginUrl,
-    window.location.origin,
+      config.routes.yleiset.loginApiUrl,
+      window.location.origin,
   );
   const serviceUrl = new URL(window.location.href);
   serviceUrl.searchParams.delete('ticket');
@@ -40,6 +40,7 @@ export const SessionExpiredProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+
   const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   const sessionExpiredState = useMemo(
