@@ -62,7 +62,8 @@ class SecurityConfiguration {
           "/index.html",
           "/assets/**",
           "/js/**",
-          "/oma-opiskelijavalinta", "/oma-opiskelijavalinta/",
+          "/oma-opiskelijavalinta", 
+          "/oma-opiskelijavalinta/",
         ).permitAll()
         .anyRequest
         .fullyAuthenticated)
