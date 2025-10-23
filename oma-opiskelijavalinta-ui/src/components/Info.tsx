@@ -1,3 +1,4 @@
+import { useTranslations } from '@/hooks/useTranslations';
 import { notLarge, styled } from '@/lib/theme';
 import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
@@ -12,25 +13,20 @@ const BulletItem = styled(ListItem)(({ theme }) => ({
 }));
 
 export default function Info({ user }: { user: User }) {
+
+  const { t } = useTranslations();
+
   return (
     <Box>
       <OphTypography variant="body1">
         {user?.displayName} oppijanumero: {user?.personOid}
       </OphTypography>
-      <OphTypography variant="body1">
-        Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit
-      </OphTypography>
+      <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>
       <List sx={{ listStyleType: 'disc' }}>
-        <BulletItem disablePadding>
-          tarkastella hakemuksiasi ja muokata niitä hakuaikana
-        </BulletItem>
-        <BulletItem disablePadding>
-          lisätä liitteitä hakemuksellesi määräaikaan mennessä
-        </BulletItem>
-        <BulletItem disablePadding>
-          nähdä opiskelijavalinnan tulokset
-        </BulletItem>
-        <BulletItem disablePadding>ottaa opiskelupaikan vastaan</BulletItem>
+        <BulletItem disablePadding>{t('info.hakemukset')}</BulletItem>
+        <BulletItem disablePadding>{t('info.liitteet')}</BulletItem>
+        <BulletItem disablePadding>{t('info.tulokset')}</BulletItem>
+        <BulletItem disablePadding>{t('info.vastaanotto')}</BulletItem>
       </List>
     </Box>
   );

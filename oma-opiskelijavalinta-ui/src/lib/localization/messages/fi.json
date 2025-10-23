@@ -1,0 +1,14 @@
+{
+  "nimi": "Oma Opiskelijavalinta",
+  "info": {
+    "kuvaus": "Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit",
+    "hakemukset": "tarkastella hakemuksiasi ja muokata niitä hakuaikana",
+    "liitteet": "lisätä liitteitä hakemuksellesi määräaikaan mennessä",
+    "tulokset": "nähdä opiskelijavalinnan tulokset",
+    "vastaanotto": "ottaa opiskelupaikan vastaan"
+  },
+  "hakemukset": {
+    "ajankohtaiset": "Ajankohtaiset hakemukset",
+    "ei-hakemuksia": "Ei hakemuksia"
+  }
+}
