@@ -2,7 +2,6 @@ package fi.oph.opiskelijavalinta.configuration
 
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
@@ -95,7 +94,7 @@ class SecurityConfiguration {
   def casAuthenticationProvider(serviceProperties: ServiceProperties, ticketValidator: TicketValidator, environment: Environment, @Value("${cas-service.key}") key: String): CasAuthenticationProvider =
     //val host = environment.getProperty("host.alb", environment.getRequiredProperty("host.virkailija"))
     val casAuthenticationProvider = CasAuthenticationProvider()
-    casAuthenticationProvider.setAuthenticationUserDetailsService(new OphUserDetailsServiceImpl())
+    casAuthenticationProvider.setAuthenticationUserDetailsService(new OppijaUserDetails)
     casAuthenticationProvider.setServiceProperties(serviceProperties)
     casAuthenticationProvider.setTicketValidator(ticketValidator)
     casAuthenticationProvider.setKey(key)

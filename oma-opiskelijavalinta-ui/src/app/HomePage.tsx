@@ -1,8 +1,10 @@
 import Applications from '@/components/Applications';
 import Info from '@/components/Info';
+import { getUser } from '@/lib/session-utils';
 import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -15,12 +17,19 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
+  type User = {
+    displayName?: string;
+    personOid?: string;
+  };
   console.log('HomePage rendered');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: user } = useSuspenseQuery({
+
+  const userData = useSuspenseQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });
+  const user: User = userData.data || {};
+  console.log('Fetched user:');
+  console.log(user?.personOid);
   return (
     <Box>
       <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>
