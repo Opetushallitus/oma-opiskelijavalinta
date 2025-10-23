@@ -16,12 +16,12 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export default function HomePage() {
-  type User = {
-    displayName?: string;
-    personOid?: string;
-  };
+export type User = {
+  displayName?: string;
+  personOid?: string;
+};
 
+export default function HomePage() {
   const userData = useSuspenseQuery({
     queryKey: ['user'],
     queryFn: getUser,
@@ -31,7 +31,7 @@ export default function HomePage() {
     <Box>
       <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>
       <StyledBox>
-        <Info />
+        <Info user={user} />
         <Applications />
       </StyledBox>
     </Box>

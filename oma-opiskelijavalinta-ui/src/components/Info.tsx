@@ -1,6 +1,7 @@
 import { notLarge, styled } from '@/lib/theme';
 import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
+import type { User } from '@/app/HomePage';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
@@ -10,9 +11,12 @@ const BulletItem = styled(ListItem)(({ theme }) => ({
   },
 }));
 
-export default function Info() {
+export default function Info({ user }: { user: User }) {
   return (
     <Box>
+      <OphTypography variant="body1">
+        {user?.displayName} oppijanumero: {user?.personOid}
+      </OphTypography>
       <OphTypography variant="body1">
         Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit
       </OphTypography>
