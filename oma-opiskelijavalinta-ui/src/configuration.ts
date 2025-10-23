@@ -5,11 +5,10 @@ export const getConfiguration = async () => {
     ? 'https://localhost:8555'
     : 'https://untuvaopintopolku.fi';
 
-  // const sessionApiUrl =
-  //   import.meta.env.DEV || import.meta.env.VITE_TEST === 'true'
-  //     ? '/oma-opiskelijavalinta/api/session'
-  //     : 'oma-opiskelijavalinta/api/session';
-  const sessionApiUrl = '/oma-opiskelijavalinta/api/session';
+  const sessionApiUrl =
+    import.meta.env.DEV || import.meta.env.VITE_TEST === 'true'
+      ? '/oma-opiskelijavalinta/api/session'
+      : 'oma-opiskelijavalinta/api/session';
 
   return {
     routes: {
