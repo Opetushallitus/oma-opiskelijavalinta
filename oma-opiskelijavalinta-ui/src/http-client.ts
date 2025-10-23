@@ -91,12 +91,6 @@ const makeBareRequest = (request: Request) => {
     'Caller-Id',
     '1.2.246.562.10.00000000001.oma-opiskelijavalinta',
   );
-  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
-    /*const csrfCookie = getCookies()['CSRF'];
-    if (csrfCookie) {
-      request.headers.set('CSRF', csrfCookie);
-    }*/
-  }
   const reqWithCreds = new Request(request, { credentials: 'include' });
   return doFetch(reqWithCreds);
 };
@@ -148,7 +142,7 @@ const makeRequest = async <Result>(request: Request) => {
       isRedirected(response) &&
       responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
-      console.info('Redirected to CAS login, let browser handle it');
+      console.debug('Redirected to CAS login, let browser handle it');
       // let the browser handle redirect
       window.location.href = response.url;
       // Return a never-resolving promise to stop further processing

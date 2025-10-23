@@ -84,7 +84,7 @@ class SecurityConfiguration {
   def serviceProperties(@Value("${cas-service.service}") service: String, @Value("${cas-service.sendRenew}") sendRenew: Boolean): ServiceProperties =
     val serviceProperties = new ServiceProperties()
     serviceProperties.setService(service + ApiConstants.CAS_TICKET_VALIDATION_PATH)
-    serviceProperties.setSendRenew(false) //sendRenew)
+    serviceProperties.setSendRenew(false)
     serviceProperties.setAuthenticateAllArtifacts(true)
     serviceProperties
 
@@ -100,10 +100,6 @@ class SecurityConfiguration {
     casAuthenticationProvider.setTicketValidator(ticketValidator)
     casAuthenticationProvider.setKey(key)
     casAuthenticationProvider
-
-  /*@Bean
-  def ticketValidator(environment: Environment): TicketValidator =
-    new Cas20ServiceTicketValidator(environment.getRequiredProperty("web.url.cas"))*/
 
   @Bean
   def ticketValidator(environment: Environment): TicketValidator =

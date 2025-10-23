@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, Request
 
 @RequestMapping(path = Array("/api/session"))
 @RestController
-@CrossOrigin(Array("http://localhost:3404"))
 class SessionResource {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[SessionResource]);

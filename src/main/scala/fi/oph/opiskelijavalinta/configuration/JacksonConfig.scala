@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-import org.springframework.web.servlet.config.annotation.{CorsRegistry, WebMvcConfigurer}
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 import java.util
 import scala.jdk.CollectionConverters.*
