@@ -21,15 +21,12 @@ export default function HomePage() {
     displayName?: string;
     personOid?: string;
   };
-  console.log('HomePage rendered');
 
   const userData = useSuspenseQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });
   const user: User = userData.data || {};
-  console.log('Fetched user:');
-  console.log(user?.personOid);
   return (
     <Box>
       <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>
