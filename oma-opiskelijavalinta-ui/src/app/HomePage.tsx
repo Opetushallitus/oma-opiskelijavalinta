@@ -32,7 +32,7 @@ export default function HomePage() {
 
   return (
     <Box>
-      <StyledHeader variant="h1">{t('nimi')}</StyledHeader>
+      <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>
       <StyledBox>
         <Info user={user} />
         <Applications />

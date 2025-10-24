@@ -21,7 +21,7 @@ class LocalDevController {
   @GetMapping(path = Array("/login"))
   def login = {
     LOG.debug("redirect to frontend in local dev")
-    RedirectView("https://localhost:3404/oma-opiskelijavalinta")
+    RedirectView("https://localhost:3777/oma-opiskelijavalinta")
   }
 
 }
