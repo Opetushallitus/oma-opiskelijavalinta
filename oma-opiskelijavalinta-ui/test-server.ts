@@ -21,4 +21,4 @@ app.get(['/', basename, `${basename}/*splat`], function (_req, res) {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
-http.createServer(app).listen(3404);
+http.createServer(app).listen(3777);

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { expectPageAccessibilityOk } from './lib/playwrightUtils';
 
-const APP_URL = 'http://localhost:3404/oma-opiskelijavalinta';
+const APP_URL = 'http://localhost:3777/oma-opiskelijavalinta';
 
 test('Näyttää etusivun infoineen', async ({ page }) => {
   // Mock authenticated user

@@ -1,6 +1,7 @@
 import Applications from '@/components/Applications';
 import Info from '@/components/Info';
 import { getUser } from '@/lib/session-utils';
+import { useTranslations } from '@/hooks/useTranslations';
 import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
@@ -27,9 +28,11 @@ export default function HomePage() {
     queryFn: getUser,
   });
   const user: User = userData.data || {};
+  const { t } = useTranslations();
+
   return (
     <Box>
-      <StyledHeader variant="h1">Oma Opiskelijavalinta</StyledHeader>
+      <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>
       <StyledBox>
         <Info user={user} />
         <Applications />

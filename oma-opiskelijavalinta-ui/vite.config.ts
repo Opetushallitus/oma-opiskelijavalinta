@@ -30,7 +30,7 @@ export default defineConfig(({ command }) => {
     server: isDev
       ? {
           https: httpsOptions,
-          port: 3404,
+          port: 3777,
           host: 'localhost',
           proxy: {
             '/oma-opiskelijavalinta/api': {

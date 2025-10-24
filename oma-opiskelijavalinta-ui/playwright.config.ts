@@ -18,7 +18,7 @@ export default defineConfig({
   use: {
     testIdAttribute: 'data-test-id',
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: `http://localhost:3404${reactRouterConfig.basename}`,
+    baseURL: `http://localhost:3777${reactRouterConfig.basename}`,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     ignoreHTTPSErrors: true,
