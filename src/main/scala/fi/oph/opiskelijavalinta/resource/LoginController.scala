@@ -3,12 +3,13 @@ package fi.oph.opiskelijavalinta.resource
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.{Logger, LoggerFactory}
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.servlet.view.RedirectView
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
 @RequestMapping(path = Array("/api"))
 @RestController
-class LoginController {
+class LoginController(@Value("${host.oppija:localhost:3404}") val hostOppija: String) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[LoginController])
   private val mapper = new ObjectMapper()
@@ -18,10 +19,7 @@ class LoginController {
 
   @GetMapping(path = Array("/login"))
   def login(): RedirectView = {
-    // get DOMAIN env variable, fallback to localhost:3404 for dev if missing
-    val domain = sys.env.getOrElse("host_oppija", "localhost:3404")
-    val redirectUrl = s"https://$domain/oma-opiskelijavalinta"
-
+    val redirectUrl = s"https://$hostOppija/oma-opiskelijavalinta"
     LOG.debug(s"Redirecting to: $redirectUrl")
     new RedirectView(redirectUrl)
   }
