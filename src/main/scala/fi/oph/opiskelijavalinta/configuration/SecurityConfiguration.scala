@@ -1,7 +1,6 @@
 package fi.oph.opiskelijavalinta.configuration
 
 
-import com.zaxxer.hikari.HikariDataSource
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
@@ -23,7 +22,6 @@ import org.springframework.security.config.annotation.web.configurers.ExceptionH
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
-import org.springframework.session.jdbc.config.annotation.SpringSessionDataSource
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
 
