@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 
 @RequestMapping(path = Array("/api"))
 @RestController
-class LoginController(@Value("${host.oppija:localhost:3404}") val hostOppija: String) {
+class LoginController(@Value("${host.oppija:localhost:3777}") val hostOppija: String) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[LoginController])
   private val mapper = new ObjectMapper()
