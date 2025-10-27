@@ -19,7 +19,7 @@ class LoginController {
   @GetMapping(path = Array("/login"))
   def login(): RedirectView = {
     // get DOMAIN env variable, fallback to localhost:3404 for dev if missing
-    val domain = sys.env.getOrElse("DOMAIN", "localhost:3404")
+    val domain = sys.env.getOrElse("host_oppija", "localhost:3404")
     val redirectUrl = s"https://$domain/oma-opiskelijavalinta"
 
     LOG.debug(s"Redirecting to: $redirectUrl")
