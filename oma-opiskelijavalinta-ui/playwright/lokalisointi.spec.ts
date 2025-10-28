@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { mockAuthenticatedUser } from './lib/playwrightUtils';
 
 test.describe('Lokalisointi', () => {
   test('Kääntää sivun suomeksi', async ({ page }) => {
+    await mockAuthenticatedUser(page);
     await page.goto('');
     await expect(page).toHaveTitle(/Oma Opiskelijavalinta/);
     await expect(page.getByText('Ajankohtaiset hakemukset')).toBeVisible();
@@ -13,6 +15,7 @@ test.describe('Lokalisointi', () => {
     await context.addCookies([
       { name: 'lang', value: 'en', path: '/', domain: 'localhost' },
     ]);
+    await mockAuthenticatedUser(page);
     await page.goto('');
     await expect(page).toHaveTitle(/Oma Opiskelijavalinta/);
     await expect(page.getByText('Ajankohtaiset hakemukset')).toBeHidden();
@@ -27,6 +30,7 @@ test.describe('Lokalisointi', () => {
     await context.addCookies([
       { name: 'lang', value: 'sv', path: '/', domain: 'localhost' },
     ]);
+    await mockAuthenticatedUser(page);
     await page.goto('');
     await expect(page).toHaveTitle(/Oma Opiskelijavalinta/);
     await expect(page.getByText('Ajankohtaiset hakemukset')).toBeHidden();
