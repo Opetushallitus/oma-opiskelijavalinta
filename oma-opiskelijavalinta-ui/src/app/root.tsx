@@ -5,6 +5,7 @@ import { ErrorView } from '@/components/ErrorView';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const isDev = import.meta.env.DEV;
+  console.log('isDev', isDev);
   return (
     <html lang="fi">
       <head>
