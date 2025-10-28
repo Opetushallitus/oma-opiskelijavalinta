@@ -20,9 +20,9 @@ export default defineConfig(({ command }) => {
 
   return {
     plugins: [
-      reactRouter(),
       tsConfigPaths(),
       vitePluginOptimizeNamedImports(['@mui/icons-material']),
+      reactRouter(),
     ],
     build: {
       assetsDir: 'oma-opiskelijavalinta/assets',
@@ -60,6 +60,23 @@ export default defineConfig(({ command }) => {
                   );
                 });
               },
+            },
+            '/oppija-raamit/js': {
+              target: 'https://untuvaopintopolku.fi',
+              changeOrigin: true,
+              secure: false,
+              rewrite: (path) =>
+                path.replace(/^\/oppija-raamit\/js/, '/oppija-raamit/js'),
+            },
+            '/oppija-raamit/html': {
+              target: 'https://untuvaopintopolku.fi',
+              changeOrigin: true,
+              secure: false,
+            },
+            '/oppija-raamit/img': {
+              target: 'https://untuvaopintopolku.fi',
+              changeOrigin: true,
+              secure: false,
             },
           },
         }
