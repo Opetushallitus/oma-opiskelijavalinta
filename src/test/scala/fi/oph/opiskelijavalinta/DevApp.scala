@@ -1,9 +1,11 @@
 package fi.oph.opiskelijavalinta
 
+import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.PostgreSQLContainer
 
 import scala.jdk.CollectionConverters.SeqHasAsJava
 
+@ActiveProfiles(Array("dev"))
 object DevApp {
 
   private val postgres: PostgreSQLContainer[_] = new PostgreSQLContainer("postgres:17")
@@ -19,6 +21,8 @@ object DevApp {
     main(args.toArray)
 
   def main(args: Array[String]): Unit =
+    //System.setProperty("spring.profiles.active", "dev")
+
     if (!sys.env.getOrElse("NO_DB", "false").equalsIgnoreCase("true")) {
       startContainers()
     }

@@ -45,3 +45,5 @@ cdk.out
 .env.docker.local
 
 localhost-keystore.p12
+
+application-dev.yml

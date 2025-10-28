@@ -13,13 +13,13 @@ const BulletItem = styled(ListItem)(({ theme }) => ({
 }));
 
 export default function Info({ user }: { user: User }) {
-
   const { t } = useTranslations();
 
   return (
     <Box>
       <OphTypography variant="body1">
-        {user?.displayName} oppijanumero: {user?.personOid}
+        {`${user?.etunimet} ${user?.sukunimi}`} oppijanumero:{' '}
+        {user?.oppijanumero}
       </OphTypography>
       <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>
       <List sx={{ listStyleType: 'disc' }}>

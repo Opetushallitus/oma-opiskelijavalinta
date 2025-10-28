@@ -14,9 +14,18 @@ server:
   servlet:
     context-path: /oma-opiskelijavalinta
 
+oauth2:
+  client: unset
+  secret: unset
+
 spring:
   profiles:
     active: dev
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev.otuva.opintopolku.fi/kayttooikeus-service
   datasource:
     url: jdbc:postgresql://localhost:55455/test
     username: app
