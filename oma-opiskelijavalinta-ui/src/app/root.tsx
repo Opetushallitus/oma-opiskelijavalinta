@@ -4,6 +4,9 @@ import { UntranslatedFullSpinner } from '@/components/FullSpinner';
 import { ErrorView } from '@/components/ErrorView';
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const applyRaamitUrl = '/oppija-raamit/js/apply-raamit-cas.js';
+  const applyModalUrl = '/oppija-raamit/js/apply-modal.js';
+
   return (
     <html lang="fi">
       <head>
@@ -14,9 +17,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <Scripts />
         <ScrollRestoration />
-        {/*TODO raamit in OPHYOS-15*/}
-        {/*<script defer id="apply-raamit" type="text/javascript" src="/js/apply-raamit.js"></script>*/}
-        {/*<script defer id="apply-modal" type="text/javascript" src="/oppija-raamit/js/apply-modal.js"></script>*/}
+        <script
+          defer
+          id="apply-raamit"
+          type="text/javascript"
+          src={applyRaamitUrl}
+        ></script>
+        <script
+          defer
+          id="apply-modal"
+          type="text/javascript"
+          src={applyModalUrl}
+        ></script>
       </body>
     </html>
   );
