@@ -7,7 +7,7 @@ function getLanguageOrDefault(lng: string): Language {
 }
 
 export function getLanguage(): Language {
-  //opintopolku.fi sets lang cookie
+  // opintopolku.fi sets lang cookie
   const lang = Cookies.get('lang');
   if (lang) {
     return getLanguageOrDefault(lang);

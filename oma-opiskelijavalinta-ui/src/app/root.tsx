@@ -4,8 +4,9 @@ import { UntranslatedFullSpinner } from '@/components/FullSpinner';
 import { ErrorView } from '@/components/ErrorView';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const applyRaamitUrl = '/oppija-raamit/js/apply-raamit.js';
+  const applyRaamitUrl = '/oppija-raamit/js/apply-raamit-cas.js';
   const applyModalUrl = '/oppija-raamit/js/apply-modal.js';
+
   return (
     <html lang="fi">
       <head>

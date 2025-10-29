@@ -78,6 +78,13 @@ export default defineConfig(({ command }) => {
               changeOrigin: true,
               secure: false,
             },
+            '/cas-oppija/user': {
+              target: 'https://untuvaopintopolku.fi',
+              changeOrigin: true,
+              secure: false,
+              rewrite: (path) =>
+                path.replace(/^\/cas-oppija\/user/, '/cas-oppija/user'),
+            },
           },
         }
       : undefined, // no server config in build
