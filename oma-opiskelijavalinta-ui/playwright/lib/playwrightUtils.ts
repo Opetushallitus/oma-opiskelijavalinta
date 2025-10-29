@@ -12,7 +12,7 @@ export const mockAuthenticatedUser = async (page: Page) => {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        etunimet: 'Ruhtinas',
+        kutsumanimi: 'Ruhtinas',
         sukunimi: 'Nukettaja',
         oppijanumero: '1.2.246.562.24.00000000001',
       }),

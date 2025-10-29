@@ -1,6 +1,7 @@
 host:
   cas: {{host_cas}}
   oppija: {{host_oppija}}
+  virkailija: {{host_virkailija}}
 
 web:
   url:

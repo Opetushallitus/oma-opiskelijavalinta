@@ -18,7 +18,7 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export type User = {
-  etunimet?: string;
+  kutsumanimi?: string;
   oppijanumero?: string;
   sukunimi?: string;
 };

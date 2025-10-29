@@ -3,7 +3,7 @@ package fi.oph.opiskelijavalinta.clients
 import com.fasterxml.jackson.databind.ObjectMapper
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.stereotype.Component
 
 import java.net.URI
@@ -12,10 +12,13 @@ import java.net.http.HttpRequest
 @Component
 class OnrClient @Autowired (httpClient: Oauth2Client, objectMapper: ObjectMapper = new ObjectMapper()) {
 
+  @Value("${host.virkailija}")
+  private val virkailijaHost = ""
+  
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
 
   def getPersonInfo(oid: String): Oppija = {
-    val url = s"https://virkailija.untuvaopintopolku.fi/oppijanumerorekisteri-service/henkilo/$oid/master"
+    val url = s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/$oid/master"
     val request = HttpRequest.newBuilder.uri(URI.create(url)).GET
     val response = httpClient.executeRequest(request)
     LOG.info("ORN Body: " + response.body + " oid: " + oid + " status: " + response.statusCode)

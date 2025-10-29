@@ -1,3 +1,6 @@
+host:
+  virkailija: virkailija.untuvaopintopolku.fi
+
 logging:
   level:
     root: INFO

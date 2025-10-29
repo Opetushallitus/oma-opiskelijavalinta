@@ -18,7 +18,7 @@ export default function Info({ user }: { user: User }) {
   return (
     <Box>
       <OphTypography variant="body1">
-        {`${user?.etunimet} ${user?.sukunimi}`} oppijanumero:{' '}
+        {`${user?.kutsumanimi} ${user?.sukunimi}`} oppijanumero:{' '}
         {user?.oppijanumero}
       </OphTypography>
       <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>

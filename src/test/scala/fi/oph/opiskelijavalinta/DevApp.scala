@@ -21,7 +21,6 @@ object DevApp {
     main(args.toArray)
 
   def main(args: Array[String]): Unit =
-    //System.setProperty("spring.profiles.active", "dev")
 
     if (!sys.env.getOrElse("NO_DB", "false").equalsIgnoreCase("true")) {
       startContainers()
