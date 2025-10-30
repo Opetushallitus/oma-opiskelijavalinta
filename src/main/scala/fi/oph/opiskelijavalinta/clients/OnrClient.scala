@@ -16,12 +16,19 @@ class OnrClient @Autowired (httpClient: Oauth2Client, objectMapper: ObjectMapper
   private val virkailijaHost = ""
   
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
-
-  def getPersonInfo(oid: String): Oppija = {
-    val url = s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/$oid/master"
+  
+  private def fetchPersonInfo(url: String): Oppija = {
     val request = HttpRequest.newBuilder.uri(URI.create(url)).GET
     val response = httpClient.executeRequest(request)
-    LOG.info("ORN Body: " + response.body + " oid: " + oid + " status: " + response.statusCode)
+    LOG.info("ORN Body: " + response.body + " url: " + url + " status: " + response.statusCode)
     objectMapper.readValue(response.body, classOf[Oppija])
+  }
+
+  def getPersonInfo(oid: String): Oppija = {
+    fetchPersonInfo(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/$oid/master")
+  }
+
+  def getPersonInfoByHetu(hetu: String): Oppija = {
+    fetchPersonInfo(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/hetu=$hetu")
   }
 }
