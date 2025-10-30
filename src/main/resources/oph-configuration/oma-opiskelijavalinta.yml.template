@@ -38,5 +38,3 @@ spring:
     password: {{host_postgresql_omaopiskelijavalinta_app_password}}
   flyway:
     baseline-on-migrate: true
-
-spring.security.oauth2.resourceserver.jwt.issuer-uri
