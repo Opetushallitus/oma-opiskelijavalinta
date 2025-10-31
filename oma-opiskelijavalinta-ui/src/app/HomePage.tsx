@@ -18,8 +18,9 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export type User = {
-  displayName?: string;
-  personOid?: string;
+  kutsumanimi?: string;
+  oppijanumero?: string;
+  sukunimi?: string;
 };
 
 export default function HomePage() {

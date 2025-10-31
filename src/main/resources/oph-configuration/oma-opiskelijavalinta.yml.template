@@ -1,6 +1,7 @@
 host:
   cas: {{host_cas}}
   oppija: {{host_oppija}}
+  virkailija: {{host_virkailija}}
 
 web:
   url:
@@ -21,7 +22,16 @@ server:
     context-path: /oma-opiskelijavalinta
   forward-headers-strategy: framework
 
+oauth2:
+  client: {{oma_opiskelijavalinta_oauth2_client}}
+  secret: {{oma_opiskelijavalinta_oauth2_secret}}
+
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: {{oma_opiskelijavalinta_oauth2_issuer_uri}}
   datasource:
     url: jdbc:postgresql://{{host_postgresql_omaopiskelijavalinta}}:{{port_postgresql}}/omaopiskelijavalinta
     username: {{postgres_app_user}}

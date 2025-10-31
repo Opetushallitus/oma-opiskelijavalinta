@@ -3,7 +3,7 @@ import { getConfiguration } from '@/configuration';
 
 async function fetchUser() {
   const config = await getConfiguration();
-  return await client.get(config.routes.yleiset.sessionApiUrl);
+  return await client.get(config.routes.yleiset.userUrl);
 }
 
 export async function getUser() {

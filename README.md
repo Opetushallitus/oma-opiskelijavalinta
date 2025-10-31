@@ -8,6 +8,9 @@ Opiskelijan henkilökohtainen palvelu liittyen opiskelijavalintoihin.
 
 Aja juurihakemistossa `./generate_certs.sh` luodaksesi certifikaatit lokaaliin käyttöön.
 
+Luo .gitignoressa oleva `application-dev.yml` tiedosto `test/resources` - kansioon, kopioi sinne samassa kansiossa olevat application.yml arvot.
+Aseta haluamasi testiympäristön muuttujat salaisuuksineen.
+
 #### Käynnistäminen
 
 1. Käynnistä lokaali sovellus ajamalla luokka fi.oph.suorituspalvelu.DevApp. Käynnistyksen
@@ -27,6 +30,14 @@ Yksittäisen testiluokan ajaminen submoduulista:
 `mvn test -Dtest=HealthCheckIntegraatioTest`
 
 ### Käyttöliittymäkehitys
+
+Käyttöliittymää ajetaan lokaalia taustapalvelua vasten. 
+
+#### Käynnistäminen
+
+1. Asenna riippuvuudet ajamalla `npm ci`
+2. Käynnistä ajamalla `npm run dev`
+3. Mene osoitteeseen https://localhost:3777/oma-opiskelijavalinta
 
 #### Yksikkötestien ajaminen
 
