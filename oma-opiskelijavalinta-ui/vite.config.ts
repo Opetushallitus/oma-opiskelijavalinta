@@ -5,7 +5,8 @@ import { vitePluginOptimizeNamedImports } from './vitePluginOptimizeNamedImports
 import fs from 'fs';
 
 export default defineConfig(({ command }) => {
-  const isDev = command === 'serve'; // true when running `react-router dev`
+  const isTest = process.env.VITE_TEST === 'true';
+  const isDev = !isTest && command === 'serve'; // true when running `react-router dev`
 
   const apiUrl = 'https://localhost:8555';
 
