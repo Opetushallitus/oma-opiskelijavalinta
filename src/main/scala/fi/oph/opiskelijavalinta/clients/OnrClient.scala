@@ -18,9 +18,9 @@ class OnrClient @Autowired (httpClient: Oauth2Client, objectMapper: ObjectMapper
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
   
   private def fetchPersonInfo(url: String): Oppija = {
+    LOG.debug("Haetaan käyttäjän tiedot onr:sta")
     val request = HttpRequest.newBuilder.uri(URI.create(url)).GET
     val response = httpClient.executeRequest(request)
-    LOG.info("ORN Body: " + response.body + " url: " + url + " status: " + response.statusCode)
     objectMapper.readValue(response.body, classOf[Oppija])
   }
 

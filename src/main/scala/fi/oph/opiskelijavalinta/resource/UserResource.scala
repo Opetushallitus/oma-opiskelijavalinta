@@ -19,7 +19,6 @@ class UserResource @Autowired(private val onrClient: OnrClient) {
   def response: ResponseEntity[Oppija] = {
     LOG.info("Getting User details")
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
-    LOG.info("User details: " + principal.attributes)
     val personOid: Option[String] = principal.attributes.get("personOid")
     val hetu: Option[String] = principal.attributes.get("nationalIdentificationNumber")
     val oppija = (personOid, hetu) match

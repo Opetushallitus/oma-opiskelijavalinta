@@ -20,7 +20,6 @@ class Oauth2Client @Autowired (private val oauth2BearerClient: Oauth2BearerClien
 
   private def execute(requestBuilder: HttpRequest.Builder): HttpResponse[String] = try {
     val bearer = oauth2BearerClient.getOauth2Bearer
-    LOG.info("bearer " + bearer)
     val request = requestBuilder
       .timeout(Duration.ofSeconds(35))
       .setHeader("Authorization", "Bearer " + bearer)

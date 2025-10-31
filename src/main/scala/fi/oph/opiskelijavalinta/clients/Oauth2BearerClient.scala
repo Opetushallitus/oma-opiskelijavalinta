@@ -46,7 +46,6 @@ class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMappe
     val client = HttpClient.newHttpClient
     val res = client.send(request, BodyHandlers.ofString)
     if (res.statusCode() != 200) throw new RuntimeException("Oauth2 bearer returned status code " + res.statusCode + ": " + res.body)
-    LOG.info("oauth2 bearer body: " + res.body)
     objectMapper.readValue(res.body, classOf[Oauth2Token]).access_token
   }
 
