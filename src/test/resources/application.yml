@@ -4,6 +4,10 @@ host:
 logging:
   level:
     root: INFO
+    org:
+      springframework:
+        security:
+          cas: DEBUG
 
 # ssl-konfiguraatio
 server:

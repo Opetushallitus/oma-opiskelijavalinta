@@ -14,3 +14,8 @@ export function getLanguage(): Language {
   }
   return getLanguageOrDefault(navigator.language);
 }
+
+// oppija-raamit calls this function to show selected language
+export function getLang(): string {
+  return getLanguage().valueOf();
+}

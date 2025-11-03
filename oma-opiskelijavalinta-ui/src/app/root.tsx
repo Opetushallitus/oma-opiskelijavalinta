@@ -1,11 +1,15 @@
+import '@/lib/service-global';
 import { Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { Providers } from '@/components/Providers';
 import { UntranslatedFullSpinner } from '@/components/FullSpinner';
 import { ErrorView } from '@/components/ErrorView';
+import { loadRaamit } from '@/lib/load-raamit';
+import React from 'react';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const applyRaamitUrl = '/oppija-raamit/js/apply-raamit-cas.js';
-  const applyModalUrl = '/oppija-raamit/js/apply-modal.js';
+  React.useEffect(() => {
+    loadRaamit(); // load raamit scripts after Service is defined
+  }, []);
 
   return (
     <html lang="fi">
@@ -17,18 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <Scripts />
         <ScrollRestoration />
-        <script
-          defer
-          id="apply-raamit"
-          type="text/javascript"
-          src={applyRaamitUrl}
-        ></script>
-        <script
-          defer
-          id="apply-modal"
-          type="text/javascript"
-          src={applyModalUrl}
-        ></script>
+        <div id="oppija-raamit-footer-here" />
       </body>
     </html>
   );
