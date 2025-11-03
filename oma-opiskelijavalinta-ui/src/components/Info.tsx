@@ -2,7 +2,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { notLarge, styled } from '@/lib/theme';
 import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import type { User } from '@/app/HomePage';
+import type { User } from '@/lib/types';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
