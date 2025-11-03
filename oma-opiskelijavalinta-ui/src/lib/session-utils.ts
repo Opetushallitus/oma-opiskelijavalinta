@@ -1,5 +1,6 @@
 import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
+import type { User } from '@/lib/types';
 
 async function fetchUser() {
   const config = await getConfiguration();
@@ -8,7 +9,13 @@ async function fetchUser() {
 
 export async function getUser() {
   const response = await fetchUser();
-  return response.data;
+  const user = response.data as User;
+  // Return with raamit-compatible name field
+  const name = `${user.kutsumanimi} ${user.sukunimi}`;
+  return {
+    ...user,
+    name: name ?? '',
+  };
 }
 
 export async function login() {

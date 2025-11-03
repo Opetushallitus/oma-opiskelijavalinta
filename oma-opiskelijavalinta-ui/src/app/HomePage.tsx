@@ -6,6 +6,7 @@ import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import type { User } from '@/lib/types';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -16,12 +17,6 @@ const StyledBox = styled(Box)(({ theme }) => ({
 const StyledHeader = styled(OphTypography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
-
-export type User = {
-  kutsumanimi?: string;
-  oppijanumero?: string;
-  sukunimi?: string;
-};
 
 export default function HomePage() {
   const userData = useSuspenseQuery({
