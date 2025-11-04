@@ -3,6 +3,11 @@ host:
   oppija: {{host_oppija}}
   virkailija: {{host_virkailija}}
 
+oma-opiskelijavalinta:
+  cas:
+    username: {{oma_opiskelijavalinta_cas_username}}
+    password: {{oma_opiskelijavalinta_cas_password}}
+
 web:
   url:
     cas: https://{{host_oppija}}/cas-oppija

@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.configuration
 
-
+import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
@@ -35,11 +35,35 @@ class SecurityConfiguration {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
   private final val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
+  
+  @Value("${host.virkailija}")
+  val opintopolku_virkailija_domain: String = null
 
+  @Value("${oma-opiskelijavalinta.cas.username}")
+  val cas_username: String = null
+
+  @Value("${oma-opiskelijavalinta.cas.password}")
+  val cas_password: String = null
+  
   @Bean
   def securityContextRepository(): HttpSessionSecurityContextRepository = {
     val httpSessionSecurityContextRepository = new HttpSessionSecurityContextRepository()
     httpSessionSecurityContextRepository
+  }
+
+  @Bean
+  def createAtaruCasClient(): CasClient = {
+    CasClientBuilder.build(CasConfig.CasConfigBuilder(
+        cas_username,
+        cas_password,
+        s"https://$opintopolku_virkailija_domain/cas",
+        s"https://$opintopolku_virkailija_domain/lomake-editori",
+        "1.2.246.562.10.00000000001.oma-opiskelijavalinta",
+        "1.2.246.562.10.00000000001.oma-opiskelijavalinta",
+        "/auth/cas"
+      ).setJsessionName("ring-session")
+      .setNumberOfRetries(2)
+      .build())
   }
 
   @Bean

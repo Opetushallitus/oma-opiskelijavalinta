@@ -17,7 +17,7 @@ function ApplicationContainer({ application }: { application: Application }) {
 
   return (
     <StyledPaper>
-      <OphTypography variant="h3">{application.hakuOid}</OphTypography>
+      <OphTypography variant="h3">{application.haku}</OphTypography>
       <Typography>{t('hakemukset.hakutoiveet')}</Typography>
       {application.hakukohteet.map((hk) => (
         <Typography variant="h4" key={hk}>
@@ -42,7 +42,7 @@ function ApplicationList() {
     <>
       {applications?.map((application) => (
         <ApplicationContainer
-          key={application.hakuOid}
+          key={application.haku}
           application={application}
         />
       ))}

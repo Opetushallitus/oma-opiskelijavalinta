@@ -1,3 +1,3 @@
 package fi.oph.opiskelijavalinta.model
 
-case class Application(hakuOid: String, hakukohteet: List[String], secret: String)
+case class Application(haku: String, hakukohteet: List[String], secret: String)

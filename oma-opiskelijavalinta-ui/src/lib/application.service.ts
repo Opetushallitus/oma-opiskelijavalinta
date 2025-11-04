@@ -2,7 +2,7 @@ import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
 
 export type Application = {
-  hakuOid: string;
+  haku: string;
   hakukohteet: Array<string>;
 };
 
