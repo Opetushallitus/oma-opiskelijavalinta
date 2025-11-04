@@ -21,7 +21,7 @@ export const SessionProvider = ({
     refetchInterval: 60000, // Pollataan session voimassaoloa 60 sekunnin välein
     staleTime: 0, // Ei cachea
   });
-  console.log('session status in SessionProvider:', session.status);
+
   const [isSessionActive, setIsSessionActive] = useState(
     session.status === 'success',
   );
