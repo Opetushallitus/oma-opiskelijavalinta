@@ -3,7 +3,7 @@ import '@fontsource/open-sans/latin-600.css';
 import '@fontsource/open-sans/latin-700.css';
 import '@/styles/global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { SessionExpiredProvider } from '@/components/SessionExpired';
+import { SessionProvider } from '@/components/Session';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 import { LocalizationProvider } from './LocalizationProvider';
 
@@ -20,12 +20,12 @@ const queryClient = new QueryClient({
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionExpiredProvider>
-      <NuqsAdapter>
-        <QueryClientProvider client={queryClient}>
+    <NuqsAdapter>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider>
           <LocalizationProvider>{children}</LocalizationProvider>
-        </QueryClientProvider>
-      </NuqsAdapter>
-    </SessionExpiredProvider>
+        </SessionProvider>
+      </QueryClientProvider>
+    </NuqsAdapter>
   );
 }

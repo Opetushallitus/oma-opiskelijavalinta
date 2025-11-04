@@ -2,12 +2,22 @@ import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
 import type { User } from '@/lib/types';
 
+export async function getSession() {
+  console.log('Checking session');
+  const config = await getConfiguration();
+  // http-client will redirect to login on 401
+  const response = await client.get(config.routes.yleiset.sessionApiUrl);
+  return response.data;
+}
+
 async function fetchUser() {
   const config = await getConfiguration();
   return await client.get(config.routes.yleiset.userUrl);
 }
 
+// oppija-raamit calls this to get user info
 export async function getUser() {
+  console.log('Fetching user info');
   const response = await fetchUser();
   const user = response.data as User;
   // Return with raamit-compatible name field

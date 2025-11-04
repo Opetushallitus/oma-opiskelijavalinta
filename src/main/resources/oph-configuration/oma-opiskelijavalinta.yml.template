@@ -20,6 +20,8 @@ logging:
 server:
   servlet:
     context-path: /oma-opiskelijavalinta
+    session:
+      timeout: 4h
   forward-headers-strategy: framework
 
 oauth2:
@@ -38,3 +40,6 @@ spring:
     password: {{host_postgresql_omaopiskelijavalinta_app_password}}
   flyway:
     baseline-on-migrate: true
+  session:
+    jdbc:
+        cleanup-cron: 0 * * * * *

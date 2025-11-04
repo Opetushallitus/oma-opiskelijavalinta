@@ -1,6 +1,4 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { isPlainObject } from 'remeda';
-import { useIsSessionExpired } from './components/SessionExpired';
 import { getConfiguration } from '@/configuration';
 
 export function getCookies() {
@@ -21,12 +19,6 @@ class OphCustomError extends Error {
   constructor(message?: string) {
     super(message); // 'Error' breaks prototype chain here
     Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
-  }
-}
-
-export class SessionExpiredError extends OphCustomError {
-  constructor(message = 'Session expired') {
-    super(message);
   }
 }
 
@@ -212,36 +204,3 @@ export const client = {
   delete: <Result = unknown>(url: UrlType, options: RequestInit = {}) =>
     makeRequest<Result>(new Request(url, { method: 'DELETE', ...options })),
 } as const;
-
-export const useApiSuspenseQuery: typeof useSuspenseQuery = (options) => {
-  const { setIsSessionExpired } = useIsSessionExpired();
-
-  const queryResult = useSuspenseQuery({
-    ...options,
-    queryFn: async (context) => {
-      try {
-        const result = await options?.queryFn?.(context);
-        return result;
-      } catch (error) {
-        if (error instanceof SessionExpiredError) {
-          setIsSessionExpired(true);
-
-          // Jos autentikaatio feilasi, mutta data on jo ladattu, palautetaan aiempi data.
-          // Näin voidaan näyttää vanha data UI:ssa kunnes käyttäjä kirjautuu uudelleen.
-          const data = context.client.getQueryData(options.queryKey);
-          if (data) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return data as any;
-          }
-        }
-        throw error;
-      }
-    },
-  });
-
-  if (queryResult.error && !queryResult.isFetching) {
-    throw queryResult.error;
-  }
-
-  return queryResult;
-};
