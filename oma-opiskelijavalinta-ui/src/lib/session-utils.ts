@@ -31,8 +31,5 @@ export async function logout() {
 async function createLogoutUrl() {
   const conf = await getConfiguration();
   const oppijaUrl = conf.routes.yleiset.oppijaUrl;
-  console.log(oppijaUrl);
-  const logoutUrl = `${oppijaUrl}/cas-oppija/logout?service=${encodeURIComponent(oppijaUrl + '/oma-opintopolku')}`;
-  console.log(logoutUrl);
-  return logoutUrl;
+  return `${oppijaUrl}/cas-oppija/logout?service=${encodeURIComponent(oppijaUrl + '/oma-opintopolku')}`;
 }
