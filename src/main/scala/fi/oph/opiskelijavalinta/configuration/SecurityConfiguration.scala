@@ -44,8 +44,8 @@ class SecurityConfiguration {
 
   @Bean
   @Order(2)
-  def casLoginFilterChain(http: HttpSecurity, 
-                          casAuthenticationEntryPoint: CasAuthenticationEntryPoint, 
+  def casLoginFilterChain(http: HttpSecurity,
+                          casAuthenticationEntryPoint: CasAuthenticationEntryPoint,
                           authenticationFilter: CasAuthenticationFilter,
                           sessionMappingStorage: SessionMappingStorage,
                           securityContextRepository: SecurityContextRepository): SecurityFilterChain =
@@ -71,7 +71,7 @@ class SecurityConfiguration {
           "/assets/**",
           "/js/**",
           "/oma-opiskelijavalinta",
-          "/oma-opiskelijavalinta/",
+          "/oma-opiskelijavalinta/"
         ).permitAll()
         .anyRequest
         .fullyAuthenticated)

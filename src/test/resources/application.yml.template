@@ -4,6 +4,10 @@ host:
 logging:
   level:
     root: INFO
+    org:
+      springframework:
+        security:
+          cas: DEBUG
 
 # ssl-konfiguraatio
 server:
@@ -18,12 +22,10 @@ server:
     context-path: /oma-opiskelijavalinta
 
 oauth2:
-  client: unset
-  secret: unset
+  client: PLACEHOLDER
+  secret: PLACEHOLDER
 
 spring:
-  profiles:
-    active: dev
   security:
     oauth2:
       resourceserver:

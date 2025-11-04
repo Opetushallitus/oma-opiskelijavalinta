@@ -8,8 +8,8 @@ Opiskelijan henkilökohtainen palvelu liittyen opiskelijavalintoihin.
 
 Aja juurihakemistossa `./generate_certs.sh` luodaksesi certifikaatit lokaaliin käyttöön.
 
-Luo .gitignoressa oleva `application-dev.yml` tiedosto `test/resources` - kansioon, kopioi sinne samassa kansiossa olevat application.yml arvot.
-Aseta haluamasi testiympäristön muuttujat salaisuuksineen.
+Luo .gitignoressa oleva `application-dev.yml` tiedosto `test/resources` - kansioon, kopioi sinne samassa kansiossa oleva application.yml.template pohjaksi.
+Aseta tarvittavien muuttujien arvot haluamasi testiympäristön salaisuuksista.
 
 #### Käynnistäminen
 
