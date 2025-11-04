@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.Constants
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -23,7 +24,7 @@ class Oauth2Client @Autowired (private val oauth2BearerClient: Oauth2BearerClien
     val request = requestBuilder
       .timeout(Duration.ofSeconds(35))
       .setHeader("Authorization", "Bearer " + bearer)
-      .setHeader("Caller-Id", "1.2.246.562.10.00000000001.oma-opiskelijavalinta")
+      .setHeader("Caller-Id", Constants.CALLER_ID)
       .build
     val client = HttpClient.newBuilder.build
     client.send(request, BodyHandlers.ofString)

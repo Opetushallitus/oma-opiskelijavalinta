@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.configuration
 
+import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
@@ -58,8 +59,8 @@ class SecurityConfiguration {
         cas_password,
         s"https://$opintopolku_virkailija_domain/cas",
         s"https://$opintopolku_virkailija_domain/lomake-editori",
-        "1.2.246.562.10.00000000001.oma-opiskelijavalinta",
-        "1.2.246.562.10.00000000001.oma-opiskelijavalinta",
+        Constants.CALLER_ID,
+        Constants.CALLER_ID,
         "/auth/cas"
       ).setJsessionName("ring-session")
       .setNumberOfRetries(2)
