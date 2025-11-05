@@ -54,7 +54,7 @@ export default function Applications() {
   const { t } = useTranslations();
 
   return (
-    <Box>
+    <Box data-test-id="active-applications">
       <OphTypography variant="h2">
         {t('hakemukset.ajankohtaiset')}
       </OphTypography>
