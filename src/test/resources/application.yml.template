@@ -3,8 +3,8 @@ host:
 
 oma-opiskelijavalinta:
   cas:
-    username: unset
-    password: unset
+    username: PLACEHOLDER
+    password: PLACEHOLDER
 
 logging:
   level:
