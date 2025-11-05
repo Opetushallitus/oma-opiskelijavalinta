@@ -9,8 +9,6 @@ import fi.oph.opiskelijavalinta.model.Application
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.Duration as JavaDuration
@@ -19,8 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-@Profile(Array("!test"))
-@Component
 class AtaruClient @Autowired (ataruCasClient: CasClient) {
 
   @Value("${host.virkailija}")

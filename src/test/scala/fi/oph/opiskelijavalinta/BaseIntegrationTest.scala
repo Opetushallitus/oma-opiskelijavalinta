@@ -6,9 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
+import fi.oph.opiskelijavalinta.clients.AtaruClient
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mockito
 import org.postgresql.ds.PGSimpleDataSource
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +21,8 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.bean.`override`.convention.TestBean
+import org.springframework.test.context.bean.`override`.mockito.{MockReset, MockitoBean}
 import org.springframework.test.util.TestSocketUtils
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.{MockHttpServletRequestBuilder, MockMvcRequestBuilders}
@@ -90,12 +94,18 @@ class BaseIntegrationTest {
 
   @Autowired private val context: WebApplicationContext = null
 
+  @MockitoBean(reset = MockReset.NONE)
+  val ataruClient: AtaruClient = Mockito.mock(classOf[AtaruClient])
+
   var mvc: MockMvc = null
 
-  @BeforeAll def setup(): Unit =
+  @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
     mvc = intermediate.build
+    Mockito.when(ataruClient.getApplications("someValue"))
+      .thenReturn(Right("[{\"haku\": \"haku-1\", \"hakukohteet\": [\"hk-1\", \"hk-2\"], \"secret\": \"secret1\"}]"))
+  }
 
   @AfterAll def teardown(): Unit = {
     postgres.stop()

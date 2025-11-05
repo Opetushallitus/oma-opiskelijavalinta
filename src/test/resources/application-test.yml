@@ -1,6 +1,11 @@
 host:
   virkailija: virkailija.untuvaopintopolku.fi
 
+oma-opiskelijavalinta:
+  cas:
+    username: unset
+    password: unset
+
 logging:
   level:
     root: INFO

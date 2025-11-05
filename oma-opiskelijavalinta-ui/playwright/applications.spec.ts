@@ -12,7 +12,7 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(applications.getByText('haku-1')).toBeVisible();
   await expect(applications.getByText('hk-1')).toBeVisible();
   await expect(applications.getByText('hk-2')).toBeVisible();
-  await expect(applications.getByText('haku-1')).toBeVisible();
+  await expect(applications.getByText('haku-2')).toBeVisible();
   await expect(applications.getByText('hk-3')).toBeVisible();
 });
 
