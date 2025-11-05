@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
 import fi.oph.opiskelijavalinta.model.Application
 import org.asynchttpclient.RequestBuilder
@@ -19,7 +20,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationService @Autowired (ataruCasClient: CasClient, mapper: ObjectMapper = new ObjectMapper()) {
+class ApplicationService @Autowired (ataruClient: AtaruClient, mapper: ObjectMapper = new ObjectMapper()) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -28,44 +29,15 @@ class ApplicationService @Autowired (ataruCasClient: CasClient, mapper: ObjectMa
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
-  @Value("${host.virkailija}")
-  val opintopolku_virkailija_domain: String = null
-
   private val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationService]);
 
   def getApplications(oppijanumero: String): Seq[Application] = {
-    val url = s"https://$opintopolku_virkailija_domain/lomake-editori/api/external/omatsivut/applications/$oppijanumero"
-    fetch(url) match {
+    
+    ataruClient.getApplications(oppijanumero) match {
       case Left(e) =>
         LOG.info(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         Seq.empty
       case Right(o) => mapper.readValue(o, classOf[Seq[Application]])
-    }
-  }
-
-  private def fetch(url: String): Either[Throwable, String] = {
-    val req = new RequestBuilder()
-      .setMethod("GET")
-      .setHeader("Content-Type", "application/json")
-      .setUrl(url)
-      .setRequestTimeout(JavaDuration.ofMillis(5000))
-      .build()
-    LOG.info(url)
-    LOG.info(ataruCasClient.toString)
-    try {
-      val result = asScala(ataruCasClient.execute(req)).map {
-        case r if r.getStatusCode == 200 =>
-          LOG.info("Succesfully fetched applications")
-          Right(r.getResponseBody())
-        case r =>
-          LOG.error(s"Error fetching applications from hakemuspalvelu: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}")
-          Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
-      }
-      Await.result(result, Duration(5, TimeUnit.SECONDS))
-    } catch {
-      case e: Throwable =>
-        LOG.error(s"Error fetching applications from hakemuspalvelu: ${e.getMessage}", e)
-        Left(e)
     }
   }
 }

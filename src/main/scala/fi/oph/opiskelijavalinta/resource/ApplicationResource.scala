@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.resource
 
+import fi.oph.opiskelijavalinta.resource.ApiConstants.APPLICATION_PATH
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.model.Application
 import fi.oph.opiskelijavalinta.service.ApplicationService
@@ -8,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
-@RequestMapping(path = Array("/api/application"))
+@RequestMapping(path = Array(APPLICATION_PATH))
 @RestController
 class ApplicationResource @Autowired (applicationService: ApplicationService) {
 
