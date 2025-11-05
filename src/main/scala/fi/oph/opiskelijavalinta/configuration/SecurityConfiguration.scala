@@ -44,11 +44,12 @@ class SecurityConfiguration {
 
   @Bean
   @Order(2)
-  def casLoginFilterChain(http: HttpSecurity,
-                          casAuthenticationEntryPoint: CasAuthenticationEntryPoint,
-                          authenticationFilter: CasAuthenticationFilter,
-                          sessionMappingStorage: SessionMappingStorage,
-                          securityContextRepository: SecurityContextRepository): SecurityFilterChain =
+  def appSecurityFilterChain(http: HttpSecurity,
+                            casAuthenticationEntryPoint: CasAuthenticationEntryPoint,
+                            authenticationFilter: CasAuthenticationFilter,
+                            sessionMappingStorage: SessionMappingStorage,
+                            securityContextRepository: SecurityContextRepository,
+                            sessionTimeoutFilter: SessionTimeoutFilter): SecurityFilterChain =
     val SWAGGER_WHITELIST = List(
       "/swagger-resources",
       "/swagger-resources/**",
@@ -78,8 +79,9 @@ class SecurityConfiguration {
       .csrf(c => c.disable())
       .cors(Customizer.withDefaults)
       .exceptionHandling(c => c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-      .addFilter(authenticationFilter)
       .addFilterBefore(singleLogoutFilter(sessionMappingStorage), classOf[CasAuthenticationFilter])
+      .addFilterBefore(sessionTimeoutFilter, classOf[CasAuthenticationFilter])
+      .addFilter(authenticationFilter)
       .securityContext(securityContext => securityContext
         .requireExplicitSave(true)
         .securityContextRepository(securityContextRepository))

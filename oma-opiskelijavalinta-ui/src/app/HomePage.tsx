@@ -5,7 +5,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { User } from '@/lib/types';
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -19,7 +19,7 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
-  const userData = useSuspenseQuery({
+  const userData = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });

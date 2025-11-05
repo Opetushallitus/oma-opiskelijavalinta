@@ -20,6 +20,8 @@ server:
     enabled: true
   servlet:
     context-path: /oma-opiskelijavalinta
+    session:
+      timeout: 4h
 
 oauth2:
   client: PLACEHOLDER
@@ -37,6 +39,9 @@ spring:
     password: app
   flyway:
     baseline-on-migrate: true
+  session:
+    jdbc:
+      cleanup-cron: 0 * * * * *
 
 app:
   db:
