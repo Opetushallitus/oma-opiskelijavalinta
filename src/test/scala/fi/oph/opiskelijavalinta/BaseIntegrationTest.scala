@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
-import fi.oph.opiskelijavalinta.BaseIntegraatioTesti.postgresPort
+import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -31,7 +31,7 @@ class OphPostgresContainer(dockerImageName: String) extends PostgreSQLContainer[
 
 case class AuditLogEntry(operation: String, target: Map[String, Any], changes: List[Any])
 
-object BaseIntegraatioTesti {
+object BaseIntegrationTest {
 
   // Vakioidaan portit testien suorituksen ajaksi. Tämä on tarpeen koska koodissa on lazy val -konfiguraatioarvoja jotka
   // eivät resetoidu testien välissä
@@ -46,7 +46,7 @@ object BaseIntegraatioTesti {
 @ActiveProfiles(Array("test"))
 @DirtiesContext
 @TestInstance(Lifecycle.PER_CLASS)
-class BaseIntegraatioTesti {
+class BaseIntegrationTest {
 
   val LOG: Logger = LoggerFactory.getLogger(this.getClass)
 
