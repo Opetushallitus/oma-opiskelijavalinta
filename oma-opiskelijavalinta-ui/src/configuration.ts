@@ -8,14 +8,15 @@ export const localTranslations =
   import.meta.env.VITE_LOCAL_TRANSLATIONS === 'true';
 
 export const getConfiguration = async () => {
-  const backendDomainUrl = import.meta.env.DEV
-    ? 'https://localhost:8555'
-    : 'https://untuvaopintopolku.fi';
+  const backendDomainUrl = isDev ? 'https://localhost:8555' : '';
 
-  // TODO muista tuotannossa kielistetyt osoitteet
-  const OPPIJA_DOMAIN = 'https://untuvaopintopolku.fi';
+  const OPPIJA_DOMAIN = isDev
+    ? 'https://untuvaopintopolku.fi'
+    : document.location.origin;
   const sessionApiUrl = '/oma-opiskelijavalinta/api/session';
-  const VIRKAILIJA_DOMAIN = 'https://virkailija.untuvaopintopolku.fi';
+  const VIRKAILIJA_DOMAIN = isDev
+    ? 'https://virkailija.untuvaopintopolku.fi'
+    : `https://virkailija.${document.location.host}`;
 
   return {
     routes: {
@@ -24,7 +25,6 @@ export const getConfiguration = async () => {
         oppijaUrl: `${OPPIJA_DOMAIN}`,
         sessionApiUrl: sessionApiUrl,
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
-        backend: backendDomainUrl,
         userUrl: `/oma-opiskelijavalinta/api/user`,
       },
     },
