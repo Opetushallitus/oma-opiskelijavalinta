@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.KoutaClient
-import fi.oph.opiskelijavalinta.model.{Application, Haku}
+import fi.oph.opiskelijavalinta.model.{Application, Haku, Hakukohde}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
@@ -31,6 +31,16 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
         LOG.info(s"Failed to fetch haku data for $hakuOid: ${e.getMessage}")
         null
       case Right(o) => mapper.readValue(o, classOf[Haku])
+    }
+  }
+  
+  @Cacheable(value = Array("kouta-hakukohde"), sync = true)
+  def getHakukohde(hakukohdeOid: String): Hakukohde = {
+    koutaClient.getHakukohde(hakukohdeOid) match {
+      case Left(e) =>
+        LOG.info(s"Failed to fetch haku data for $hakukohdeOid: ${e.getMessage}")
+        null
+      case Right(o) => mapper.readValue(o, classOf[Hakukohde])
     }
   }
 

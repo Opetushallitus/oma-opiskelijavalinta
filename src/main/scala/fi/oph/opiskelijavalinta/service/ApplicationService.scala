@@ -44,6 +44,7 @@ class ApplicationService @Autowired (ataruClient: AtaruClient, koutaService: Kou
   
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val haku = koutaService.getHaku(application.haku)
-    ApplicationEnriched(application.oid, haku, application.hakukohteet, application.secret)
+    val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
+    ApplicationEnriched(application.oid, haku, hakukohteet, application.secret)
   }
 }

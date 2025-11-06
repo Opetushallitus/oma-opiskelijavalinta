@@ -29,7 +29,7 @@ class KoutaClient @Autowired (koutaCasClient: CasClient) {
     fetch(url)
   }
   
-  def getHakukohteet(hakukohdeOid: String): Either[Throwable, String] = {
+  def getHakukohde(hakukohdeOid: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/kouta-internal/hakukohde/$hakukohdeOid"
     fetch(url)
   }

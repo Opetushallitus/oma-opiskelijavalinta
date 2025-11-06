@@ -22,9 +22,12 @@ function ApplicationContainer({ application }: { application: Application }) {
       </OphTypography>
       <Typography>{t('hakemukset.hakutoiveet')}</Typography>
       {application.hakukohteet.map((hk) => (
-        <Typography variant="h4" key={hk}>
-          {hk}
-        </Typography>
+        <Box key={hk.oid}>
+          <Typography variant="h4">
+            {translateEntity(hk.jarjestyspaikkaHierarkiaNimi)}
+          </Typography>
+          <Typography variant="body1">{translateEntity(hk.nimi)}</Typography>
+        </Box>
       ))}
     </StyledPaper>
   );
