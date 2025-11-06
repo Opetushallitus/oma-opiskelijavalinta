@@ -17,15 +17,20 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class AtaruClient @Autowired (ataruCasClient: CasClient) {
+class KoutaClient @Autowired (koutaCasClient: CasClient) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[AtaruClient]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaClient]);
 
-  def getApplications(oppijanumero: String): Either[Throwable, String] = {
-    val url = s"https://$opintopolku_virkailija_domain/lomake-editori/api/external/omatsivut/applications/$oppijanumero"
+  def getHaku(hakuOid: String): Either[Throwable, String] = {
+    val url = s"https://$opintopolku_virkailija_domain/kouta-internal/haku/$hakuOid"
+    fetch(url)
+  }
+  
+  def getHakukohteet(hakukohdeOid: String): Either[Throwable, String] = {
+    val url = s"https://$opintopolku_virkailija_domain/kouta-internal/hakukohde/$hakukohdeOid"
     fetch(url)
   }
 
@@ -37,20 +42,19 @@ class AtaruClient @Autowired (ataruCasClient: CasClient) {
       .setRequestTimeout(JavaDuration.ofMillis(5000))
       .build()
     try {
-      val result = asScala(ataruCasClient.execute(req)).map {
+      val result = asScala(koutaCasClient.execute(req)).map {
         case r if r.getStatusCode == 200 =>
-          LOG.debug("Succesfully fetched applications")
+          LOG.info("Succesfully fetched kouta info")
           Right(r.getResponseBody())
         case r =>
-          LOG.error(s"Error fetching applications from hakemuspalvelu: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}")
+          LOG.error(s"Error fetching kouta data: ${r.getStatusCode} ${r.getStatusText} $url ${r.getResponseBody()}")
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
       Await.result(result, Duration(5, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
-        LOG.error(s"Error fetching applications from hakemuspalvelu: ${e.getMessage}", e)
+        LOG.error(s"Error fetching kouta data: ${e.getMessage}", e)
         Left(e)
     }
   }
 }
-

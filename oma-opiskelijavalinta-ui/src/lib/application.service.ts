@@ -1,8 +1,13 @@
 import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
+import type { TranslatedName } from './localization/localization-types';
 
 export type Application = {
-  haku: string;
+  oid: string;
+  haku: {
+    oid: string;
+    nimi: TranslatedName;
+  };
   hakukohteet: Array<string>;
 };
 

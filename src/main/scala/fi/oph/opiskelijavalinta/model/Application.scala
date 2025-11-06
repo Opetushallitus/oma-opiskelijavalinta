@@ -1,3 +1,5 @@
 package fi.oph.opiskelijavalinta.model
 
-case class Application(haku: String, hakukohteet: List[String], secret: String)
+import fi.oph.opiskelijavalinta.model.Haku
+
+case class Application(oid: String, haku: String, hakukohteet: List[String], secret: String)

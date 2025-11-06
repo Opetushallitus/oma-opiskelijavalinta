@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.Application
+import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched}
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
@@ -20,7 +20,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationService @Autowired (ataruClient: AtaruClient, mapper: ObjectMapper = new ObjectMapper()) {
+class ApplicationService @Autowired (ataruClient: AtaruClient, koutaService: KoutaService, mapper: ObjectMapper = new ObjectMapper()) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -31,13 +31,19 @@ class ApplicationService @Autowired (ataruClient: AtaruClient, mapper: ObjectMap
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationService]);
 
-  def getApplications(oppijanumero: String): Seq[Application] = {
-    
+  def getApplications(oppijanumero: String): Seq[ApplicationEnriched] = {
     ataruClient.getApplications(oppijanumero) match {
       case Left(e) =>
         LOG.info(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         Seq.empty
-      case Right(o) => mapper.readValue(o, classOf[Seq[Application]])
+      case Right(o) => 
+        val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
+        apps.map(a => enrichApplication(a))
     }
+  }
+  
+  private def enrichApplication(application: Application): ApplicationEnriched = {
+    val haku = koutaService.getHaku(application.haku)
+    ApplicationEnriched(application.oid, haku, application.hakukohteet, application.secret)
   }
 }

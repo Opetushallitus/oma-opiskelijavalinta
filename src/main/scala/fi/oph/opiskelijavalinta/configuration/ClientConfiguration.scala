@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.configuration
 
-import fi.oph.opiskelijavalinta.clients.AtaruClient
-import org.springframework.beans.factory.annotation.Autowired
+import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient}
+import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.context.annotation.{Bean, Configuration}
 import fi.vm.sade.javautils.nio.cas.CasClient
 
@@ -9,7 +9,12 @@ import fi.vm.sade.javautils.nio.cas.CasClient
 class ClientConfiguration {
 
   @Bean
-  def ataruClient(@Autowired ataruCasClient: CasClient): AtaruClient = {
+  def ataruClient(@Autowired @Qualifier("ataruCasClient") ataruCasClient: CasClient): AtaruClient = {
     new AtaruClient(ataruCasClient)
+  }
+
+  @Bean
+  def koutaClient(@Autowired @Qualifier("koutaCasClient") koutaCasClient: CasClient): KoutaClient = {
+    new KoutaClient(koutaCasClient)
   }
 }

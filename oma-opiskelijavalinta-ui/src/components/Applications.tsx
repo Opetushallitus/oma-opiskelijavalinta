@@ -13,11 +13,13 @@ const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
 }));
 
 function ApplicationContainer({ application }: { application: Application }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
 
   return (
     <StyledPaper>
-      <OphTypography variant="h3">{application.haku}</OphTypography>
+      <OphTypography variant="h3">
+        {translateEntity(application.haku.nimi)}
+      </OphTypography>
       <Typography>{t('hakemukset.hakutoiveet')}</Typography>
       {application.hakukohteet.map((hk) => (
         <Typography variant="h4" key={hk}>
@@ -42,7 +44,7 @@ function ApplicationList() {
     <>
       {applications?.map((application) => (
         <ApplicationContainer
-          key={application.haku}
+          key={`application-${application.oid}}`}
           application={application}
         />
       ))}
