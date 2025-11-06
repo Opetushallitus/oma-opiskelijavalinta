@@ -11,9 +11,14 @@ export const getConfiguration = async () => {
   const backendDomainUrl = isDev ? 'https://localhost:8555' : '';
 
   const sessionApiUrl = '/oma-opiskelijavalinta/api/session';
-  const VIRKAILIJA_DOMAIN = isDev
-    ? 'https://virkailija.untuvaopintopolku.fi'
-    : '';
+
+  let VIRKAILIJA_DOMAIN = '';
+  if (isDev) {
+    VIRKAILIJA_DOMAIN = 'https://virkailija.testiopintopolku.fi';
+  } else if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    VIRKAILIJA_DOMAIN = `https://virkailija.${host}`;
+  }
 
   return {
     routes: {
