@@ -19,7 +19,7 @@
         <scala.version>3.3.3</scala.version>
         <spring.boot.version>3.5.6</spring.boot.version>
         <jackson.version>2.20.0</jackson.version>
-        <java.cas.version>1.2.4-SNAPSHOT</java.cas.version>
+        <java.cas.version>2.0.0-SNAPSHOT</java.cas.version>
         <tomcat.version>10.1.47</tomcat.version>
     </properties>
 
@@ -59,12 +59,12 @@
             <dependency>
                 <groupId>opiskelijavalinnat-utils</groupId>
                 <artifactId>java-cas</artifactId>
-                <version>1.2.4-SNAPSHOT</version>
+                <version>${java.cas.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-cas</artifactId>
-                <version>6.3.4</version>
+                <version>6.5.5</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
@@ -166,6 +166,10 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <groupId>opiskelijavalinnat-utils</groupId>
+            <artifactId>java-cas</artifactId>
+        </dependency>
+        <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>opintopolku-cas-servlet-filter</artifactId>
         </dependency>
@@ -223,6 +227,12 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.20.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

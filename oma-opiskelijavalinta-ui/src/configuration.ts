@@ -27,6 +27,9 @@ export const getConfiguration = async () => {
         backend: backendDomainUrl,
         userUrl: `/oma-opiskelijavalinta/api/user`,
       },
+      hakemukset: {
+        hakemuksetUrl: `/oma-opiskelijavalinta/api/application`,
+      },
     },
   };
 };
