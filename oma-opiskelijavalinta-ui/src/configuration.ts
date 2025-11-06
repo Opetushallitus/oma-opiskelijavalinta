@@ -10,19 +10,15 @@ export const localTranslations =
 export const getConfiguration = async () => {
   const backendDomainUrl = isDev ? 'https://localhost:8555' : '';
 
-  const OPPIJA_DOMAIN = isDev
-    ? 'https://untuvaopintopolku.fi'
-    : document.location.origin;
   const sessionApiUrl = '/oma-opiskelijavalinta/api/session';
   const VIRKAILIJA_DOMAIN = isDev
     ? 'https://virkailija.untuvaopintopolku.fi'
-    : `https://virkailija.${document.location.host}`;
+    : '';
 
   return {
     routes: {
       yleiset: {
         loginApiUrl: `${backendDomainUrl}/oma-opiskelijavalinta/api/login`,
-        oppijaUrl: `${OPPIJA_DOMAIN}`,
         sessionApiUrl: sessionApiUrl,
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
         userUrl: `/oma-opiskelijavalinta/api/user`,

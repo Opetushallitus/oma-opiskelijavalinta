@@ -1,5 +1,5 @@
 import { client } from '@/http-client';
-import { getConfiguration } from '@/configuration';
+import { getConfiguration, isDev } from '@/configuration';
 import type { User } from '@/lib/types';
 
 export async function getSession() {
@@ -38,7 +38,8 @@ export async function logout() {
 }
 
 async function createLogoutUrl() {
-  const conf = await getConfiguration();
-  const oppijaUrl = conf.routes.yleiset.oppijaUrl;
+  const oppijaUrl = isDev
+    ? 'https://untuvaopintopolku.fi'
+    : document.location.origin;
   return `${oppijaUrl}/cas-oppija/logout?service=${encodeURIComponent(oppijaUrl + '/oma-opintopolku')}`;
 }
