@@ -2,6 +2,7 @@ package fi.oph.opiskelijavalinta.clients
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fi.oph.opiskelijavalinta.clients.model.Oauth2Token
+import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.cache.annotation.{CacheConfig, CacheEvict, Cacheable}
 import org.springframework.stereotype.Component
@@ -28,7 +29,7 @@ class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMappe
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[Oauth2BearerClient]);
 
-  @Cacheable(value = Array("oauth2Bearer"), sync = true)
+  @Cacheable(value = Array(CacheConstants.OAUTH2_CACHE_NAME), sync = true)
   @throws[IOException]
   @throws[InterruptedException]
   def getOauth2Bearer: String = {
@@ -49,7 +50,7 @@ class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMappe
     objectMapper.readValue(res.body, classOf[Oauth2Token]).access_token
   }
 
-  @CacheEvict(value = Array("oauth2Bearer"), allEntries = true)
+  @CacheEvict(value = Array(CacheConstants.OAUTH2_CACHE_NAME), allEntries = true)
   def evictOauth2Bearer(): Unit = {
     LOG.info("evicting oauth2 bearer cache")
   }

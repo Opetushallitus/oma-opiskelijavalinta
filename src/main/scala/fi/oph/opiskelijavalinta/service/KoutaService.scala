@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.KoutaClient
+import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import fi.oph.opiskelijavalinta.model.{Application, Haku, Hakukohde}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +24,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
 
-  @Cacheable(value = Array("kouta-haku"), sync = true)
+  @Cacheable(value = Array(CacheConstants.KOUTA_HAKU_CACHE_NAME), sync = true)
   def getHaku(hakuOid: String): Haku = {
 
     koutaClient.getHaku(hakuOid) match {
@@ -34,7 +35,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
     }
   }
   
-  @Cacheable(value = Array("kouta-hakukohde"), sync = true)
+  @Cacheable(value = Array(CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME), sync = true)
   def getHakukohde(hakukohdeOid: String): Hakukohde = {
     koutaClient.getHakukohde(hakukohdeOid) match {
       case Left(e) =>
