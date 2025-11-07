@@ -20,7 +20,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationService @Autowired (ataruClient: AtaruClient, koutaService: KoutaService, mapper: ObjectMapper = new ObjectMapper()) {
+class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, mapper: ObjectMapper = new ObjectMapper()) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -29,7 +29,7 @@ class ApplicationService @Autowired (ataruClient: AtaruClient, koutaService: Kou
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationService]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationsService]);
 
   def getApplications(oppijanumero: String): Seq[ApplicationEnriched] = {
     ataruClient.getApplications(oppijanumero) match {

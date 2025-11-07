@@ -21,7 +21,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
     mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATION_PATH))
+        .get(ApiConstants.APPLICATIONS_PATH))
       .andExpect(status().isUnauthorized)
   }
 
@@ -33,7 +33,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
 
     val result = mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATION_PATH)
+        .get(ApiConstants.APPLICATIONS_PATH)
         .`with`(user(oppijaUser)))
       .andExpect(status().isOk)
       .andReturn()

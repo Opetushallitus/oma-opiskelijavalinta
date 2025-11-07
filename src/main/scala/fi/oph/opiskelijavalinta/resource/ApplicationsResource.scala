@@ -1,17 +1,17 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.resource.ApiConstants.APPLICATION_PATH
+import fi.oph.opiskelijavalinta.resource.ApiConstants.APPLICATIONS_PATH
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched}
-import fi.oph.opiskelijavalinta.service.ApplicationService
+import fi.oph.opiskelijavalinta.service.ApplicationsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
-@RequestMapping(path = Array(APPLICATION_PATH))
+@RequestMapping(path = Array(APPLICATIONS_PATH))
 @RestController
-class ApplicationResource @Autowired (applicationService: ApplicationService) {
+class ApplicationsResource @Autowired(applicationService: ApplicationsService) {
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[Seq[ApplicationEnriched]] = {

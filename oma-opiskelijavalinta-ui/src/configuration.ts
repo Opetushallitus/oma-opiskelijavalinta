@@ -28,7 +28,7 @@ export const getConfiguration = async () => {
         userUrl: `/oma-opiskelijavalinta/api/user`,
       },
       hakemukset: {
-        hakemuksetUrl: `/oma-opiskelijavalinta/api/application`,
+        hakemuksetUrl: `/oma-opiskelijavalinta/api/applications`,
       },
     },
   };

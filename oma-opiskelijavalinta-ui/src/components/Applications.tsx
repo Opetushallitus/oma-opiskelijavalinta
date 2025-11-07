@@ -21,7 +21,7 @@ const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
 
 const HakukohdeContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  columnGap: theme.spacing(1),
+  columnGap: theme.spacing(2),
   borderTop: '1px solid',
   padding: `${theme.spacing(2)} 0`,
   borderColor: ophColors.grey100,
