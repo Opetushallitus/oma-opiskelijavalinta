@@ -1,9 +1,22 @@
 import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
+import type { TranslatedName } from './localization/localization-types';
+
+export type Haku = {
+  oid: string;
+  nimi: TranslatedName;
+};
+
+export type Hakukohde = {
+  oid: string;
+  nimi: TranslatedName;
+  jarjestyspaikkaHierarkiaNimi: TranslatedName;
+};
 
 export type Application = {
-  haku: string;
-  hakukohteet: Array<string>;
+  oid: string;
+  haku: Haku;
+  hakukohteet: Array<Hakukohde>;
 };
 
 async function fetchApplications() {

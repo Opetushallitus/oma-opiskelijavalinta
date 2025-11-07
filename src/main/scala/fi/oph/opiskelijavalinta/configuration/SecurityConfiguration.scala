@@ -52,7 +52,7 @@ class SecurityConfiguration {
     httpSessionSecurityContextRepository
   }
 
-  @Bean
+  @Bean(Array("ataruCasClient"))
   def createAtaruCasClient(): CasClient = {
     CasClientBuilder.build(CasConfig.CasConfigBuilder(
         cas_username,
@@ -65,6 +65,21 @@ class SecurityConfiguration {
       ).setJsessionName("ring-session")
       .setNumberOfRetries(2)
       .build())
+  }
+
+  @Bean(Array("koutaCasClient"))
+  def createKoutaCasClient(): CasClient = {
+    CasClientBuilder.build(CasConfig.CasConfigBuilder(
+      cas_username,
+      cas_password,
+      s"https://$opintopolku_virkailija_domain/cas",
+      s"https://$opintopolku_virkailija_domain/kouta-internal",
+      Constants.CALLER_ID,
+      Constants.CALLER_ID,
+      "/auth/login"
+    ).setJsessionName("session")
+    .setNumberOfRetries(2)
+    .build())
   }
 
   @Bean
