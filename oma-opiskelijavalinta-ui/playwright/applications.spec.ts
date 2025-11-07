@@ -9,11 +9,31 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
   const applications = page.getByTestId('active-applications');
-  await expect(applications.getByText('haku-1')).toBeVisible();
-  await expect(applications.getByText('hk-1')).toBeVisible();
-  await expect(applications.getByText('hk-2')).toBeVisible();
-  await expect(applications.getByText('haku-2')).toBeVisible();
-  await expect(applications.getByText('hk-3')).toBeVisible();
+  await expect(
+    applications.getByText('Hurrikaaniopiston jatkuva haku 2025'),
+  ).toBeVisible();
+  await expect(
+    applications.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    applications.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
+  ).toBeVisible();
+  await expect(
+    applications.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    applications.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
+  ).toBeVisible();
+
+  await expect(
+    applications.getByText('Tsunamiopiston tohtoritutkinnon haku 2025'),
+  ).toBeVisible();
+  await expect(
+    applications.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    applications.getByText('Tsunamiopisto, Merenpohjan kampus'),
+  ).toBeVisible();
 });
 
 test('Näyttää ei hakemuksia testin kun käyttäjällä ei ole hakemuksia', async ({
@@ -29,7 +49,9 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
   await mockApplicationsFetch(page);
   await mockAuthenticatedUser(page);
   await page.goto('');
-  await expect(page.getByText('haku-1')).toBeVisible();
+  await expect(
+    page.getByText('Hurrikaaniopiston jatkuva haku 2025'),
+  ).toBeVisible();
   await expectPageAccessibilityOk(page);
 });
 
@@ -39,16 +61,47 @@ async function mockApplicationsFetch(page: Page, applications?: []) {
       ? applications
       : [
           {
-            haku: 'haku-1',
-            hakukohteet: ['hk-1', 'hk-2'],
+            oid: 'hakemus-oid-1',
+            haku: {
+              oid: 'haku-oid-1',
+              nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
+            },
+            hakukohteet: [
+              {
+                oid: 'hakukohde-oid-1',
+                nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
+                jarjestyspaikkaHierarkiaNimi: {
+                  fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+                },
+              },
+              {
+                oid: 'hakukohde-oid-2',
+                nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
+                jarjestyspaikkaHierarkiaNimi: {
+                  fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+                },
+              },
+            ],
           },
           {
-            haku: 'haku-2',
-            hakukohteet: ['hk-3'],
+            oid: 'hakemus-oid-2',
+            haku: {
+              oid: 'haku-oid-2',
+              nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
+            },
+            hakukohteet: [
+              {
+                oid: 'hakukohde-oid-3',
+                nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
+                jarjestyspaikkaHierarkiaNimi: {
+                  fi: 'Tsunamiopisto, Merenpohjan kampus',
+                },
+              },
+            ],
           },
         ],
   );
-  await page.route('**/api/application', async (route) => {
+  await page.route('**/api/applications', async (route) => {
     await route.fulfill({
       status: 200,
       headers: { 'Content-Type': 'application/json' },

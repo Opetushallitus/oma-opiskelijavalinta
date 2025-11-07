@@ -67,7 +67,7 @@ function ApplicationContainer({ application }: { application: Application }) {
   const { t, translateEntity } = useTranslations();
 
   return (
-    <StyledPaper>
+    <StyledPaper tabIndex={0}>
       <OphTypography variant="h3">
         {translateEntity(application.haku.nimi)}
       </OphTypography>
