@@ -23,8 +23,11 @@ const HakukohdeContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   columnGap: theme.spacing(1),
   borderTop: '1px solid',
-  paddingTop: theme.spacing(2),
+  padding: `${theme.spacing(2)} 0`,
   borderColor: ophColors.grey100,
+  flexWrap: 'wrap',
+  justifyContent: 'flex-start',
+  alignItems: 'flex-start',
 }));
 
 const OrderNumberBox = styled(Box)(({ theme }) => ({
@@ -32,8 +35,8 @@ const OrderNumberBox = styled(Box)(({ theme }) => ({
   backgroundColor: ophColors.grey400,
   borderRadius: '4px',
   fontWeight: 'bold',
-  fontSize: '1.3rem',
-  padding: `${theme.spacing(0.5)} ${theme.spacing(1)}`,
+  fontSize: '1.2rem',
+  padding: `${theme.spacing(0.5)} ${theme.spacing(1.4)}`,
 }));
 
 function HakukohteetContainer({
