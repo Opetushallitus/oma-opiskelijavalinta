@@ -25,23 +25,23 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
 
   @Cacheable(value = Array(CacheConstants.KOUTA_HAKU_CACHE_NAME), sync = true)
-  def getHaku(hakuOid: String): Haku = {
+  def getHaku(hakuOid: String): Option[Haku] = {
 
     koutaClient.getHaku(hakuOid) match {
       case Left(e) =>
         LOG.info(s"Failed to fetch haku data for $hakuOid: ${e.getMessage}")
-        null
-      case Right(o) => mapper.readValue(o, classOf[Haku])
+        Option.empty
+      case Right(o) => Option.apply(mapper.readValue(o, classOf[Haku]))
     }
   }
   
   @Cacheable(value = Array(CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME), sync = true)
-  def getHakukohde(hakukohdeOid: String): Hakukohde = {
+  def getHakukohde(hakukohdeOid: String): Option[Hakukohde] = {
     koutaClient.getHakukohde(hakukohdeOid) match {
       case Left(e) =>
         LOG.info(s"Failed to fetch haku data for $hakukohdeOid: ${e.getMessage}")
-        null
-      case Right(o) => mapper.readValue(o, classOf[Hakukohde])
+        Option.empty
+      case Right(o) => Option.apply(mapper.readValue(o, classOf[Hakukohde]))
     }
   }
 
