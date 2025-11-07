@@ -85,6 +85,7 @@ class SecurityConfiguration {
       .securityContext(securityContext => securityContext
         .requireExplicitSave(true)
         .securityContextRepository(securityContextRepository))
+      .requestCache(cache => cache.disable()) // Don't save original request after login redirect, redirect to the default entry point
       .logout(logout =>
         logout.logoutUrl("/logout")
           .deleteCookies("JSESSIONID"))
