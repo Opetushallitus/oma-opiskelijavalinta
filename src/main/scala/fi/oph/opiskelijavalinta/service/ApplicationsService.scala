@@ -20,7 +20,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, mapper: ObjectMapper = new ObjectMapper()) {
+class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, ohjausparametritService: OhjausparametritService, mapper: ObjectMapper = new ObjectMapper()) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -45,6 +45,7 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val haku = koutaService.getHaku(application.haku)
     val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
-    ApplicationEnriched(application.oid, haku, hakukohteet, application.secret)
+    val ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret)
   }
 }
