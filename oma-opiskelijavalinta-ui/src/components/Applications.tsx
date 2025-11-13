@@ -11,12 +11,14 @@ import {
   type Hakukohde,
 } from '@/lib/application.service';
 import { isEmpty } from 'remeda';
+import { ExternalLinkButton } from './ExternalLink';
 
 const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
   marginTop: theme.spacing(2.5),
   display: 'flex',
+  alignItems: 'start',
   flexDirection: 'column',
-  rowGap: theme.spacing(1),
+  rowGap: theme.spacing(2),
 }));
 
 const HakukohdeContainer = styled(Box)(({ theme }) => ({
@@ -71,6 +73,10 @@ function ApplicationContainer({ application }: { application: Application }) {
       <OphTypography variant="h3">
         {translateEntity(application.haku.nimi)}
       </OphTypography>
+      <ExternalLinkButton
+        href={application.modifyLink ?? ''}
+        name={t('hakemukset.muokkaa')}
+      />
       <Typography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </Typography>

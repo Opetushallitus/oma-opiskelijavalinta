@@ -12,12 +12,15 @@ export const getConfiguration = async () => {
 
   const sessionApiUrl = '/oma-opiskelijavalinta/api/session';
 
+  let HAKIJA_DOMAIN = '';
   let VIRKAILIJA_DOMAIN = '';
   if (isDev) {
-    VIRKAILIJA_DOMAIN = 'https://virkailija.testiopintopolku.fi';
+    VIRKAILIJA_DOMAIN = 'https://virkailija.untuvaopintopolku.fi';
+    HAKIJA_DOMAIN = 'https://untuvaopintopolku.fi';
   } else if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     VIRKAILIJA_DOMAIN = `https://virkailija.${host}`;
+    HAKIJA_DOMAIN = `https://${host};`;
   }
 
   return {
@@ -30,6 +33,7 @@ export const getConfiguration = async () => {
       },
       hakemukset: {
         hakemuksetUrl: `/oma-opiskelijavalinta/api/applications`,
+        muokkausUrl: `${HAKIJA_DOMAIN}/hakemus?modify`,
       },
     },
   };
