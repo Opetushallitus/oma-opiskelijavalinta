@@ -14,13 +14,14 @@ class OnrClient @Autowired (httpClient: Oauth2Client, objectMapper: ObjectMapper
 
   @Value("${host.virkailija}")
   private val virkailijaHost = ""
-  
+
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
-  
+
   private def fetchPersonInfo(url: String): Oppija = {
-    LOG.debug("Haetaan käyttäjän tiedot onr:sta")
+    LOG.info("Haetaan käyttäjän tiedot onr:sta")
     val request = HttpRequest.newBuilder.uri(URI.create(url)).GET
     val response = httpClient.executeRequest(request)
+    LOG.info(response.body())
     objectMapper.readValue(response.body, classOf[Oppija])
   }
 
