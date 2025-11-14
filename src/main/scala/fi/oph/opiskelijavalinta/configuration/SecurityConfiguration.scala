@@ -36,7 +36,7 @@ class SecurityConfiguration {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
   private final val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
-  
+
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
@@ -45,7 +45,7 @@ class SecurityConfiguration {
 
   @Value("${oma-opiskelijavalinta.cas.password}")
   val cas_password: String = null
-  
+
   @Bean
   def securityContextRepository(): HttpSessionSecurityContextRepository = {
     val httpSessionSecurityContextRepository = new HttpSessionSecurityContextRepository()
@@ -80,6 +80,21 @@ class SecurityConfiguration {
     ).setJsessionName("session")
     .setNumberOfRetries(2)
     .build())
+  }
+
+  @Bean(Array("vtsCasClient"))
+  def createVtsCasClient(): CasClient = {
+    CasClientBuilder.build(CasConfig.CasConfigBuilder(
+        cas_username,
+        cas_password,
+        s"https://$opintopolku_virkailija_domain/cas",
+        s"https://$opintopolku_virkailija_domain/valinta-tulos-service",
+        Constants.CALLER_ID,
+        Constants.CALLER_ID,
+        "/auth/login"
+      ).setJsessionName("session")
+      .setNumberOfRetries(2)
+      .build())
   }
 
   @Bean

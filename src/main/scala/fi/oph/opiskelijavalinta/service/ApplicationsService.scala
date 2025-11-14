@@ -20,7 +20,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, mapper: ObjectMapper = new ObjectMapper()) {
+class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, VTSService: VTSService, mapper: ObjectMapper = new ObjectMapper()) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -36,15 +36,16 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
       case Left(e) =>
         LOG.info(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         Seq.empty
-      case Right(o) => 
+      case Right(o) =>
         val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
         apps.map(a => enrichApplication(a))
     }
   }
-  
+
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val haku = koutaService.getHaku(application.haku)
     val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
+    val hakemuksenTulos = VTSService.getValinnanTulokset(application.haku, application.oid)
     ApplicationEnriched(application.oid, haku, hakukohteet, application.secret)
   }
 }
