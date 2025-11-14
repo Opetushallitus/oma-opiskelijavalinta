@@ -1,16 +1,11 @@
 package fi.oph.opiskelijavalinta.clients
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.Application
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.global // TODO thread pool?
 import java.time.Duration as JavaDuration
 import scala.jdk.javaapi.FutureConverters.asScala
 import scala.concurrent.Await
