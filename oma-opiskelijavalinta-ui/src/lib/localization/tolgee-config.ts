@@ -44,7 +44,7 @@ export async function initTolgee(
       .updateDefaults({
         defaultNs: NAMESPACE,
         ns: [NAMESPACE],
-        projectId: 11101,
+        projectId: 11100,
       });
   }
 

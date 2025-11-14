@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient}
-import fi.oph.opiskelijavalinta.model.{Application, Haku, Hakukohde, TranslatedName}
+import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient}
+import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakukohde, Ohjausparametrit, TranslatedName}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -101,6 +101,9 @@ class BaseIntegrationTest {
   @MockitoBean(reset = MockReset.NONE)
   val koutaClient: KoutaClient = Mockito.mock(classOf[KoutaClient])
 
+  @MockitoBean(reset = MockReset.NONE)
+  val ohjausparametritClient: OhjausparametritClient = Mockito.mock(classOf[OhjausparametritClient])
+  
   var mvc: MockMvc = null
 
   @BeforeAll def setup(): Unit = {
@@ -112,6 +115,13 @@ class BaseIntegrationTest {
     Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Haku("haku-oid-1", TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search")))))
     Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-1", TranslatedName("Liukumäen lisensiaatti", "", ""), TranslatedName("Leikkipuisto, Liukumäki", "", "")))))
     Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-2", TranslatedName("Hiekkalaatikon arkeologi", "", ""), TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")))))
+    Mockito.when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Ohjausparametrit(
+      PH_HKP = Some(DateParam(Some(1799657520000L))),
+      PH_IP = None,
+      PH_VTJH = None,
+      PH_EVR = None,
+      PH_OPVP = None
+    ))))
   }
 
   @AfterAll def teardown(): Unit = {

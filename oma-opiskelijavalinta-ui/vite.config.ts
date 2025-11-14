@@ -9,6 +9,8 @@ export default defineConfig(({ command }) => {
   const isDev = !isTest && command === 'serve'; // true when running `react-router dev`
 
   const apiUrl = 'https://localhost:8555';
+  const HAKIJA_DOMAIN =
+    process.env.VITE_HAKIJA_DOMAIN ?? 'https://testiopintopolku.fi';
 
   // Only load certs in dev mode
   const httpsOptions = isDev
@@ -62,24 +64,24 @@ export default defineConfig(({ command }) => {
               },
             },
             '/oppija-raamit/js': {
-              target: 'https://untuvaopintopolku.fi',
+              target: HAKIJA_DOMAIN,
               changeOrigin: true,
               secure: false,
               rewrite: (path) =>
                 path.replace(/^\/oppija-raamit\/js/, '/oppija-raamit/js'),
             },
             '/oppija-raamit/html': {
-              target: 'https://untuvaopintopolku.fi',
+              target: HAKIJA_DOMAIN,
               changeOrigin: true,
               secure: false,
             },
             '/oppija-raamit/img': {
-              target: 'https://untuvaopintopolku.fi',
+              target: HAKIJA_DOMAIN,
               changeOrigin: true,
               secure: false,
             },
             '/cas-oppija/user': {
-              target: 'https://untuvaopintopolku.fi',
+              target: HAKIJA_DOMAIN,
               changeOrigin: true,
               secure: false,
               rewrite: (path) =>
