@@ -10,7 +10,7 @@ import {
   type Application,
   type Hakukohde,
 } from '@/lib/application.service';
-import { isEmpty } from 'remeda';
+import { isEmpty, isTruthy } from 'remeda';
 import { ExternalLinkButton } from './ExternalLink';
 
 const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
@@ -73,10 +73,12 @@ function ApplicationContainer({ application }: { application: Application }) {
       <OphTypography variant="h3">
         {translateEntity(application.haku.nimi)}
       </OphTypography>
-      <ExternalLinkButton
-        href={application.modifyLink ?? ''}
-        name={t('hakemukset.muokkaa')}
-      />
+      {isTruthy(application.modifyLink) && (
+        <ExternalLinkButton
+          href={application.modifyLink ?? ''}
+          name={t('hakemukset.muokkaa')}
+        />
+      )}
       <Typography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </Typography>

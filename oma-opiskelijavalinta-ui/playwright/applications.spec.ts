@@ -66,6 +66,7 @@ async function mockApplicationsFetch(page: Page, applications?: []) {
       : [
           {
             oid: 'hakemus-oid-1',
+            secret: 'secret-1',
             haku: {
               oid: 'haku-oid-1',
               nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
@@ -89,6 +90,7 @@ async function mockApplicationsFetch(page: Page, applications?: []) {
           },
           {
             oid: 'hakemus-oid-2',
+            secret: 'secret-2',
             haku: {
               oid: 'haku-oid-2',
               nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },

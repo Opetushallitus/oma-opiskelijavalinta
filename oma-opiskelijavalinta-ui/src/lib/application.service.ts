@@ -18,7 +18,7 @@ export type Application = {
   haku: Haku;
   hakukohteet: Array<Hakukohde>;
   secret?: string;
-  modifyLink?: string;
+  modifyLink?: string | null;
 };
 
 async function fetchApplications() {
@@ -32,7 +32,9 @@ export async function getApplications(): Promise<Array<Application>> {
   const config = await getConfiguration();
   const response = await fetchApplications();
   return response.data.map((app) => {
-    const modifyLink = `${config.routes.hakemukset.muokkausUrl}=${app.secret}`;
+    const modifyLink = app.secret
+      ? `${config.routes.hakemukset.muokkausUrl}=${app.secret}`
+      : null;
     return {
       ...app,
       modifyLink,
