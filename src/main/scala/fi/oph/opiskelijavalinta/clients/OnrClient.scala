@@ -20,7 +20,6 @@ class OnrClient @Autowired (httpClient: Oauth2Client, objectMapper: ObjectMapper
   private def fetchPersonInfo(url: String): Oppija = {
     val request = HttpRequest.newBuilder.uri(URI.create(url)).GET
     val response = httpClient.executeRequest(request)
-    LOG.info(response.body())
     objectMapper.readValue(response.body, classOf[Oppija])
   }
 

@@ -50,5 +50,9 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertEquals(1799657520000L, app.ohjausparametrit.get.PH_HKP.get.date.get)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.PH_IP)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.PH_EVR)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.PH_OPVP)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.PH_VTJH)
   }
 }
