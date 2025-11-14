@@ -12,6 +12,7 @@ import {
 } from '@/lib/application.service';
 import { isEmpty, isTruthy } from 'remeda';
 import { ExternalLinkButton } from './ExternalLink';
+import { InfoBox } from './InfoBox';
 
 const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
   marginTop: theme.spacing(2.5),
@@ -73,6 +74,15 @@ function ApplicationContainer({ application }: { application: Application }) {
       <OphTypography variant="h3">
         {translateEntity(application.haku.nimi)}
       </OphTypography>
+      <InfoBox>
+        <Typography>Olet lähettänyt hakemuksen.</Typography>
+        <br />
+        <Typography>
+          Voit muokata hakemustasi hakuajan päättymiseen 25.11.2025 klo 15:00
+          (EET) asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen
+          jälkeen.
+        </Typography>
+      </InfoBox>
       {isTruthy(application.modifyLink) && (
         <ExternalLinkButton
           href={application.modifyLink ?? ''}
