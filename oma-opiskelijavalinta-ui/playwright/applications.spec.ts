@@ -34,6 +34,10 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     applications.getByText('Tsunamiopisto, Merenpohjan kampus'),
   ).toBeVisible();
+
+  await expect(
+    applications.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(2);
 });
 
 test('Näyttää ei hakemuksia testin kun käyttäjällä ei ole hakemuksia', async ({
