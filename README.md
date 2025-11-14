@@ -31,7 +31,10 @@ Yksittäisen testiluokan ajaminen submoduulista:
 
 ### Käyttöliittymäkehitys
 
-Käyttöliittymää ajetaan lokaalia taustapalvelua vasten. 
+Käyttöliittymää ajetaan lokaalia taustapalvelua ja testiopintopolkua (oletuksena) vasten.
+
+Voit yliajaa mitä testiympäristöä vasten käyttöliittymää ajetaan laittamalla `.env.development.local` tiedostoon 
+`.env.example` tiedostosta löytyvät muuttujat.
 
 #### Käynnistäminen
 
