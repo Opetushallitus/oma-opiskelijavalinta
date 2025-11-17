@@ -27,7 +27,7 @@
     "@fontsource/open-sans": "^5.2.7",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
-    "@opetushallitus/oph-design-system": "^1.0.0",
+    "@opetushallitus/oph-design-system": "^1.1.0",
     "@react-router/dev": "^7.9.3",
     "@react-router/node": "^7.9.3",
     "@react-router/serve": "^7.9.3",
