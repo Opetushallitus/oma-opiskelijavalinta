@@ -1,6 +1,5 @@
 package fi.oph.opiskelijavalinta
 
-import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.PostgreSQLContainer
 
 import scala.jdk.CollectionConverters.SeqHasAsJava
@@ -8,7 +7,6 @@ import scala.jdk.CollectionConverters.SeqHasAsJava
 object DevApp {
 
   private val postgres: PostgreSQLContainer[_] = new PostgreSQLContainer("postgres:17")
-
   private def startContainers(): Unit =
     postgres.withUsername("app")
     postgres.withPassword("app")

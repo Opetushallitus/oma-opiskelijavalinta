@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.configuration
 
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient}
+import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.context.annotation.{Bean, Configuration}
 import fi.vm.sade.javautils.nio.cas.CasClient

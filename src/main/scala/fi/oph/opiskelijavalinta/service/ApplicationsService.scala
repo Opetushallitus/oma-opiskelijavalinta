@@ -52,7 +52,10 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
         o.PH_VTJH.flatMap(d => d.date),
         o.PH_EVR.flatMap(d => d.date),
         o.PH_OPVP.flatMap(d => d.date)))
-    val hakemuksenTulos = VTSService.getValinnanTulokset(application.haku, application.oid)
-    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret)
+    val hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+      case Some(v) => v.hakutoiveet
+      case _ => List.empty
+    }
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, hakutoiveidenTulokset)
   }
 }

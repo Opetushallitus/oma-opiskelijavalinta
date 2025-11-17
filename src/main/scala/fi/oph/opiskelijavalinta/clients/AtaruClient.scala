@@ -14,10 +14,9 @@ import java.util.concurrent.TimeUnit
 
 class AtaruClient @Autowired (ataruCasClient: CasClient) {
 
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[AtaruClient])
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
-
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[AtaruClient]);
 
   def getApplications(oppijanumero: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/lomake-editori/api/external/omatsivut/applications/$oppijanumero"

@@ -47,7 +47,7 @@ class OhjausparametritClient {
       val futureResponse: Future[Either[Throwable, String]] =
         toScalaFuture(client.executeRequest(req)).map { r =>
           if r.getStatusCode == 200 then
-            LOG.info(s"Successfully fetched ohjausparametrit")
+            LOG.debug(s"Successfully fetched ohjausparametrit")
             Right(r.getResponseBody())
           else
             val msg =

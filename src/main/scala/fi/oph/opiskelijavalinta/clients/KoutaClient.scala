@@ -17,7 +17,7 @@ class KoutaClient @Autowired (koutaCasClient: CasClient) {
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaClient]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaClient])
 
   def getHaku(hakuOid: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/kouta-internal/haku/$hakuOid"
