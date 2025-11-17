@@ -4,7 +4,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { styled } from '@/lib/theme';
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: '#F4FFF4', //use ophColors.green6 when it releases on 1.0.1,
+  backgroundColor: '#F4FFF4', //use ophColors.green6 when it releases on 1.1.0,
   display: 'flex',
   flexDirection: 'row',
   columnGap: theme.spacing(2),

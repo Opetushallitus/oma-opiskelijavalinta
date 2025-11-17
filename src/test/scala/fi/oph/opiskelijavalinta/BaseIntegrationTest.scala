@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient}
-import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakukohde, Ohjausparametrit, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakukohde, OhjausparametritRaw, TranslatedName}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -115,7 +115,7 @@ class BaseIntegrationTest {
     Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Haku("haku-oid-1", TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search")))))
     Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-1", TranslatedName("Liukumäen lisensiaatti", "", ""), TranslatedName("Leikkipuisto, Liukumäki", "", "")))))
     Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-2", TranslatedName("Hiekkalaatikon arkeologi", "", ""), TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")))))
-    Mockito.when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Ohjausparametrit(
+    Mockito.when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(OhjausparametritRaw(
       PH_HKP = Some(DateParam(Some(1799657520000L))),
       PH_IP = None,
       PH_VTJH = None,

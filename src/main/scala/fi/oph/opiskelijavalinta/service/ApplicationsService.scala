@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched}
+import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, Ohjausparametrit}
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
@@ -46,6 +46,7 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
     val haku = koutaService.getHaku(application.haku)
     val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
     val ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
+      .map(o => Ohjausparametrit(o.PH_HKP, o.PH_IP, o.PH_VTJH, o.PH_EVR, o.PH_OPVP))
     ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret)
   }
 }
