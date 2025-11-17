@@ -4,6 +4,7 @@ import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.model.ApplicationEnriched
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.fail
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -54,5 +55,17 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
+    val hakutoive1 = app.hakemuksenTulokset.headOption.getOrElse(
+      fail("No hakemuksenTulokset returned")
+    )
+    Assertions.assertEquals("HYVAKSYTTY", hakutoive1.valintatila.get)
+    Assertions.assertEquals("VASTAANOTETTAVISSA_SITOVASTI", hakutoive1.vastaanotettavuustila.get)
+    Assertions.assertEquals("KESKEN", hakutoive1.vastaanottotila.get)
+    Assertions.assertEquals("2025-12-12T13:00:00Z", hakutoive1.vastaanottoDeadline.get)
+    val hakutoive2 = app.hakemuksenTulokset
+      .find(_.hakukohdeOid.contains("hakukohde-oid-2"))
+      .getOrElse(fail("hakukohde-oid-2 not found"))
+
+    Assertions.assertEquals(Some("KESKEN"), hakutoive2.vastaanottotila)
   }
 }

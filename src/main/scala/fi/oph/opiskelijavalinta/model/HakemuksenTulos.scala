@@ -21,7 +21,7 @@ case class Hakutoive(
                       valintatapajonoOid: Option[String],
                       valintatila: Option[String],
                       vastaanottotila: Option[String],
-                      ilmoittautumistila: Option[IlmoittautumisTila],
+                      ilmoittautumistila: Option[Ilmoittautumistila],
                       vastaanotettavuustila: Option[String],
                       vastaanottoDeadline: Option[String],
                       viimeisinHakemuksenTilanMuutos: Option[String],
@@ -30,16 +30,16 @@ case class Hakutoive(
                       ehdollisestiHyvaksyttavissa: Option[Boolean],
                       tilanKuvaukset: Option[Map[String, String]],
                       showMigriURL: Option[Boolean],
-                      jonokohtaisetTulostiedot: List[JonoKohtainenTulos]   // empty list if missing
+                      jonokohtaisetTulostiedot: List[JonokohtainenTulos]   // empty list if missing
                     )
 
-case class IlmoittautumisTila(
+case class Ilmoittautumistila(
                                ilmoittautumisaika: Option[Map[String, String]],
                                ilmoittautumistila: Option[String],
                                ilmoittauduttavissa: Option[Boolean]
                              )
 
-case class JonoKohtainenTulos(
+case class JonokohtainenTulos(
                                oid: Option[String],
                                nimi: Option[String],
                                valintatila: Option[String],
