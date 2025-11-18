@@ -29,6 +29,7 @@ export const getConfiguration = async () => {
         sessionApiUrl: '/oma-opiskelijavalinta/api/session',
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
         userUrl: `/oma-opiskelijavalinta/api/user`,
+        konfo: `${HAKIJA_DOMAIN}/konfo`,
       },
       hakemukset: {
         hakemuksetUrl: `/oma-opiskelijavalinta/api/applications`,
