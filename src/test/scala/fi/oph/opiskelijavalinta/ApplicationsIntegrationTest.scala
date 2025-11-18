@@ -49,7 +49,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals(1799657520000L, app.ohjausparametrit.get.hakukierrorPaattyy.get.date.get)
+    Assertions.assertEquals(1799657520000L, app.ohjausparametrit.get.hakukierrosPaattyy.get)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)

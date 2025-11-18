@@ -46,7 +46,12 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
     val haku = koutaService.getHaku(application.haku)
     val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
     val ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
-      .map(o => Ohjausparametrit(o.PH_HKP, o.PH_IP, o.PH_VTJH, o.PH_EVR, o.PH_OPVP))
+      .map(o => Ohjausparametrit(
+        o.PH_HKP.flatMap(d => d.date), 
+        o.PH_IP.flatMap(d => d.date), 
+        o.PH_VTJH.flatMap(d => d.date), 
+        o.PH_EVR.flatMap(d => d.date), 
+        o.PH_OPVP.flatMap(d => d.date)))
     ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret)
   }
 }

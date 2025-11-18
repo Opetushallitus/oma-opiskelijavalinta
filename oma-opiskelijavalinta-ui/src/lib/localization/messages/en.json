@@ -1,6 +1,10 @@
 {
   "hakemukset": {
     "ajankohtaiset": "Current applications",
-    "ei-hakemuksia": "No current applications"
+    "ei-hakemuksia": "No current applications",
+    "info": {
+      "lahettanyt": "You have sent an application.",
+      "voit-muokata": "You can modify your application until the end of application period that ends {hakuaikaPaattyy}. You can modify your contact info even after application period has ended."
+    }
   }
 }

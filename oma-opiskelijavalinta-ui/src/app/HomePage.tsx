@@ -1,4 +1,4 @@
-import Applications from '@/components/Applications';
+import Applications from '@/components/applications/Applications';
 import Info from '@/components/Info';
 import { getUser } from '@/lib/session-utils';
 import { useTranslations } from '@/hooks/useTranslations';

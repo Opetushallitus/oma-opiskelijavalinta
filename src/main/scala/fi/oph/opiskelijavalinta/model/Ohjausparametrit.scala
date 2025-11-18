@@ -7,11 +7,11 @@ case class OhjausparametritRaw(PH_HKP: Option[DateParam], // hakukierrosPaattyy
                             PH_OPVP: Option[DateParam], // Opiskelijan paikan vastaanotto päättyy
                            )
 
-case class Ohjausparametrit(hakukierrorPaattyy: Option[DateParam],
-                            ilmoittautuminenPaattyy: Option[DateParam],
-                            valintaTuloksetJulkaistaanHakijoille: Option[DateParam],
-                            ehdollisetValinnatPaattyy: Option[DateParam],
-                            opiskelijanPaikanVastaanottoPaattyy: Option[DateParam],
+case class Ohjausparametrit(hakukierrosPaattyy: Option[Long],
+                            ilmoittautuminenPaattyy: Option[Long],
+                            valintaTuloksetJulkaistaanHakijoille: Option[Long],
+                            ehdollisetValinnatPaattyy: Option[Long],
+                            opiskelijanPaikanVastaanottoPaattyy: Option[Long],
                            )
 
 case class DateParam(date: Option[Long])
