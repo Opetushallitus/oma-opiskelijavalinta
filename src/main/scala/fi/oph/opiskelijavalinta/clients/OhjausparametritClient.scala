@@ -24,7 +24,7 @@ class OhjausparametritClient {
     .setConnectTimeout(java.time.Duration.ofMillis(10 * 1000))
     .build)
 
-  // TODO optimoi myöhemmin http-clientien thread pool
+  // TODO http-clientien thread pool OPHYOS-47
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   def getOhjausparametritForHaku(hakuOid: String): Either[Throwable, String] = {
@@ -47,7 +47,7 @@ class OhjausparametritClient {
       val futureResponse: Future[Either[Throwable, String]] =
         toScalaFuture(client.executeRequest(req)).map { r =>
           if r.getStatusCode == 200 then
-            LOG.info(s"Successfully fetched ohjausparametrit")
+            LOG.debug(s"Successfully fetched ohjausparametrit")
             Right(r.getResponseBody())
           else
             val msg =

@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient}
-import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakukohde, OhjausparametritRaw, TranslatedName}
+import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
+import fi.oph.opiskelijavalinta.model.{Aikataulu, Application, DateParam, HakemuksenTulos, Haku, Hakukohde, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulos, OhjausparametritRaw, TranslatedName}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -103,12 +103,15 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val ohjausparametritClient: OhjausparametritClient = Mockito.mock(classOf[OhjausparametritClient])
-  
+
+  @MockitoBean(reset = MockReset.NONE)
+  val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
   var mvc: MockMvc = null
 
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
+
     mvc = intermediate.build
     Mockito.when(ataruClient.getApplications("someValue"))
       .thenReturn(Right(objectMapper.writeValueAsString(Array(Application("hakemus-oid-1", "haku-oid-1", Set("hakukohde-oid-1", "hakukohde-oid-2"), "secret1")))))

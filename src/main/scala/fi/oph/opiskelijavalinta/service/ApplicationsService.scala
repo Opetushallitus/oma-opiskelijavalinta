@@ -20,7 +20,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, ohjausparametritService: OhjausparametritService, mapper: ObjectMapper = new ObjectMapper()) {
+class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: KoutaService, ohjausparametritService: OhjausparametritService, VTSService: VTSService, mapper: ObjectMapper = new ObjectMapper()) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -36,22 +36,26 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
       case Left(e) =>
         LOG.info(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         Seq.empty
-      case Right(o) => 
+      case Right(o) =>
         val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
         apps.map(a => enrichApplication(a))
     }
   }
-  
+
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val haku = koutaService.getHaku(application.haku)
     val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
     val ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
       .map(o => Ohjausparametrit(
-        o.PH_HKP.flatMap(d => d.date), 
-        o.PH_IP.flatMap(d => d.date), 
-        o.PH_VTJH.flatMap(d => d.date), 
-        o.PH_EVR.flatMap(d => d.date), 
+        o.PH_HKP.flatMap(d => d.date),
+        o.PH_IP.flatMap(d => d.date),
+        o.PH_VTJH.flatMap(d => d.date),
+        o.PH_EVR.flatMap(d => d.date),
         o.PH_OPVP.flatMap(d => d.date)))
-    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret)
+    val hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+      case Some(v) => v.hakutoiveet
+      case _ => List.empty
+    }
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, hakutoiveidenTulokset)
   }
 }
