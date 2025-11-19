@@ -17,13 +17,29 @@ export type Application = {
   oid: string;
   haku: Haku;
   hakukohteet: Array<Hakukohde>;
-  secret?: string;
   modifyLink?: string | null;
+  hakukierrosPaattyy?: number | null;
+};
+
+type Ohjausparametrit = {
+  hakukierrosPaattyy?: number | null;
+  ilmoittautuminenPaattyy?: number | null;
+  valintaTuloksetJulkaistaanHakijoille?: number | null;
+  ehdollisetValinnatPaattyy?: number | null;
+  opiskelijanPaikanVastaanottoPaattyy?: number | null;
+};
+
+type ApplicationResponse = {
+  oid: string;
+  haku: Haku;
+  hakukohteet: Array<Hakukohde>;
+  secret?: string;
+  ohjausparametrit?: Ohjausparametrit;
 };
 
 async function fetchApplications() {
   const config = await getConfiguration();
-  return await client.get<Array<Application>>(
+  return await client.get<Array<ApplicationResponse>>(
     config.routes.hakemukset.hakemuksetUrl,
   );
 }
@@ -35,9 +51,11 @@ export async function getApplications(): Promise<Array<Application>> {
     const modifyLink = app.secret
       ? `${config.routes.hakemukset.muokkausUrl}=${app.secret}`
       : null;
+    const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
     return {
       ...app,
       modifyLink,
+      hakukierrosPaattyy,
     };
   });
 }

@@ -11,6 +11,13 @@
     "ajankohtaiset": "Ajankohtaiset hakemukset",
     "ei-hakemuksia": "Ei hakemuksia",
     "hakutoiveet": "Hakutoiveesi",
-    "muokkaa": "Muokkaa hakemusta"
+    "muokkaa": "Muokkaa hakemusta",
+    "info": {
+      "lahettanyt": "Olet lähettänyt hakemuksen.",
+      "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen."
+    }
+  },
+  "hakutoiveet": {
+    "valintaperusteet": "Näytä valintaperusteet"
   }
 }

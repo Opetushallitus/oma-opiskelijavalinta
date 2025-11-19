@@ -24,6 +24,11 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     applications.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
   ).toBeVisible();
+  await expect(
+    applications.getByText(
+      'Voit muokata hakemustasi hakuajan päättymiseen 18.11.2025 klo 15:06 asti.',
+    ),
+  ).toBeVisible();
 
   await expect(
     applications.getByText('Tsunamiopiston tohtoritutkinnon haku 2025'),
@@ -34,6 +39,15 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     applications.getByText('Tsunamiopisto, Merenpohjan kampus'),
   ).toBeVisible();
+  await expect(
+    applications.getByText(
+      'Voit muokata hakemustasi hakuajan päättymiseen 24.11.2025 klo 10:00 asti.',
+    ),
+  ).toBeVisible();
+
+  await expect(
+    applications.getByRole('link', { name: 'Näytä valintaperusteet' }),
+  ).toHaveCount(3);
 
   await expect(
     applications.getByRole('link', { name: 'Muokkaa hakemusta' }),
@@ -87,6 +101,9 @@ async function mockApplicationsFetch(page: Page, applications?: []) {
                 },
               },
             ],
+            ohjausparametrit: {
+              hakukierrosPaattyy: 1763471212000,
+            },
           },
           {
             oid: 'hakemus-oid-2',
@@ -104,6 +121,9 @@ async function mockApplicationsFetch(page: Page, applications?: []) {
                 },
               },
             ],
+            ohjausparametrit: {
+              hakukierrosPaattyy: 1763971212000,
+            },
           },
         ],
   );

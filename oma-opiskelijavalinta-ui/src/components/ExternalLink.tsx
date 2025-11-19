@@ -1,5 +1,5 @@
 import { OpenInNew } from '@mui/icons-material';
-import { OphButton } from '@opetushallitus/oph-design-system';
+import { OphButton, OphLink } from '@opetushallitus/oph-design-system';
 
 export type ExternalLinkProps = {
   name: string;
@@ -16,5 +16,13 @@ export const ExternalLinkButton = ({ name, href }: ExternalLinkProps) => {
     >
       {name}
     </OphButton>
+  );
+};
+
+export const ExternalLink = ({ name, href }: ExternalLinkProps) => {
+  return (
+    <OphLink href={href} iconVisible={true} target="_blank">
+      {name}
+    </OphLink>
   );
 };

@@ -1,12 +1,12 @@
 import { Box } from '@mui/material';
 import { notLarge, styled } from '@/lib/theme';
 
-const MAX_WIDTH = '1920px';
+const WIDTH = '1041px';
 
 export const PageContent = styled(Box)(({ theme }) => ({
-  maxWidth: MAX_WIDTH,
+  width: WIDTH,
+  maxWidth: '100%',
   margin: 'auto',
-  width: 'fit-content',
   [notLarge(theme)]: {
     maxWidth: '100vw',
     padding: theme.spacing(1, 1),
