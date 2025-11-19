@@ -5,7 +5,7 @@ import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
-import scala.concurrent.ExecutionContext.Implicits.global // TODO thread pool?
+import scala.concurrent.ExecutionContext.Implicits.global // TODO thread pool OPHYOS-47
 import java.time.Duration as JavaDuration
 import scala.jdk.javaapi.FutureConverters.asScala
 import scala.concurrent.Await
@@ -23,7 +23,7 @@ class KoutaClient @Autowired (koutaCasClient: CasClient) {
     val url = s"https://$opintopolku_virkailija_domain/kouta-internal/haku/$hakuOid"
     fetch(url)
   }
-  
+
   def getHakukohde(hakukohdeOid: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/kouta-internal/hakukohde/$hakukohdeOid"
     fetch(url)

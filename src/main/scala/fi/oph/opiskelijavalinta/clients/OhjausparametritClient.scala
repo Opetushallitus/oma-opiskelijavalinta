@@ -24,7 +24,7 @@ class OhjausparametritClient {
     .setConnectTimeout(java.time.Duration.ofMillis(10 * 1000))
     .build)
 
-  // TODO optimoi myöhemmin http-clientien thread pool
+  // TODO http-clientien thread pool OPHYOS-47
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   def getOhjausparametritForHaku(hakuOid: String): Either[Throwable, String] = {
