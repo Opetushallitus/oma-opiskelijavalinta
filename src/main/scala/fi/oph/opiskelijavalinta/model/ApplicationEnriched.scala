@@ -1,4 +1,5 @@
 package fi.oph.opiskelijavalinta.model
 
-case class ApplicationEnriched(oid: String, haku: Option[Haku], hakukohteet: Set[Option[Hakukohde]], ohjausparametrit: Option[Ohjausparametrit], secret: String, hakemuksenTulokset: List[HakutoiveenTulos])
+case class ApplicationEnriched(oid: String, haku: Option[Haku], hakukohteet: Set[Option[Hakukohde]], ohjausparametrit: Option[Ohjausparametrit], secret: String, submitted: String, hakemuksenTulokset: List[HakutoiveenTulos])
 
+case class ApplicationsEnriched(current: Seq[ApplicationEnriched], old: Seq[ApplicationEnriched])
