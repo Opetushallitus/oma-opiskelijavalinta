@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, Ohjausparametrit}
+import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, HakemuksenTulos, Haku, Hakukohde, Ohjausparametrit}
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
@@ -50,19 +50,25 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
 
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val now = new Date()
-    val haku = koutaService.getHaku(application.haku)
-    val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
-    val ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
-      .map(o => Ohjausparametrit(
-        o.PH_HKP.flatMap(d => d.date),
-        o.PH_IP.flatMap(d => d.date),
-        o.PH_VTJH.flatMap(d => d.date),
-        o.PH_EVR.flatMap(d => d.date),
-        o.PH_OPVP.flatMap(d => d.date)))
-    val hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
-      case Some(v) => v.hakutoiveet
-      case _ => List.empty
+    var haku: Option[Haku] = Option.empty
+    var hakukohteet: Set[Option[Hakukohde]] = Set.empty
+    var ohjausparametrit: Option[Ohjausparametrit] = Option.empty
+    var hakutoiveidenTulokset: List[HakemuksenTulos] = List.empty
+    if (application.haku != null) {
+      haku = koutaService.getHaku(application.haku)
+      hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
+      ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
+        .map(o => Ohjausparametrit(
+          o.PH_HKP.flatMap(d => d.date),
+          o.PH_IP.flatMap(d => d.date),
+          o.PH_VTJH.flatMap(d => d.date),
+          o.PH_EVR.flatMap(d => d.date),
+          o.PH_OPVP.flatMap(d => d.date)))
+      hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+        case Some(v) => v.hakutoiveet
+        case _ => List.empty
+      }
     }
-    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted, hakutoiveidenTulokset)
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted)
   }
 }
