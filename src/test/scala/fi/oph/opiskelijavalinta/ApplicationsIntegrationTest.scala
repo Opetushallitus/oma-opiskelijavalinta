@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta
 
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
-import fi.oph.opiskelijavalinta.model.{Aikataulu, ApplicationEnriched, HakemuksenTulos}
+import fi.oph.opiskelijavalinta.model.{Aikataulu, ApplicationEnriched, ApplicationsEnriched, HakemuksenTulos}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData._
 import org.junit.jupiter.api.*
@@ -50,22 +50,23 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications =  objectMapper.readValue(result.getResponse.getContentAsString, classOf[Array[ApplicationEnriched]])
-    Assertions.assertEquals(1, applications.length)
-    val app = applications(0)
+    val applications =  objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
+    Assertions.assertEquals(1, applications.old.length)
+    Assertions.assertEquals(0, applications.current.length)
+    val app = applications.old.head
     Assertions.assertEquals("hakemus-oid-1", app.oid)
     Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
     Assertions.assertEquals("Playground search", app.haku.get.nimi.en)
     Assertions.assertEquals("Samma på svenska", app.haku.get.nimi.sv)
     val hakukohteet = app.hakukohteet.map(a => a.get).toSeq
-    Assertions.assertEquals("hakukohde-oid-1", hakukohteet(0).oid)
-    Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet(0).nimi.fi)
-    Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet(0).jarjestyspaikkaHierarkiaNimi.fi)
+    Assertions.assertEquals("hakukohde-oid-1", hakukohteet.head.oid)
+    Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet.head.nimi.fi)
+    Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet.head.jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals(1799657520000L, app.ohjausparametrit.get.hakukierrosPaattyy.get)
+    Assertions.assertEquals(1599657520000L, app.ohjausparametrit.get.hakukierrosPaattyy.get)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
@@ -90,8 +91,8 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andReturn()
 
     val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[Array[ApplicationEnriched]])
-    Assertions.assertEquals(1, applications.length)
-    val app = applications(0)
+    Assertions.assertEquals(1, applications.old.length)
+    val app = applications.old(0)
     Assertions.assertEquals("hakemus-oid-1", app.oid)
     Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
@@ -104,7 +105,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals(1799657520000L, app.ohjausparametrit.get.hakukierrosPaattyy.get)
+    Assertions.assertEquals(1599657520000L, app.ohjausparametrit.get.hakukierrosPaattyy.get)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)

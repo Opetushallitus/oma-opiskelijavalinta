@@ -15,7 +15,7 @@ function ApplicationList() {
     queryFn: getApplications,
   });
 
-  return isEmpty(applications) ? (
+  return isEmpty(applications.current) ? (
     <OphTypography>{t('hakemukset.ei-hakemuksia')}</OphTypography>
   ) : (
     <>

@@ -41,10 +41,10 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
       case Right(o) => 
         val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
         val enriched = apps.map(a => enrichApplication(a))
-        val now = new Date()
+        val now = System.currentTimeMillis()
         ApplicationsEnriched(
-          enriched.filter(a => new Date(a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)).after(now)),
-          enriched.filter(a => !new Date(a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)).after(now)))
+          enriched.filter(a => now < a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)),
+          enriched.filter(a => now >= a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)))
     }
   }
 
