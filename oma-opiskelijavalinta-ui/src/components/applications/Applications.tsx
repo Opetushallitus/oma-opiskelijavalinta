@@ -15,11 +15,11 @@ function ApplicationList() {
     queryFn: getApplications,
   });
 
-  return isEmpty(applications) ? (
+  return isEmpty(applications.current) ? (
     <OphTypography>{t('hakemukset.ei-hakemuksia')}</OphTypography>
   ) : (
     <>
-      {applications?.map((application) => (
+      {applications?.current.map((application) => (
         <ApplicationContainer
           key={`application-${application.oid}}`}
           application={application}

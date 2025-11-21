@@ -6,14 +6,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, Ohjausparametrit}
+import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, Haku, HakuEnriched, Hakukohde, HakutoiveenTulos, Ohjausparametrit}
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.stereotype.Service
 
+import java.text.DateFormat
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.Duration as JavaDuration
+import java.util.Date
 import scala.jdk.javaapi.FutureConverters.asScala
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -31,31 +33,42 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationsService]);
 
-  def getApplications(oppijanumero: String): Seq[ApplicationEnriched] = {
+  def getApplications(oppijanumero: String): ApplicationsEnriched = {
     ataruClient.getApplications(oppijanumero) match {
       case Left(e) =>
-        LOG.info(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-        Seq.empty
-      case Right(o) =>
+        LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+        throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+      case Right(o) => 
         val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
-        apps.map(a => enrichApplication(a))
+        val enriched = apps.map(a => enrichApplication(a))
+        val now = System.currentTimeMillis()
+        ApplicationsEnriched(
+          enriched.filter(a => now < a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)),
+          enriched.filter(a => now >= a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)))
     }
   }
 
   private def enrichApplication(application: Application): ApplicationEnriched = {
-    val haku = koutaService.getHaku(application.haku)
-    val hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
-    val ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
-      .map(o => Ohjausparametrit(
-        o.PH_HKP.flatMap(d => d.date),
-        o.PH_IP.flatMap(d => d.date),
-        o.PH_VTJH.flatMap(d => d.date),
-        o.PH_EVR.flatMap(d => d.date),
-        o.PH_OPVP.flatMap(d => d.date)))
-    val hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
-      case Some(v) => v.hakutoiveet
-      case _ => List.empty
+    val now = new Date()
+    var haku: Option[HakuEnriched] = Option.empty
+    var hakukohteet: Set[Option[Hakukohde]] = Set.empty
+    var ohjausparametrit: Option[Ohjausparametrit] = Option.empty
+    var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
+    if (application.haku != null) {
+      haku = koutaService.getHaku(application.haku, application.submitted)
+      hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
+      ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
+        .map(o => Ohjausparametrit(
+          o.PH_HKP.flatMap(d => d.date),
+          o.PH_IP.flatMap(d => d.date),
+          o.PH_VTJH.flatMap(d => d.date),
+          o.PH_EVR.flatMap(d => d.date),
+          o.PH_OPVP.flatMap(d => d.date)))
+      hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+        case Some(v) => v.hakutoiveet
+        case _ => List.empty
+      }
     }
-    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, hakutoiveidenTulokset)
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted, hakutoiveidenTulokset)
   }
 }

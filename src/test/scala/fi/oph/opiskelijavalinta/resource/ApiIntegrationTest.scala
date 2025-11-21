@@ -1,5 +1,6 @@
-package fi.oph.opiskelijavalinta
+package fi.oph.opiskelijavalinta.resource
 
+import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import org.junit.jupiter.api.*

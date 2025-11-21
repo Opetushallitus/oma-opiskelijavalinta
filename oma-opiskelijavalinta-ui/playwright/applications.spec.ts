@@ -9,39 +9,49 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
   const applications = page.getByTestId('active-applications');
+  const app1 = applications.first();
   await expect(
-    applications.getByText('Hurrikaaniopiston jatkuva haku 2025'),
+    app1.getByText('Hurrikaaniopiston jatkuva haku 2025'),
   ).toBeVisible();
   await expect(
-    applications.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+    app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
   ).toBeVisible();
   await expect(
-    applications.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
+    app1.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
   ).toBeVisible();
   await expect(
-    applications.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
+    app1.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
   ).toBeVisible();
   await expect(
-    applications.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
+    app1.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
   ).toBeVisible();
   await expect(
-    applications.getByText(
-      'Voit muokata hakemustasi hakuajan päättymiseen 18.11.2025 klo 15:06 asti.',
+    app1.getByText(
+      'Voit muokata hakemustasi hakuajan päättymiseen 19.10.2025 klo 13:00 asti.',
     ),
   ).toBeVisible();
+  await expect(
+    applications.getByText('Hakuaika päättyy 19.10.2025 klo 13:00.'),
+  ).toBeVisible();
 
+  const app2 = applications.last();
   await expect(
-    applications.getByText('Tsunamiopiston tohtoritutkinnon haku 2025'),
+    app2.getByText('Tsunamiopiston tohtoritutkinnon haku 2025'),
   ).toBeVisible();
   await expect(
-    applications.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+    app2.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
   await expect(
-    applications.getByText('Tsunamiopisto, Merenpohjan kampus'),
+    app2.getByText('Tsunamiopisto, Merenpohjan kampus'),
   ).toBeVisible();
   await expect(
-    applications.getByText(
-      'Voit muokata hakemustasi hakuajan päättymiseen 24.11.2025 klo 10:00 asti.',
+    app2.getByText(
+      'Voit muokata hakemustasi hakuajan päättymiseen 19.6.2025 klo 09:00 asti.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app2.getByText(
+      'Opiskelijavalinta on kesken. Hakuaika päättyi 19.6.2025 klo 09:00.',
     ),
   ).toBeVisible();
 
@@ -57,7 +67,7 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
 test('Näyttää ei hakemuksia testin kun käyttäjällä ei ole hakemuksia', async ({
   page,
 }) => {
-  await mockApplicationsFetch(page, []);
+  await mockApplicationsFetch(page, { current: [], old: [] });
   await mockAuthenticatedUser(page);
   await page.goto('');
   await expect(page.getByText('Ei hakemuksia')).toBeVisible();
@@ -73,59 +83,71 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
   await expectPageAccessibilityOk(page);
 });
 
-async function mockApplicationsFetch(page: Page, applications?: []) {
+async function mockApplicationsFetch(
+  page: Page,
+  applications?: { current: []; old: [] },
+) {
   const applicationsToReturn = JSON.stringify(
     applications
       ? applications
-      : [
-          {
-            oid: 'hakemus-oid-1',
-            secret: 'secret-1',
-            haku: {
-              oid: 'haku-oid-1',
-              nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
-            },
-            hakukohteet: [
-              {
-                oid: 'hakukohde-oid-1',
-                nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
-                jarjestyspaikkaHierarkiaNimi: {
-                  fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-                },
+      : {
+          current: [
+            {
+              oid: 'hakemus-oid-2',
+              secret: 'secret-2',
+              haku: {
+                oid: 'haku-oid-2',
+                nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
+                hakuaikaKaynnissa: false,
+                viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
               },
-              {
-                oid: 'hakukohde-oid-2',
-                nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
-                jarjestyspaikkaHierarkiaNimi: {
-                  fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+              submitted: '2025-06-18T19:00:00',
+              hakukohteet: [
+                {
+                  oid: 'hakukohde-oid-3',
+                  nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
+                  jarjestyspaikkaHierarkiaNimi: {
+                    fi: 'Tsunamiopisto, Merenpohjan kampus',
+                  },
                 },
+              ],
+              ohjausparametrit: {
+                hakukierrosPaattyy: 1763971212000,
               },
-            ],
-            ohjausparametrit: {
-              hakukierrosPaattyy: 1763471212000,
             },
-          },
-          {
-            oid: 'hakemus-oid-2',
-            secret: 'secret-2',
-            haku: {
-              oid: 'haku-oid-2',
-              nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
-            },
-            hakukohteet: [
-              {
-                oid: 'hakukohde-oid-3',
-                nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
-                jarjestyspaikkaHierarkiaNimi: {
-                  fi: 'Tsunamiopisto, Merenpohjan kampus',
+            {
+              oid: 'hakemus-oid-1',
+              secret: 'secret-1',
+              haku: {
+                oid: 'haku-oid-1',
+                nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
+                hakuaikaKaynnissa: true,
+                viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
+              },
+              submitted: '2025-10-18T16:00:00',
+              hakukohteet: [
+                {
+                  oid: 'hakukohde-oid-1',
+                  nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
+                  jarjestyspaikkaHierarkiaNimi: {
+                    fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+                  },
                 },
+                {
+                  oid: 'hakukohde-oid-2',
+                  nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
+                  jarjestyspaikkaHierarkiaNimi: {
+                    fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+                  },
+                },
+              ],
+              ohjausparametrit: {
+                hakukierrosPaattyy: 1763471212000,
               },
-            ],
-            ohjausparametrit: {
-              hakukierrosPaattyy: 1763971212000,
             },
-          },
-        ],
+          ],
+          old: [],
+        },
   );
   await page.route('**/api/applications', async (route) => {
     await route.fulfill({
