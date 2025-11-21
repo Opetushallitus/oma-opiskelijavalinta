@@ -5,6 +5,8 @@ import type { TranslatedName } from './localization/localization-types';
 export type Haku = {
   oid: string;
   nimi: TranslatedName;
+  hakuaikaKaynnissa: boolean;
+  viimeisinPaattynytHakuAika: string;
 };
 
 export type Hakukohde = {
@@ -15,10 +17,11 @@ export type Hakukohde = {
 
 export type Application = {
   oid: string;
-  haku: Haku;
-  hakukohteet: Array<Hakukohde>;
+  haku?: Haku | null;
+  hakukohteet?: Array<Hakukohde>;
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
+  submitted: number;
 };
 
 export type Applications = {
@@ -40,6 +43,7 @@ type ApplicationResponse = {
   hakukohteet: Array<Hakukohde>;
   secret?: string;
   ohjausparametrit?: Ohjausparametrit;
+  submitted: string;
 };
 
 type ApplicationsResponse = {
@@ -64,6 +68,7 @@ function convertToApplication(
     ...app,
     modifyLink,
     hakukierrosPaattyy,
+    submitted: new Date(app.submitted).getTime(),
   };
 }
 
@@ -71,11 +76,11 @@ export async function getApplications(): Promise<Applications> {
   const config = await getConfiguration();
   const response = await fetchApplications();
   const muokkausUrl = config.routes.hakemukset.muokkausUrl;
-  const current = response.data.current.map((app) =>
-    convertToApplication(app, muokkausUrl),
-  );
-  const old = response.data.old.map((app) =>
-    convertToApplication(app, muokkausUrl),
-  );
+  const current = response.data.current
+    .map((app) => convertToApplication(app, muokkausUrl))
+    .sort((a, b) => a.submitted - b.submitted);
+  const old = response.data.old
+    .map((app) => convertToApplication(app, muokkausUrl))
+    .sort((a, b) => a.submitted - b.submitted);
   return { current, old };
 }

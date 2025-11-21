@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, HakemuksenTulos, Haku, Hakukohde, Ohjausparametrit}
+import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, HakemuksenTulos, Haku, HakuEnriched, Hakukohde, Ohjausparametrit}
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
@@ -50,12 +50,12 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
 
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val now = new Date()
-    var haku: Option[Haku] = Option.empty
+    var haku: Option[HakuEnriched] = Option.empty
     var hakukohteet: Set[Option[Hakukohde]] = Set.empty
     var ohjausparametrit: Option[Ohjausparametrit] = Option.empty
     var hakutoiveidenTulokset: List[HakemuksenTulos] = List.empty
     if (application.haku != null) {
-      haku = koutaService.getHaku(application.haku)
+      haku = koutaService.getHaku(application.haku, application.submitted)
       hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
       ohjausparametrit = ohjausparametritService.getOhjausparametritForHaku(application.haku)
         .map(o => Ohjausparametrit(

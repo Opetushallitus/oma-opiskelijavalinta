@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
-import fi.oph.opiskelijavalinta.model.{Aikataulu, Application, DateParam, HakemuksenTulos, Haku, Hakukohde, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulos, OhjausparametritRaw, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakuaika, Hakukohde, OhjausparametritRaw, TranslatedName}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -115,7 +115,7 @@ class BaseIntegrationTest {
     mvc = intermediate.build
     Mockito.when(ataruClient.getApplications("someValue"))
       .thenReturn(Right(objectMapper.writeValueAsString(Array(Application("hakemus-oid-1", "haku-oid-1", Set("hakukohde-oid-1", "hakukohde-oid-2"), "secret1", "2025-11-19T09:32:01.886Z")))))
-    Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Haku("haku-oid-1", TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search")))))
+    Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Haku("haku-oid-1", TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"), Seq(Hakuaika("2024-11-19T09:32:01.886Z", "2024-11-29T09:32:01.886Z"))))))
     Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-1", TranslatedName("Liukumäen lisensiaatti", "", ""), TranslatedName("Leikkipuisto, Liukumäki", "", "")))))
     Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-2", TranslatedName("Hiekkalaatikon arkeologi", "", ""), TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")))))
     Mockito.when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(OhjausparametritRaw(
