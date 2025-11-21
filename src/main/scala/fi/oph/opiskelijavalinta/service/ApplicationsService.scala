@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
-import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, HakemuksenTulos, Haku, HakuEnriched, Hakukohde, Ohjausparametrit}
+import fi.oph.opiskelijavalinta.model.{Application, ApplicationEnriched, ApplicationsEnriched, Haku, HakuEnriched, Hakukohde, HakutoiveenTulos, Ohjausparametrit}
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
@@ -53,7 +53,7 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
     var haku: Option[HakuEnriched] = Option.empty
     var hakukohteet: Set[Option[Hakukohde]] = Set.empty
     var ohjausparametrit: Option[Ohjausparametrit] = Option.empty
-    var hakutoiveidenTulokset: List[HakemuksenTulos] = List.empty
+    var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
     if (application.haku != null) {
       haku = koutaService.getHaku(application.haku, application.submitted)
       hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
@@ -69,6 +69,6 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
         case _ => List.empty
       }
     }
-    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted)
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted, hakutoiveidenTulokset)
   }
 }

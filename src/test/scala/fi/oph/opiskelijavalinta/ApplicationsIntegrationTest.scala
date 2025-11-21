@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta
 
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
-import fi.oph.opiskelijavalinta.model.{Aikataulu, ApplicationEnriched, ApplicationsEnriched, HakemuksenTulos}
+import fi.oph.opiskelijavalinta.model.{Aikataulu, ApplicationsEnriched, HakemuksenTulos}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData._
 import org.junit.jupiter.api.*
@@ -90,7 +90,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[Array[ApplicationEnriched]])
+    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.old.length)
     val app = applications.old(0)
     Assertions.assertEquals("hakemus-oid-1", app.oid)
