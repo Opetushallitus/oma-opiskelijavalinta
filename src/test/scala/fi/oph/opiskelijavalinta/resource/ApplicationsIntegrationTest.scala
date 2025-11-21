@@ -1,9 +1,11 @@
-package fi.oph.opiskelijavalinta
+package fi.oph.opiskelijavalinta.resource
 
+import fi.oph.opiskelijavalinta.BaseIntegrationTest
+import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
+import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
 import fi.oph.opiskelijavalinta.model.{Aikataulu, ApplicationsEnriched, HakemuksenTulos}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.oph.opiskelijavalinta.mockdata.VTSMockData._
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito

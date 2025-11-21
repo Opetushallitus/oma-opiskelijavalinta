@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
+import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
 import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakuaika, Hakukohde, OhjausparametritRaw, TranslatedName}
 import org.junit.jupiter.api.*
@@ -147,16 +148,6 @@ class BaseIntegrationTest {
   @BeforeEach def beforeEach(output: CapturedOutput): Unit =
     capturedOutput = output
     outputLength = output.length()
-
-  val objectMapper: ObjectMapper =
-    val mapper = new ObjectMapper()
-    mapper.registerModule(DefaultScalaModule)
-    mapper.registerModule(new JavaTimeModule())
-    mapper.registerModule(new Jdk8Module()) // tämä on java.util.Optional -kenttiä varten
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-    mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
-    mapper
 
   def jsonPostString(path: String, body: String): MockHttpServletRequestBuilder =
     MockMvcRequestBuilders
