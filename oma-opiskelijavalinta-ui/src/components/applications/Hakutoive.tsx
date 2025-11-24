@@ -40,9 +40,11 @@ function formValintaperusteetHref(baseHref: string, hakukohdeOid: string) {
 export function Hakutoive({
   hakukohde,
   prioriteetti,
+  pastApplication = false,
 }: {
   hakukohde: Hakukohde;
   prioriteetti?: number;
+  pastApplication?: boolean;
 }) {
   const config = useConfig();
   const { translateEntity, t } = useTranslations();
@@ -62,12 +64,14 @@ export function Hakutoive({
         <OphTypography variant="body1">
           {translateEntity(hakukohde.nimi)}
         </OphTypography>
-        <ValintaperusteetLinkContainer>
-          <ExternalLink
-            name={t('hakutoiveet.valintaperusteet')}
-            href={valintaperusteetHref}
-          />
-        </ValintaperusteetLinkContainer>
+        {!pastApplication && (
+          <ValintaperusteetLinkContainer>
+            <ExternalLink
+              name={t('hakutoiveet.valintaperusteet')}
+              href={valintaperusteetHref}
+            />
+          </ValintaperusteetLinkContainer>
+        )}
       </Box>
     </HakutoiveContainer>
   );
