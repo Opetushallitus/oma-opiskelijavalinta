@@ -1,15 +1,16 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { type Application } from '@/lib/application.service';
+import { type Application, type Haku } from '@/lib/application.service';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
+import { isTruthy } from 'remeda';
 
-export function ApplicationInfo({ application }: { application: Application }) {
+function HakuMuokkausInfo({ haku }: { haku: Haku }) {
   const { t, getLanguage } = useTranslations();
 
   const lang = getLanguage();
   const hakuaikaPaattyy = toFormattedDateTimeStringWithLocale(
-    application.hakukierrosPaattyy,
+    haku.viimeisinPaattynytHakuAika, //Tämä saattaa muuttua riippuen OPHYOS-49:n toteutuksesta
     lang,
   );
 
@@ -22,4 +23,10 @@ export function ApplicationInfo({ application }: { application: Application }) {
       </OphTypography>
     </InfoBox>
   );
+}
+
+export function ApplicationInfo({ application }: { application: Application }) {
+  return isTruthy(application.haku) ? (
+    <HakuMuokkausInfo haku={application.haku} />
+  ) : null;
 }

@@ -15,6 +15,10 @@
     "info": {
       "lahettanyt": "Olet lähettänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen."
+    },
+    "tilankuvaukset": {
+      "hakuaika-kesken": "Hakuaika päättyy {hakuaikaPaattyy}.",
+      "valinnat-kesken": "Opiskelijavalinta on kesken. Hakuaika päättyi {hakuaikaPaattyy}."
     }
   },
   "hakutoiveet": {
