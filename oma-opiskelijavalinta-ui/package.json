@@ -7,9 +7,9 @@
     "prepare": "cd .. && husky",
     "dev": "touch .env.development.local && react-router dev --port 3777 --host",
     "build": "react-router build",
-    "dev:test": "VITE_TEST=true npm run dev",
-    "build:test": "VITE_TEST=true npm run build",
-    "start": "npx tsx test-server.ts",
+    "dev:test": "VITE_TEST=true pnpm run dev",
+    "build:test": "VITE_TEST=true pnpm run build",
+    "start": "pnpm tsx test-server.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "prettier": "prettier -u -c *",
@@ -17,8 +17,8 @@
     "test": "vitest",
     "typecheck": "react-router typegen && tsc",
     "test-playwright-docker": "./scripts/run-playwright-tests-in-docker.sh",
-    "start-and-test-playwright-docker": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test start http://localhost:3777 'npm run test-playwright-docker -- $PLAYWRIGHT_ARGS'",
-    "build-and-copy": "npm run build && ./scripts/copy-ui-bundle-to-backend.sh"
+    "start-and-test-playwright": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'pnpm start' http://localhost:3777 'pnpm playwright test'",
+    "build-and-copy": "pnpm run build && ./scripts/copy-ui-bundle-to-backend.sh"
   },
   "dependencies": {
     "@date-fns/tz": "^1.4.1",
@@ -26,8 +26,9 @@
     "@emotion/styled": "^11.14.1",
     "@eslint/js": "^9.37.0",
     "@fontsource/open-sans": "^5.2.7",
-    "@mui/icons-material": "^7.3.4",
-    "@mui/material": "^7.3.4",
+    "@mui/icons-material": "^7.3.5",
+    "@mui/material": "^7.3.5",
+    "@mui/system": "^7.3.5",
     "@opetushallitus/oph-design-system": "^1.1.0",
     "@react-router/dev": "^7.9.3",
     "@react-router/node": "^7.9.3",
@@ -75,5 +76,11 @@
     "vite": "^7.1.9",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
-  }
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm"
+    }
+  },
+  "packageManager": "pnpm@10.23.0"
 }

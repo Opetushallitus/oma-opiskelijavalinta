@@ -1,1 +1,1 @@
-cd oma-opiskelijavalinta-ui && npx lint-staged
+cd oma-opiskelijavalinta-ui && pnpm lint-staged

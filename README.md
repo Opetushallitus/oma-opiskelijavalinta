@@ -38,28 +38,28 @@ Voit yliajaa mitä testiympäristöä vasten käyttöliittymää ajetaan laittam
 
 #### Käynnistäminen
 
-1. Asenna riippuvuudet ajamalla `npm ci`
-2. Käynnistä ajamalla `npm run dev`
+1. Asenna riippuvuudet ajamalla `pnpm i`
+2. Käynnistä ajamalla `pnpm run dev`
 3. Mene osoitteeseen https://localhost:3777/oma-opiskelijavalinta
 
 #### Yksikkötestien ajaminen
 
 Tapahtuu komennolla:
 
-`npm test`
+`pnpm test`
 
 #### Playwright-testien ajaminen lokaalisti
 
 Käynnistä ensin käyttöliittymä komennolla:
 
-`npm run dev:test`
+`pnpm run dev:test`
 
 Playwright-testejä voi ajaa lokaalisti komennolla:
 
-`npx playwright test --ui`
+`pnpm playwright test --ui`
 
 Tai komentorivillä vain halutulla selaimella:
 
-`npx playwright --project=firefox`
+`pnpm playwright --project=firefox`
 
 Komennot ajetaan oma-opiskelijavalinta-ui -hakemistossa.
