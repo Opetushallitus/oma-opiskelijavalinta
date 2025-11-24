@@ -9,16 +9,20 @@
   },
   "hakemukset": {
     "ajankohtaiset": "Ajankohtaiset hakemukset",
+    "menneet": "Menneet hakemukset",
+    "ei-menneita-hakemuksia": "Sinulla ei ole aiempia hakemuksia",
     "ei-hakemuksia": "Ei hakemuksia",
     "hakutoiveet": "Hakutoiveesi",
     "muokkaa": "Muokkaa hakemusta",
+    "nayta": "Näytä hakemus",
     "info": {
       "lahettanyt": "Olet lähettänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen."
     },
     "tilankuvaukset": {
       "hakuaika-kesken": "Hakuaika päättyy {hakuaikaPaattyy}.",
-      "valinnat-kesken": "Opiskelijavalinta on kesken. Hakuaika päättyi {hakuaikaPaattyy}."
+      "valinnat-kesken": "Opiskelijavalinta on kesken. Hakuaika päättyi {hakuaikaPaattyy}.",
+      "kaikki-julkaistu": "Kaikkien hakutoiveidesi valintatulokset on julkaistu."
     }
   },
   "hakutoiveet": {
