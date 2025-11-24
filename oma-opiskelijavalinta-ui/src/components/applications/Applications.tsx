@@ -18,7 +18,9 @@ function ApplicationList() {
   });
 
   return isEmpty(applications.current) ? (
-    <InfoBox>{t('hakemukset.ei-hakemuksia')}</InfoBox>
+    <InfoBox sx={{ marginTop: '1.5rem' }}>
+      {t('hakemukset.ei-hakemuksia')}
+    </InfoBox>
   ) : (
     <>
       {applications?.current.map((application) => (
@@ -40,7 +42,9 @@ function PastApplicationList() {
   });
 
   return isEmpty(applications.old) ? (
-    <InfoBox>{t('hakemukset.ei-menneita-hakemuksia')}</InfoBox>
+    <InfoBox sx={{ marginTop: '1.5rem' }}>
+      {t('hakemukset.ei-menneita-hakemuksia')}
+    </InfoBox>
   ) : (
     <>
       {applications?.old.map((application) => (

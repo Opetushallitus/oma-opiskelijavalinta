@@ -64,13 +64,79 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   ).toHaveCount(2);
 });
 
-test('Näyttää ei hakemuksia testin kun käyttäjällä ei ole hakemuksia', async ({
+test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({
   page,
 }) => {
   await mockApplicationsFetch(page, { current: [], old: [] });
   await mockAuthenticatedUser(page);
   await page.goto('');
-  await expect(page.getByText('Ei hakemuksia')).toBeVisible();
+  await expect(
+    page.getByText('Sinulla ei ole ajankohtaisia opiskelupaikan hakemuksia.'),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Sinulla ei ole aiempia hakemuksia'),
+  ).toBeVisible();
+});
+
+test('Näyttää menneitä hakemuksia', async ({ page }) => {
+  const oldApplication = {
+    oid: 'hakemus-oid-3',
+    secret: 'secret-3',
+    haku: {
+      oid: 'haku-oid-3',
+      nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2024' },
+      hakuaikaKaynnissa: false,
+      viimeisinPaattynytHakuAika: '2024-06-19T09:00:00',
+    },
+    submitted: '2024-06-18T19:00:00',
+    hakukohteet: [
+      {
+        oid: 'hakukohde-oid-4',
+        nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
+        jarjestyspaikkaHierarkiaNimi: {
+          fi: 'Tsunamiopisto, Merenpohjan kampus',
+        },
+      },
+    ],
+    ohjausparametrit: {
+      hakukierrosPaattyy: 1663971212000,
+    },
+  };
+  await mockApplicationsFetch(page, { current: [], old: [oldApplication] });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const applications = page.getByTestId('past-applications');
+
+  const app = applications.first();
+  await expect(
+    app.getByText('Tsunamiopiston tohtoritutkinnon haku 2024'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Tsunamiopisto, Merenpohjan kampus'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Voit muokata hakemustasi hakuajan päättymiseen'),
+  ).toBeHidden();
+  await expect(app.getByText('Opiskelijavalinta on kesken')).toBeHidden();
+  await expect(
+    app.getByText('Kaikkien hakutoiveidesi valintatulokset on julkaistu.'),
+  ).toBeVisible();
+
+  await expect(
+    applications.getByRole('link', { name: 'Näytä valintaperusteet' }),
+  ).toHaveCount(0);
+
+  await expect(
+    applications.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(0);
+
+  await expect(
+    applications.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
 });
 
 test('Hakemusten saavutettavuus', async ({ page }) => {
@@ -85,7 +151,10 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
 
 async function mockApplicationsFetch(
   page: Page,
-  applications?: { current: []; old: [] },
+  applications?: {
+    current: Array<Record<string, string | object | boolean | number>>;
+    old: Array<Record<string, string | object | boolean | number>>;
+  },
 ) {
   const applicationsToReturn = JSON.stringify(
     applications

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, type SxProps, type Theme } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import InfoIcon from '@mui/icons-material/Info';
 import { styled } from '@/lib/theme';
@@ -16,9 +16,15 @@ const StyledInfo = styled(InfoIcon)(() => ({
   color: ophColors.green2,
 }));
 
-export const InfoBox = ({ children }: { children: React.ReactNode }) => {
+export const InfoBox = ({
+  children,
+  sx,
+}: {
+  children: React.ReactNode;
+  sx?: SxProps<Theme>;
+}) => {
   return (
-    <StyledBox>
+    <StyledBox sx={sx}>
       <StyledInfo />
       <Box>{children}</Box>
     </StyledBox>
