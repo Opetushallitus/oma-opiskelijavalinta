@@ -18,7 +18,7 @@ function ApplicationList() {
   });
 
   return isEmpty(applications.current) ? (
-    <OphTypography>{t('hakemukset.ei-hakemuksia')}</OphTypography>
+    <InfoBox>{t('hakemukset.ei-hakemuksia')}</InfoBox>
   ) : (
     <>
       {applications?.current.map((application) => (
