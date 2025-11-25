@@ -24,6 +24,7 @@ export type Application = {
   submitted: number;
   formName: TranslatedName;
   priorisoidutHakutoiveet: boolean;
+  hakemuksenTulokset: Array<HakutoiveenTulos>;
 };
 
 export type Applications = {
@@ -40,6 +41,13 @@ type Ohjausparametrit = {
   jarjestetytHakutoiveet?: boolean;
 };
 
+export type HakutoiveenTulos = {
+  hakukohdeOid: string;
+  julkaistavissa: boolean;
+  valintatila?: string;
+  varasijanumero?: number | null;
+};
+
 type ApplicationResponse = {
   oid: string;
   haku: Haku;
@@ -48,6 +56,7 @@ type ApplicationResponse = {
   ohjausparametrit?: Ohjausparametrit;
   submitted: string;
   formName: TranslatedName;
+  hakemuksenTulokset: Array<HakutoiveenTulos>;
 };
 
 type ApplicationsResponse = {
@@ -72,8 +81,6 @@ function convertToApplication(
     ...app,
     modifyLink,
     hakukierrosPaattyy,
-    priorisoidutHakutoiveet:
-      app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     submitted: new Date(app.submitted).getTime(),
   };
 }
@@ -84,9 +91,9 @@ export async function getApplications(): Promise<Applications> {
   const muokkausUrl = config.routes.hakemukset.muokkausUrl;
   const current = response.data.current
     .map((app) => convertToApplication(app, muokkausUrl))
-    .sort((a, b) => b.submitted - a.submitted);
+    .sort((a, b) => a.submitted - b.submitted);
   const old = response.data.old
     .map((app) => convertToApplication(app, muokkausUrl))
-    .sort((a, b) => b.submitted - a.submitted);
+    .sort((a, b) => a.submitted - b.submitted);
   return { current, old };
 }

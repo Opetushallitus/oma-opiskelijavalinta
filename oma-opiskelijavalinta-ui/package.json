@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "cd .. && husky",
-    "dev": "touch .env.development.local && react-router dev --port 3777 --host",
+    "dev": "VITE_USE_HTTPS=true react-router dev --port 3777 --host",
     "build": "react-router build",
     "dev:test": "VITE_TEST=true pnpm run dev",
     "build:test": "VITE_TEST=true pnpm run build",
