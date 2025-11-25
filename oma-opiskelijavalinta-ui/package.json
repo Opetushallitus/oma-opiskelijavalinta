@@ -16,8 +16,7 @@
     "prettier:fix": "prettier --write -u *",
     "test": "vitest",
     "typecheck": "react-router typegen && tsc",
-    "test-playwright-docker": "./scripts/run-playwright-tests-in-docker.sh",
-    "start-and-test-playwright": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'pnpm start' http://localhost:3777 'pnpm playwright test'",
+    "start-and-test-playwright-ci": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'pnpm start' http://localhost:3777 'pnpm exec playwright test'",
     "build-and-copy": "pnpm run build && ./scripts/copy-ui-bundle-to-backend.sh"
   },
   "dependencies": {
