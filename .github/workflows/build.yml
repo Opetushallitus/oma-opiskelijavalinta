@@ -31,7 +31,7 @@ jobs:
       - name: Build and copy frontend to backend static-dir
         run: |
           cd oma-opiskelijavalinta-ui
-          npm run build-and-copy
+          pnpm run build-and-copy
 
       - name: Build Scala projects
         env:
@@ -56,31 +56,28 @@ jobs:
         with:
           project_path: oma-opiskelijavalinta-ui
       - name: Check types
-        run: npm run typecheck
+        run: pnpm run typecheck
       - name: Run linter
-        run: npm run lint
+        run: pnpm run lint
       - name: Run unit tests
-        run: npm run test
+        run: pnpm run test
   test-playwright:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./oma-opiskelijavalinta-ui
-    strategy:
-      fail-fast: true # Lopetetaan, jos testit epäonnistuu yhdellä selaimella
-      matrix:
-        browser: [chromium, firefox]
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --user 1001
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node-env
         with:
           project_path: oma-opiskelijavalinta-ui
       - name: Build app
-        run: npm run build:test
+        run: pnpm run build:test
       - name: Run Playwright tests
-        env:
-          PLAYWRIGHT_ARGS: --project=${{ matrix.browser }}
-        run: npm run start-and-test-playwright-docker
+        run: pnpm run start-and-test-playwright-ci
       - uses: actions/upload-artifact@v4
         if: always()
         with:

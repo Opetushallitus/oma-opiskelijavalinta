@@ -2,16 +2,19 @@ name: setup-node-env
 description: 'Setup Node.js environment'
 inputs:
   project_path:
-    description: Path to the package-lock.json
+    description: Path to the pnpm-lock.yaml
     required: true
 runs:
   using: 'composite'
   steps:
-    - uses: actions/setup-node@v4
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10
+    - uses: actions/setup-node@v6
       with:
         node-version-file: '.nvmrc'
-        cache: 'npm'
-        cache-dependency-path: ${{ inputs.project_path }}/package-lock.json
+        cache: 'pnpm'
+        cache-dependency-path: ${{ inputs.project_path }}/pnpm-lock.yaml
         registry-url: 'https://npm.pkg.github.com'
         scope: '@opetushallitus'
     - uses: actions/cache@v4
@@ -19,7 +22,7 @@ runs:
       with:
         path: ${{ github.workspace }}/${{ inputs.project_path }}/node_modules
         key: ${{ runner.os }}-modules-${{ hashFiles(format('{0}/package-lock.json', inputs.project_path)) }}
-    - name: Install npm dependencies
+    - name: Install pnpm dependencies
       if: steps.node_modules-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: cd ${{inputs.project_path}} && npm ci
+      run: cd ${{inputs.project_path}} && pnpm i --prefer-offline

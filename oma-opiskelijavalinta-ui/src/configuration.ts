@@ -19,7 +19,7 @@ export const getConfiguration = async () => {
   } else if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     VIRKAILIJA_DOMAIN = `https://virkailija.${host}`;
-    HAKIJA_DOMAIN = `https://${host};`;
+    HAKIJA_DOMAIN = `https://${host}`;
   }
 
   return {
