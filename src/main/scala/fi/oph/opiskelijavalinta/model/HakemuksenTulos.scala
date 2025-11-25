@@ -5,7 +5,7 @@ case class HakemuksenTulos(
                             hakemusOid: Option[String],
                             hakijaOid: Option[String],
                             aikataulu: Option[Aikataulu],
-                            hakutoiveet: List[HakutoiveenTulos] // empty list if missing
+                            hakutoiveet: List[HakutoiveenTulos]
                           )
 
 case class Aikataulu(
@@ -30,7 +30,7 @@ case class HakutoiveenTulos(
                       ehdollisestiHyvaksyttavissa: Option[Boolean],
                       tilanKuvaukset: Option[Map[String, String]],
                       showMigriURL: Option[Boolean],
-                      jonokohtaisetTulostiedot: List[JonokohtainenTulos]   // empty list if missing
+                      jonokohtaisetTulostiedot: List[JonokohtainenTulos]
                     )
 
 case class Ilmoittautumistila(

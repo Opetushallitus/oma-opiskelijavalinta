@@ -1,7 +1,13 @@
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
+import { PaperWithTopColor } from '../PaperWithTopColor';
+import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
-import { type Application, type Hakukohde } from '@/lib/application.service';
+import {
+  type Application,
+  type Hakukohde,
+  type HakutoiveenTulos,
+} from '@/lib/application.service';
 import { isNonNull, isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
 import { ApplicationInfo } from './ApplicationInfo';
@@ -11,14 +17,25 @@ import { ApplicationPaper } from './ApplicationPaper';
 
 function HakukohteetContainer({
   hakukohteet,
+  hakemuksenTulokset,
 }: {
   hakukohteet: Array<Hakukohde>;
+  hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
-      {hakukohteet.map((hk, idx) => (
-        <Hakutoive key={hk.oid} hakukohde={hk} prioriteetti={idx + 1} />
-      ))}
+      {hakukohteet.map((hk, idx) => {
+        const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
+
+        return (
+          <Hakutoive
+            key={hk.oid}
+            hakukohde={hk}
+            prioriteetti={idx + 1}
+            tulos={tulos}
+          />
+        );
+      })}
     </Box>
   );
 }
@@ -74,7 +91,10 @@ export function ApplicationContainer({
       <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
-      <HakukohteetContainer hakukohteet={application?.hakukohteet ?? []} />
+      <HakukohteetContainer
+        hakukohteet={application?.hakukohteet ?? []}
+        hakemuksenTulokset={application.hakemuksenTulokset}
+      />
     </ApplicationPaper>
   );
 }

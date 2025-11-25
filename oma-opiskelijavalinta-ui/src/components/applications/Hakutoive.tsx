@@ -2,9 +2,13 @@ import { Box } from '@mui/material';
 import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
-import { type Hakukohde } from '@/lib/application.service';
+import {
+  type Hakukohde,
+  type HakutoiveenTulos,
+} from '@/lib/application.service';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
+import { ValintatilaChip } from '@/components/applications/ValintatilaChip';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,10 +46,12 @@ export function Hakutoive({
   hakukohde,
   prioriteetti,
   pastApplication = false,
+  tulos,
 }: {
   hakukohde: Hakukohde;
   prioriteetti?: number;
   pastApplication?: boolean;
+  tulos?: HakutoiveenTulos;
 }) {
   const config = useConfig();
   const { translateEntity, t } = useTranslations();
@@ -59,6 +65,7 @@ export function Hakutoive({
     <HakutoiveContainer>
       <OrderNumberBox>{prioriteetti}</OrderNumberBox>
       <Box>
+        {tulos?.julkaistavissa && <ValintatilaChip hakutoiveenTulos={tulos} />}
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>

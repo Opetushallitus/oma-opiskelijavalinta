@@ -38,7 +38,7 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
       case Left(e) =>
         LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-      case Right(o) => 
+      case Right(o) =>
         val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
         val enriched = apps.map(a => enrichApplication(a))
         val now = System.currentTimeMillis()
