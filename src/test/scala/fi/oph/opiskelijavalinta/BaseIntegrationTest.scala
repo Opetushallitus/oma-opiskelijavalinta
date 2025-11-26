@@ -117,8 +117,8 @@ class BaseIntegrationTest {
   @MockitoBean(reset = MockReset.NONE)
   val koutaClient: KoutaClient = Mockito.mock(classOf[KoutaClient])
 
-  @MockitoBean(reset = MockReset.NONE)
-  val ohjausparametritClient: OhjausparametritClient = Mockito.mock(classOf[OhjausparametritClient])
+  @MockitoBean(reset = MockReset.BEFORE)
+  val ohjausparametritService: OhjausparametritService = Mockito.mock(classOf[OhjausparametritService])
 
   @MockitoBean(reset = MockReset.NONE)
   val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])

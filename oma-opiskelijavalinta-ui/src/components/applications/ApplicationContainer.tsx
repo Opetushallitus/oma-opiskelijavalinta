@@ -24,9 +24,10 @@ function HakukohteetContainer({
 }) {
   return (
     <Box sx={{ width: '100%' }}>
-      {hakukohteet.map((hk, idx) => (
+      {hakukohteet.map((hk, idx) => {
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
 
+        return (
         <Hakutoive
           key={hk.oid}
           hakukohde={hk}
@@ -34,7 +35,8 @@ function HakukohteetContainer({
           priorisoidutHakutoiveet={priorisoidutHakutoiveet}
           tulos={tulos}
         />
-      ))}
+        );
+      })}
     </Box>
   );
 }

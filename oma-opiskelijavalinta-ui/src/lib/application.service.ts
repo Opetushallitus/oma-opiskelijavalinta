@@ -81,6 +81,8 @@ function convertToApplication(
     ...app,
     modifyLink,
     hakukierrosPaattyy,
+    priorisoidutHakutoiveet:
+      app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     submitted: new Date(app.submitted).getTime(),
   };
 }
@@ -91,9 +93,9 @@ export async function getApplications(): Promise<Applications> {
   const muokkausUrl = config.routes.hakemukset.muokkausUrl;
   const current = response.data.current
     .map((app) => convertToApplication(app, muokkausUrl))
-    .sort((a, b) => a.submitted - b.submitted);
+    .sort((a, b) => b.submitted - a.submitted);
   const old = response.data.old
     .map((app) => convertToApplication(app, muokkausUrl))
-    .sort((a, b) => a.submitted - b.submitted);
+    .sort((a, b) => b.submitted - a.submitted);
   return { current, old };
 }
