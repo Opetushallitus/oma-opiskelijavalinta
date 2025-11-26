@@ -15,7 +15,7 @@ function HakukohteetContainer({
   hakukohteet: Array<Hakukohde>;
 }) {
   return (
-    <Box>
+    <Box sx={{ width: '100%' }}>
       {hakukohteet.map((hk, idx) => (
         <Hakutoive key={hk.oid} hakukohde={hk} prioriteetti={idx + 1} />
       ))}

@@ -12,6 +12,7 @@ const HakutoiveContainer = styled(Box)(({ theme }) => ({
   borderTop: '1px solid',
   padding: `${theme.spacing(2)} 0 ${theme.spacing(3.5)}`,
   borderColor: ophColors.grey100,
+  width: '100%',
   flexWrap: 'wrap',
   justifyContent: 'flex-start',
   alignItems: 'flex-start',
