@@ -1,7 +1,5 @@
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import { PaperWithTopColor } from '../PaperWithTopColor';
-import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { type Application, type Hakukohde } from '@/lib/application.service';
 import { isNonNull, isTruthy } from 'remeda';
@@ -9,14 +7,7 @@ import { ExternalLinkButton } from '../ExternalLink';
 import { ApplicationInfo } from './ApplicationInfo';
 import { Hakutoive } from './Hakutoive';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
-
-const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
-  marginTop: theme.spacing(2.5),
-  display: 'flex',
-  alignItems: 'start',
-  flexDirection: 'column',
-  rowGap: theme.spacing(2),
-}));
+import { ApplicationPaper } from './ApplicationPaper';
 
 function HakukohteetContainer({
   hakukohteet,
@@ -68,7 +59,7 @@ export function ApplicationContainer({
   const { t, translateEntity } = useTranslations();
 
   return (
-    <StyledPaper tabIndex={0}>
+    <ApplicationPaper tabIndex={0}>
       <OphTypography variant="h3">
         {translateEntity(application?.haku?.nimi)}
       </OphTypography>
@@ -84,6 +75,6 @@ export function ApplicationContainer({
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer hakukohteet={application?.hakukohteet ?? []} />
-    </StyledPaper>
+    </ApplicationPaper>
   );
 }

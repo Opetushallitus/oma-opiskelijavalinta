@@ -9,6 +9,7 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
   const applications = page.getByTestId('active-applications');
+
   const app1 = applications.first();
   await expect(
     app1.getByText('Hurrikaaniopiston jatkuva haku 2025'),
@@ -139,6 +140,33 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
   ).toHaveCount(1);
 });
 
+test('Näyttää hauttoman hakemuksen', async ({ page }) => {
+  const oldApplication = {
+    oid: 'hakemus-oid-07',
+    secret: 'secret-07',
+    haku: null,
+    formName: {
+      fi: 'Hajuton hakemus',
+    },
+    submitted: '2024-06-18T19:00:00',
+    hakukohteet: [],
+    ohjausparametrit: null,
+  };
+  await mockApplicationsFetch(page, { current: [], old: [oldApplication] });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const applications = page.getByTestId('past-applications');
+
+  const app = applications.first();
+  await expect(app.getByText('Hajuton hakemus')).toBeVisible();
+  await expect(app.getByText('Hakutoiveesi')).toBeHidden();
+
+  await expect(
+    applications.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
+});
+
 test('Hakemusten saavutettavuus', async ({ page }) => {
   await mockApplicationsFetch(page);
   await mockAuthenticatedUser(page);
@@ -152,8 +180,8 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
 async function mockApplicationsFetch(
   page: Page,
   applications?: {
-    current: Array<Record<string, string | object | boolean | number>>;
-    old: Array<Record<string, string | object | boolean | number>>;
+    current: Array<Record<string, string | object | boolean | number | null>>;
+    old: Array<Record<string, string | object | boolean | number | null>>;
   },
 ) {
   const applicationsToReturn = JSON.stringify(
