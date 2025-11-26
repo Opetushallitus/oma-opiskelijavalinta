@@ -4,7 +4,7 @@ import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { type Application } from '@/lib/application.service';
 import { isTruthy } from 'remeda';
-import { ExternalLinkButton } from '../ExternalLink';
+import { ExternalLink } from '../ExternalLink';
 
 const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
   marginTop: theme.spacing(2.5),
@@ -27,7 +27,7 @@ export function FormOnlyApplicationContainer({
         {translateEntity(application?.formName)}
       </OphTypography>
       {isTruthy(application.modifyLink) && (
-        <ExternalLinkButton
+        <ExternalLink
           href={application.modifyLink ?? ''}
           name={t('hakemukset.nayta')}
         />
