@@ -64,7 +64,10 @@ export function PastApplicationContainer({
   const { t, translateEntity } = useTranslations();
 
   return (
-    <ApplicationPaper tabIndex={0}>
+    <ApplicationPaper
+      tabIndex={0}
+      data-test-id={`past-application-${application.oid}`}
+    >
       <OphTypography variant="h3">
         {translateEntity(application?.haku?.nimi)}
       </OphTypography>

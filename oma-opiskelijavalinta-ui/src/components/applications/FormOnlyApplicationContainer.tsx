@@ -13,7 +13,10 @@ export function FormOnlyApplicationContainer({
   const { t, translateEntity } = useTranslations();
 
   return (
-    <ApplicationPaper tabIndex={0}>
+    <ApplicationPaper
+      tabIndex={0}
+      data-test-id={`application-${application.oid}`}
+    >
       <OphTypography variant="h3">
         {translateEntity(application?.formName)}
       </OphTypography>
