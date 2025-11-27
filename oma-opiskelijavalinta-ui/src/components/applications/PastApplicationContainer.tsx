@@ -1,20 +1,12 @@
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import { PaperWithTopColor } from '../PaperWithTopColor';
 import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { type Application, type Hakukohde } from '@/lib/application.service';
 import { isTruthy } from 'remeda';
 import { ExternalLink } from '../ExternalLink';
 import { Hakutoive } from './Hakutoive';
-
-const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
-  marginTop: theme.spacing(2.5),
-  display: 'flex',
-  alignItems: 'start',
-  flexDirection: 'column',
-  rowGap: theme.spacing(2),
-}));
+import { ApplicationPaper } from './ApplicationPaper';
 
 const StyledInfoBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -28,7 +20,7 @@ function HakukohteetContainer({
   hakukohteet: Array<Hakukohde>;
 }) {
   return (
-    <Box>
+    <Box sx={{ width: '100%' }}>
       {hakukohteet.map((hk, idx) => (
         <Hakutoive
           key={hk.oid}
@@ -69,7 +61,7 @@ export function PastApplicationContainer({
   const { t, translateEntity } = useTranslations();
 
   return (
-    <StyledPaper tabIndex={0}>
+    <ApplicationPaper tabIndex={0}>
       <OphTypography variant="h3">
         {translateEntity(application?.haku?.nimi)}
       </OphTypography>
@@ -78,6 +70,6 @@ export function PastApplicationContainer({
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer hakukohteet={application?.hakukohteet ?? []} />
-    </StyledPaper>
+    </ApplicationPaper>
   );
 }

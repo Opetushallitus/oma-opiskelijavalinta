@@ -22,6 +22,7 @@ export type Application = {
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
   submitted: number;
+  formName: TranslatedName;
 };
 
 export type Applications = {
@@ -44,6 +45,7 @@ type ApplicationResponse = {
   secret?: string;
   ohjausparametrit?: Ohjausparametrit;
   submitted: string;
+  formName: TranslatedName;
 };
 
 type ApplicationsResponse = {

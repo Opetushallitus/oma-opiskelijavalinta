@@ -69,6 +69,6 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
         case _ => List.empty
       }
     }
-    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted, hakutoiveidenTulokset)
+    ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted, hakutoiveidenTulokset, application.formName)
   }
 }
