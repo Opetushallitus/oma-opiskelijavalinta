@@ -27,5 +27,11 @@
   },
   "hakutoiveet": {
     "valintaperusteet": "Näytä valintaperusteet"
+  },
+  "tulos": {
+    "kesken": "Kesken",
+    "hyvaksytty": "Hyväksytty",
+    "hylatty": "Hylätty",
+    "varalla-varasija": "Olet {varasijanumero}. varasijalla"
   }
 }

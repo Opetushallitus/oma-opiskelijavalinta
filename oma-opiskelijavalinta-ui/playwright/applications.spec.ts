@@ -17,6 +17,7 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
   ).toBeVisible();
+  await expect(app1.getByText('Olet 2. varasijalla')).toBeVisible();
   await expect(
     app1.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
   ).toBeVisible();
@@ -26,6 +27,7 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     app1.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
   ).toBeVisible();
+  await expect(app1.getByText('Hyväksytty')).toBeVisible();
   await expect(
     app1.getByText(
       'Voit muokata hakemustasi hakuajan päättymiseen 19.10.2025 klo 13:00 asti.',
@@ -255,6 +257,7 @@ async function mockApplicationsFetch(
                   tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
                   valintatapajonoOid: '1234',
                   valintatila: 'VARALLA',
+                  varasijanumero: 2,
                   vastaanottotila: 'KESKEN',
                   ilmoittautumistila: {
                     ilmoittautumisaika: {},
@@ -286,6 +289,41 @@ async function mockApplicationsFetch(
                       },
                       ehdollisestiHyvaksyttavissa: false,
                       ehdollisenHyvaksymisenEhto: null,
+                      eiVarasijatayttoa: false,
+                      varasijasaannotKaytossa: false,
+                    },
+                  ],
+                },
+                {
+                  hakukohdeOid: 'hakukohde-oid-2',
+                  hakukohdeNimi: 'Meteorologi, Hurrikaanien tutkimislinja',
+                  tarjoajaOid: 'tarjoaja-oid-2',
+                  tarjoajaNimi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+                  valintatapajonoOid: '2345',
+                  valintatila: 'HYVAKSYTTY',
+                  vastaanottotila: 'KESKEN',
+                  ilmoittautumistila: {
+                    ilmoittautumisaika: {},
+                    ilmoittautumistila: 'EI_TEHTY',
+                    ilmoittauduttavissa: false,
+                  },
+                  vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+                  vastaanottoDeadline: '2025-12-11T13:00:00Z',
+                  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+                  hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+                  julkaistavissa: true,
+                  ehdollisestiHyvaksyttavissa: false,
+                  tilanKuvaukset: {},
+                  showMigriURL: false,
+                  jonokohtaisetTulostiedot: [
+                    {
+                      oid: '2345',
+                      nimi: '',
+                      valintatila: 'HYVAKSYTTY',
+                      julkaistavissa: true,
+                      tilanKuvaukset: {},
+                      ehdollisestiHyvaksyttavissa: false,
+                      ehdollisenHyvaksymisenEhto: {},
                       eiVarasijatayttoa: false,
                       varasijasaannotKaytossa: false,
                     },

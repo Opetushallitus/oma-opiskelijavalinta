@@ -90,9 +90,12 @@ export function ValintatilaChip({
   );
   console.log('valintatila', valintatila);
   const style = valintatilaStyles[valintatila as Valintatila];
+  console.log();
   const label =
     valintatila === 'VARALLA' && hakutoiveenTulos?.varasijanumero
-      ? t('tulos.varalla-varasija', String(hakutoiveenTulos?.varasijanumero))
+      ? t('tulos.varalla-varasija', {
+          varasijanumero: String(hakutoiveenTulos?.varasijanumero),
+        })
       : t(style.label);
   console.log('label', label);
   return (
