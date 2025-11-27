@@ -105,6 +105,7 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
     ohjausparametrit: {
       hakukierrosPaattyy: 1663971212000,
     },
+    hakutoiveenTulokset: [],
   };
   await mockApplicationsFetch(page, { current: [], old: [oldApplication] });
   await mockAuthenticatedUser(page);
@@ -214,6 +215,7 @@ async function mockApplicationsFetch(
               ohjausparametrit: {
                 hakukierrosPaattyy: 1763971212000,
               },
+              hakemuksenTulokset: [],
             },
             {
               oid: 'hakemus-oid-1',
@@ -245,6 +247,51 @@ async function mockApplicationsFetch(
                 hakukierrosPaattyy: 1763471212000,
                 jarjestetytHakutoiveet: true,
               },
+              hakemuksenTulokset: [
+                {
+                  hakukohdeOid: 'hakukohde-oid-1',
+                  hakukohdeNimi: 'Meteorologi, Tornadoinen tutkimislinja',
+                  tarjoajaOid: 'tarjoaja-oid-1',
+                  tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+                  valintatapajonoOid: '1234',
+                  valintatila: 'VARALLA',
+                  vastaanottotila: 'KESKEN',
+                  ilmoittautumistila: {
+                    ilmoittautumisaika: {},
+                    ilmoittautumistila: 'EI_TEHTY',
+                    ilmoittauduttavissa: false,
+                  },
+                  vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+                  vastaanottoDeadline: null,
+                  viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
+                  hyvaksyttyJaJulkaistuDate: null,
+                  julkaistavissa: true,
+                  ehdollisestiHyvaksyttavissa: true,
+                  tilanKuvaukset: {
+                    FI: '',
+                    SV: '',
+                    EN: '',
+                  },
+                  showMigriURL: null,
+                  jonokohtaisetTulostiedot: [
+                    {
+                      oid: '1234',
+                      nimi: '',
+                      valintatila: 'VARALLA',
+                      julkaistavissa: true,
+                      tilanKuvaukset: {
+                        FI: '',
+                        SV: '',
+                        EN: '',
+                      },
+                      ehdollisestiHyvaksyttavissa: false,
+                      ehdollisenHyvaksymisenEhto: null,
+                      eiVarasijatayttoa: false,
+                      varasijasaannotKaytossa: false,
+                    },
+                  ],
+                },
+              ],
             },
           ],
           old: [],
