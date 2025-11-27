@@ -42,10 +42,12 @@ export function Hakutoive({
   hakukohde,
   prioriteetti,
   pastApplication = false,
+  priorisoidutHakutoiveet = false,
 }: {
   hakukohde: Hakukohde;
   prioriteetti?: number;
   pastApplication?: boolean;
+  priorisoidutHakutoiveet?: boolean;
 }) {
   const config = useConfig();
   const { translateEntity, t } = useTranslations();
@@ -57,7 +59,9 @@ export function Hakutoive({
 
   return (
     <HakutoiveContainer>
-      <OrderNumberBox>{prioriteetti}</OrderNumberBox>
+      {priorisoidutHakutoiveet && (
+        <OrderNumberBox>{prioriteetti}</OrderNumberBox>
+      )}
       <Box>
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}

@@ -14,10 +14,12 @@ const StyledInfoBox = styled(Box)(({ theme }) => ({
   columnGap: theme.spacing(0.5),
 }));
 
-function HakukohteetContainer({
+function PastHakukohteetContainer({
   hakukohteet,
+  priorisoidutHakutoiveet,
 }: {
   hakukohteet: Array<Hakukohde>;
+  priorisoidutHakutoiveet: boolean;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
@@ -27,6 +29,7 @@ function HakukohteetContainer({
           hakukohde={hk}
           prioriteetti={idx + 1}
           pastApplication={true}
+          priorisoidutHakutoiveet={priorisoidutHakutoiveet}
         />
       ))}
     </Box>
@@ -69,7 +72,10 @@ export function PastApplicationContainer({
       <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
-      <HakukohteetContainer hakukohteet={application?.hakukohteet ?? []} />
+      <PastHakukohteetContainer
+        hakukohteet={application?.hakukohteet ?? []}
+        priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
+      />
     </ApplicationPaper>
   );
 }

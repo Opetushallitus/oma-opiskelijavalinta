@@ -11,13 +11,20 @@ import { ApplicationPaper } from './ApplicationPaper';
 
 function HakukohteetContainer({
   hakukohteet,
+  priorisoidutHakutoiveet,
 }: {
   hakukohteet: Array<Hakukohde>;
+  priorisoidutHakutoiveet: boolean;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
       {hakukohteet.map((hk, idx) => (
-        <Hakutoive key={hk.oid} hakukohde={hk} prioriteetti={idx + 1} />
+        <Hakutoive
+          key={hk.oid}
+          hakukohde={hk}
+          prioriteetti={idx + 1}
+          priorisoidutHakutoiveet={priorisoidutHakutoiveet}
+        />
       ))}
     </Box>
   );
@@ -74,7 +81,10 @@ export function ApplicationContainer({
       <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
-      <HakukohteetContainer hakukohteet={application?.hakukohteet ?? []} />
+      <HakukohteetContainer
+        hakukohteet={application?.hakukohteet ?? []}
+        priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
+      />
     </ApplicationPaper>
   );
 }
