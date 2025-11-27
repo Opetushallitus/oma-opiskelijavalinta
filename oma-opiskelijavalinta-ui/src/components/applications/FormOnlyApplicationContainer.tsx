@@ -1,18 +1,9 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import { PaperWithTopColor } from '../PaperWithTopColor';
-import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { type Application } from '@/lib/application.service';
 import { isTruthy } from 'remeda';
 import { ExternalLink } from '../ExternalLink';
-
-const StyledPaper = styled(PaperWithTopColor)(({ theme }) => ({
-  marginTop: theme.spacing(2.5),
-  display: 'flex',
-  alignItems: 'start',
-  flexDirection: 'column',
-  rowGap: theme.spacing(2),
-}));
+import { ApplicationPaper } from './ApplicationPaper';
 
 export function FormOnlyApplicationContainer({
   application,
@@ -22,7 +13,7 @@ export function FormOnlyApplicationContainer({
   const { t, translateEntity } = useTranslations();
 
   return (
-    <StyledPaper tabIndex={0}>
+    <ApplicationPaper tabIndex={0}>
       <OphTypography variant="h3">
         {translateEntity(application?.formName)}
       </OphTypography>
@@ -32,6 +23,6 @@ export function FormOnlyApplicationContainer({
           name={t('hakemukset.nayta')}
         />
       )}
-    </StyledPaper>
+    </ApplicationPaper>
   );
 }
