@@ -25,8 +25,17 @@ class CacheConfiguration {
 
   @Bean
   def cacheManager: CacheManager = {
-    val cacheManager: CaffeineCacheManager = new CaffeineCacheManager(CacheConstants.KOUTA_HAKU_CACHE_NAME, CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME, CacheConstants.OHJAUSPARAMETRIT_CACHE_NAME, CacheConstants.OAUTH2_CACHE_NAME)
-    cacheManager.setCaffeine(Caffeine.newBuilder.expireAfterWrite(CacheConstants.DEFAULT_EXPIRATION_MINUTES, TimeUnit.MINUTES).maximumSize(CacheConstants.DEFAULT_MAX_SIZE))
+    val cacheManager: CaffeineCacheManager = new CaffeineCacheManager(
+      CacheConstants.KOUTA_HAKU_CACHE_NAME,
+      CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME,
+      CacheConstants.OHJAUSPARAMETRIT_CACHE_NAME,
+      CacheConstants.OAUTH2_CACHE_NAME
+    )
+    cacheManager.setCaffeine(
+      Caffeine.newBuilder
+        .expireAfterWrite(CacheConstants.DEFAULT_EXPIRATION_MINUTES, TimeUnit.MINUTES)
+        .maximumSize(CacheConstants.DEFAULT_MAX_SIZE)
+    )
     cacheManager
   }
 }

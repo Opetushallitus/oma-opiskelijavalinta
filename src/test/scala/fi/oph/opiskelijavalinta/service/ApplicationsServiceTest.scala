@@ -26,7 +26,24 @@ class ApplicationsServiceTest {
 
   @Test
   def applicationWithoutHakuDoesNotCallOtherServices(): Unit = {
-    Mockito.when(ataruClient.getApplications(OPPIJA_NUMERO)).thenReturn(Right(objectMapper.writeValueAsString(Array(Application("application-oid-1", null, Set.empty, "secret-1", "2025-02-02T19:32:01Z", TranslatedName("Hajuton lomake", null, null))))))
+    Mockito
+      .when(ataruClient.getApplications(OPPIJA_NUMERO))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Application(
+                "application-oid-1",
+                null,
+                Set.empty,
+                "secret-1",
+                "2025-02-02T19:32:01Z",
+                TranslatedName("Hajuton lomake", null, null)
+              )
+            )
+          )
+        )
+      )
     val applications = service.getApplications(OPPIJA_NUMERO)
     Assertions.assertEquals(0, applications.current.length)
     Assertions.assertEquals(1, applications.old.length)
@@ -39,4 +56,3 @@ class ApplicationsServiceTest {
     Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
   }
 }
-

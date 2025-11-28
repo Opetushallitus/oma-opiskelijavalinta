@@ -20,7 +20,8 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
-  mapper.configOverride(classOf[List[_]])
+  mapper
+    .configOverride(classOf[List[_]])
     .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);

@@ -17,16 +17,22 @@ class ApiIntegrationTest extends BaseIntegrationTest {
 
   @WithAnonymousUser
   @Test def testHealthCheckAnonymous(): Unit =
-    mvc.perform(MockMvcRequestBuilders
-      .get(ApiConstants.HEALTHCHECK_PATH))
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.HEALTHCHECK_PATH)
+      )
       .andExpect(status().isOk)
       .andExpect(MockMvcResultMatchers.content().string("OK"));
 
   @Test
   def get401ResponseFromAuthenticatedApi(): Unit = {
-    mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.SESSION_PATH))
-        .andExpect(status().isUnauthorized)
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.SESSION_PATH)
+      )
+      .andExpect(status().isUnauthorized)
   }
 
   @Test
@@ -36,9 +42,12 @@ class ApiIntegrationTest extends BaseIntegrationTest {
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
 
-    mvc.perform(MockMvcRequestBuilders
-      .get(ApiConstants.SESSION_PATH)
-      .`with`(user(oppijaUser)))
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.SESSION_PATH)
+          .`with`(user(oppijaUser))
+      )
       .andExpect(status().isOk)
   }
 }

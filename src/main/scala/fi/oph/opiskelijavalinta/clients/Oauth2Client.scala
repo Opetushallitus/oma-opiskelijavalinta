@@ -29,7 +29,7 @@ class Oauth2Client @Autowired (private val oauth2BearerClient: Oauth2BearerClien
     val client = HttpClient.newBuilder.build
     client.send(request, BodyHandlers.ofString)
   } catch {
-    case e@(_: IOException | _: InterruptedException) =>
+    case e @ (_: IOException | _: InterruptedException) =>
       LOG.error("error while executing request", e)
       throw new RestClientException("error while executing request", e)
   }

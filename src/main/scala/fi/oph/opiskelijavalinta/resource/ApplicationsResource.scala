@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 
 @RequestMapping(path = Array(APPLICATIONS_PATH))
 @RestController
-class ApplicationsResource @Autowired(applicationService: ApplicationsService) {
+class ApplicationsResource @Autowired (applicationService: ApplicationsService) {
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[ApplicationsEnriched] = {

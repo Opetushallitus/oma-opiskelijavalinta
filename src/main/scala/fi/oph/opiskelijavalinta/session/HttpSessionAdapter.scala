@@ -69,6 +69,3 @@ class HttpSessionAdapter(sessionRepository: SessionRepository[Session], session:
     false;
   }
 }
-
-
-

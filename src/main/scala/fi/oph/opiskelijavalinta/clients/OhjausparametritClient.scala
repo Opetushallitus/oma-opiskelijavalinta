@@ -20,9 +20,10 @@ class OhjausparametritClient {
 
   private val client: AsyncHttpClient = asyncHttpClient(
     new DefaultAsyncHttpClientConfig.Builder()
-    .setMaxRedirects(5)
-    .setConnectTimeout(java.time.Duration.ofMillis(10 * 1000))
-    .build)
+      .setMaxRedirects(5)
+      .setConnectTimeout(java.time.Duration.ofMillis(10 * 1000))
+      .build
+  )
 
   // TODO http-clientien thread pool OPHYOS-47
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
@@ -63,17 +64,16 @@ class OhjausparametritClient {
         Left(e)
   }
 
-  /**
-   * Convert an AsyncHttpClient ListenableFuture into a Scala Future.
-   */
-  def toScalaFuture(listenableFuture: ListenableFuture[Response])
-                   (using ec: ExecutionContext): Future[Response] = {
+  /** Convert an AsyncHttpClient ListenableFuture into a Scala Future.
+    */
+  def toScalaFuture(listenableFuture: ListenableFuture[Response])(using ec: ExecutionContext): Future[Response] = {
     val promise = Promise[Response]()
 
     listenableFuture.addListener(
-      () => Try(listenableFuture.get()) match
-        case Success(resp) => promise.success(resp)
-        case Failure(ex) => promise.failure(ex),
+      () =>
+        Try(listenableFuture.get()) match
+          case Success(resp) => promise.success(resp)
+          case Failure(ex)   => promise.failure(ex),
       r => ec.execute(r)
     )
     promise.future

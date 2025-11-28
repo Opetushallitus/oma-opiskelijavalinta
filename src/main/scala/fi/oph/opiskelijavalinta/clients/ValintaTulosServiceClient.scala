@@ -36,7 +36,9 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient) {
           LOG.debug("Valintatulokset haettu onnistuneesti")
           Right(r.getResponseBody())
         case r =>
-          LOG.error(s"Valintatulosten haku valintatulospalvelusta epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}")
+          LOG.error(
+            s"Valintatulosten haku valintatulospalvelusta epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
+          )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
       Await.result(result, Duration(5, TimeUnit.SECONDS))
