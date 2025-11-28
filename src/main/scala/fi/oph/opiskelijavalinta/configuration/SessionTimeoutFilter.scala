@@ -22,7 +22,7 @@ class SessionTimeoutFilter extends Filter:
         val session = req.getSession(false)
         if session != null then
           val creationTime = session.getCreationTime
-          val ageMs = System.currentTimeMillis() - creationTime
+          val ageMs        = System.currentTimeMillis() - creationTime
           if ageMs > MaxSessionAgeMs then
             // Invalidate Spring Session (via your HttpSessionAdapter)
             session.invalidate()

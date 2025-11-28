@@ -10,13 +10,13 @@ import com.github.benmanes.caffeine.cache.{Caffeine, LoadingCache}
 import java.util.concurrent.TimeUnit
 
 object CacheConstants {
-  final val OAUTH2_CACHE_NAME = "oauth2Bearer"
-  final val KOUTA_HAKU_CACHE_NAME = "KOUTA_HAKU_CACHE"
-  final val KOUTA_HAKUKOHDE_CACHE_NAME = "KOUTA_HAKUKOHDE_CACHE"
+  final val OAUTH2_CACHE_NAME           = "oauth2Bearer"
+  final val KOUTA_HAKU_CACHE_NAME       = "KOUTA_HAKU_CACHE"
+  final val KOUTA_HAKUKOHDE_CACHE_NAME  = "KOUTA_HAKUKOHDE_CACHE"
   final val OHJAUSPARAMETRIT_CACHE_NAME = "OHJAUSPARAMETRIT_CACHE"
 
   final val DEFAULT_EXPIRATION_MINUTES = 15
-  final val DEFAULT_MAX_SIZE = 10000
+  final val DEFAULT_MAX_SIZE           = 10000
 }
 
 @Configuration

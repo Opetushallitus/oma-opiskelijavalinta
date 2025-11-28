@@ -17,7 +17,7 @@ class JacksonConfig extends WebMvcConfigurer {
 
   override def extendMessageConverters(converters: util.List[HttpMessageConverter[_]]): Unit =
     val jacksonConverter = converters.asScala.find(c => c.isInstanceOf[MappingJackson2HttpMessageConverter]).get
-    val index = converters.indexOf(jacksonConverter)
+    val index            = converters.indexOf(jacksonConverter)
 
     val mapper = ObjectMapper()
     mapper.registerModule(new JavaTimeModule())

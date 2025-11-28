@@ -15,10 +15,10 @@ import java.time.ZonedDateTime
 @TestInstance(Lifecycle.PER_CLASS)
 class ApplicationsServiceTest {
 
-  val koutaService: KoutaService = Mockito.mock(classOf[KoutaService])
-  val ataruClient: AtaruClient = Mockito.mock(classOf[AtaruClient])
+  val koutaService: KoutaService                       = Mockito.mock(classOf[KoutaService])
+  val ataruClient: AtaruClient                         = Mockito.mock(classOf[AtaruClient])
   val ohjausparametritService: OhjausparametritService = Mockito.mock(classOf[OhjausparametritService])
-  val vtsService: VTSService = Mockito.mock(classOf[VTSService])
+  val vtsService: VTSService                           = Mockito.mock(classOf[VTSService])
 
   val service: ApplicationsService = ApplicationsService(ataruClient, koutaService, ohjausparametritService, vtsService)
 

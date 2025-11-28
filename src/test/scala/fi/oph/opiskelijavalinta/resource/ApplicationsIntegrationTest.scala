@@ -31,10 +31,10 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsApplicationsOfUser(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
+    val oppijaUser              = new OppijaUser(attributes, "testuser", authorities)
     val mockNoResultVTSResponse = HakemuksenTulos(
       hakuOid = Some("1.2.246.562.29.00000000000000065738"),
       hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
@@ -85,7 +85,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsVTSResultsForApplications(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)

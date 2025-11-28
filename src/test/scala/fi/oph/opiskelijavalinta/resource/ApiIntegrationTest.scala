@@ -37,7 +37,7 @@ class ApiIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def get200ResponseFromAuthenticatedApiForAuthenticatedUser(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)

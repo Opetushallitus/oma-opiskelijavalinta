@@ -54,9 +54,9 @@ class ApplicationsService @Autowired (
         LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
       case Right(o) =>
-        val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
+        val apps     = mapper.readValue(o, classOf[Array[Application]]).toSeq
         val enriched = apps.map(a => enrichApplication(a))
-        val now = System.currentTimeMillis()
+        val now      = System.currentTimeMillis()
         ApplicationsEnriched(
           enriched.filter(a => now < a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)),
           enriched.filter(a => now >= a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L))
@@ -65,10 +65,10 @@ class ApplicationsService @Autowired (
   }
 
   private def enrichApplication(application: Application): ApplicationEnriched = {
-    val now = new Date()
-    var haku: Option[HakuEnriched] = Option.empty
-    var hakukohteet: Set[Option[Hakukohde]] = Set.empty
-    var ohjausparametrit: Option[Ohjausparametrit] = Option.empty
+    val now                                           = new Date()
+    var haku: Option[HakuEnriched]                    = Option.empty
+    var hakukohteet: Set[Option[Hakukohde]]           = Set.empty
+    var ohjausparametrit: Option[Ohjausparametrit]    = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
     if (application.haku != null) {
       haku = koutaService.getHaku(application.haku, application.submitted)

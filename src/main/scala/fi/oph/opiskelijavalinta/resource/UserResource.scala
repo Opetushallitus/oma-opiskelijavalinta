@@ -20,8 +20,8 @@ class UserResource @Autowired (private val onrClient: OnrClient) {
     LOG.info("Getting User details")
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.attributes.get("personOid")
-    val hetu: Option[String] = principal.attributes.get("nationalIdentificationNumber")
-    val oppija = (personOid, hetu) match
+    val hetu: Option[String]      = principal.attributes.get("nationalIdentificationNumber")
+    val oppija                    = (personOid, hetu) match
       case (Some(personOid), _) => onrClient.getPersonInfo(personOid)
       case (None, Some(hetu))   => onrClient.getPersonInfoByHetu(hetu)
       case _ => null // TODO: käsittele tapaukset ilman hetua tai kun on heikko tunnistautuminen käytössä

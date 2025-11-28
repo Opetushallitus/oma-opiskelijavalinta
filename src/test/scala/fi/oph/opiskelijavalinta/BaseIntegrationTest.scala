@@ -66,8 +66,8 @@ class BaseIntegrationTest {
   val LOG: Logger = LoggerFactory.getLogger(this.getClass)
 
   val POSTGRES_DATABASENAME = "oma-opiskelijavalinta"
-  val POSTGRES_USERNAME = "app"
-  val POSTGRES_PASSWORD = "app"
+  val POSTGRES_USERNAME     = "app"
+  val POSTGRES_PASSWORD     = "app"
 
   val postgres: OphPostgresContainer = new OphPostgresContainer("postgres:15")
     .withDatabaseName(POSTGRES_DATABASENAME)
@@ -122,10 +122,10 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
-  var mvc: MockMvc = null
+  var mvc: MockMvc                                         = null
 
   @BeforeAll def setup(): Unit = {
-    val configurer: MockMvcConfigurer = SecurityMockMvcConfigurers.springSecurity()
+    val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
 
     mvc = intermediate.build
@@ -209,7 +209,7 @@ class BaseIntegrationTest {
   }
 
   var capturedOutput: CapturedOutput = null
-  var outputLength = 0;
+  var outputLength                   = 0;
 
   def getLatestAuditLogEntry: AuditLogEntry =
     val output = capturedOutput
