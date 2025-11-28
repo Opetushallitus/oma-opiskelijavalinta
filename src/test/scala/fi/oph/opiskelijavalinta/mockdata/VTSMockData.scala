@@ -4,7 +4,7 @@ import fi.oph.opiskelijavalinta.model.{Aikataulu, HakemuksenTulos, HakutoiveenTu
 
 object VTSMockData {
 
-  val hakutoive1 = HakutoiveenTulos(
+  val hakutoive1Hyvaksytty = HakutoiveenTulos(
     hakukohdeOid = Some("hakukohde-oid-1"),
     hakukohdeNimi = Some("Liukumäen lisensiaatti"),
     tarjoajaOid = Some("organisaatio-oid-1"),
@@ -41,8 +41,8 @@ object VTSMockData {
       )
     )
   )
-  
-  val hakutoive2 = HakutoiveenTulos(
+
+  val hakutoive2Kesken = HakutoiveenTulos(
     hakukohdeOid = Some("hakukohde-oid-2"),
     hakukohdeNimi = Some("Hiekkalaatikon arkeologi"),
     tarjoajaOid = Some("organisaatio-oid-2"),
@@ -78,7 +78,19 @@ object VTSMockData {
     hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
     hakijaOid = Some("1.2.246.562.24.97280766274"),
     aikataulu = Some(aikataulu),
-    hakutoiveet = List(hakutoive1, hakutoive2)
+    hakutoiveet = List(hakutoive1Hyvaksytty, hakutoive2Kesken)
+  )
+
+  val mockVTSKeskenResponse = HakemuksenTulos(
+    hakuOid = Some("1.2.246.562.29.00000000000000065738"),
+    hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
+    hakijaOid = Some("1.2.246.562.24.97280766274"),
+    aikataulu = Some(aikataulu),
+    hakutoiveet = List(hakutoive1Hyvaksytty.copy(
+      julkaistavissa = Some(false),
+      valintatila = Some("KESKEN"),
+      vastaanotettavuustila = Some("EI_VASTAANOTETTAVISSA"),
+      vastaanottoDeadline = None), hakutoive2Kesken)
   )
 
 }

@@ -38,14 +38,22 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
       case Left(e) =>
         LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-      case Right(o) => 
+      case Right(o) =>
         val apps = mapper.readValue(o, classOf[Array[Application]]).toSeq
         val enriched = apps.map(a => enrichApplication(a))
         val now = System.currentTimeMillis()
         ApplicationsEnriched(
-          enriched.filter(a => now < a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)),
+          enriched.filter(a => isAjankohtainenHakemus(now, a.ohjausparametrit)),
           enriched.filter(a => now >= a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)))
     }
+  }
+
+  private def isAjankohtainenHakemus(now: Long, ohjausparametrit: Option[Ohjausparametrit]) = {
+    now < ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
+  }
+
+  private def isJulkaistuTulosHakutoiveella(tulokset: List[HakutoiveenTulos]): Boolean = {
+    tulokset.exists(t => t.julkaistavissa.getOrElse(false))
   }
 
   private def enrichApplication(application: Application): ApplicationEnriched = {
@@ -64,9 +72,19 @@ class ApplicationsService @Autowired(ataruClient: AtaruClient, koutaService: Kou
           o.PH_VTJH.flatMap(d => d.date),
           o.PH_EVR.flatMap(d => d.date),
           o.PH_OPVP.flatMap(d => d.date)))
-      hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
-        case Some(v) => v.hakutoiveet
-        case _ => List.empty
+      // haetaan tulokset vain ajankohtaisille hakemuksille
+      if(isAjankohtainenHakemus(System.currentTimeMillis(), ohjausparametrit)) {
+        // palautetaan tulokset vain jos jollain hakutoiveella on julkaistava tulos
+        // tai kesken-tulos kun hakuaika on päättynyt
+        hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+          case Some(v) =>
+            if (!haku.get.hakuaikaKaynnissa || isJulkaistuTulosHakutoiveella(v.hakutoiveet))
+              v.hakutoiveet
+            else
+              List.empty
+          case _ => List.empty
+        }
+
       }
     }
     ApplicationEnriched(application.oid, haku, hakukohteet, ohjausparametrit, application.secret, application.submitted, hakutoiveidenTulokset, application.formName)

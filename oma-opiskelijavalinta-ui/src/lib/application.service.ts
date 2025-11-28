@@ -23,6 +23,7 @@ export type Application = {
   hakukierrosPaattyy?: number | null;
   submitted: number;
   formName: TranslatedName;
+  hakemuksenTulokset: Array<HakutoiveenTulos>;
 };
 
 export type Applications = {
@@ -38,6 +39,13 @@ type Ohjausparametrit = {
   opiskelijanPaikanVastaanottoPaattyy?: number | null;
 };
 
+export type HakutoiveenTulos = {
+  hakukohdeOid: string;
+  julkaistavissa: boolean;
+  valintatila?: string;
+  varasijanumero?: number | null;
+};
+
 type ApplicationResponse = {
   oid: string;
   haku: Haku;
@@ -46,6 +54,7 @@ type ApplicationResponse = {
   ohjausparametrit?: Ohjausparametrit;
   submitted: string;
   formName: TranslatedName;
+  hakemuksenTulokset: Array<HakutoiveenTulos>;
 };
 
 type ApplicationsResponse = {

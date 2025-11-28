@@ -8,17 +8,21 @@ export default defineConfig(({ command }) => {
   const isTest = process.env.VITE_TEST === 'true';
   const isDev = !isTest && command === 'serve'; // true when running `react-router dev`
 
-  const apiUrl = 'https://localhost:8555';
   const HAKIJA_DOMAIN =
-    process.env.VITE_HAKIJA_DOMAIN ?? 'https://testiopintopolku.fi';
+    process.env.VITE_HAKIJA_DOMAIN ?? 'https://untuvaopintopolku.fi';
 
+  const useHttps = process.env.VITE_USE_HTTPS === 'true';
+  console.log('VITE_USE_HTTPS:', process.env.VITE_USE_HTTPS);
+  console.log('Using HTTPS:', useHttps);
+  const apiUrl = useHttps ? 'https://localhost:8555' : 'http://localhost:8555';
   // Only load certs in dev mode
-  const httpsOptions = isDev
-    ? {
-        key: fs.readFileSync('./certificates/localhost-key.pem'),
-        cert: fs.readFileSync('./certificates/localhost.pem'),
-      }
-    : undefined;
+  const httpsOptions =
+    isDev && useHttps
+      ? {
+          key: fs.readFileSync('./certificates/localhost-key.pem'),
+          cert: fs.readFileSync('./certificates/localhost.pem'),
+        }
+      : undefined;
 
   return {
     plugins: [

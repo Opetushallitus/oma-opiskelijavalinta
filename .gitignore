@@ -47,5 +47,6 @@ cdk.out
 localhost-keystore.p12
 
 application-dev.yml
+application-dev-http.yml
 
 src/main/resources/static/
