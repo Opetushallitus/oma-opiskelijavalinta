@@ -96,15 +96,15 @@ class ApplicationsService @Autowired (
       if(isAjankohtainenHakemus(System.currentTimeMillis(), ohjausparametrit)) {
         // palautetaan tulokset vain jos jollain hakutoiveella on julkaistava tulos
         // tai kesken-tulos kun hakuaika on päättynyt
-        hakutoiveidenTulokset =
-          VTSService
-            .getValinnanTulokset(application.haku, application.oid)
-            .map(_.hakutoiveet)
-          if(!haku.get.hakuaikaKaynnissa || isJulkaistuTulosHakutoiveella(hakutoiveidenTulokset)) {
-            hakutoiveidenTulokset
-          } else {
-            List.empty
-          }
+        hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+          case Some(v) =>
+            if (!haku.get.hakuaikaKaynnissa || isJulkaistuTulosHakutoiveella(v.hakutoiveet))
+              v.hakutoiveet
+            else
+              List.empty
+          case _ => List.empty
+        }
+
       }
     }
     ApplicationEnriched(

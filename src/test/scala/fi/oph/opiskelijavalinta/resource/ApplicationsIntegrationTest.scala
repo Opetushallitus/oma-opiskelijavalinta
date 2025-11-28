@@ -4,7 +4,7 @@ import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
-import fi.oph.opiskelijavalinta.model.{Aikataulu, ApplicationsEnriched, DateParam, HakemuksenTulos, OhjausparametritRaw}
+import fi.oph.opiskelijavalinta.model.{ApplicationsEnriched, DateParam, OhjausparametritRaw}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -99,6 +99,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
+    val foo = objectMapper.writeValueAsString(mockVTSResponse)
     val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.current.length)
     Assertions.assertEquals(0, applications.old.length)
