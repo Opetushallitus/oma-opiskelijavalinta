@@ -12,16 +12,16 @@ import slick.jdbc.PostgresProfile.api.Database
 import scala.concurrent.ExecutionContext
 
 @Configuration
-class SessionMappingStorageConfiguration @Autowired()(
-                                                       private val sessionRepository: JdbcIndexedSessionRepository,
-                                                       private val db: Database
-                                                     )(implicit ec: ExecutionContext) {
+class SessionMappingStorageConfiguration @Autowired() (
+  private val sessionRepository: JdbcIndexedSessionRepository,
+  private val db: Database
+)(implicit ec: ExecutionContext) {
   val LOG = LoggerFactory.getLogger(classOf[SessionMappingStorageConfiguration])
 
   @Bean
   def sessionMappingStorage(): SessionMappingStorage = {
-    val jdbcSessionMappingStorage = new JdbcSessionMappingStorage(sessionRepository.asInstanceOf[SessionRepository[Session]], db)
+    val jdbcSessionMappingStorage =
+      new JdbcSessionMappingStorage(sessionRepository.asInstanceOf[SessionRepository[Session]], db)
     jdbcSessionMappingStorage
   }
 }
-

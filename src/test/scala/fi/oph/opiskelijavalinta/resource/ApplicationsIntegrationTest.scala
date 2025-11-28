@@ -21,38 +21,45 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
-    mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATIONS_PATH))
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.APPLICATIONS_PATH)
+      )
       .andExpect(status().isUnauthorized)
   }
 
   @Test
   def returnsApplicationsOfUser(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
+    val oppijaUser              = new OppijaUser(attributes, "testuser", authorities)
     val mockNoResultVTSResponse = HakemuksenTulos(
       hakuOid = Some("1.2.246.562.29.00000000000000065738"),
       hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
       hakijaOid = Some("1.2.246.562.24.97280766274"),
-      aikataulu = Some(Aikataulu(
-        vastaanottoEnd = Some("1970-01-01T13:00:00Z"),
-        vastaanottoBufferDays = Some(14)
-      )),
+      aikataulu = Some(
+        Aikataulu(
+          vastaanottoEnd = Some("1970-01-01T13:00:00Z"),
+          vastaanottoBufferDays = Some(14)
+        )
+      ),
       hakutoiveet = List()
     )
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
-      .thenReturn(
-        Right(objectMapper.writeValueAsString(mockNoResultVTSResponse)))
-    val result = mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATIONS_PATH)
-        .`with`(user(oppijaUser)))
+      .thenReturn(Right(objectMapper.writeValueAsString(mockNoResultVTSResponse)))
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.APPLICATIONS_PATH)
+          .`with`(user(oppijaUser))
+      )
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications =  objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
+    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.old.length)
     Assertions.assertEquals(0, applications.current.length)
     val app = applications.old.head
@@ -78,17 +85,19 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsVTSResultsForApplications(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
-      .thenReturn(
-        Right(objectMapper.writeValueAsString(mockVTSResponse)))
-    val result = mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATIONS_PATH)
-        .`with`(user(oppijaUser)))
+      .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.APPLICATIONS_PATH)
+          .`with`(user(oppijaUser))
+      )
       .andExpect(status().isOk)
       .andReturn()
 

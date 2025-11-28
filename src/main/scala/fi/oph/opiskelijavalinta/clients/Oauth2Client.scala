@@ -20,7 +20,7 @@ class Oauth2Client @Autowired (private val oauth2BearerClient: Oauth2BearerClien
   val LOG: Logger = LoggerFactory.getLogger(classOf[Oauth2Client]);
 
   private def execute(requestBuilder: HttpRequest.Builder): HttpResponse[String] = try {
-    val bearer = oauth2BearerClient.getOauth2Bearer
+    val bearer  = oauth2BearerClient.getOauth2Bearer
     val request = requestBuilder
       .timeout(Duration.ofSeconds(35))
       .setHeader("Authorization", "Bearer " + bearer)
@@ -29,7 +29,7 @@ class Oauth2Client @Autowired (private val oauth2BearerClient: Oauth2BearerClien
     val client = HttpClient.newBuilder.build
     client.send(request, BodyHandlers.ofString)
   } catch {
-    case e@(_: IOException | _: InterruptedException) =>
+    case e @ (_: IOException | _: InterruptedException) =>
       LOG.error("error while executing request", e)
       throw new RestClientException("error while executing request", e)
   }

@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.web.servlet.config.annotation.{CorsRegistry, WebMvcConfigurer}
 
 @SpringBootApplication
-class App {
-}
+class App {}
 
 object App {
   @main
@@ -20,5 +19,5 @@ object App {
     System.setProperty("springdoc.swagger-ui.path", "/static/swagger-ui/index.html")
     System.setProperty("springdoc.swagger-ui.tagsSorter", "alpha")
 
-    SpringApplication.run(classOf[App], args:_*)
+    SpringApplication.run(classOf[App], args: _*)
 }

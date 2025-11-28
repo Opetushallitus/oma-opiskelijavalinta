@@ -18,7 +18,7 @@ class OnrClient @Autowired (httpClient: Oauth2Client, objectMapper: ObjectMapper
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
 
   private def fetchPersonInfo(url: String): Oppija = {
-    val request = HttpRequest.newBuilder.uri(URI.create(url)).GET
+    val request  = HttpRequest.newBuilder.uri(URI.create(url)).GET
     val response = httpClient.executeRequest(request)
     objectMapper.readValue(response.body, classOf[Oppija])
   }

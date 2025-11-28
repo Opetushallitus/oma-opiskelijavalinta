@@ -7,7 +7,7 @@ import scala.jdk.CollectionConverters.SeqHasAsJava
 object DevApp {
 
   private val postgres: PostgreSQLContainer[_] = new PostgreSQLContainer("postgres:17")
-  private def startContainers(): Unit =
+  private def startContainers(): Unit          =
     postgres.withUsername("app")
     postgres.withPassword("app")
     postgres.setPortBindings(List("55455:5432").asJava)
@@ -25,7 +25,10 @@ object DevApp {
     }
 
     // cas-configuraatio
-    System.setProperty("cas-service.service", sys.env.getOrElse("CAS_SERVICE_URL", "https://localhost:8555/oma-opiskelijavalinta"))
+    System.setProperty(
+      "cas-service.service",
+      sys.env.getOrElse("CAS_SERVICE_URL", "https://localhost:8555/oma-opiskelijavalinta")
+    )
     System.setProperty("cas-service.sendRenew", "false")
     System.setProperty("cas-service.key", "oma-opiskelijavalinta")
 

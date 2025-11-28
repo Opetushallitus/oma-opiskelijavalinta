@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 
 @RequestMapping(path = Array(APPLICATIONS_PATH))
 @RestController
-class ApplicationsResource @Autowired(applicationService: ApplicationsService) {
+class ApplicationsResource @Autowired (applicationService: ApplicationsService) {
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[ApplicationsEnriched] = {
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.attributes.get("personOid")
-    val applications = applicationService.getApplications(personOid.get)
+    val applications              = applicationService.getApplications(personOid.get)
     ResponseEntity.ok(applications)
   }
 }

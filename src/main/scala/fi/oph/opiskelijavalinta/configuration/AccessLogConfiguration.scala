@@ -17,7 +17,7 @@ import java.nio.file.{Files, Paths, StandardCopyOption}
 class AccessLogConfiguration extends WebServerFactoryCustomizer[TomcatServletWebServerFactory] {
 
   val CONFIG_FILE = "logback-access.xml"
-  
+
   override def customize(tomcat: TomcatServletWebServerFactory): Unit = {
     tomcat.addContextCustomizers((context: Context) => {
       val logbackValve = new LogbackValve
