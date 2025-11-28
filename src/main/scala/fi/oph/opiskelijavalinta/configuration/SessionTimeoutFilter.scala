@@ -6,10 +6,8 @@ import org.springframework.stereotype.Component
 
 import java.io.IOException
 
-/**
- * Enforces an absolute 4-hour session lifetime from creation time,
- * without renewal on user activity.
- */
+/** Enforces an absolute 4-hour session lifetime from creation time, without renewal on user activity.
+  */
 @Component
 class SessionTimeoutFilter extends Filter:
 

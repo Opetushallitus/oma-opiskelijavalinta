@@ -10,9 +10,9 @@ class OppijaUserDetails extends AuthenticationUserDetailsService[CasAssertionAut
     val principal = token.getAssertion.getPrincipal
     val attrsJava = principal.getAttributes
     val attrs: OppijaAttributes = attrsJava.asScala.view.mapValues {
-      case null => ""
+      case null      => ""
       case s: String => s
-      case other => other.toString
+      case other     => other.toString
     }.toMap
     new OppijaUser(attrs, principal.getName)
   }
