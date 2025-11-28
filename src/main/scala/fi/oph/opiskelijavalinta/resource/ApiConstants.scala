@@ -1,7 +1,8 @@
 package fi.oph.opiskelijavalinta.resource
 
-/** API-endpointtien polkuihin ja Swagger-kuvauksiin liittyvät vakiot
-  */
+/**
+ * API-endpointtien polkuihin ja Swagger-kuvauksiin liittyvät vakiot
+ */
 object ApiConstants {
 
   final val API_PREFIX = "/api"

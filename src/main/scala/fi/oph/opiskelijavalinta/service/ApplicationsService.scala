@@ -32,11 +32,11 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class ApplicationsService @Autowired (
-    ataruClient: AtaruClient,
-    koutaService: KoutaService,
-    ohjausparametritService: OhjausparametritService,
-    VTSService: VTSService,
-    mapper: ObjectMapper = new ObjectMapper()
+  ataruClient: AtaruClient,
+  koutaService: KoutaService,
+  ohjausparametritService: OhjausparametritService,
+  VTSService: VTSService,
+  mapper: ObjectMapper = new ObjectMapper()
 ) {
 
   mapper.registerModule(DefaultScalaModule)

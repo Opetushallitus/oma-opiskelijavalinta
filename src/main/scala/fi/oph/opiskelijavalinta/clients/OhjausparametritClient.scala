@@ -64,8 +64,9 @@ class OhjausparametritClient {
         Left(e)
   }
 
-  /** Convert an AsyncHttpClient ListenableFuture into a Scala Future.
-    */
+  /**
+   * Convert an AsyncHttpClient ListenableFuture into a Scala Future.
+   */
   def toScalaFuture(listenableFuture: ListenableFuture[Response])(using ec: ExecutionContext): Future[Response] = {
     val promise = Promise[Response]()
 

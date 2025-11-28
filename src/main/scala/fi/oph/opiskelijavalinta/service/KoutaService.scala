@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import fi.oph.opiskelijavalinta.model.{Application, Haku, HakuEnriched, Hakuaika, Hakukohde}
-import fi.oph.opiskelijavalinta.util.TimeUtils.{ZONE_FINLAND, isDateTimeBetween, isNowBetween, KOUTA_DATETIME_FORMATTER}
+import fi.oph.opiskelijavalinta.util.TimeUtils.{isDateTimeBetween, isNowBetween, KOUTA_DATETIME_FORMATTER, ZONE_FINLAND}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable

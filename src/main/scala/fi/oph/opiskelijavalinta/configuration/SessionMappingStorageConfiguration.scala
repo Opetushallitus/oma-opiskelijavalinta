@@ -13,8 +13,8 @@ import scala.concurrent.ExecutionContext
 
 @Configuration
 class SessionMappingStorageConfiguration @Autowired() (
-    private val sessionRepository: JdbcIndexedSessionRepository,
-    private val db: Database
+  private val sessionRepository: JdbcIndexedSessionRepository,
+  private val db: Database
 )(implicit ec: ExecutionContext) {
   val LOG = LoggerFactory.getLogger(classOf[SessionMappingStorageConfiguration])
 

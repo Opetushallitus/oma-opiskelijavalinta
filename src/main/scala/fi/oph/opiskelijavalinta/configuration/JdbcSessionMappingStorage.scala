@@ -11,7 +11,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 
 class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], db: Database)(implicit
-    ec: ExecutionContext
+  ec: ExecutionContext
 ) extends OphSessionMappingStorage {
 
   val LOG = LoggerFactory.getLogger(classOf[JdbcSessionMappingStorage])
