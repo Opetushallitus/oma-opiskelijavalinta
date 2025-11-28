@@ -53,8 +53,9 @@ object BaseIntegrationTest {
   lazy val postgresPort = TestSocketUtils.findAvailableTcpPort
 }
 
-/** Integraatiotestien base-luokka. Käynnistää ennen testejä Localstacking, Postgresin ja Rediksen.
-  */
+/**
+ * Integraatiotestien base-luokka. Käynnistää ennen testejä Localstacking, Postgresin ja Rediksen.
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(Array(classOf[OutputCaptureExtension]))
 @ActiveProfiles(Array("test"))

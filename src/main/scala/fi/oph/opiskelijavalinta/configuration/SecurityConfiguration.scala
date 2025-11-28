@@ -26,14 +26,15 @@ import org.springframework.security.web.context.{HttpSessionSecurityContextRepos
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
 
-/** */
+/**
+ */
 @Configuration
 @EnableWebSecurity
 @EnableJdbcHttpSession(tableName = "SPRING_SESSION")
 class SecurityConfiguration {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
-  private final val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
+  final private val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
@@ -110,12 +111,12 @@ class SecurityConfiguration {
   @Bean
   @Order(2)
   def appSecurityFilterChain(
-      http: HttpSecurity,
-      casAuthenticationEntryPoint: CasAuthenticationEntryPoint,
-      authenticationFilter: CasAuthenticationFilter,
-      sessionMappingStorage: SessionMappingStorage,
-      securityContextRepository: SecurityContextRepository,
-      sessionTimeoutFilter: SessionTimeoutFilter
+    http: HttpSecurity,
+    casAuthenticationEntryPoint: CasAuthenticationEntryPoint,
+    authenticationFilter: CasAuthenticationFilter,
+    sessionMappingStorage: SessionMappingStorage,
+    securityContextRepository: SecurityContextRepository,
+    sessionTimeoutFilter: SessionTimeoutFilter
   ): SecurityFilterChain =
     val SWAGGER_WHITELIST = List(
       "/swagger-resources",
@@ -182,8 +183,8 @@ class SecurityConfiguration {
 
   @Bean
   def serviceProperties(
-      @Value("${cas-service.service}") service: String,
-      @Value("${cas-service.sendRenew}") sendRenew: Boolean
+    @Value("${cas-service.service}") service: String,
+    @Value("${cas-service.sendRenew}") sendRenew: Boolean
   ): ServiceProperties =
     val serviceProperties = new ServiceProperties()
     serviceProperties.setService(service + ApiConstants.CAS_TICKET_VALIDATION_PATH)
@@ -196,10 +197,10 @@ class SecurityConfiguration {
   //
   @Bean
   def casAuthenticationProvider(
-      serviceProperties: ServiceProperties,
-      ticketValidator: TicketValidator,
-      environment: Environment,
-      @Value("${cas-service.key}") key: String
+    serviceProperties: ServiceProperties,
+    ticketValidator: TicketValidator,
+    environment: Environment,
+    @Value("${cas-service.key}") key: String
   ): CasAuthenticationProvider =
     // val host = environment.getProperty("host.alb", environment.getRequiredProperty("host.virkailija"))
     val casAuthenticationProvider = CasAuthenticationProvider()
@@ -220,9 +221,9 @@ class SecurityConfiguration {
   //
   @Bean
   def casAuthenticationFilter(
-      authenticationManager: AuthenticationManager,
-      serviceProperties: ServiceProperties,
-      securityContextRepository: SecurityContextRepository
+    authenticationManager: AuthenticationManager,
+    serviceProperties: ServiceProperties,
+    securityContextRepository: SecurityContextRepository
   ): CasAuthenticationFilter =
     val casAuthenticationFilter = CasAuthenticationFilter()
     casAuthenticationFilter.setAuthenticationManager(authenticationManager)
@@ -235,8 +236,8 @@ class SecurityConfiguration {
   // CAS entry point
   //
   @Bean def casAuthenticationEntryPoint(
-      environment: Environment,
-      serviceProperties: ServiceProperties
+    environment: Environment,
+    serviceProperties: ServiceProperties
   ): CasAuthenticationEntryPoint =
     val casAuthenticationEntryPoint = new CasAuthenticationEntryPoint()
     casAuthenticationEntryPoint.setLoginUrl(environment.getRequiredProperty("web.url.cas-login"))
@@ -245,8 +246,8 @@ class SecurityConfiguration {
 
   @Bean
   def authenticationManager(
-      http: HttpSecurity,
-      casAuthenticationProvider: CasAuthenticationProvider
+    http: HttpSecurity,
+    casAuthenticationProvider: CasAuthenticationProvider
   ): AuthenticationManager =
     http
       .getSharedObject(classOf[AuthenticationManagerBuilder])
@@ -257,8 +258,8 @@ class SecurityConfiguration {
   @Bean
   @Order(1)
   def apiLoginFilterChain(
-      http: HttpSecurity,
-      casAuthenticationEntryPoint: CasAuthenticationEntryPoint
+    http: HttpSecurity,
+    casAuthenticationEntryPoint: CasAuthenticationEntryPoint
   ): SecurityFilterChain = {
     http
       .securityMatcher("/api/login")

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class OhjausparametritService @Autowired (
-    ohjausparametritClient: OhjausparametritClient,
-    mapper: ObjectMapper = new ObjectMapper()
+  ohjausparametritClient: OhjausparametritClient,
+  mapper: ObjectMapper = new ObjectMapper()
 ) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OhjausparametritService])
