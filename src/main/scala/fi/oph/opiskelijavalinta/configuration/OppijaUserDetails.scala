@@ -7,8 +7,8 @@ import scala.jdk.CollectionConverters._
 class OppijaUserDetails extends AuthenticationUserDetailsService[CasAssertionAuthenticationToken] {
 
   override def loadUserDetails(token: CasAssertionAuthenticationToken): UserDetails = {
-    val principal = token.getAssertion.getPrincipal
-    val attrsJava = principal.getAttributes
+    val principal               = token.getAssertion.getPrincipal
+    val attrsJava               = principal.getAttributes
     val attrs: OppijaAttributes = attrsJava.asScala.view.mapValues {
       case null      => ""
       case s: String => s

@@ -17,7 +17,7 @@ class ApplicationsResource @Autowired (applicationService: ApplicationsService) 
   def response: ResponseEntity[ApplicationsEnriched] = {
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.attributes.get("personOid")
-    val applications = applicationService.getApplications(personOid.get)
+    val applications              = applicationService.getApplications(personOid.get)
     ResponseEntity.ok(applications)
   }
 }

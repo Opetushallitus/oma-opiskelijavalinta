@@ -52,7 +52,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   }
 
   private def findClosestEndDate(hakuajat: Seq[Hakuaika], applicationSubmitted: String): String = {
-    val submitted = ZonedDateTime.ofInstant(Instant.parse(applicationSubmitted), ZONE_FINLAND)
+    val submitted     = ZonedDateTime.ofInstant(Instant.parse(applicationSubmitted), ZONE_FINLAND)
     var lahinHakuaika = hakuajat
       .find(ha =>
         ha.alkaa != null && ha.paattyy != null && isDateTimeBetween(
@@ -64,7 +64,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
       )
       .map(h => h.paattyy)
     if (lahinHakuaika.isEmpty) {
-      val now = ZonedDateTime.now(ZONE_FINLAND)
+      val now      = ZonedDateTime.now(ZONE_FINLAND)
       val pastAjat = hakuajat
         .map(ha => ZonedDateTime.parse(ha.paattyy, KOUTA_DATETIME_FORMATTER))
         .filter(end => now.isAfter(end))

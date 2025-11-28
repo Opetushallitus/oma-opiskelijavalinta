@@ -26,14 +26,12 @@ import org.springframework.security.web.context.{HttpSessionSecurityContextRepos
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
 
-/**
- */
 @Configuration
 @EnableWebSecurity
 @EnableJdbcHttpSession(tableName = "SPRING_SESSION")
 class SecurityConfiguration {
 
-  val LOG: Logger = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
+  val LOG: Logger                                  = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
   final private val SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check"
 
   @Value("${host.virkailija}")
