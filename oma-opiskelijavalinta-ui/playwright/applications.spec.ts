@@ -8,9 +8,9 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await mockApplicationsFetch(page);
   await mockAuthenticatedUser(page);
   await page.goto('');
-  const applications = page.getByTestId('active-applications');
+  const activeApplications = page.getByTestId('active-applications');
 
-  const app1 = applications.first();
+  const app1 = page.getByTestId('application-hakemus-oid-1');
   await expect(
     app1.getByText('Hurrikaaniopiston jatkuva haku 2025'),
   ).toBeVisible();
@@ -32,10 +32,12 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
     ),
   ).toBeVisible();
   await expect(
-    applications.getByText('Hakuaika päättyy 19.10.2025 klo 13:00.'),
+    app1.getByText('Hakuaika päättyy 19.10.2025 klo 13:00.'),
   ).toBeVisible();
+  await expect(app1.getByText('1', { exact: true })).toBeVisible();
+  await expect(app1.getByText('2', { exact: true })).toBeVisible();
 
-  const app2 = applications.last();
+  const app2 = page.getByTestId('application-hakemus-oid-2');
   await expect(
     app2.getByText('Tsunamiopiston tohtoritutkinnon haku 2025'),
   ).toBeVisible();
@@ -55,13 +57,14 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
       'Opiskelijavalinta on kesken. Hakuaika päättyi 19.6.2025 klo 09:00.',
     ),
   ).toBeVisible();
+  await expect(app2.getByText('1', { exact: true })).toBeHidden();
 
   await expect(
-    applications.getByRole('link', { name: 'Näytä valintaperusteet' }),
+    activeApplications.getByRole('link', { name: 'Näytä valintaperusteet' }),
   ).toHaveCount(3);
 
   await expect(
-    applications.getByRole('link', { name: 'Muokkaa hakemusta' }),
+    activeApplications.getByRole('link', { name: 'Muokkaa hakemusta' }),
   ).toHaveCount(2);
 });
 
@@ -109,7 +112,7 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
 
   const applications = page.getByTestId('past-applications');
 
-  const app = applications.first();
+  const app = page.getByTestId('past-application-hakemus-oid-3');
   await expect(
     app.getByText('Tsunamiopiston tohtoritutkinnon haku 2024'),
   ).toBeVisible();
@@ -158,7 +161,7 @@ test('Näyttää hauttoman hakemuksen', async ({ page }) => {
 
   const applications = page.getByTestId('past-applications');
 
-  const app = applications.first();
+  const app = page.getByTestId('application-hakemus-oid-07');
   await expect(app.getByText('Hajuton hakemus')).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
 
@@ -240,6 +243,7 @@ async function mockApplicationsFetch(
               ],
               ohjausparametrit: {
                 hakukierrosPaattyy: 1763471212000,
+                jarjestetytHakutoiveet: true,
               },
             },
           ],
