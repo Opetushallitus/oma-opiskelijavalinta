@@ -1,17 +1,17 @@
 package fi.oph.opiskelijavalinta.configuration
 
 import java.util.Collection
-import org.springframework.security.core.{GrantedAuthority}
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import scala.jdk.CollectionConverters._
 
 type OppijaAttributes = Map[String, String]
 
 final class OppijaUser(
-                        val attributes: OppijaAttributes,
-                        private val username: String,
-                        private val authorities: Collection[_ <: GrantedAuthority] = java.util.Collections.emptyList()
-                      ) extends UserDetails {
+  val attributes: OppijaAttributes,
+  private val username: String,
+  private val authorities: Collection[_ <: GrantedAuthority] = java.util.Collections.emptyList()
+) extends UserDetails {
 
   override def getAuthorities: Collection[_ <: GrantedAuthority] = authorities
 

@@ -11,7 +11,10 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
-class OhjausparametritService @Autowired (ohjausparametritClient: OhjausparametritClient, mapper: ObjectMapper = new ObjectMapper()) {
+class OhjausparametritService @Autowired (
+  ohjausparametritClient: OhjausparametritClient,
+  mapper: ObjectMapper = new ObjectMapper()
+) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OhjausparametritService])
   mapper.registerModule(DefaultScalaModule)

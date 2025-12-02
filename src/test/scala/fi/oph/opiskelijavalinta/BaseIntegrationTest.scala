@@ -8,7 +8,15 @@ import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Po
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
 import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
-import fi.oph.opiskelijavalinta.model.{Application, DateParam, Haku, Hakuaika, Hakukohde, OhjausparametritRaw, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{
+  Application,
+  DateParam,
+  Haku,
+  Hakuaika,
+  Hakukohde,
+  OhjausparametritRaw,
+  TranslatedName
+}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -33,7 +41,8 @@ import org.springframework.web.context.WebApplicationContext
 import org.testcontainers.containers.PostgreSQLContainer
 import slick.jdbc.JdbcBackend.Database
 
-class OphPostgresContainer(dockerImageName: String) extends PostgreSQLContainer[OphPostgresContainer](dockerImageName) {}
+class OphPostgresContainer(dockerImageName: String)
+    extends PostgreSQLContainer[OphPostgresContainer](dockerImageName) {}
 
 case class AuditLogEntry(operation: String, target: Map[String, Any], changes: List[Any])
 
@@ -66,8 +75,12 @@ class BaseIntegrationTest {
     .withPassword(POSTGRES_PASSWORD)
     .withLogConsumer(frame => LOG.info(frame.getUtf8StringWithoutLineEnding))
     .withExposedPorts(5432)
-    .withCreateContainerCmdModifier(m => m.withHostConfig(new HostConfig()
-      .withPortBindings(new PortBinding(Ports.Binding.bindPort(postgresPort), new ExposedPort(5432)))))
+    .withCreateContainerCmdModifier(m =>
+      m.withHostConfig(
+        new HostConfig()
+          .withPortBindings(new PortBinding(Ports.Binding.bindPort(postgresPort), new ExposedPort(5432)))
+      )
+    )
 
   private def getDatasource =
     val ds: PGSimpleDataSource = new PGSimpleDataSource()
@@ -78,11 +91,13 @@ class BaseIntegrationTest {
     ds.setPassword(POSTGRES_PASSWORD)
     ds
 
-
   // kontteja ei voi käynnistää vasta @BeforeAll-metodissa koska spring-konteksti rakennetaan ennen sitä
   val setupDone: Boolean = {
     postgres.start()
-    System.setProperty("spring.datasource.url", "jdbc:postgresql://localhost:" + postgresPort + "/" + POSTGRES_DATABASENAME)
+    System.setProperty(
+      "spring.datasource.url",
+      "jdbc:postgresql://localhost:" + postgresPort + "/" + POSTGRES_DATABASENAME
+    )
 
     System.setProperty("cas-service.service", "DUMMY")
     System.setProperty("cas-service.sendRenew", "false")
@@ -107,26 +122,86 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
-  var mvc: MockMvc = null
+  var mvc: MockMvc                                         = null
 
   @BeforeAll def setup(): Unit = {
-    val configurer: MockMvcConfigurer = SecurityMockMvcConfigurers.springSecurity()
+    val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
 
     mvc = intermediate.build
-    Mockito.when(ataruClient.getApplications("someValue"))
-      .thenReturn(Right(objectMapper.writeValueAsString(Array(Application("hakemus-oid-1", "haku-oid-1", Set("hakukohde-oid-1", "hakukohde-oid-2"), "secret1", "2025-11-19T09:32:01.886Z", TranslatedName("Leikkilomake", "Samma på svenska", "Playform"))))))
-    Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Haku("haku-oid-1", TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"), Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"))))))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-1", TranslatedName("Liukumäen lisensiaatti", "", ""), TranslatedName("Leikkipuisto, Liukumäki", "", "")))))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(Hakukohde("hakukohde-oid-2", TranslatedName("Hiekkalaatikon arkeologi", "", ""), TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")))))
-    Mockito.when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(OhjausparametritRaw(
-      PH_HKP = Some(DateParam(Some(1599657520000L))),
-      PH_IP = None,
-      PH_VTJH = None,
-      PH_EVR = None,
-      PH_OPVP = None,
-      None,
-    ))))
+    Mockito
+      .when(ataruClient.getApplications("someValue"))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Application(
+                "hakemus-oid-1",
+                "haku-oid-1",
+                Set("hakukohde-oid-1", "hakukohde-oid-2"),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform")
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(koutaClient.getHaku("haku-oid-1"))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Haku(
+              "haku-oid-1",
+              TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
+              Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"))
+            )
+          )
+        )
+      )
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Hakukohde(
+              "hakukohde-oid-1",
+              TranslatedName("Liukumäen lisensiaatti", "", ""),
+              TranslatedName("Leikkipuisto, Liukumäki", "", "")
+            )
+          )
+        )
+      )
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Hakukohde(
+              "hakukohde-oid-2",
+              TranslatedName("Hiekkalaatikon arkeologi", "", ""),
+              TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")
+            )
+          )
+        )
+      )
+    Mockito
+      .when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1"))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            OhjausparametritRaw(
+              PH_HKP = Some(DateParam(Some(1599657520000L))),
+              PH_IP = None,
+              PH_VTJH = None,
+              PH_EVR = None,
+              PH_OPVP = None,
+              None
+            )
+          )
+        )
+      )
   }
 
   @AfterAll def teardown(): Unit = {
@@ -134,10 +209,12 @@ class BaseIntegrationTest {
   }
 
   var capturedOutput: CapturedOutput = null
-  var outputLength = 0;
+  var outputLength                   = 0;
 
   def getLatestAuditLogEntry: AuditLogEntry =
-    val output = capturedOutput.subSequence(outputLength, capturedOutput.length()).toString
+    val output = capturedOutput
+      .subSequence(outputLength, capturedOutput.length())
+      .toString
       .split("\n")
       .filter(s => s.contains(".AuditLog"))
       .map(s => s.split("\\.AuditLog(\\s)+:(\\s)+")(1))

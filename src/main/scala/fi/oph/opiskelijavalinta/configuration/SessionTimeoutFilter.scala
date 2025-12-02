@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component
 import java.io.IOException
 
 /**
- * Enforces an absolute 4-hour session lifetime from creation time,
- * without renewal on user activity.
+ * Enforces an absolute 4-hour session lifetime from creation time, without renewal on user activity.
  */
 @Component
 class SessionTimeoutFilter extends Filter:
@@ -23,7 +22,7 @@ class SessionTimeoutFilter extends Filter:
         val session = req.getSession(false)
         if session != null then
           val creationTime = session.getCreationTime
-          val ageMs = System.currentTimeMillis() - creationTime
+          val ageMs        = System.currentTimeMillis() - creationTime
           if ageMs > MaxSessionAgeMs then
             // Invalidate Spring Session (via your HttpSessionAdapter)
             session.invalidate()

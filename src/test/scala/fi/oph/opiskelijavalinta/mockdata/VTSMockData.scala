@@ -1,6 +1,12 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{Aikataulu, HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulos}
+import fi.oph.opiskelijavalinta.model.{
+  Aikataulu,
+  HakemuksenTulos,
+  HakutoiveenTulos,
+  Ilmoittautumistila,
+  JonokohtainenTulos
+}
 
 object VTSMockData {
 
@@ -41,7 +47,7 @@ object VTSMockData {
       )
     )
   )
-  
+
   val hakutoive2 = HakutoiveenTulos(
     hakukohdeOid = Some("hakukohde-oid-2"),
     hakukohdeNimi = Some("Hiekkalaatikon arkeologi"),
