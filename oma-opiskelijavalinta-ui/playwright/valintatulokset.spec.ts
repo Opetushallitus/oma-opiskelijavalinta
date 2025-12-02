@@ -6,6 +6,7 @@ import {
 import {
   hakemuksenTulosHylatty,
   hakemuksenTulosHyvaksytty,
+  hakemuksenTulosKesken,
   hakemuksenTulosVarasijalla,
   hakemus1,
   hakemus2,
@@ -73,7 +74,7 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
 }) => {
   const varasijaApplication = {
     ...hakemus1,
-    hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+    hakemuksenTulokset: [hakemuksenTulosVarasijalla, hakemuksenTulosKesken],
   };
   await mockApplicationsFetch(page, {
     current: [varasijaApplication],

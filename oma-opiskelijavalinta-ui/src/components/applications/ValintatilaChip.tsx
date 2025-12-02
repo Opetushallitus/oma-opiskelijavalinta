@@ -2,20 +2,7 @@ import { Chip } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { HakutoiveenTulos } from '@/lib/application.service';
-
-export const VALINTATILA = {
-  HYVAKSYTTY: 'HYVAKSYTTY',
-  HARKINNANVARAISESTI_HYVAKSYTTY: 'HARKINNANVARAISESTI_HYVAKSYTTY',
-  VARASIJALTA_HYVAKSYTTY: 'VARASIJALTA_HYVAKSYTTY',
-  VARALLA: 'VARALLA',
-  PERUUTETTU: 'PERUUTETTU',
-  PERUNUT: 'PERUNUT',
-  PERUUNTUNUT: 'PERUUNTUNUT',
-  HYLATTY: 'HYLATTY',
-  KESKEN: 'KESKEN',
-} as const;
-
-type Valintatila = keyof typeof VALINTATILA;
+import { Valintatila } from '@/lib/valinta-tulos-types';
 
 const hyvaksyttyBackground = '#E2FAE4';
 const hylattyBackground = '#EECFC5';
@@ -25,51 +12,51 @@ const valintatilaStyles: Record<
   Valintatila,
   { label: string; background: string; color: string }
 > = {
-  HYVAKSYTTY: {
+  [Valintatila.HYVAKSYTTY]: {
     label: 'tulos.hyvaksytty',
     background: hyvaksyttyBackground,
     color: ophColors.green1,
   },
-  HARKINNANVARAISESTI_HYVAKSYTTY: {
+  [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: {
     label: 'tulos.hyvaksytty',
     background: hyvaksyttyBackground,
     color: ophColors.green1,
   },
-  VARASIJALTA_HYVAKSYTTY: {
+  [Valintatila.VARASIJALTA_HYVAKSYTTY]: {
     label: 'tulos.hyvaksytty',
     background: hyvaksyttyBackground,
     color: ophColors.green1,
   },
 
-  VARALLA: {
+  [Valintatila.VARALLA]: {
     label: 'tulos.varalla',
     background: ophColors.lightBlue2,
     color: ophColors.cyan1,
   },
 
-  HYLATTY: {
+  [Valintatila.HYLATTY]: {
     label: 'tulos.hylatty',
     background: hylattyBackground,
     color: ophColors.grey900,
   },
 
-  KESKEN: {
+  [Valintatila.KESKEN]: {
     label: 'tulos.kesken',
     background: keskenBackground,
     color: ophColors.orange1,
   },
 
-  PERUUTETTU: {
+  [Valintatila.PERUUTETTU]: {
     label: 'tulos.peruutettu',
     background: ophColors.grey300,
     color: ophColors.grey900,
   },
-  PERUNUT: {
+  [Valintatila.PERUNUT]: {
     label: 'tulos.perunut',
     background: ophColors.grey300,
     color: ophColors.grey900,
   },
-  PERUUNTUNUT: {
+  [Valintatila.PERUUNTUNUT]: {
     label: 'tulos.peruuntunut',
     background: ophColors.grey300,
     color: ophColors.grey900,
@@ -83,10 +70,10 @@ export function ValintatilaChip({
 }) {
   const { t } = useTranslations();
   const valintatila: Valintatila =
-    (hakutoiveenTulos?.valintatila as Valintatila) || 'KESKEN';
+    (hakutoiveenTulos?.valintatila as Valintatila) || Valintatila.KESKEN;
   const style = valintatilaStyles[valintatila as Valintatila];
   const label =
-    valintatila === 'VARALLA' && hakutoiveenTulos?.varasijanumero
+    valintatila === Valintatila.VARALLA && hakutoiveenTulos?.varasijanumero
       ? t('tulos.varalla-varasija', {
           varasijanumero: String(hakutoiveenTulos?.varasijanumero),
         })
