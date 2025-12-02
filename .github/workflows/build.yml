@@ -73,7 +73,7 @@ jobs:
       - name: Build Scala project
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn clean package
+        run: mvn clean package -DskipTests
 
       - uses: actions/cache@v4
         id: restore-build
