@@ -58,13 +58,19 @@ class ApplicationsService @Autowired (
         val enriched = apps.map(a => enrichApplication(a))
         val now      = System.currentTimeMillis()
         ApplicationsEnriched(
-          enriched.filter(a => isAjankohtainenHakemus(now, a.ohjausparametrit)),
-          enriched.filter(a => now >= a.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)))
+          enriched.filter(a => isAjankohtainenHakemus(a.ohjausparametrit)),
+          enriched.filter(a => isVanhaHakemus(a.ohjausparametrit)))
     }
   }
 
-  private def isAjankohtainenHakemus(now: Long, ohjausparametrit: Option[Ohjausparametrit]) = {
+  private def isAjankohtainenHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
+    val now = System.currentTimeMillis()
     now < ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
+  }
+
+  private def isVanhaHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
+    val now = System.currentTimeMillis()
+    now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
   private def isJulkaistuTulosHakutoiveella(tulokset: List[HakutoiveenTulos]): Boolean = {
@@ -93,7 +99,7 @@ class ApplicationsService @Autowired (
           )
         )
       // haetaan tulokset vain ajankohtaisille hakemuksille
-      if(isAjankohtainenHakemus(System.currentTimeMillis(), ohjausparametrit)) {
+      if(isAjankohtainenHakemus(ohjausparametrit)) {
         // palautetaan tulokset vain jos jollain hakutoiveella on julkaistava tulos
         // tai kesken-tulos kun hakuaika on päättynyt
         hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
@@ -104,7 +110,6 @@ class ApplicationsService @Autowired (
               List.empty
           case _ => List.empty
         }
-
       }
     }
     ApplicationEnriched(

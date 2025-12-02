@@ -84,20 +84,13 @@ export function ValintatilaChip({
   const { t } = useTranslations();
   const valintatila: Valintatila =
     (hakutoiveenTulos?.valintatila as Valintatila) || 'KESKEN';
-  console.log(
-    'hakutoiveenTulos.varasijanumero',
-    hakutoiveenTulos?.varasijanumero,
-  );
-  console.log('valintatila', valintatila);
   const style = valintatilaStyles[valintatila as Valintatila];
-  console.log();
   const label =
     valintatila === 'VARALLA' && hakutoiveenTulos?.varasijanumero
       ? t('tulos.varalla-varasija', {
           varasijanumero: String(hakutoiveenTulos?.varasijanumero),
         })
       : t(style.label);
-  console.log('label', label);
   return (
     <Chip
       label={label}

@@ -69,7 +69,7 @@ export function Hakutoive({
         <OrderNumberBox>{prioriteetti}</OrderNumberBox>
       )}
       <Box>
-        {tulos?.julkaistavissa && <ValintatilaChip hakutoiveenTulos={tulos} />}
+        {tulos && <ValintatilaChip hakutoiveenTulos={tulos} />}
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>
