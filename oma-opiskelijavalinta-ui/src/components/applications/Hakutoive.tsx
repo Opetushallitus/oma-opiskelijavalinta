@@ -1,14 +1,20 @@
 import { Box } from '@mui/material';
-import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
+import {
+  OphButton,
+  ophColors,
+  OphTypography,
+} from '@opetushallitus/oph-design-system';
 import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import {
+  type Application,
   type Hakukohde,
   type HakutoiveenTulos,
 } from '@/lib/application.service';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { ValintatilaChip } from '@/components/applications/ValintatilaChip';
+import { doVastaanotto } from '@/lib/vastaanotto.service';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -44,12 +50,14 @@ function formValintaperusteetHref(baseHref: string, hakukohdeOid: string) {
 
 export function Hakutoive({
   hakukohde,
+  application,
   prioriteetti,
   pastApplication = false,
   priorisoidutHakutoiveet = false,
   tulos,
 }: {
   hakukohde: Hakukohde;
+  application: Application;
   prioriteetti?: number;
   pastApplication?: boolean;
   priorisoidutHakutoiveet?: boolean;
@@ -84,6 +92,11 @@ export function Hakutoive({
             />
           </ValintaperusteetLinkContainer>
         )}
+        <OphButton
+          onClick={() => doVastaanotto(application.oid, hakukohde.oid)}
+        >
+          Testing vastaanotto
+        </OphButton>
       </Box>
     </HakutoiveContainer>
   );

@@ -17,10 +17,12 @@ function HakukohteetContainer({
   hakukohteet,
   priorisoidutHakutoiveet,
   hakemuksenTulokset,
+  application,
 }: {
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
+  application: Application;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
@@ -30,6 +32,7 @@ function HakukohteetContainer({
         return (
         <Hakutoive
           key={hk.oid}
+          application={application}
           hakukohde={hk}
           prioriteetti={idx + 1}
           priorisoidutHakutoiveet={priorisoidutHakutoiveet}
@@ -96,6 +99,7 @@ export function ApplicationContainer({
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
+        application={application}
         hakukohteet={application?.hakukohteet ?? []}
         priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
         hakemuksenTulokset={application.hakemuksenTulokset}

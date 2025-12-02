@@ -36,4 +36,13 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
     }
   }
 
+  def doVastaanotto(hakemusOid: String, hakukohdeOid: String): Option[String] = {
+    vtsClient.postVastaanotto(hakemusOid, hakukohdeOid) match {
+      case Left(e) =>
+        LOG.info(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+        throw RuntimeException(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+      case Right(o) => Option.apply(o)
+    }
+  }
+
 }

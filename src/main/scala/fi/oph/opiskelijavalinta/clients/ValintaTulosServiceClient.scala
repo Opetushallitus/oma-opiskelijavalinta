@@ -23,6 +23,39 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient) {
     fetch(url)
   }
 
+  def postVastaanotto(hakemusOid: String, hakukohdeOid: String): Either[Throwable, String] = {
+    val url =
+      s"https://$opintopolku_virkailija_domain/valinta-tulos-service/vastaanotto/hakemus/$hakemusOid/hakukohde/$hakukohdeOid"
+    post(url, "{\"action\": \"VastaanotaSitovasti\"}")
+  }
+
+  private def post(url: String, body: String): Either[Throwable, String] = {
+    val req = new RequestBuilder()
+      .setMethod("POST")
+      .setHeader("Content-Type", "application/json")
+      .setBody(body)
+      .setUrl(url)
+      .setRequestTimeout(java.time.Duration.ofMillis(5000))
+      .build()
+    try {
+      val result = asScala(vtsCasClient.execute(req)).map {
+        case r if r.getStatusCode == 200 =>
+          LOG.debug("Vastaanotto tehty onnistuneesti")
+          Right(r.getResponseBody())
+        case r =>
+          LOG.error(
+            s"Vastaanoton teko epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
+          )
+          Left(new RuntimeException("Vastaanoton teko epäonnistui: " + r.getResponseBody()))
+      }
+      Await.result(result, Duration(5, TimeUnit.SECONDS))
+    } catch {
+      case e: Throwable =>
+        LOG.error(s"Vastaanoton teko epäonnistui: ${e.getMessage}", e)
+        Left(e)
+    }
+  }
+
   private def fetch(url: String): Either[Throwable, String] = {
     val req = new RequestBuilder()
       .setMethod("GET")
