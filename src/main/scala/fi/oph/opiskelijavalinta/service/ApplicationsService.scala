@@ -56,10 +56,10 @@ class ApplicationsService @Autowired (
       case Right(o) =>
         val apps     = mapper.readValue(o, classOf[Array[Application]]).toSeq
         val enriched = apps.map(a => enrichApplication(a))
-        val now      = System.currentTimeMillis()
         ApplicationsEnriched(
           enriched.filter(a => isAjankohtainenHakemus(a.ohjausparametrit)),
-          enriched.filter(a => isVanhaHakemus(a.ohjausparametrit)))
+          enriched.filter(a => isVanhaHakemus(a.ohjausparametrit))
+        )
     }
   }
 
@@ -99,7 +99,7 @@ class ApplicationsService @Autowired (
           )
         )
       // haetaan tulokset vain ajankohtaisille hakemuksille
-      if(isAjankohtainenHakemus(ohjausparametrit)) {
+      if (isAjankohtainenHakemus(ohjausparametrit)) {
         // palautetaan tulokset vain jos jollain hakutoiveella on julkaistava tulos
         // tai kesken-tulos kun hakuaika on päättynyt
         hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {

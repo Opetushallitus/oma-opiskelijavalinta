@@ -3,8 +3,17 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
-import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakuaikaPaattynytHaku, hakukohde1, hakukohde2, kaynnissaOlevaHaku}
-import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{hakukierrosPaattyyTulevaisuudessaMock, mennytTimestamp, paattynytHakukierrosMock}
+import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{
+  hakuaikaPaattynytHaku,
+  hakukohde1,
+  hakukohde2,
+  kaynnissaOlevaHaku
+}
+import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
+  hakukierrosPaattyyTulevaisuudessaMock,
+  mennytTimestamp,
+  paattynytHakukierrosMock
+}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
 import fi.oph.opiskelijavalinta.model.ApplicationsEnriched
 import org.junit.jupiter.api.*
@@ -33,22 +42,31 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   @Test
   def returnsApplicationsOfUser(): Unit = {
     Mockito.reset(valintaTulosServiceClient)
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
-    Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(hakuaikaPaattynytHaku)))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    Mockito
+      .when(koutaClient.getHaku("haku-oid-1"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakuaikaPaattynytHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
 
     Mockito.when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1")).thenReturn(paattynytHakukierrosMock)
-    val result = mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATIONS_PATH)
-        .`with`(user(oppijaUser)))
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.APPLICATIONS_PATH)
+          .`with`(user(oppijaUser))
+      )
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications =  objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
+    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.old.length)
     Assertions.assertEquals(0, applications.current.length)
     val app = applications.old.head
@@ -75,14 +93,22 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsVTSResultsForApplications(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
-    Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1")).thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
+    Mockito
+      .when(koutaClient.getHaku("haku-oid-1"))
+      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    Mockito
+      .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
@@ -95,7 +121,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
-    val foo = objectMapper.writeValueAsString(mockVTSResponse)
+    val foo          = objectMapper.writeValueAsString(mockVTSResponse)
     val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.current.length)
     Assertions.assertEquals(0, applications.old.length)
@@ -133,21 +159,31 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def doesNotReturnUnpublishedVTSResults(): Unit = {
-    Mockito.when(koutaClient.getHaku("haku-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-1")).thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito.when(koutaClient.getHakukohde("hakukohde-oid-2")).thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    val attributes = Map("personOid" -> "someValue")
+    Mockito
+      .when(koutaClient.getHaku("haku-oid-1"))
+      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
+    Mockito
+      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1")).thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
+    Mockito
+      .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
-      .thenReturn(
-        Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
-    val result = mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATIONS_PATH)
-        .`with`(user(oppijaUser)))
+      .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.APPLICATIONS_PATH)
+          .`with`(user(oppijaUser))
+      )
       .andExpect(status().isOk)
       .andReturn()
 
@@ -177,18 +213,22 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsKeskenForUnpublishedVTSResultsWhenHakuaikaIsOver(): Unit = {
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1")).thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
+    Mockito
+      .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
-      .thenReturn(
-        Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
-    val result = mvc.perform(MockMvcRequestBuilders
-        .get(ApiConstants.APPLICATIONS_PATH)
-        .`with`(user(oppijaUser)))
+      .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.APPLICATIONS_PATH)
+          .`with`(user(oppijaUser))
+      )
       .andExpect(status().isOk)
       .andReturn()
 

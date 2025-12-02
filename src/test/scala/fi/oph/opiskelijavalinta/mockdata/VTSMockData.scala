@@ -92,11 +92,15 @@ object VTSMockData {
     hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
     hakijaOid = Some("1.2.246.562.24.97280766274"),
     aikataulu = Some(aikataulu),
-    hakutoiveet = List(hakutoive1Hyvaksytty.copy(
-      julkaistavissa = Some(false),
-      valintatila = Some("KESKEN"),
-      vastaanotettavuustila = Some("EI_VASTAANOTETTAVISSA"),
-      vastaanottoDeadline = None), hakutoive2Kesken)
+    hakutoiveet = List(
+      hakutoive1Hyvaksytty.copy(
+        julkaistavissa = Some(false),
+        valintatila = Some("KESKEN"),
+        vastaanotettavuustila = Some("EI_VASTAANOTETTAVISSA"),
+        vastaanottoDeadline = None
+      ),
+      hakutoive2Kesken
+    )
   )
 
 }

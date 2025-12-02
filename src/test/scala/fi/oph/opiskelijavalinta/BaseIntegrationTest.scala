@@ -17,6 +17,7 @@ import fi.oph.opiskelijavalinta.model.{
   OhjausparametritRaw,
   TranslatedName
 }
+import fi.oph.opiskelijavalinta.service.OhjausparametritService
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -137,8 +138,24 @@ class BaseIntegrationTest {
 
     evictAllCaches()
     mvc = intermediate.build
-    Mockito.when(ataruClient.getApplications("someValue"))
-      .thenReturn(Right(objectMapper.writeValueAsString(Array(Application("hakemus-oid-1", "haku-oid-1", Set("hakukohde-oid-1", "hakukohde-oid-2"), "secret1", "2025-11-19T09:32:01.886Z", TranslatedName("Leikkilomake", "Samma på svenska", "Playform"))))))
+    Mockito
+      .when(ataruClient.getApplications("someValue"))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Application(
+                "hakemus-oid-1",
+                "haku-oid-1",
+                Set("hakukohde-oid-1", "hakukohde-oid-2"),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform")
+              )
+            )
+          )
+        )
+      )
   }
 
   @AfterAll def teardown(): Unit = {

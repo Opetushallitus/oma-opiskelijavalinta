@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
   mockApplicationsFetch,
@@ -18,7 +18,6 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
   ).toBeVisible();
-  await expect(app1.getByText('Olet 2. varasijalla')).toBeVisible();
   await expect(
     app1.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
   ).toBeVisible();
@@ -28,7 +27,6 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     app1.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
   ).toBeVisible();
-  await expect(app1.getByText('Hyväksytty')).toBeVisible();
   await expect(
     app1.getByText(
       'Voit muokata hakemustasi hakuajan päättymiseen 19.10.2025 klo 13:00 asti.',
@@ -183,4 +181,3 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
   ).toBeVisible();
   await expectPageAccessibilityOk(page);
 });
-

@@ -26,6 +26,7 @@ export const hakemus1 = {
   ],
   ohjausparametrit: {
     hakukierrosPaattyy: 1763471212000,
+    jarjestetytHakutoiveet: true,
   },
   hakemuksenTulokset: [],
 };
