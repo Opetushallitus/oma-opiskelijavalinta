@@ -27,5 +27,11 @@
   },
   "hakutoiveet": {
     "valintaperusteet": "Näytä valintaperusteet"
+  },
+  "tulos": {
+    "kesken": "Opiskelijavalinta kesken",
+    "hyvaksytty": "Hyväksytty",
+    "hylatty": "Et saanut opiskelupaikkaa",
+    "varalla-varasija": "Olet {varasijanumero}. varasijalla"
   }
 }

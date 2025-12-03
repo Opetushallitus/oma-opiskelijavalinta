@@ -17,6 +17,7 @@ import fi.oph.opiskelijavalinta.model.{
   OhjausparametritRaw,
   TranslatedName
 }
+import fi.oph.opiskelijavalinta.service.OhjausparametritService
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.{UseMainMethod, WebEnvironment}
 import org.springframework.boot.test.system.{CapturedOutput, OutputCaptureExtension}
+import org.springframework.cache.CacheManager
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.annotation.DirtiesContext
@@ -111,14 +113,20 @@ class BaseIntegrationTest {
 
   @Autowired private val context: WebApplicationContext = null
 
+  @Autowired val cacheManager: CacheManager = null
+
+  def evictAllCaches(): Unit = {
+    cacheManager.getCacheNames.stream.forEach(cacheName => cacheManager.getCache(cacheName).clear())
+  }
+
   @MockitoBean(reset = MockReset.NONE)
   val ataruClient: AtaruClient = Mockito.mock(classOf[AtaruClient])
 
-  @MockitoBean(reset = MockReset.NONE)
+  @MockitoBean(reset = MockReset.BEFORE)
   val koutaClient: KoutaClient = Mockito.mock(classOf[KoutaClient])
 
-  @MockitoBean(reset = MockReset.NONE)
-  val ohjausparametritClient: OhjausparametritClient = Mockito.mock(classOf[OhjausparametritClient])
+  @MockitoBean(reset = MockReset.BEFORE)
+  val ohjausparametritService: OhjausparametritService = Mockito.mock(classOf[OhjausparametritService])
 
   @MockitoBean(reset = MockReset.NONE)
   val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
@@ -128,6 +136,7 @@ class BaseIntegrationTest {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
 
+    evictAllCaches()
     mvc = intermediate.build
     Mockito
       .when(ataruClient.getApplications("someValue"))
@@ -143,61 +152,6 @@ class BaseIntegrationTest {
                 "2025-11-19T09:32:01.886Z",
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform")
               )
-            )
-          )
-        )
-      )
-    Mockito
-      .when(koutaClient.getHaku("haku-oid-1"))
-      .thenReturn(
-        Right(
-          objectMapper.writeValueAsString(
-            Haku(
-              "haku-oid-1",
-              TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
-              Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"))
-            )
-          )
-        )
-      )
-    Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
-      .thenReturn(
-        Right(
-          objectMapper.writeValueAsString(
-            Hakukohde(
-              "hakukohde-oid-1",
-              TranslatedName("Liukumäen lisensiaatti", "", ""),
-              TranslatedName("Leikkipuisto, Liukumäki", "", "")
-            )
-          )
-        )
-      )
-    Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
-      .thenReturn(
-        Right(
-          objectMapper.writeValueAsString(
-            Hakukohde(
-              "hakukohde-oid-2",
-              TranslatedName("Hiekkalaatikon arkeologi", "", ""),
-              TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")
-            )
-          )
-        )
-      )
-    Mockito
-      .when(ohjausparametritClient.getOhjausparametritForHaku("haku-oid-1"))
-      .thenReturn(
-        Right(
-          objectMapper.writeValueAsString(
-            OhjausparametritRaw(
-              PH_HKP = Some(DateParam(Some(1599657520000L))),
-              PH_IP = None,
-              PH_VTJH = None,
-              PH_EVR = None,
-              PH_OPVP = None,
-              None
             )
           )
         )

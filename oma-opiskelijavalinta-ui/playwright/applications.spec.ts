@@ -1,6 +1,7 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
+  mockApplicationsFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
 
@@ -105,6 +106,7 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
     ohjausparametrit: {
       hakukierrosPaattyy: 1663971212000,
     },
+    hakutoiveenTulokset: [],
   };
   await mockApplicationsFetch(page, { current: [], old: [oldApplication] });
   await mockAuthenticatedUser(page);
@@ -179,82 +181,3 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
   ).toBeVisible();
   await expectPageAccessibilityOk(page);
 });
-
-async function mockApplicationsFetch(
-  page: Page,
-  applications?: {
-    current: Array<Record<string, string | object | boolean | number | null>>;
-    old: Array<Record<string, string | object | boolean | number | null>>;
-  },
-) {
-  const applicationsToReturn = JSON.stringify(
-    applications
-      ? applications
-      : {
-          current: [
-            {
-              oid: 'hakemus-oid-2',
-              secret: 'secret-2',
-              haku: {
-                oid: 'haku-oid-2',
-                nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
-                hakuaikaKaynnissa: false,
-                viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
-              },
-              submitted: '2025-06-18T19:00:00',
-              hakukohteet: [
-                {
-                  oid: 'hakukohde-oid-3',
-                  nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
-                  jarjestyspaikkaHierarkiaNimi: {
-                    fi: 'Tsunamiopisto, Merenpohjan kampus',
-                  },
-                },
-              ],
-              ohjausparametrit: {
-                hakukierrosPaattyy: 1763971212000,
-              },
-            },
-            {
-              oid: 'hakemus-oid-1',
-              secret: 'secret-1',
-              haku: {
-                oid: 'haku-oid-1',
-                nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
-                hakuaikaKaynnissa: true,
-                viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
-              },
-              submitted: '2025-10-18T16:00:00',
-              hakukohteet: [
-                {
-                  oid: 'hakukohde-oid-1',
-                  nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
-                  jarjestyspaikkaHierarkiaNimi: {
-                    fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-                  },
-                },
-                {
-                  oid: 'hakukohde-oid-2',
-                  nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
-                  jarjestyspaikkaHierarkiaNimi: {
-                    fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
-                  },
-                },
-              ],
-              ohjausparametrit: {
-                hakukierrosPaattyy: 1763471212000,
-                jarjestetytHakutoiveet: true,
-              },
-            },
-          ],
-          old: [],
-        },
-  );
-  await page.route('**/api/applications', async (route) => {
-    await route.fulfill({
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: applicationsToReturn,
-    });
-  });
-}
