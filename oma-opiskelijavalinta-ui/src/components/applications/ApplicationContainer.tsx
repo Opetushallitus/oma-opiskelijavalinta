@@ -28,13 +28,13 @@ function HakukohteetContainer({
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
 
         return (
-        <Hakutoive
-          key={hk.oid}
-          hakukohde={hk}
-          prioriteetti={idx + 1}
-          priorisoidutHakutoiveet={priorisoidutHakutoiveet}
-          tulos={tulos}
-        />
+          <Hakutoive
+            key={hk.oid}
+            hakukohde={hk}
+            prioriteetti={idx + 1}
+            priorisoidutHakutoiveet={priorisoidutHakutoiveet}
+            tulos={tulos}
+          />
         );
       })}
     </Box>
@@ -92,8 +92,10 @@ export function ApplicationContainer({
           name={t('hakemukset.muokkaa')}
         />
       )}
-      <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
-        {t('hakemukset.hakutoiveet')}
+      <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
+        {application?.hakemuksenTulokset?.length
+          ? t('hakemukset.valintatilanne')
+          : t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
         hakukohteet={application?.hakukohteet ?? []}

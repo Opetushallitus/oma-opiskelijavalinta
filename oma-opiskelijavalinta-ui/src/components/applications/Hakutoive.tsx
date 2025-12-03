@@ -9,6 +9,10 @@ import {
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { ValintatilaChip } from '@/components/applications/ValintatilaChip';
+import {
+  BadgeColorKey,
+  StatusBadgeChip,
+} from '@/components/applications/StatusBadgeChip';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -70,6 +74,16 @@ export function Hakutoive({
       )}
       <Box>
         {tulos && <ValintatilaChip hakutoiveenTulos={tulos} />}
+        {tulos && tulos.ehdollisestiHyvaksyttavissa ? (
+          <StatusBadgeChip
+            badgeProps={{
+              label: t('tulos.ehdollisesti-hyvaksytty'),
+              color: BadgeColorKey.Yellow,
+            }}
+          />
+        ) : (
+          <></>
+        )}
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>

@@ -46,6 +46,8 @@ export type HakutoiveenTulos = {
   julkaistavissa: boolean;
   valintatila?: string;
   varasijanumero?: number | null;
+  ehdollisestiHyvaksyttavissa?: boolean;
+  tilanKuvaukset?: TranslatedName;
 };
 
 type ApplicationResponse = {
