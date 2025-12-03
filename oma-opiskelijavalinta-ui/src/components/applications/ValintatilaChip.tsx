@@ -1,6 +1,9 @@
-import { Chip } from '@mui/material';
-import { ophColors } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
+import {
+  type BadgeColor,
+  BadgeColorKey,
+  StatusBadgeChip,
+} from '@/components/applications/StatusBadgeChip';
 import { Valintatila, type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import {
   hylattyBackground,
@@ -10,56 +13,47 @@ import {
 
 const valintatilaStyles: Record<
   Valintatila,
-  { label: string; background: string; color: string }
+  { label: string; color: BadgeColor }
 > = {
   [Valintatila.HYVAKSYTTY]: {
     label: 'tulos.hyvaksytty',
-    background: hyvaksyttyBackground,
-    color: ophColors.green1,
+    color: BadgeColorKey.Green,
   },
   [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: {
     label: 'tulos.hyvaksytty',
-    background: hyvaksyttyBackground,
-    color: ophColors.green1,
+    color: BadgeColorKey.Green,
   },
   [Valintatila.VARASIJALTA_HYVAKSYTTY]: {
     label: 'tulos.hyvaksytty',
-    background: hyvaksyttyBackground,
-    color: ophColors.green1,
+    color: BadgeColorKey.Green,
   },
 
   [Valintatila.VARALLA]: {
     label: 'tulos.varalla',
-    background: ophColors.lightBlue2,
-    color: ophColors.cyan1,
+    color: BadgeColorKey.Blue,
   },
 
   [Valintatila.HYLATTY]: {
     label: 'tulos.hylatty',
-    background: hylattyBackground,
-    color: ophColors.grey900,
+    color: BadgeColorKey.Red,
   },
 
   [Valintatila.KESKEN]: {
     label: 'tulos.kesken',
-    background: keskenBackground,
-    color: ophColors.orange1,
+    color: BadgeColorKey.Yellow,
   },
 
   [Valintatila.PERUUTETTU]: {
     label: 'tulos.peruutettu',
-    background: ophColors.grey300,
-    color: ophColors.grey900,
+    color: BadgeColorKey.Grey,
   },
   [Valintatila.PERUNUT]: {
     label: 'tulos.perunut',
-    background: ophColors.grey300,
-    color: ophColors.grey900,
+    color: BadgeColorKey.Grey,
   },
   [Valintatila.PERUUNTUNUT]: {
     label: 'tulos.peruuntunut',
-    background: ophColors.grey300,
-    color: ophColors.grey900,
+    color: BadgeColorKey.Grey,
   },
 };
 
@@ -79,14 +73,10 @@ export function ValintatilaChip({
         })
       : t(style.label);
   return (
-    <Chip
-      label={label}
-      sx={{
-        backgroundColor: style.background,
+    <StatusBadgeChip
+      badgeProps={{
+        label: label,
         color: style.color,
-        fontWeight: 'bold',
-        borderRadius: '0px',
-        mt: '0px',
       }}
     />
   );

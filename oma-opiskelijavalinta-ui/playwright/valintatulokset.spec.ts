@@ -48,6 +48,8 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
     tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
   await expect(tulokset.getByText('Hyväksytty')).toBeVisible();
+  await expect(tulokset.getByText('Hakutoiveesi')).toBeHidden();
+  await expect(tulokset.getByText('Valintatilanteesi')).toBeVisible();
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
@@ -86,4 +88,26 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
     app1.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
   ).toBeVisible();
   await expect(app1.getByText('Kesken')).toBeVisible();
+});
+
+test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosHyvaksytty, ehdollisestiHyvaksyttavissa: true },
+    ],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const app = page.getByTestId('application-hakemus-oid-2');
+  await expect(
+    app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(app.getByText('Hyväksytty')).toBeVisible();
+  await expect(app.getByText('Ehdollinen')).toBeVisible();
 });

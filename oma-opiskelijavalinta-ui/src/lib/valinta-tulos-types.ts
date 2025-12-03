@@ -1,3 +1,5 @@
+import type {TranslatedName} from "@/lib/localization/localization-types";
+
 export enum Valintatila {
   HYVAKSYTTY = 'HYVAKSYTTY',
   HARKINNANVARAISESTI_HYVAKSYTTY = 'HARKINNANVARAISESTI_HYVAKSYTTY',
@@ -33,6 +35,8 @@ export type HakutoiveenTulos = {
   vastaanotettavuustila?: VastaanotettavuusTila;
   vastaanottoDeadline: string;
   vastaanottotila?: VastaanottoTila;
+  ehdollisestiHyvaksyttavissa?: boolean;
+  tilanKuvaukset?: TranslatedName;
 };
 
 export enum VastaanottoTilaToiminto {

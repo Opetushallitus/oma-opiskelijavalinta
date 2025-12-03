@@ -97,8 +97,10 @@ export function ApplicationContainer({
         />
       )}
       <VastaanottoContainer application={application} />
-      <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
-        {t('hakemukset.hakutoiveet')}
+      <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
+        {application?.hakemuksenTulokset?.length
+          ? t('hakemukset.valintatilanne')
+          : t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
         applicationOid={application.oid}

@@ -28,6 +28,10 @@ export const styled: typeof muiStyled = (
   });
 };
 
+export const greenBadgeBackground = '#E2FAE4';
+export const redBadgeBackground = '#EECFC5';
+export const yellowBadgeBackground = '#FAE6A8';
+
 export const DEFAULT_BOX_BORDER = `2px solid ${ophColors.grey100}`;
 
 export const notLarge = (theme: Theme) => theme.breakpoints.down('lg');
