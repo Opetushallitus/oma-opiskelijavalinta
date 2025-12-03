@@ -87,4 +87,3 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
   ).toBeVisible();
   await expect(app1.getByText('Kesken')).toBeVisible();
 });
-// Case näyttää kesken-tilan jos hakuaika on loppu ja ei ole julkaistuja tuloksia
