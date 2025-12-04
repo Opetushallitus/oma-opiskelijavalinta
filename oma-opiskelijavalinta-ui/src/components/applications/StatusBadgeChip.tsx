@@ -1,10 +1,11 @@
-import { Chip } from '@mui/material';
+import { Chip, type SxProps } from '@mui/material';
 import {
   greenBadgeBackground,
   redBadgeBackground,
   yellowBadgeBackground,
 } from '@/lib/theme';
 import { ophColors } from '@opetushallitus/oph-design-system';
+import type { Theme } from '@mui/material/styles';
 
 export const BadgeColors = {
   green: {
@@ -44,7 +45,13 @@ export type BadgeProps = {
   color: BadgeColor;
 };
 
-export function StatusBadgeChip({ badgeProps }: { badgeProps: BadgeProps }) {
+export function StatusBadgeChip({
+  badgeProps,
+  sx,
+}: {
+  badgeProps: BadgeProps;
+  sx?: SxProps<Theme>;
+}) {
   const badgeColor = BadgeColors[badgeProps.color];
 
   return (
@@ -53,9 +60,15 @@ export function StatusBadgeChip({ badgeProps }: { badgeProps: BadgeProps }) {
       sx={{
         backgroundColor: badgeColor.background,
         color: badgeColor.color,
-        fontWeight: 'bold',
-        borderRadius: '0px',
+        height: '24px',
+        lineHeight: '24px',
+        px: '5px',
+        fontFamily: 'Open Sans',
+        fontWeight: 600,
+        fontSize: '14px',
+        borderRadius: 0,
         mt: '0px',
+        ...sx,
       }}
     />
   );

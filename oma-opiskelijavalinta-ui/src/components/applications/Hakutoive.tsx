@@ -76,6 +76,7 @@ export function Hakutoive({
         {tulos && <ValintatilaChip hakutoiveenTulos={tulos} />}
         {tulos && tulos.ehdollisestiHyvaksyttavissa ? (
           <StatusBadgeChip
+            sx={{ ml: 1 }}
             badgeProps={{
               label: t('tulos.ehdollisesti-hyvaksytty'),
               color: BadgeColorKey.Yellow,
