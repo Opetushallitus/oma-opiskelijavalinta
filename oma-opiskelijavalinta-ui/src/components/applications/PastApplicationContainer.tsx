@@ -17,17 +17,14 @@ const StyledInfoBox = styled(Box)(({ theme }) => ({
 function PastHakukohteetContainer({
   hakukohteet,
   priorisoidutHakutoiveet,
-  application,
 }: {
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
-  application: Application;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
       {hakukohteet.map((hk, idx) => (
         <Hakutoive
-          application={application}
           key={hk.oid}
           hakukohde={hk}
           prioriteetti={idx + 1}
@@ -79,7 +76,6 @@ export function PastApplicationContainer({
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <PastHakukohteetContainer
-        application={application}
         hakukohteet={application?.hakukohteet ?? []}
         priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
       />

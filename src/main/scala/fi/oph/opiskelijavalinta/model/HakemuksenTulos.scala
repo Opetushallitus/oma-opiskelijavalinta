@@ -4,13 +4,7 @@ case class HakemuksenTulos(
   hakuOid: Option[String],
   hakemusOid: Option[String],
   hakijaOid: Option[String],
-  aikataulu: Option[Aikataulu],
   hakutoiveet: List[HakutoiveenTulos] // empty list if missing
-)
-
-case class Aikataulu(
-  vastaanottoEnd: Option[String],
-  vastaanottoBufferDays: Option[Int]
 )
 
 case class HakutoiveenTulos(

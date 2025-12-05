@@ -12,17 +12,16 @@ import { ApplicationInfo } from './ApplicationInfo';
 import { Hakutoive } from './Hakutoive';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { ApplicationPaper } from './ApplicationPaper';
+import { VastaanottoContainer } from './Vastaanotto';
 
 function HakukohteetContainer({
   hakukohteet,
   priorisoidutHakutoiveet,
   hakemuksenTulokset,
-  application,
 }: {
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
-  application: Application;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
@@ -30,14 +29,13 @@ function HakukohteetContainer({
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
 
         return (
-        <Hakutoive
-          key={hk.oid}
-          application={application}
-          hakukohde={hk}
-          prioriteetti={idx + 1}
-          priorisoidutHakutoiveet={priorisoidutHakutoiveet}
-          tulos={tulos}
-        />
+          <Hakutoive
+            key={hk.oid}
+            hakukohde={hk}
+            prioriteetti={idx + 1}
+            priorisoidutHakutoiveet={priorisoidutHakutoiveet}
+            tulos={tulos}
+          />
         );
       })}
     </Box>
@@ -95,11 +93,11 @@ export function ApplicationContainer({
           name={t('hakemukset.muokkaa')}
         />
       )}
+      <VastaanottoContainer application={application} />
       <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
-        application={application}
         hakukohteet={application?.hakukohteet ?? []}
         priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
         hakemuksenTulokset={application.hakemuksenTulokset}

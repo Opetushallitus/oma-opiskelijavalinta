@@ -21,6 +21,7 @@ export type Application = {
   hakukohteet?: Array<Hakukohde>;
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
+  vastaanottoPaattyy?: number | null;
   submitted: number;
   formName: TranslatedName;
   priorisoidutHakutoiveet: boolean;
@@ -41,11 +42,17 @@ type Ohjausparametrit = {
   jarjestetytHakutoiveet?: boolean;
 };
 
+type VastaanotettavuusTila =
+  | 'EI_VASTAANOTETTAVISSA'
+  | 'VASTAANOTETTAVISSA_SITOVASTI'
+  | 'VASTAANOTETTAVISSA_EHDOLLISESTI';
+
 export type HakutoiveenTulos = {
   hakukohdeOid: string;
   julkaistavissa: boolean;
   valintatila?: string;
   varasijanumero?: number | null;
+  vastaanotettavuustila?: VastaanotettavuusTila;
 };
 
 type ApplicationResponse = {
@@ -77,14 +84,25 @@ function convertToApplication(
 ): Application {
   const modifyLink = app.secret ? `${muokkausUrl}=${app.secret}` : null;
   const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
+  const vastaanottoPaattyy =
+    app.ohjausparametrit?.opiskelijanPaikanVastaanottoPaattyy;
   return {
     ...app,
     modifyLink,
     hakukierrosPaattyy,
+    vastaanottoPaattyy,
     priorisoidutHakutoiveet:
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     submitted: new Date(app.submitted).getTime(),
   };
+}
+
+export function vastaanotettavatHakutoiveet(application: Application) {
+  return application.hakemuksenTulokset.filter(
+    (ht) =>
+      ht.vastaanotettavuustila &&
+      ht.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA',
+  );
 }
 
 export async function getApplications(): Promise<Applications> {
