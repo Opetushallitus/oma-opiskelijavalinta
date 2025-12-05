@@ -10,9 +10,10 @@ import { ValintatilaChip } from './ValintatilaChip';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { isDefined } from 'remeda';
+import { T } from '@tolgee/react';
 
 function VastaanottoInfo({ application }: { application: Application }) {
-  const { t, getLanguage } = useTranslations();
+  const { getLanguage } = useTranslations();
 
   const lang = getLanguage();
   const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
@@ -23,7 +24,13 @@ function VastaanottoInfo({ application }: { application: Application }) {
   return (
     <InfoBox>
       <OphTypography>
-        {t('vastaanotto.paattyy', { vastaanottoPaattyy })}
+        <T
+          keyName={'vastaanotto.paattyy'}
+          params={{
+            vastaanottoPaattyy,
+            strong: <strong />,
+          }}
+        />
       </OphTypography>
     </InfoBox>
   );
