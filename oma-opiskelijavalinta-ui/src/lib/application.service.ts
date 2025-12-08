@@ -21,7 +21,6 @@ export type Application = {
   hakukohteet?: Array<Hakukohde>;
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
-  vastaanottoPaattyy?: number | null;
   submitted: number;
   formName: TranslatedName;
   priorisoidutHakutoiveet: boolean;
@@ -53,6 +52,7 @@ export type HakutoiveenTulos = {
   valintatila?: string;
   varasijanumero?: number | null;
   vastaanotettavuustila?: VastaanotettavuusTila;
+  vastaanottoDeadline: string;
 };
 
 type ApplicationResponse = {
@@ -84,13 +84,10 @@ function convertToApplication(
 ): Application {
   const modifyLink = app.secret ? `${muokkausUrl}=${app.secret}` : null;
   const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
-  const vastaanottoPaattyy =
-    app.ohjausparametrit?.opiskelijanPaikanVastaanottoPaattyy;
   return {
     ...app,
     modifyLink,
     hakukierrosPaattyy,
-    vastaanottoPaattyy,
     priorisoidutHakutoiveet:
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     submitted: new Date(app.submitted).getTime(),

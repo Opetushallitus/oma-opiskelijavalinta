@@ -23,10 +23,10 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient) {
     fetch(url)
   }
 
-  def postVastaanotto(hakemusOid: String, hakukohdeOid: String): Either[Throwable, String] = {
+  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/valinta-tulos-service/auth/vastaanotto/hakemus/$hakemusOid/hakukohde/$hakukohdeOid"
-    post(url, "{\"action\": \"VastaanotaSitovasti\"}")
+    post(url, s"{\"action\": \"$vastaanotto\"}")
   }
 
   private def post(url: String, body: String): Either[Throwable, String] = {

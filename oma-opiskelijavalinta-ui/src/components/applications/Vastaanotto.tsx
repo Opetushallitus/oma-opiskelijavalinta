@@ -4,20 +4,73 @@ import {
   type Hakukohde,
   type HakutoiveenTulos,
 } from '@/lib/application.service';
-import { OphTypography } from '@opetushallitus/oph-design-system';
+import {
+  OphButton,
+  OphFormFieldWrapper,
+  OphRadioGroup,
+  OphTypography,
+} from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ValintatilaChip } from './ValintatilaChip';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { isDefined } from 'remeda';
 import { T } from '@tolgee/react';
+import { useState } from 'react';
+import { doVastaanotto, VastaanottoTila } from '@/lib/vastaanotto.service';
 
-function VastaanottoInfo({ application }: { application: Application }) {
+function VastaanottoInput({
+  hakutoive,
+  application,
+}: {
+  hakutoive: Hakukohde;
+  application: Application;
+}) {
+  const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
+
+  const vastaanottoOptions = [
+    {
+      label: 'Otan tämän opiskelupaikan vastaan sitovasti',
+      value: 'VastaanotaSitovasti',
+    },
+    {
+      label: 'En ota tätä opiskelupaikkaa vastaan',
+      value: 'Peru',
+    },
+  ];
+
+  const sendVastaanotto = () => {
+    doVastaanotto(
+      application.oid,
+      hakutoive.oid,
+      selectedVastaanotto as VastaanottoTila,
+    );
+  };
+
+  return (
+    <>
+      <OphFormFieldWrapper
+        label={'Opiskelupaikan vastaanotto'}
+        renderInput={({ labelId }) => (
+          <OphRadioGroup
+            onChange={(event) => setSelectedVastaanotto(event.target.value)}
+            options={vastaanottoOptions}
+            labelId={labelId}
+            aria-required={true}
+          />
+        )}
+      />
+      <OphButton onClick={sendVastaanotto}>Lähetä vastaus</OphButton>
+    </>
+  );
+}
+
+function VastaanottoInfo({ tulos }: { tulos: HakutoiveenTulos }) {
   const { getLanguage } = useTranslations();
 
   const lang = getLanguage();
   const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
-    application.vastaanottoPaattyy,
+    tulos.vastaanottoDeadline,
     lang,
   );
 
@@ -56,7 +109,8 @@ function VastaanottoBox({
       <OphTypography variant="body1">
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
-      <VastaanottoInfo application={application} />
+      <VastaanottoInfo tulos={tulos} />
+      <VastaanottoInput application={application} hakutoive={hakukohde} />
     </Box>
   );
 }
