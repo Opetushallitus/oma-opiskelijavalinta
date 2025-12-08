@@ -1,5 +1,8 @@
 {
   "otsikko": "Oma Opiskelijavalinta",
+  "virhe": {
+    "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto."
+  },
   "info": {
     "kuvaus": "Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit",
     "hakemukset": "tarkastella hakemuksiasi ja muokata niitä hakuaikana",
@@ -35,6 +38,12 @@
     "varalla-varasija": "Olet {varasijanumero}. varasijalla"
   },
   "vastaanotto": {
-    "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä<strong> tai menetät paikan."
+    "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä<strong> tai menetät paikan.",
+    "laheta": "Lähetä vastaus",
+    "vaihtoehdot": {
+      "otsake": "Opiskelupaikan vastaanotto",
+      "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
+      "peru": "En ota tätä opiskelupaikkaa vastaan"
+    }
   }
 }

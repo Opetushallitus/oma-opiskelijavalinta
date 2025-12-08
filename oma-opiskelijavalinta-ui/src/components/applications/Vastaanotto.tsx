@@ -14,10 +14,24 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { ValintatilaChip } from './ValintatilaChip';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
-import { isDefined } from 'remeda';
+import { isDefined, isEmptyish } from 'remeda';
 import { T } from '@tolgee/react';
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { doVastaanotto, VastaanottoTila } from '@/lib/vastaanotto.service';
+import { styled } from '@/lib/theme';
+
+const InputContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  rowGap: theme.spacing(2),
+  alignItems: 'flex-start',
+  margin: `${theme.spacing(2)} 0`,
+  '.Mui-error': {
+    'MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root': {
+      color: theme.palette.error,
+    },
+  },
+}));
 
 function VastaanottoInput({
   hakutoive,
@@ -26,20 +40,30 @@ function VastaanottoInput({
   hakutoive: Hakukohde;
   application: Application;
 }) {
+  const { t } = useTranslations();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
-
+  const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const vastaanottoOptions = [
     {
-      label: 'Otan tämän opiskelupaikan vastaan sitovasti',
+      label: t('vastaanotto.vaihtoehdot.sitova'),
       value: 'VastaanotaSitovasti',
     },
     {
-      label: 'En ota tätä opiskelupaikkaa vastaan',
+      label: t('vastaanotto.vaihtoehdot.peru'),
       value: 'Peru',
     },
   ];
 
+  const selectVastaanOtto = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedVastaanotto(event.target.value);
+    setShowSelectionError(false);
+  };
+
   const sendVastaanotto = () => {
+    if (isEmptyish(selectedVastaanotto)) {
+      setShowSelectionError(true);
+      return;
+    }
     doVastaanotto(
       application.oid,
       hakutoive.oid,
@@ -48,20 +72,26 @@ function VastaanottoInput({
   };
 
   return (
-    <>
+    <InputContainer>
       <OphFormFieldWrapper
-        label={'Opiskelupaikan vastaanotto'}
+        error={showSelectionError}
+        errorMessage={showSelectionError ? t('virhe.pakollinen-yksi') : ''}
+        label={t('vastaanotto.vaihtoehdot.otsake')}
+        required={true}
         renderInput={({ labelId }) => (
           <OphRadioGroup
-            onChange={(event) => setSelectedVastaanotto(event.target.value)}
+            error={showSelectionError}
+            onChange={selectVastaanOtto}
             options={vastaanottoOptions}
             labelId={labelId}
             aria-required={true}
           />
         )}
       />
-      <OphButton onClick={sendVastaanotto}>Lähetä vastaus</OphButton>
-    </>
+      <OphButton variant="contained" onClick={sendVastaanotto}>
+        {t('vastaanotto.laheta')}
+      </OphButton>
+    </InputContainer>
   );
 }
 
