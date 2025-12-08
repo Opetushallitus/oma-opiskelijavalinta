@@ -7,6 +7,7 @@ import {
   hakemuksenTulosHylatty,
   hakemuksenTulosHyvaksytty,
   hakemuksenTulosKesken,
+  hakemuksenTulosPeruuntunut,
   hakemuksenTulosVarasijalla,
   hakemus1,
   hakemus2,
@@ -110,4 +111,22 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   ).toBeVisible();
   await expect(app.getByText('Hyväksytty')).toBeVisible();
   await expect(app.getByText('Ehdollinen')).toBeVisible();
+});
+
+test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [{ ...hakemuksenTulosPeruuntunut }],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const app = page.getByTestId('application-hakemus-oid-2');
+  await expect(
+    app.getByText('Peruuntunut, Sait ylemmän hakutoiveen opiskelupaikan'),
+  ).toBeVisible();
 });

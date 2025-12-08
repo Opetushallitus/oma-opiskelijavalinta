@@ -62,20 +62,24 @@ export function ValintatilaChip({
 }: {
   hakutoiveenTulos?: HakutoiveenTulos;
 }) {
-  const { t } = useTranslations();
+  const { translateStatusDescription, t } = useTranslations();
   const valintatila: Valintatila =
     (hakutoiveenTulos?.valintatila as Valintatila) || Valintatila.KESKEN;
   const style = valintatilaStyles[valintatila as Valintatila];
-  const label =
-    valintatila === Valintatila.VARALLA && hakutoiveenTulos?.varasijanumero
-      ? t('tulos.varalla-varasija', {
-          varasijanumero: String(hakutoiveenTulos?.varasijanumero),
-        })
-      : t(style.label);
+  let statusLabel = t(style.label);
+  if (valintatila === Valintatila.VARALLA && hakutoiveenTulos?.varasijanumero) {
+    statusLabel = t('tulos.varalla-varasija', {
+      varasijanumero: String(hakutoiveenTulos?.varasijanumero),
+    });
+  } else if (valintatila === Valintatila.PERUUNTUNUT) {
+    console.log(hakutoiveenTulos?.tilanKuvaukset);
+    console.log(translateStatusDescription(hakutoiveenTulos?.tilanKuvaukset));
+    statusLabel = `${statusLabel}, ${translateStatusDescription(hakutoiveenTulos?.tilanKuvaukset)}`;
+  }
   return (
     <StatusBadgeChip
       badgeProps={{
-        label: label,
+        label: statusLabel,
         color: style.color,
       }}
     />

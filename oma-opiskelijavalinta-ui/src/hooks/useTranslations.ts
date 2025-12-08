@@ -1,8 +1,14 @@
 import { type TFnType, useTolgee, useTranslate } from '@tolgee/react';
 import type { Language } from '@/types/ui-types';
 import { useCallback } from 'react';
-import type { TranslatedName } from '@/lib/localization/localization-types';
-import { translateName } from '@/lib/localization/translation-utils';
+import type {
+  TranslatedDescription,
+  TranslatedName,
+} from '@/lib/localization/localization-types';
+import {
+  translateDescription,
+  translateName,
+} from '@/lib/localization/translation-utils';
 
 export type TFunction = TFnType;
 
@@ -19,9 +25,18 @@ export const useTranslations = () => {
     [getLanguage],
   );
 
+  const translateStatusDescription = useCallback(
+    (value?: TranslatedDescription) => {
+      const lang = getLanguage() as Language;
+      return value ? translateDescription(value, lang) : '';
+    },
+    [getLanguage],
+  );
+
   return {
     t,
     translateEntity,
+    translateStatusDescription,
     getLanguage: getLanguage as () => Language,
   };
 };
