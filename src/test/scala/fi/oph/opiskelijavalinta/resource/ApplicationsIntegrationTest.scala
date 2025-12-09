@@ -1,31 +1,17 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.objectMapper
-import fi.oph.opiskelijavalinta.configuration.OppijaUser
-import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{
-  hakuaikaPaattynytHaku,
-  hakukohde1,
-  hakukohde2,
-  kaynnissaOlevaHaku
-}
-import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
-  hakukierrosPaattyyTulevaisuudessaMock,
-  mennytTimestamp,
-  paattynytHakukierrosMock
-}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser}
+import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakuaikaPaattynytHaku, hakukohde1, hakukohde2, kaynnissaOlevaHaku}
+import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{hakukierrosPaattyyTulevaisuudessaMock, mennytTimestamp, paattynytHakukierrosMock}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
 import fi.oph.opiskelijavalinta.model.ApplicationsEnriched
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
-import java.util
 
 class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
@@ -42,10 +28,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   @Test
   def returnsApplicationsOfUser(): Unit = {
     Mockito.reset(valintaTulosServiceClient)
-    val attributes  = Map("personOid" -> "someValue")
-    val authorities = util.ArrayList[SimpleGrantedAuthority]
-    authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
     Mockito
       .when(koutaClient.getHaku("haku-oid-1"))
       .thenReturn(Right(objectMapper.writeValueAsString(hakuaikaPaattynytHaku)))
@@ -93,10 +75,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsVTSResultsForApplications(): Unit = {
-    val attributes  = Map("personOid" -> "someValue")
-    val authorities = util.ArrayList[SimpleGrantedAuthority]
-    authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
     Mockito
       .when(koutaClient.getHaku("haku-oid-1"))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
@@ -168,10 +146,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(koutaClient.getHakukohde("hakukohde-oid-2"))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    val attributes  = Map("personOid" -> "someValue")
-    val authorities = util.ArrayList[SimpleGrantedAuthority]
-    authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
@@ -213,10 +187,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsKeskenForUnpublishedVTSResultsWhenHakuaikaIsOver(): Unit = {
-    val attributes  = Map("personOid" -> "someValue")
-    val authorities = util.ArrayList[SimpleGrantedAuthority]
-    authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
