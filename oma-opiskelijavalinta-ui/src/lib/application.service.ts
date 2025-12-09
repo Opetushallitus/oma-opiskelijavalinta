@@ -1,36 +1,9 @@
 import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
 import type { TranslatedName } from './localization/localization-types';
-
-export type Haku = {
-  oid: string;
-  nimi: TranslatedName;
-  hakuaikaKaynnissa: boolean;
-  viimeisinPaattynytHakuAika: string;
-};
-
-export type Hakukohde = {
-  oid: string;
-  nimi: TranslatedName;
-  jarjestyspaikkaHierarkiaNimi: TranslatedName;
-};
-
-export type Application = {
-  oid: string;
-  haku?: Haku | null;
-  hakukohteet?: Array<Hakukohde>;
-  modifyLink?: string | null;
-  hakukierrosPaattyy?: number | null;
-  submitted: number;
-  formName: TranslatedName;
-  priorisoidutHakutoiveet: boolean;
-  hakemuksenTulokset: Array<HakutoiveenTulos>;
-};
-
-export type Applications = {
-  current: Array<Application>;
-  old: Array<Application>;
-};
+import type { Haku, Hakukohde } from './kouta-types';
+import type { HakutoiveenTulos } from './valinta-tulos-types';
+import type { Application, Applications } from './application-types';
 
 type Ohjausparametrit = {
   hakukierrosPaattyy?: number | null;
@@ -39,20 +12,6 @@ type Ohjausparametrit = {
   ehdollisetValinnatPaattyy?: number | null;
   opiskelijanPaikanVastaanottoPaattyy?: number | null;
   jarjestetytHakutoiveet?: boolean;
-};
-
-type VastaanotettavuusTila =
-  | 'EI_VASTAANOTETTAVISSA'
-  | 'VASTAANOTETTAVISSA_SITOVASTI'
-  | 'VASTAANOTETTAVISSA_EHDOLLISESTI';
-
-export type HakutoiveenTulos = {
-  hakukohdeOid: string;
-  julkaistavissa: boolean;
-  valintatila?: string;
-  varasijanumero?: number | null;
-  vastaanotettavuustila?: VastaanotettavuusTila;
-  vastaanottoDeadline: string;
 };
 
 type ApplicationResponse = {
@@ -92,14 +51,6 @@ function convertToApplication(
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     submitted: new Date(app.submitted).getTime(),
   };
-}
-
-export function vastaanotettavatHakutoiveet(application: Application) {
-  return application.hakemuksenTulokset.filter(
-    (ht) =>
-      ht.vastaanotettavuustila &&
-      ht.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA',
-  );
 }
 
 export async function getApplications(): Promise<Applications> {

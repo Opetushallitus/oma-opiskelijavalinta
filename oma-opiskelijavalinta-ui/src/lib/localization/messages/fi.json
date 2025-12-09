@@ -44,6 +44,10 @@
       "otsake": "Opiskelupaikan vastaanotto",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
       "peru": "En ota tätä opiskelupaikkaa vastaan"
+    },
+    "tila": {
+      "vastaanotettu": "Opiskelupaikka vastaanotettu",
+      "peruttu": "Opiskelupaikkaa ei vastaanotettu."
     }
   }
 }

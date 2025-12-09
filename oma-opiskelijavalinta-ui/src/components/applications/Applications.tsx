@@ -3,13 +3,14 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { QuerySuspenseBoundary } from '../QuerySuspenseBoundary';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getApplications, type Application } from '@/lib/application.service';
+import { getApplications } from '@/lib/application.service';
 import { isEmpty, isNonNullish } from 'remeda';
 import { ApplicationContainer } from './ApplicationContainer';
 import { InfoBox } from '../InfoBox';
 import { PastApplicationContainer } from './PastApplicationContainer';
 import { FormOnlyApplicationContainer } from './FormOnlyApplicationContainer';
 import type { JSX } from 'react';
+import type { Application } from '@/lib/application-types';
 
 function determineApplicationType(
   application: Application,

@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import { type Application, type Hakukohde } from '@/lib/application.service';
 import {
   OphButton,
   OphFormFieldWrapper,
@@ -8,8 +7,11 @@ import {
 import { useTranslations } from '@/hooks/useTranslations';
 import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
-import { doVastaanotto, VastaanottoTila } from '@/lib/vastaanotto.service';
+import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
+import type { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import type { Hakukohde } from '@/lib/kouta-types';
+import type { Application } from '@/lib/application-types';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -58,7 +60,7 @@ export function VastaanottoRadio({
     doVastaanotto(
       application.oid,
       hakutoive.oid,
-      selectedVastaanotto as VastaanottoTila,
+      selectedVastaanotto as VastaanottoTilaToiminto,
     );
   };
 

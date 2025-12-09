@@ -1,10 +1,15 @@
 import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
+import type { Application } from './application-types';
+import {
+  VastaanottoTila,
+  VastaanottoTilaToiminto,
+} from './valinta-tulos-types';
 
 async function postVastaanotto(
   hakemusOid: string,
   hakukohdeOid: string,
-  vastaanotto: VastaanottoTila,
+  vastaanotto: VastaanottoTilaToiminto,
 ) {
   const config = await getConfiguration();
   return await client.post<string>(
@@ -13,17 +18,24 @@ async function postVastaanotto(
   );
 }
 
-export enum VastaanottoTila {
-  PERU = 'Peru',
-  VASTAANOTA_SITOVASTI = 'VastaanotaSitovasti',
-  VASTAANOTA_SITOVASTI_PERU_ALEMMAT = 'VastaanotaSitovastiPeruAlemmat',
-  VASTAANOTA_EHDOLLISESTI = 'VastaanotaEhdollisesti',
+export function naytettavatVastaanottoTiedot(application: Application) {
+  return application.hakemuksenTulokset.filter(
+    (ht) =>
+      (ht.vastaanottotila &&
+        ![
+          VastaanottoTila.KESKEN,
+          VastaanottoTila.PERUUTETTU,
+          VastaanottoTila.OTTANUT_VASTAAN_TOISEN_PAIKAN,
+        ].includes(ht.vastaanottotila)) ||
+      (ht.vastaanotettavuustila &&
+        ht.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA'),
+  );
 }
 
 export async function doVastaanotto(
   hakemusOid: string,
   hakukohdeOid: string,
-  vastaanotto: VastaanottoTila,
+  vastaanotto: VastaanottoTilaToiminto,
 ): Promise<string> {
   const response = await postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto);
   return response.data;

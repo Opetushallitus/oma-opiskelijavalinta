@@ -1,10 +1,4 @@
 import { Box } from '@mui/material';
-import {
-  vastaanotettavatHakutoiveet,
-  type Application,
-  type Hakukohde,
-  type HakutoiveenTulos,
-} from '@/lib/application.service';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ValintatilaChip } from '../applications/ValintatilaChip';
@@ -13,6 +7,11 @@ import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translat
 import { isDefined, isEmpty } from 'remeda';
 import { T } from '@tolgee/react';
 import { VastaanottoRadio } from './VastaanottoRadio';
+import type { Hakukohde } from '@/lib/kouta-types';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import type { Application } from '@/lib/application-types';
+import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
+import { VastaanottoTilaChip } from './VastaanottoTilaChip';
 
 function VastaanottoInfo({ tulos }: { tulos: HakutoiveenTulos }) {
   const { getLanguage } = useTranslations();
@@ -51,15 +50,25 @@ function VastaanottoBox({
 
   return (
     <Box>
-      <ValintatilaChip hakutoiveenTulos={tulos} />
+      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
+        <ValintatilaChip hakutoiveenTulos={tulos} />
+      )}
+      {tulos.vastaanotettavuustila === 'EI_VASTAANOTETTAVISSA' &&
+        tulos.vastaanottotila && (
+          <VastaanottoTilaChip vastaanottoTila={tulos.vastaanottotila} />
+        )}
       <OphTypography variant="h5">
         {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
       </OphTypography>
       <OphTypography variant="body1">
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
-      <VastaanottoInfo tulos={tulos} />
-      <VastaanottoRadio application={application} hakutoive={hakukohde} />
+      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
+        <VastaanottoInfo tulos={tulos} />
+      )}
+      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
+        <VastaanottoRadio application={application} hakutoive={hakukohde} />
+      )}
     </Box>
   );
 }
@@ -69,7 +78,7 @@ export function VastaanottoContainer({
 }: {
   application: Application;
 }) {
-  const vastaanotettavat = vastaanotettavatHakutoiveet(application);
+  const vastaanotettavat = naytettavatVastaanottoTiedot(application);
 
   return isEmpty(vastaanotettavat) ? null : (
     <Box sx={{ width: '100%' }}>
