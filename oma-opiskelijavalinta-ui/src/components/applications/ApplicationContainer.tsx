@@ -12,7 +12,7 @@ import { ApplicationInfo } from './ApplicationInfo';
 import { Hakutoive } from './Hakutoive';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { ApplicationPaper } from './ApplicationPaper';
-import { VastaanottoContainer } from './Vastaanotto';
+import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
 
 function HakukohteetContainer({
   hakukohteet,
