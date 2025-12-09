@@ -57,7 +57,7 @@ function VastaanottoBox({
         tulos.vastaanottotila && (
           <VastaanottoTilaChip vastaanottoTila={tulos.vastaanottotila} />
         )}
-      <OphTypography variant="h5">
+      <OphTypography variant="h5" component="div">
         {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
       </OphTypography>
       <OphTypography variant="body1">
@@ -81,7 +81,7 @@ export function VastaanottoContainer({
   const vastaanotettavat = naytettavatVastaanottoTiedot(application);
 
   return isEmpty(vastaanotettavat) ? null : (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }} data-test-id={`vastaanotot-${application.oid}`}>
       {vastaanotettavat.map((tulos) => {
         const hakukohde: Hakukohde | undefined = application.hakukohteet?.find(
           (hk) => tulos.hakukohdeOid === hk.oid,

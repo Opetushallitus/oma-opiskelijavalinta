@@ -43,11 +43,11 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
 
-  const app = page.getByTestId('application-hakemus-oid-2');
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
-    app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+    tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(app.getByText('Hyväksytty')).toBeVisible();
+  await expect(tulokset.getByText('Hyväksytty')).toBeVisible();
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {

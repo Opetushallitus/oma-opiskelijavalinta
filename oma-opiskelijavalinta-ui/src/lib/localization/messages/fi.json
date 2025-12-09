@@ -38,7 +38,7 @@
     "varalla-varasija": "Olet {varasijanumero}. varasijalla"
   },
   "vastaanotto": {
-    "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä<strong> tai menetät paikan.",
+    "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
     "laheta": "Lähetä vastaus",
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",

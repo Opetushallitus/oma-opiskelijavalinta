@@ -13,16 +13,21 @@ import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
 
 function HakukohteetContainer({
+  applicationOid,
   hakukohteet,
   priorisoidutHakutoiveet,
   hakemuksenTulokset,
 }: {
+  applicationOid: string;
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box
+      sx={{ width: '100%' }}
+      data-test-id={`application-hakutoiveet-${applicationOid}`}
+    >
       {hakukohteet.map((hk, idx) => {
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
 
@@ -96,6 +101,7 @@ export function ApplicationContainer({
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
+        applicationOid={application.oid}
         hakukohteet={application?.hakukohteet ?? []}
         priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
         hakemuksenTulokset={application.hakemuksenTulokset}
