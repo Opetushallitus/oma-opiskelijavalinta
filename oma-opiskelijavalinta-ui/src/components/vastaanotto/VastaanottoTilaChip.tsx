@@ -14,7 +14,7 @@ const vastaanottoTilaStyles: Record<
     color: ophColors.green1,
   },
   [VastaanottoTila.PERUNUT]: {
-    label: 'vastaanotto.tila.perunut',
+    label: 'vastaanotto.tila.peruttu',
     background: ophColors.grey400,
     color: ophColors.black,
   },
