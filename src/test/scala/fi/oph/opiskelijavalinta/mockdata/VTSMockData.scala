@@ -1,12 +1,6 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{
-  Aikataulu,
-  HakemuksenTulos,
-  HakutoiveenTulos,
-  Ilmoittautumistila,
-  JonokohtainenTulos
-}
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulos}
 
 object VTSMockData {
 
@@ -74,16 +68,10 @@ object VTSMockData {
     jonokohtaisetTulostiedot = List.empty
   )
 
-  val aikataulu = Aikataulu(
-    vastaanottoEnd = Some("1970-01-01T13:00:00Z"),
-    vastaanottoBufferDays = Some(14)
-  )
-
   val mockVTSResponse = HakemuksenTulos(
     hakuOid = Some("1.2.246.562.29.00000000000000065738"),
     hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
     hakijaOid = Some("1.2.246.562.24.97280766274"),
-    aikataulu = Some(aikataulu),
     hakutoiveet = List(hakutoive1Hyvaksytty, hakutoive2Kesken)
   )
 
@@ -91,7 +79,6 @@ object VTSMockData {
     hakuOid = Some("1.2.246.562.29.00000000000000065738"),
     hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
     hakijaOid = Some("1.2.246.562.24.97280766274"),
-    aikataulu = Some(aikataulu),
     hakutoiveet = List(
       hakutoive1Hyvaksytty.copy(
         julkaistavissa = Some(false),

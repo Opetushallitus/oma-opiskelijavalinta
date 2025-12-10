@@ -1,12 +1,12 @@
 import { Chip } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import type { HakutoiveenTulos } from '@/lib/application.service';
-import { Valintatila } from '@/lib/valinta-tulos-types';
-
-const hyvaksyttyBackground = '#E2FAE4';
-const hylattyBackground = '#EECFC5';
-const keskenBackground = '#FAE6A8';
+import { Valintatila, type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import {
+  hylattyBackground,
+  hyvaksyttyBackground,
+  keskenBackground,
+} from '@/lib/theme';
 
 const valintatilaStyles: Record<
   Valintatila,

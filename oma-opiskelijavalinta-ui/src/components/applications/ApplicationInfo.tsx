@@ -1,9 +1,10 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { type Application, type Haku } from '@/lib/application.service';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { isTruthy } from 'remeda';
+import type { Haku } from '@/lib/kouta-types';
+import type { Application } from '@/lib/application-types';
 
 function HakuMuokkausInfo({ haku }: { haku: Haku }) {
   const { t, getLanguage } = useTranslations();

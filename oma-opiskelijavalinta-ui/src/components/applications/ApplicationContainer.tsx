@@ -1,40 +1,44 @@
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import {
-  type Application,
-  type Hakukohde,
-  type HakutoiveenTulos,
-} from '@/lib/application.service';
 import { isNonNull, isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
 import { ApplicationInfo } from './ApplicationInfo';
 import { Hakutoive } from './Hakutoive';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { ApplicationPaper } from './ApplicationPaper';
+import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import type { Hakukohde } from '@/lib/kouta-types';
+import type { Application } from '@/lib/application-types';
 
 function HakukohteetContainer({
+  applicationOid,
   hakukohteet,
   priorisoidutHakutoiveet,
   hakemuksenTulokset,
 }: {
+  applicationOid: string;
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box
+      sx={{ width: '100%' }}
+      data-test-id={`application-hakutoiveet-${applicationOid}`}
+    >
       {hakukohteet.map((hk, idx) => {
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
 
         return (
-        <Hakutoive
-          key={hk.oid}
-          hakukohde={hk}
-          prioriteetti={idx + 1}
-          priorisoidutHakutoiveet={priorisoidutHakutoiveet}
-          tulos={tulos}
-        />
+          <Hakutoive
+            key={hk.oid}
+            hakukohde={hk}
+            prioriteetti={idx + 1}
+            priorisoidutHakutoiveet={priorisoidutHakutoiveet}
+            tulos={tulos}
+          />
         );
       })}
     </Box>
@@ -92,10 +96,12 @@ export function ApplicationContainer({
           name={t('hakemukset.muokkaa')}
         />
       )}
+      <VastaanottoContainer application={application} />
       <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
+        applicationOid={application.oid}
         hakukohteet={application?.hakukohteet ?? []}
         priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
         hakemuksenTulokset={application.hakemuksenTulokset}

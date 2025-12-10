@@ -2,11 +2,12 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
-import { type Application, type Hakukohde } from '@/lib/application.service';
 import { isTruthy } from 'remeda';
 import { ExternalLink } from '../ExternalLink';
 import { Hakutoive } from './Hakutoive';
 import { ApplicationPaper } from './ApplicationPaper';
+import type { Hakukohde } from '@/lib/kouta-types';
+import type { Application } from '@/lib/application-types';
 
 const StyledInfoBox = styled(Box)(({ theme }) => ({
   display: 'flex',

@@ -1,9 +1,9 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { type Application } from '@/lib/application.service';
 import { isTruthy } from 'remeda';
 import { ExternalLink } from '../ExternalLink';
 import { ApplicationPaper } from './ApplicationPaper';
+import type { Application } from '@/lib/application-types';
 
 export function FormOnlyApplicationContainer({
   application,

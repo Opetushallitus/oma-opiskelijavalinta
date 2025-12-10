@@ -2,13 +2,11 @@ import { Box } from '@mui/material';
 import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
-import {
-  type Hakukohde,
-  type HakutoiveenTulos,
-} from '@/lib/application.service';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { ValintatilaChip } from '@/components/applications/ValintatilaChip';
+import type { Hakukohde } from '@/lib/kouta-types';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
