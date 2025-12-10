@@ -20,9 +20,13 @@ const InputContainer = styled(Box)(({ theme }) => ({
   alignItems: 'flex-start',
   margin: `${theme.spacing(2)} 0`,
   '.Mui-error': {
-    'MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root': {
+    '.MuiButtonBase-root-MuiSwitchBase-root-MuiRadio-root': {
       color: theme.palette.error,
     },
+  },
+  '.MuiFormHelperText-root': {
+    fontSize: 'medium',
+    marginTop: theme.spacing(1),
   },
 }));
 
