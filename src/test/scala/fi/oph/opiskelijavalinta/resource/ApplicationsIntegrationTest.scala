@@ -2,8 +2,17 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser}
-import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakuaikaPaattynytHaku, hakukohde1, hakukohde2, kaynnissaOlevaHaku}
-import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{hakukierrosPaattyyTulevaisuudessaMock, mennytTimestamp, paattynytHakukierrosMock}
+import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{
+  hakuaikaPaattynytHaku,
+  hakukohde1,
+  hakukohde2,
+  kaynnissaOlevaHaku
+}
+import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
+  hakukierrosPaattyyTulevaisuudessaMock,
+  mennytTimestamp,
+  paattynytHakukierrosMock
+}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
 import fi.oph.opiskelijavalinta.model.ApplicationsEnriched
 import org.junit.jupiter.api.*

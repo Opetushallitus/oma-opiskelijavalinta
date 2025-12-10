@@ -20,7 +20,7 @@ object TestUtils {
     mapper
 
   val oppijaUser: OppijaUser =
-    val attributes = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     new OppijaUser(attributes, "testuser", authorities)

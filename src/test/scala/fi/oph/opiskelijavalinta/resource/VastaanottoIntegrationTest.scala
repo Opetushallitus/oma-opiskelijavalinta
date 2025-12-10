@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
-  val HAKEMUS_OID = "HAKEMUS-OID-1"
+  val HAKEMUS_OID   = "HAKEMUS-OID-1"
   val HAKUKOHDE_OID = "HAKUKOHDE-OID-1"
 
   @Test
@@ -40,4 +40,3 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
   }
 }
-
