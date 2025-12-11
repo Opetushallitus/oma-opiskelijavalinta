@@ -124,7 +124,7 @@ export const hakemuksenTulosKesken = {
   viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
   hyvaksyttyJaJulkaistuDate: null,
   julkaistavissa: true,
-  ehdollisestiHyvaksyttavissa: true,
+  ehdollisestiHyvaksyttavissa: false,
   tilanKuvaukset: {
     FI: '',
     SV: '',

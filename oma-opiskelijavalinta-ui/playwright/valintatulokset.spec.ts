@@ -130,3 +130,37 @@ test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) =>
     app.getByText('Peruuntunut, Sait ylemmän hakutoiveen opiskelupaikan'),
   ).toBeVisible();
 });
+
+test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmällä hakutoiveella on valinta kesken', async ({
+  page,
+}) => {
+  const hyvaksyttyOdottaaApplication = {
+    ...hakemus1,
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosKesken, hakukohdeOid: 'hakukohde-oid-1' },
+      {
+        ...hakemuksenTulosHyvaksytty,
+        hakukohdeOid: 'hakukohde-oid-2',
+        valintatila: 'HYVAKSYTTY',
+        vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      },
+    ],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyOdottaaApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+  const applications = page.getByTestId('active-applications');
+
+  const hyvaksyttyOdottaaApp = applications.first();
+  await expect(
+    hyvaksyttyOdottaaApp.getByText('Opiskelijavalinta kesken'),
+  ).toBeVisible();
+  await expect(
+    hyvaksyttyOdottaaApp.getByText(
+      'Hyväksytty (odottaa ylempien hakukohteiden tuloksia)',
+    ),
+  ).toBeVisible();
+});

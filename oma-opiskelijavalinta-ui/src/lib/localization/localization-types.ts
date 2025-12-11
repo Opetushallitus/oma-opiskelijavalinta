@@ -5,9 +5,3 @@ export type TranslatedName = {
   en?: string;
   sv?: string;
 };
-
-export type TranslatedDescription = {
-  FI?: string;
-  SV?: string;
-  EN?: string;
-};

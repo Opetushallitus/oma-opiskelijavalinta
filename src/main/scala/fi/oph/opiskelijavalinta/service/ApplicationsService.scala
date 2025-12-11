@@ -80,7 +80,7 @@ class ApplicationsService @Autowired (
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val now                                           = new Date()
     var haku: Option[HakuEnriched]                    = Option.empty
-    var hakukohteet: Set[Option[Hakukohde]]           = Set.empty
+    var hakukohteet: List[Option[Hakukohde]]          = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]    = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
     if (application.haku != null) {

@@ -50,12 +50,14 @@ export function Hakutoive({
   pastApplication = false,
   priorisoidutHakutoiveet = false,
   tulos,
+  odottaaYlempaa = false,
 }: {
   hakukohde: Hakukohde;
   prioriteetti?: number;
   pastApplication?: boolean;
   priorisoidutHakutoiveet?: boolean;
   tulos?: HakutoiveenTulos;
+  odottaaYlempaa?: boolean;
 }) {
   const config = useConfig();
   const { translateEntity, t } = useTranslations();
@@ -71,7 +73,12 @@ export function Hakutoive({
         <OrderNumberBox>{prioriteetti}</OrderNumberBox>
       )}
       <Box>
-        {tulos && <ValintatilaChip hakutoiveenTulos={tulos} />}
+        {tulos && (
+          <ValintatilaChip
+            hakutoiveenTulos={tulos}
+            odottaaYlempaa={odottaaYlempaa}
+          />
+        )}
         {tulos && tulos.ehdollisestiHyvaksyttavissa ? (
           <StatusBadgeChip
             sx={{ ml: 1 }}

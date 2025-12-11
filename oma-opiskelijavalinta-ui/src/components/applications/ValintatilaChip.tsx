@@ -1,15 +1,11 @@
 import { useTranslations } from '@/hooks/useTranslations';
+import { mapKeys } from 'remeda';
 import {
   type BadgeColor,
   BadgeColorKey,
   StatusBadgeChip,
 } from '@/components/applications/StatusBadgeChip';
 import { Valintatila, type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import {
-  hylattyBackground,
-  hyvaksyttyBackground,
-  keskenBackground,
-} from '@/lib/theme';
 
 const valintatilaStyles: Record<
   Valintatila,
@@ -59,10 +55,12 @@ const valintatilaStyles: Record<
 
 export function ValintatilaChip({
   hakutoiveenTulos,
+  odottaaYlempaa,
 }: {
   hakutoiveenTulos?: HakutoiveenTulos;
+  odottaaYlempaa?: boolean;
 }) {
-  const { translateStatusDescription, t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
   const valintatila: Valintatila =
     (hakutoiveenTulos?.valintatila as Valintatila) || Valintatila.KESKEN;
   const style = valintatilaStyles[valintatila as Valintatila];
@@ -72,9 +70,12 @@ export function ValintatilaChip({
       varasijanumero: String(hakutoiveenTulos?.varasijanumero),
     });
   } else if (valintatila === Valintatila.PERUUNTUNUT) {
-    console.log(hakutoiveenTulos?.tilanKuvaukset);
-    console.log(translateStatusDescription(hakutoiveenTulos?.tilanKuvaukset));
-    statusLabel = `${statusLabel}, ${translateStatusDescription(hakutoiveenTulos?.tilanKuvaukset)}`;
+    const tilanKuvaukset = hakutoiveenTulos?.tilanKuvaukset
+      ? mapKeys(hakutoiveenTulos.tilanKuvaukset, (key) => key.toLowerCase())
+      : undefined;
+    statusLabel = `${statusLabel}, ${translateEntity(tilanKuvaukset)}`;
+  } else if (valintatila === Valintatila.HYVAKSYTTY && odottaaYlempaa) {
+    statusLabel = `${statusLabel} ${t('tulos.odottaa-ylempaa-hakutoivetta')}`;
   }
   return (
     <StatusBadgeChip

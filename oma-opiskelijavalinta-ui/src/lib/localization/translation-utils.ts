@@ -1,28 +1,7 @@
 import { isNullish } from 'remeda';
-import type {
-  Language,
-  TranslatedDescription,
-  TranslatedName,
-} from './localization-types';
+import type { Language, TranslatedName } from './localization-types';
 import { format } from 'date-fns';
 import { TZDateMini } from '@date-fns/tz';
-
-export function translateDescription(
-  translated?: TranslatedDescription,
-  userLanguage: Language = 'fi',
-): string {
-  if (!translated) return '';
-
-  const key = userLanguage.toUpperCase() as keyof TranslatedDescription;
-
-  return (
-    translated[key]?.trim() ||
-    translated.FI?.trim() ||
-    translated.EN?.trim() ||
-    translated.SV?.trim() ||
-    ''
-  );
-}
 
 export function translateName(
   translated: TranslatedName,

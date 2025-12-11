@@ -38,7 +38,8 @@
     "hylatty": "Et saanut opiskelupaikkaa",
     "varalla-varasija": "Olet {varasijanumero}. varasijalla",
     "ehdollisesti-hyvaksytty": "Ehdollinen",
-    "peruuntunut": "Peruuntunut"
+    "peruuntunut": "Peruuntunut",
+    "odottaa-ylempaa-hakutoivetta": "(odottaa ylempien hakukohteiden tuloksia)"
   },
   "vastaanotto": {
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
