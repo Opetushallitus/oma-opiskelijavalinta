@@ -1,5 +1,3 @@
-import type {TranslatedName} from "@/lib/localization/localization-types";
-
 export enum Valintatila {
   HYVAKSYTTY = 'HYVAKSYTTY',
   HARKINNANVARAISESTI_HYVAKSYTTY = 'HARKINNANVARAISESTI_HYVAKSYTTY',
