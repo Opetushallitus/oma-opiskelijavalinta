@@ -44,13 +44,14 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
 
+  const app = page.getByTestId('application-hakemus-oid-2');
   const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
     tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
   await expect(tulokset.getByText('Hyväksytty')).toBeVisible();
-  await expect(tulokset.getByText('Hakutoiveesi')).toBeHidden();
-  await expect(tulokset.getByText('Valintatilanteesi')).toBeVisible();
+  await expect(app.getByText('Hakutoiveesi')).toBeHidden();
+  await expect(app.getByText('Valintatilanteesi')).toBeVisible();
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
@@ -62,7 +63,7 @@ test('Näyttää hylätyn tuloksen', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
 
-  const app = page.getByTestId('application-hakemus-oid-2');
+  const app = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
     app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
@@ -105,12 +106,12 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
 
-  const app = page.getByTestId('application-hakemus-oid-2');
+  const hakutoive = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
-    app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+    hakutoive.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(app.getByText('Hyväksytty')).toBeVisible();
-  await expect(app.getByText('Ehdollinen')).toBeVisible();
+  await expect(hakutoive.getByText('Hyväksytty')).toBeVisible();
+  await expect(hakutoive.getByText('Ehdollinen')).toBeVisible();
 });
 
 test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) => {
