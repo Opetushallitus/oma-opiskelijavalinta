@@ -147,7 +147,7 @@ class BaseIntegrationTest {
               Application(
                 "hakemus-oid-1",
                 "haku-oid-1",
-                Set("hakukohde-oid-1", "hakukohde-oid-2"),
+                List("hakukohde-oid-1", "hakukohde-oid-2"),
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform")

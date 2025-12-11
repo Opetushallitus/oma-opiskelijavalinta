@@ -35,7 +35,7 @@ class ApplicationsServiceTest {
               Application(
                 "application-oid-1",
                 null,
-                Set.empty,
+                List.empty,
                 "secret-1",
                 "2025-02-02T19:32:01Z",
                 TranslatedName("Hajuton lomake", null, null)
