@@ -4,13 +4,10 @@ import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { ValintatilaChip } from '@/components/applications/ValintatilaChip';
+import { ValintatilaChip } from '@/components/valinnantulos/ValintatilaChip';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import {
-  BadgeColorKey,
-  StatusBadgeChip,
-} from '@/components/applications/StatusBadgeChip';
+import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',

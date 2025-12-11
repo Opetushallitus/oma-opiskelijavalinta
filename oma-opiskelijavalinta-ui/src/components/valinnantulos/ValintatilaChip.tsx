@@ -4,7 +4,7 @@ import {
   type BadgeColor,
   BadgeColorKey,
   StatusBadgeChip,
-} from '@/components/applications/StatusBadgeChip';
+} from '@/components/StatusBadgeChip';
 import { Valintatila, type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const valintatilaStyles: Record<

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { ValintatilaChip } from '../applications/ValintatilaChip';
+import { ValintatilaChip } from '../valinnantulos/ValintatilaChip';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { isDefined, isEmpty } from 'remeda';
