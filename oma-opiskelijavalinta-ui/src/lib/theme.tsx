@@ -8,10 +8,6 @@ import { shouldForwardProp } from '@mui/system/createStyled';
 
 export { ophColors } from '@opetushallitus/oph-design-system';
 
-export const hyvaksyttyBackground = '#E2FAE4';
-export const hylattyBackground = '#EECFC5';
-export const keskenBackground = '#FAE6A8';
-
 const withTransientProps = (propName: string) =>
   // Emotion doesn't support transient props by default so add support manually
   shouldForwardProp(propName) && !propName.startsWith('$');
