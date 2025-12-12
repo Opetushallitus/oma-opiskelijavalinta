@@ -9,9 +9,14 @@ import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
 import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
-import type { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
+import { useGlobalConfirmationModal } from '../ConfirmationModal';
+import {
+  VastaanottoModalContent,
+  VastaanottoModalParams,
+} from './VastaanottoModalContent';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,6 +43,7 @@ export function VastaanottoRadio({
   application: Application;
 }) {
   const { t } = useTranslations();
+  const { showConfirmation } = useGlobalConfirmationModal();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const vastaanottoOptions = [
@@ -61,11 +67,24 @@ export function VastaanottoRadio({
       setShowSelectionError(true);
       return;
     }
-    doVastaanotto(
-      application.oid,
-      hakutoive.oid,
-      selectedVastaanotto as VastaanottoTilaToiminto,
-    );
+    const modalParams =
+      VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto];
+
+    showConfirmation({
+      ...modalParams,
+      onConfirm: () =>
+        doVastaanotto(
+          application.oid,
+          hakutoive.oid,
+          selectedVastaanotto as VastaanottoTilaToiminto,
+        ),
+      content: (
+        <VastaanottoModalContent
+          modalParams={modalParams}
+          hakutoive={hakutoive}
+        />
+      ),
+    });
   };
 
   return (

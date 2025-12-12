@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from '@/components/Session';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 import { LocalizationProvider } from './LocalizationProvider';
+import { ConfirmationModalProvider } from './ConfirmationModal';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,7 +24,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <NuqsAdapter>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <LocalizationProvider>{children}</LocalizationProvider>
+          <LocalizationProvider>
+            <ConfirmationModalProvider>{children}</ConfirmationModalProvider>
+          </LocalizationProvider>
         </SessionProvider>
       </QueryClientProvider>
     </NuqsAdapter>
