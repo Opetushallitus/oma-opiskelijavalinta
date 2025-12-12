@@ -4,9 +4,10 @@ import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { ValintatilaChip } from '@/components/applications/ValintatilaChip';
+import { ValintatilaChip } from '@/components/valinnantulos/ValintatilaChip';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -46,12 +47,14 @@ export function Hakutoive({
   pastApplication = false,
   priorisoidutHakutoiveet = false,
   tulos,
+  odottaaYlempaa = false,
 }: {
   hakukohde: Hakukohde;
   prioriteetti?: number;
   pastApplication?: boolean;
   priorisoidutHakutoiveet?: boolean;
   tulos?: HakutoiveenTulos;
+  odottaaYlempaa?: boolean;
 }) {
   const config = useConfig();
   const { translateEntity, t } = useTranslations();
@@ -67,7 +70,23 @@ export function Hakutoive({
         <OrderNumberBox>{prioriteetti}</OrderNumberBox>
       )}
       <Box>
-        {tulos && <ValintatilaChip hakutoiveenTulos={tulos} />}
+        {tulos && (
+          <ValintatilaChip
+            hakutoiveenTulos={tulos}
+            odottaaYlempaa={odottaaYlempaa}
+          />
+        )}
+        {tulos && tulos.ehdollisestiHyvaksyttavissa ? (
+          <StatusBadgeChip
+            sx={{ ml: 1 }}
+            badgeProps={{
+              label: t('tulos.ehdollisesti-hyvaksytty'),
+              color: BadgeColorKey.Yellow,
+            }}
+          />
+        ) : (
+          <></>
+        )}
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>

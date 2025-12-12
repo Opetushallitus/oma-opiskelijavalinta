@@ -33,6 +33,11 @@ export type HakutoiveenTulos = {
   vastaanotettavuustila?: VastaanotettavuusTila;
   vastaanottoDeadline: string;
   vastaanottotila?: VastaanottoTila;
+  ehdollisestiHyvaksyttavissa?: boolean;
+  ehdollisenHyvaksymisenEhtoFI: string;
+  ehdollisenHyvaksymisenEhtoSV: string;
+  ehdollisenHyvaksymisenEhtoEN: string;
+  tilanKuvaukset?: { FI: string; SV: string; EN: string };
 };
 
 export enum VastaanottoTilaToiminto {

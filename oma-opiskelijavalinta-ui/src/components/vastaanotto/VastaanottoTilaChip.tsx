@@ -2,7 +2,7 @@ import { Chip } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
-import { hyvaksyttyBackground } from '@/lib/theme';
+import { greenBadgeBackground } from '@/lib/theme';
 
 const vastaanottoTilaStyles: Record<
   VastaanottoTila,
@@ -10,7 +10,7 @@ const vastaanottoTilaStyles: Record<
 > = {
   [VastaanottoTila.VASTAANOTTANUT_SITOVASTI]: {
     label: 'vastaanotto.tila.vastaanotettu',
-    background: hyvaksyttyBackground,
+    background: greenBadgeBackground,
     color: ophColors.green1,
   },
   [VastaanottoTila.PERUNUT]: {

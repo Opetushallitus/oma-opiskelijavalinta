@@ -3,7 +3,7 @@ package fi.oph.opiskelijavalinta.model
 case class ApplicationEnriched(
   oid: String,
   haku: Option[HakuEnriched],
-  hakukohteet: Set[Option[Hakukohde]],
+  hakukohteet: List[Option[Hakukohde]],
   ohjausparametrit: Option[Ohjausparametrit],
   secret: String,
   submitted: String,

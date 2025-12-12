@@ -25,6 +25,10 @@ object VTSMockData {
     hyvaksyttyJaJulkaistuDate = Some("2025-11-17T08:25:23Z"),
     julkaistavissa = Some(true),
     ehdollisestiHyvaksyttavissa = Some(false),
+    ehdollisenHyvaksymisenEhtoKoodi = None,
+    ehdollisenHyvaksymisenEhtoFI = None,
+    ehdollisenHyvaksymisenEhtoSV = None,
+    ehdollisenHyvaksymisenEhtoEN = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = Some(false),
     jonokohtaisetTulostiedot = List(
@@ -63,6 +67,10 @@ object VTSMockData {
     hyvaksyttyJaJulkaistuDate = None,
     julkaistavissa = Some(false),
     ehdollisestiHyvaksyttavissa = Some(false),
+    ehdollisenHyvaksymisenEhtoKoodi = None,
+    ehdollisenHyvaksymisenEhtoFI = None,
+    ehdollisenHyvaksymisenEhtoSV = None,
+    ehdollisenHyvaksymisenEhtoEN = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = None,
     jonokohtaisetTulostiedot = List.empty

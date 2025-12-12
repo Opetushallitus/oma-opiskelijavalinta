@@ -22,6 +22,10 @@ case class HakutoiveenTulos(
   hyvaksyttyJaJulkaistuDate: Option[String],
   julkaistavissa: Option[Boolean],
   ehdollisestiHyvaksyttavissa: Option[Boolean],
+  ehdollisenHyvaksymisenEhtoKoodi: Option[String],
+  ehdollisenHyvaksymisenEhtoFI: Option[String],
+  ehdollisenHyvaksymisenEhtoSV: Option[String],
+  ehdollisenHyvaksymisenEhtoEN: Option[String],
   tilanKuvaukset: Option[Map[String, String]],
   showMigriURL: Option[Boolean],
   jonokohtaisetTulostiedot: List[JonokohtainenTulos] // empty list if missing

@@ -16,6 +16,7 @@
     "ei-menneita-hakemuksia": "Sinulla ei ole aiempia hakemuksia.",
     "ei-hakemuksia": "Sinulla ei ole ajankohtaisia opiskelupaikan hakemuksia.",
     "hakutoiveet": "Hakutoiveesi",
+    "valintatilanne": "Valintatilanteesi",
     "muokkaa": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
     "info": {
@@ -35,7 +36,10 @@
     "kesken": "Opiskelijavalinta kesken",
     "hyvaksytty": "Hyväksytty",
     "hylatty": "Et saanut opiskelupaikkaa",
-    "varalla-varasija": "Olet {varasijanumero}. varasijalla"
+    "varalla-varasija": "Olet {varasijanumero}. varasijalla",
+    "ehdollisesti-hyvaksytty": "Ehdollinen",
+    "peruuntunut": "Peruuntunut",
+    "odottaa-ylempaa-hakutoivetta": "(odottaa ylempien hakukohteiden tuloksia)"
   },
   "vastaanotto": {
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",

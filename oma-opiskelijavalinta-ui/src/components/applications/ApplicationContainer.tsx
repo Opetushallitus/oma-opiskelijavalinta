@@ -11,6 +11,7 @@ import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
+import { isHyvaksyttyOdottaaYlempaa } from '@/lib/valinta-tulos-utils';
 
 function HakukohteetContainer({
   applicationOid,
@@ -30,7 +31,15 @@ function HakukohteetContainer({
     >
       {hakukohteet.map((hk, idx) => {
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
-
+        const hyvaksyttyOdottaa =
+          tulos &&
+          priorisoidutHakutoiveet &&
+          isHyvaksyttyOdottaaYlempaa(
+            hakukohteet,
+            hakemuksenTulokset,
+            tulos,
+            idx,
+          );
         return (
           <Hakutoive
             key={hk.oid}
@@ -38,6 +47,7 @@ function HakukohteetContainer({
             prioriteetti={idx + 1}
             priorisoidutHakutoiveet={priorisoidutHakutoiveet}
             tulos={tulos}
+            odottaaYlempaa={hyvaksyttyOdottaa}
           />
         );
       })}
@@ -97,8 +107,10 @@ export function ApplicationContainer({
         />
       )}
       <VastaanottoContainer application={application} />
-      <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
-        {t('hakemukset.hakutoiveet')}
+      <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
+        {application?.hakemuksenTulokset?.length
+          ? t('hakemukset.valintatilanne')
+          : t('hakemukset.hakutoiveet')}
       </OphTypography>
       <HakukohteetContainer
         applicationOid={application.oid}
