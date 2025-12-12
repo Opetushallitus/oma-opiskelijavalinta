@@ -1,5 +1,8 @@
 {
   "otsikko": "Oma Opiskelijavalinta",
+  "yleinen": {
+    "peruuta": "Peruuta"
+  },
   "virhe": {
     "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto."
   },
