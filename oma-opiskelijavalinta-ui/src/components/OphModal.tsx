@@ -20,7 +20,7 @@ export type OphModalProps = Pick<
   children?: React.ReactNode;
   title: string;
   actions?: React.ReactNode;
-  onClose?: (
+  onClose: (
     event: unknown,
     reason: 'backdropClick' | 'escapeKeyDown' | 'closeButtonClick',
   ) => void;
@@ -48,8 +48,14 @@ export const OphModal = ({
       sx={{ minWidth: '500px' }}
       open={open}
       aria-labelledby={modalTitleId}
-      onClose={onClose}
+      onClose={(event, reason) => {
+        if (reason && reason === 'backdropClick') {
+          return;
+        }
+        onClose(event, reason);
+      }}
       slotProps={slotProps}
+      disableEscapeKeyDown={true}
     >
       <DialogTitle
         sx={{
