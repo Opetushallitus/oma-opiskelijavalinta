@@ -55,6 +55,18 @@
     "tila": {
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
       "peruttu": "Opiskelupaikkaa ei vastaanotettu."
+    },
+    "modaali": {
+      "peru": {
+        "otsikko": "Vahvista, että et ota opiskelupaikkaa vastaan",
+        "vahvista": "En ota opiskelupaikkaa vastaan",
+        "info": "Olet ilmoittamassa että et halua ottaa seuraavaa opiskelupaikkaa vastaan:"
+      },
+      "vastaanota-sitovasti": {
+        "otsikko": "Vahvista opiskelupaikan vastaanotto",
+        "vahvista": "Ota opiskelupaikka vastaan",
+        "info": "Olet vahvistamassa opiskelupaikkaa:"
+      }
     }
   }
 }
