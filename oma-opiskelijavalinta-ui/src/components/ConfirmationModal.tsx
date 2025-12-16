@@ -2,20 +2,24 @@ import { OphButton } from '@opetushallitus/oph-design-system';
 import { OphModal } from './OphModal';
 import { useTranslations } from '@/hooks/useTranslations';
 import React from 'react';
+import type { UseMutationResult } from '@tanstack/react-query';
 
 export type ConfirmationModalProps = {
   title: string;
   open: boolean;
   content?: React.ReactNode;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   onCancel?: () => void;
+  mutation: UseMutationResult<void, Error, void, unknown>;
   loading?: boolean;
   confirmLabel: string;
   maxWidth?: 'sm' | 'md' | false;
 };
 
 type ConfirmationModalContextValue = {
-  showConfirmation: (props: Omit<ConfirmationModalProps, 'open'>) => void;
+  showConfirmation: (
+    props: Omit<ConfirmationModalProps, 'open' | 'onConfirm'>,
+  ) => void;
   hideConfirmation: () => void;
 };
 
@@ -35,9 +39,12 @@ export const ConfirmationModalProvider = ({
       showConfirmation: (props) =>
         setModalProps({
           ...props,
-          onConfirm: async () => {
-            await props.onConfirm();
-            setModalProps(null);
+          onConfirm: () => {
+            setModalProps({ ...props, loading: true, open: true });
+            props.loading = true;
+            props.mutation.mutate(undefined, {
+              onSettled: () => setModalProps(null),
+            });
           },
           onCancel: () => {
             props.onCancel?.();
@@ -58,17 +65,18 @@ export const ConfirmationModalProvider = ({
   );
 };
 
-export const ConfirmationModal = ({
+const ConfirmationModal = ({
   title,
   open,
   content,
   onConfirm,
   onCancel,
   confirmLabel,
+  maxWidth = 'md',
   loading,
-  maxWidth = 'sm',
 }: ConfirmationModalProps) => {
   const { t } = useTranslations();
+
   return (
     <OphModal
       open={open}

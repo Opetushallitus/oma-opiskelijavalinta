@@ -45,17 +45,18 @@ export function VastaanottoRadio({
   application: Application;
 }) {
   const { t } = useTranslations();
-  const { showConfirmation } = useGlobalConfirmationModal();
+  const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
-  const { isPending, mutate } = useMutation({
+  const mutation = useMutation({
     mutationFn: async () => {
       await doVastaanotto(
         application.oid,
         hakutoive.oid,
         selectedVastaanotto as VastaanottoTilaToiminto,
       );
+      hideConfirmation();
     },
     onSuccess: () =>
       showNotification({
@@ -98,8 +99,7 @@ export function VastaanottoRadio({
 
     showConfirmation({
       ...modalParams,
-      onConfirm: mutate,
-      loading: isPending,
+      mutation,
       content: (
         <VastaanottoModalContent
           modalParams={modalParams}
