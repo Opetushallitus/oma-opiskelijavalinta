@@ -20,7 +20,8 @@ export type OphModalProps = Pick<
   children?: React.ReactNode;
   title: string;
   actions?: React.ReactNode;
-  onClose: (
+  disabled?: boolean;
+  onClose?: (
     event: unknown,
     reason: 'backdropClick' | 'escapeKeyDown' | 'closeButtonClick',
   ) => void;
@@ -36,6 +37,7 @@ export const OphModal = ({
   maxWidth,
   fullWidth = true,
   onClose,
+  disabled,
   slotProps,
 }: OphModalProps) => {
   const modalId = useId();
@@ -51,8 +53,9 @@ export const OphModal = ({
       onClose={(event, reason) => {
         if (reason && reason === 'backdropClick') {
           return;
+        } else if (onClose) {
+          onClose(event, reason);
         }
-        onClose(event, reason);
       }}
       slotProps={slotProps}
       disableEscapeKeyDown={true}
@@ -70,6 +73,7 @@ export const OphModal = ({
             startIcon={<CloseIcon />}
             aria-label={t('yleinen.sulje')}
             onClick={() => onClose({}, 'closeButtonClick')}
+            disabled={disabled}
             sx={{
               color: ophColors.grey600,
               alignSelf: 'flex-start',

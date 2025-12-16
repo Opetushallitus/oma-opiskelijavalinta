@@ -47,6 +47,8 @@
   "vastaanotto": {
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
     "laheta": "Lähetä vastaus",
+    "onnistui": "",
+    "virhe": "Vastaanottotoiminto epäonnistui",
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
@@ -60,12 +62,14 @@
       "peru": {
         "otsikko": "Vahvista, että et ota opiskelupaikkaa vastaan",
         "vahvista": "En ota opiskelupaikkaa vastaan",
-        "info": "Olet ilmoittamassa että et halua ottaa seuraavaa opiskelupaikkaa vastaan:"
+        "info": "Olet ilmoittamassa että et halua ottaa seuraavaa opiskelupaikkaa vastaan:",
+        "onnistui": "Opiskelupaikkaa ei vastaanotettu."
       },
       "vastaanota-sitovasti": {
         "otsikko": "Vahvista opiskelupaikan vastaanotto",
         "vahvista": "Ota opiskelupaikka vastaan",
-        "info": "Olet vahvistamassa opiskelupaikkaa:"
+        "info": "Olet vahvistamassa opiskelupaikkaa:",
+        "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       }
     }
   }

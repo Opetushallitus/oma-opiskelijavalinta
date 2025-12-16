@@ -17,6 +17,8 @@ import {
   VastaanottoModalContent,
   VastaanottoModalParams,
 } from './VastaanottoModalContent';
+import { useMutation } from '@tanstack/react-query';
+import { useNotifications } from '../NotificationProvider';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -46,6 +48,30 @@ export function VastaanottoRadio({
   const { showConfirmation } = useGlobalConfirmationModal();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
+  const { showNotification } = useNotifications();
+  const { isPending, mutate } = useMutation({
+    mutationFn: async () => {
+      await doVastaanotto(
+        application.oid,
+        hakutoive.oid,
+        selectedVastaanotto as VastaanottoTilaToiminto,
+      );
+    },
+    onSuccess: () =>
+      showNotification({
+        message: t(
+          VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto]
+            .successMessage,
+        ),
+        type: 'success',
+      }),
+    onError: () =>
+      showNotification({
+        message: t('vastaanotto.virhe'),
+        type: 'error',
+        duration: null,
+      }),
+  });
   const vastaanottoOptions = [
     {
       label: t('vastaanotto.vaihtoehdot.sitova'),
@@ -72,12 +98,8 @@ export function VastaanottoRadio({
 
     showConfirmation({
       ...modalParams,
-      onConfirm: () =>
-        doVastaanotto(
-          application.oid,
-          hakutoive.oid,
-          selectedVastaanotto as VastaanottoTilaToiminto,
-        ),
+      onConfirm: mutate,
+      loading: isPending,
       content: (
         <VastaanottoModalContent
           modalParams={modalParams}

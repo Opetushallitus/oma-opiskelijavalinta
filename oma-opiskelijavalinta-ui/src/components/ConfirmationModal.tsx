@@ -9,6 +9,7 @@ export type ConfirmationModalProps = {
   content?: React.ReactNode;
   onConfirm: () => void;
   onCancel?: () => void;
+  loading?: boolean;
   confirmLabel: string;
   maxWidth?: 'sm' | 'md' | false;
 };
@@ -34,8 +35,8 @@ export const ConfirmationModalProvider = ({
       showConfirmation: (props) =>
         setModalProps({
           ...props,
-          onConfirm: () => {
-            props.onConfirm();
+          onConfirm: async () => {
+            await props.onConfirm();
             setModalProps(null);
           },
           onCancel: () => {
@@ -64,6 +65,7 @@ export const ConfirmationModal = ({
   onConfirm,
   onCancel,
   confirmLabel,
+  loading,
   maxWidth = 'sm',
 }: ConfirmationModalProps) => {
   const { t } = useTranslations();
@@ -73,12 +75,13 @@ export const ConfirmationModal = ({
       onClose={onCancel}
       title={t(title)}
       maxWidth={maxWidth}
+      disabled={loading}
       actions={
         <>
-          <OphButton variant="outlined" onClick={onCancel}>
+          <OphButton variant="outlined" onClick={onCancel} disabled={loading}>
             {t('yleinen.peruuta')}
           </OphButton>
-          <OphButton variant="contained" onClick={onConfirm}>
+          <OphButton variant="contained" onClick={onConfirm} loading={loading}>
             {t(confirmLabel)}
           </OphButton>
         </>
