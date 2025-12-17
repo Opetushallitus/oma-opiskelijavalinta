@@ -11,19 +11,26 @@ import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
-import { isHyvaksyttyOdottaaYlempaa } from '@/lib/valinta-tulos-utils';
+import {
+  isHyvaksyttyOdottaaYlempaa,
+  isJulkaistuHakutoiveenTulos,
+} from '@/lib/valinta-tulos-utils';
 
 function HakukohteetContainer({
   applicationOid,
   hakukohteet,
   priorisoidutHakutoiveet,
+  sijoitteluKaytossa,
   hakemuksenTulokset,
 }: {
   applicationOid: string;
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
+  sijoitteluKaytossa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
+  const isJulkaistuTulosHakemuksella =
+    isJulkaistuHakutoiveenTulos(hakemuksenTulokset);
   return (
     <Box
       sx={{ width: '100%' }}
@@ -46,6 +53,8 @@ function HakukohteetContainer({
             hakukohde={hk}
             prioriteetti={idx + 1}
             priorisoidutHakutoiveet={priorisoidutHakutoiveet}
+            sijoitteluKaytossa={sijoitteluKaytossa}
+            naytaKeskenTulos={isJulkaistuTulosHakemuksella}
             tulos={tulos}
             odottaaYlempaa={hyvaksyttyOdottaa}
           />
@@ -115,7 +124,8 @@ export function ApplicationContainer({
       <HakukohteetContainer
         applicationOid={application.oid}
         hakukohteet={application?.hakukohteet ?? []}
-        priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
+        priorisoidutHakutoiveet={application.priorisoidutHakutoiveet}
+        sijoitteluKaytossa={application.sijoitteluKaytossa}
         hakemuksenTulokset={application.hakemuksenTulokset}
       />
     </ApplicationPaper>

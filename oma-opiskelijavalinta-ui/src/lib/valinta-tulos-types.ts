@@ -38,6 +38,19 @@ export type HakutoiveenTulos = {
   ehdollisenHyvaksymisenEhtoSV: string;
   ehdollisenHyvaksymisenEhtoEN: string;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
+  jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
+};
+
+export type JonokohtainenTulostieto = {
+  nimi?: string;
+  pisteet?: number;
+  alinHyvaksyttyPistemaara?: number;
+  valintatila?: string;
+  julkaistavissa?: string;
+  valintatapajonoPrioriteetti?: number;
+  tilanKuvaukset?: { FI: string; SV: string; EN: string };
+  ehdollisestiHyvaksyttavissa?: boolean;
+  ehdollisenHyvaksymisenEhto?: { FI: string; SV: string; EN: string };
 };
 
 export enum VastaanottoTilaToiminto {

@@ -11,6 +11,7 @@ export type Application = {
   submitted: number;
   formName: TranslatedName;
   priorisoidutHakutoiveet: boolean;
+  sijoitteluKaytossa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 };
 

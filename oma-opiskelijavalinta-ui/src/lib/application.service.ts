@@ -11,6 +11,7 @@ type Ohjausparametrit = {
   valintaTuloksetJulkaistaanHakijoille?: number | null;
   ehdollisetValinnatPaattyy?: number | null;
   opiskelijanPaikanVastaanottoPaattyy?: number | null;
+  sijoittelu?: boolean;
   jarjestetytHakutoiveet?: boolean;
 };
 
@@ -49,6 +50,7 @@ function convertToApplication(
     hakukierrosPaattyy,
     priorisoidutHakutoiveet:
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
+    sijoitteluKaytossa: app.ohjausparametrit?.sijoittelu === true,
     submitted: new Date(app.submitted).getTime(),
   };
 }
