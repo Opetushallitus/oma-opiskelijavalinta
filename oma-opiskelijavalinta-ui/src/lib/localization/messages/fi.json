@@ -47,7 +47,6 @@
   "vastaanotto": {
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
     "laheta": "Lähetä vastaus",
-    "onnistui": "",
     "virhe": "Vastaanottotoiminto epäonnistui",
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
