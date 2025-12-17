@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.model.HakemuksenTulos
+import fi.oph.opiskelijavalinta.model.HakutoiveenTulos
 import fi.oph.opiskelijavalinta.resource.ApiConstants.VALINTATULOS_PATH
 import fi.oph.opiskelijavalinta.service.VTSService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,8 +15,8 @@ class ValintaTulosResource @Autowired (vtsService: VTSService) {
   def doVastaanotto(
     @PathVariable hakemusOid: String,
     @PathVariable hakuOid: String
-  ): ResponseEntity[HakemuksenTulos] = {
+  ): ResponseEntity[List[HakutoiveenTulos]] = {
     val result = vtsService.getValinnanTulokset(hakuOid, hakemusOid)
-    ResponseEntity.ok(result.get)
+    ResponseEntity.ok(result.get.hakutoiveet)
   }
 }

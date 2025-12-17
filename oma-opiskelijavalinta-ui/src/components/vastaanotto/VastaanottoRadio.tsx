@@ -19,6 +19,7 @@ import {
 } from './VastaanottoModalContent';
 import { useMutation } from '@tanstack/react-query';
 import { useNotifications } from '../NotificationProvider';
+import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -49,6 +50,16 @@ export function VastaanottoRadio({
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
+
+  if (!application.haku) {
+    console.error('Haku must be defined for vastaanotto!');
+    return;
+  }
+  const { refetchTulokset } = useHakemuksenTulokset(
+    application,
+    application.haku,
+  );
+
   const mutation = useMutation({
     mutationFn: async () => {
       await doVastaanotto(
@@ -58,14 +69,16 @@ export function VastaanottoRadio({
       );
       hideConfirmation();
     },
-    onSuccess: () =>
+    onSuccess: () => {
       showNotification({
         message: t(
           VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto]
             .successMessage,
         ),
         type: 'success',
-      }),
+      });
+      refetchTulokset();
+    },
     onError: () =>
       showNotification({
         message: t('vastaanotto.virhe'),

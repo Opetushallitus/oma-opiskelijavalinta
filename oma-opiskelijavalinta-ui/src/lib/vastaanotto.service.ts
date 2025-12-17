@@ -1,9 +1,9 @@
 import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
-import type { Application } from './application-types';
 import {
   VastaanottoTila,
   VastaanottoTilaToiminto,
+  type HakutoiveenTulos,
 } from './valinta-tulos-types';
 
 async function postVastaanotto(
@@ -18,8 +18,10 @@ async function postVastaanotto(
   );
 }
 
-export function naytettavatVastaanottoTiedot(application: Application) {
-  return application.hakemuksenTulokset.filter(
+export function naytettavatVastaanottoTiedot(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+) {
+  return hakemuksenTulokset.filter(
     (ht) =>
       (ht.vastaanottotila &&
         ![
