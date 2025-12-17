@@ -83,7 +83,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsVTSResultsForApplications(): Unit = {
+  def returnsPublishedVTSResultsForApplications(): Unit = {
     Mockito
       .when(koutaClient.getHaku("haku-oid-1"))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
@@ -139,9 +139,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("2025-12-12T13:00:00Z", hakutoive1.vastaanottoDeadline.get)
     val hakutoive2 = app.hakemuksenTulokset
       .find(_.hakukohdeOid.contains("hakukohde-oid-2"))
-      .getOrElse(fail("hakukohde-oid-2 not found"))
-
-    Assertions.assertEquals(Some("KESKEN"), hakutoive2.vastaanottotila)
+    Assertions.assertEquals(None, hakutoive2)
   }
 
   @Test

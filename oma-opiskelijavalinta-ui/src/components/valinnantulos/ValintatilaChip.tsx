@@ -55,12 +55,12 @@ const valintatilaStyles: Record<
 
 export function ValintatilaChip({
   hakutoiveenTulos,
-  odottaaYlempaa,
-  naytaKeskenTulos,
+  odottaaYlempaa = false,
+  naytaKeskenTulos = false,
 }: {
   hakutoiveenTulos?: HakutoiveenTulos;
   odottaaYlempaa?: boolean;
-  naytaKeskenTulos: boolean;
+  naytaKeskenTulos?: boolean;
 }) {
   const { t, translateEntity } = useTranslations();
   if (isNullish(hakutoiveenTulos) && !naytaKeskenTulos) return null;
