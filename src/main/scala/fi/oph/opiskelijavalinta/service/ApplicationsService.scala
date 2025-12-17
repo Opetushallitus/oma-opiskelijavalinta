@@ -96,6 +96,7 @@ class ApplicationsService @Autowired (
             o.PH_EVR.flatMap(d => d.date),
             o.PH_OPVP.flatMap(d => d.date),
             o.PH_VSTP.flatMap(d => d.date),
+            o.sijoittelu,
             o.jarjestetytHakutoiveet
           )
         )
@@ -106,7 +107,7 @@ class ApplicationsService @Autowired (
         hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
           case Some(v) =>
             if (!haku.get.hakuaikaKaynnissa || isJulkaistuTulosHakutoiveella(v.hakutoiveet))
-              v.hakutoiveet
+              v.hakutoiveet.filter(t => t.julkaistavissa.getOrElse(false))
             else
               List.empty
           case _ => List.empty

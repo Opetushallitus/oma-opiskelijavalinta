@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulos}
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulostieto}
 
 object VTSMockData {
 
@@ -32,15 +32,20 @@ object VTSMockData {
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = Some(false),
     jonokohtaisetTulostiedot = List(
-      JonokohtainenTulos(
+      JonokohtainenTulostieto(
         oid = Some("12246562200000000000000007599136"),
-        nimi = Some(""),
+        nimi = Some("todistusvalinta"),
+        pisteet = None,
+        alinHyvaksyttyPistemaara = None,
         valintatila = Some("HYVAKSYTTY"),
         julkaistavissa = Some(true),
+        valintatapajonoPrioriteetti = Some(1),
         tilanKuvaukset = Some(Map.empty),
         ehdollisestiHyvaksyttavissa = Some(false),
         ehdollisenHyvaksymisenEhto = Some(Map.empty),
         eiVarasijatayttoa = Some(false),
+        varasijanumero = None,
+        varasijat = None,
         varasijasaannotKaytossa = Some(false)
       )
     )

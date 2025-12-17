@@ -8,6 +8,7 @@ import { ValintatilaChip } from '@/components/valinnantulos/ValintatilaChip';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
+import ValintatapajonoTable from '@/components/valinnantulos/ValintatapajonoTable';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -46,6 +47,8 @@ export function Hakutoive({
   prioriteetti,
   pastApplication = false,
   priorisoidutHakutoiveet = false,
+  sijoitteluKaytossa = false,
+  naytaKeskenTulos = false,
   tulos,
   odottaaYlempaa = false,
 }: {
@@ -53,6 +56,8 @@ export function Hakutoive({
   prioriteetti?: number;
   pastApplication?: boolean;
   priorisoidutHakutoiveet?: boolean;
+  sijoitteluKaytossa?: boolean;
+  naytaKeskenTulos?: boolean;
   tulos?: HakutoiveenTulos;
   odottaaYlempaa?: boolean;
 }) {
@@ -70,13 +75,12 @@ export function Hakutoive({
         <OrderNumberBox>{prioriteetti}</OrderNumberBox>
       )}
       <Box>
-        {tulos && (
-          <ValintatilaChip
-            hakutoiveenTulos={tulos}
-            odottaaYlempaa={odottaaYlempaa}
-          />
-        )}
-        {tulos && tulos.ehdollisestiHyvaksyttavissa ? (
+        <ValintatilaChip
+          hakutoiveenTulos={tulos}
+          odottaaYlempaa={odottaaYlempaa}
+          naytaKeskenTulos={naytaKeskenTulos}
+        />
+        {tulos?.ehdollisestiHyvaksyttavissa ? (
           <StatusBadgeChip
             sx={{ ml: 1 }}
             badgeProps={{
@@ -84,15 +88,26 @@ export function Hakutoive({
               color: BadgeColorKey.Yellow,
             }}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>
         <OphTypography variant="body1">
           {translateEntity(hakukohde.nimi)}
         </OphTypography>
+        {sijoitteluKaytossa && tulos?.jonokohtaisetTulostiedot.length ? (
+          <Box
+            sx={{
+              mt: 1.5,
+              ml: 2,
+              fontSize: '0.875rem',
+            }}
+          >
+            <ValintatapajonoTable
+              jonokohtaisetTulostiedot={tulos.jonokohtaisetTulostiedot}
+            />
+          </Box>
+        ) : null}
         {!pastApplication && (
           <ValintaperusteetLinkContainer>
             <ExternalLink

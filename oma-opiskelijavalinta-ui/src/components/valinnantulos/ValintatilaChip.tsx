@@ -1,5 +1,5 @@
 import { useTranslations } from '@/hooks/useTranslations';
-import { mapKeys } from 'remeda';
+import { isNullish, mapKeys } from 'remeda';
 import {
   type BadgeColor,
   BadgeColorKey,
@@ -56,11 +56,26 @@ const valintatilaStyles: Record<
 export function ValintatilaChip({
   hakutoiveenTulos,
   odottaaYlempaa,
+  naytaKeskenTulos,
 }: {
   hakutoiveenTulos?: HakutoiveenTulos;
   odottaaYlempaa?: boolean;
+  naytaKeskenTulos: boolean;
 }) {
   const { t, translateEntity } = useTranslations();
+  if (isNullish(hakutoiveenTulos) && !naytaKeskenTulos) return null;
+  if (
+    (isNullish(hakutoiveenTulos) && naytaKeskenTulos) ||
+    !hakutoiveenTulos?.julkaistavissa
+  )
+    return (
+      <StatusBadgeChip
+        badgeProps={{
+          label: t('tulos.kesken'),
+          color: BadgeColorKey.Yellow,
+        }}
+      />
+    );
   const valintatila: Valintatila =
     (hakutoiveenTulos?.valintatila as Valintatila) || Valintatila.KESKEN;
   const style = valintatilaStyles[valintatila as Valintatila];
@@ -73,7 +88,7 @@ export function ValintatilaChip({
     const tilanKuvaukset = hakutoiveenTulos?.tilanKuvaukset
       ? mapKeys(hakutoiveenTulos.tilanKuvaukset, (key) => key.toLowerCase())
       : undefined;
-    statusLabel = `${statusLabel}, ${translateEntity(tilanKuvaukset)}`;
+    statusLabel = `${statusLabel} - ${translateEntity(tilanKuvaukset)}`;
   } else if (valintatila === Valintatila.HYVAKSYTTY && odottaaYlempaa) {
     statusLabel = `${statusLabel} ${t('tulos.odottaa-ylempaa-hakutoivetta')}`;
   }
