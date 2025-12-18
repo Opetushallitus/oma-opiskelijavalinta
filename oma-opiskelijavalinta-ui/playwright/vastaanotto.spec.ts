@@ -205,6 +205,15 @@ test('Vastaanottomodaali on saavutettava', async ({ page }) => {
   await expect(
     page.getByText('Vahvista opiskelupaikan vastaanotto'),
   ).toBeVisible();
+  await expect(
+    page.getByText('Olet vahvistamassa opiskelupaikkaa:'),
+  ).toBeVisible();
+
+  await expect(page.getByRole('button', { name: 'Peruuta' })).toBeVisible();
+
+  await expect(
+    page.getByRole('button', { name: 'Ota opiskelupaikka vastaan' }),
+  ).toBeVisible();
 
   await expectPageAccessibilityOk(page);
 });

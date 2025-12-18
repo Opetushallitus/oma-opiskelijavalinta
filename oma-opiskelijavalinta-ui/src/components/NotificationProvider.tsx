@@ -34,6 +34,7 @@ const DEFAULT_DURATION = 5000;
 
 const StyledSnackbar = styled(Snackbar)(({ theme }) => ({
   width: 'min(100% - 20px, 633px)',
+  //padding: theme.spacing(4),
   '@media (min-width: 600px)': {
     top: theme.spacing(15),
   },
@@ -46,7 +47,10 @@ const StyledSnackbar = styled(Snackbar)(({ theme }) => ({
   },
   '.MuiAlert-action': {
     paddingTop: 0,
-    marginTop: '-4px',
+    marginTop: '-12px',
+  },
+  '.MuiPaper-root': {
+    padding: theme.spacing(2, 1.5),
   },
 }));
 
