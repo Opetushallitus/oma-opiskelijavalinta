@@ -191,6 +191,24 @@ test('Vastaanotto on saavutettava', async ({ page }) => {
   await expectPageAccessibilityOk(page);
 });
 
+test('Vastaanottomodaali on saavutettava', async ({ page }) => {
+  await setup(page);
+
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await expect(
+    page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeVisible();
+
+  await expectPageAccessibilityOk(page);
+});
+
 const vastaanotettuTulos = (vastaanottoTila: VastaanottoTila) => {
   const tulos = clone(hakemuksenTulosHyvaksytty);
   tulos.vastaanotettavuustila = 'EI_VASTAANOTETTAVISSA';
