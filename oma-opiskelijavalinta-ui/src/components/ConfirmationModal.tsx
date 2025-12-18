@@ -72,7 +72,6 @@ const ConfirmationModal = ({
   onConfirm,
   onCancel,
   confirmLabel,
-  maxWidth = 'md',
   loading,
 }: ConfirmationModalProps) => {
   const { t } = useTranslations();
@@ -82,7 +81,6 @@ const ConfirmationModal = ({
       open={open}
       onClose={onCancel}
       title={t(title)}
-      maxWidth={maxWidth}
       disabled={loading}
       actions={
         <>

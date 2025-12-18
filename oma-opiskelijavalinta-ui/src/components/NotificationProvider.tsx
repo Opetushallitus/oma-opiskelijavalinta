@@ -1,3 +1,4 @@
+import { notDesktop, styled } from '@/lib/theme';
 import { Alert, Snackbar } from '@mui/material';
 import type { AlertColor } from '@mui/material';
 import {
@@ -30,6 +31,24 @@ type NotificationState = {
 };
 
 const DEFAULT_DURATION = 5000;
+
+const StyledSnackbar = styled(Snackbar)(({ theme }) => ({
+  width: 'min(100% - 20px, 633px)',
+  '@media (min-width: 600px)': {
+    top: theme.spacing(15),
+  },
+  [notDesktop(theme)]: {
+    top: theme.spacing(10),
+  },
+  '.MuiAlert-icon': {
+    paddingTop: '5px',
+    fontSize: '23px',
+  },
+  '.MuiAlert-action': {
+    paddingTop: 0,
+    marginTop: '-4px',
+  },
+}));
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notification, setNotification] = useState<NotificationState>({
@@ -68,7 +87,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   return (
     <NotificationContext value={{ showNotification }}>
       {children}
-      <Snackbar
+      <StyledSnackbar
         open={notification.open}
         autoHideDuration={notification.duration}
         onClose={handleClose}
@@ -78,11 +97,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           onClose={handleClose}
           severity={notification.type}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', fontSize: 'inherit' }}
         >
           {notification.message}
         </Alert>
-      </Snackbar>
+      </StyledSnackbar>
     </NotificationContext>
   );
 }

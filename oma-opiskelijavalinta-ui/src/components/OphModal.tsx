@@ -1,4 +1,5 @@
 import { useTranslations } from '@/hooks/useTranslations';
+import { notDesktop, styled } from '@/lib/theme';
 import { Close as CloseIcon } from '@mui/icons-material';
 import {
   Box,
@@ -13,7 +14,7 @@ import { useId } from 'react';
 
 export type OphModalProps = Pick<
   DialogProps,
-  'slotProps' | 'open' | 'children' | 'maxWidth' | 'fullWidth'
+  'open' | 'children' | 'maxWidth' | 'fullWidth'
 > & {
   titleAlign?: 'center' | 'left';
   contentAlign?: 'center' | 'left';
@@ -27,6 +28,24 @@ export type OphModalProps = Pick<
   ) => void;
 };
 
+const StyledDialogContent = styled(DialogContent)(() => ({
+  maxWidth: 'min(100% - 10px, 800px)',
+  position: 'relative',
+}));
+
+const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
+  [notDesktop(theme)]: {
+    flexDirection: 'column',
+    button: {
+      width: '100%',
+      '&:not(style)': {
+        marginLeft: 0,
+      },
+    },
+    rowGap: theme.spacing(2),
+  },
+}));
+
 export const OphModal = ({
   open,
   titleAlign = 'left',
@@ -34,11 +53,9 @@ export const OphModal = ({
   children,
   actions,
   title,
-  maxWidth,
   fullWidth = true,
   onClose,
   disabled,
-  slotProps,
 }: OphModalProps) => {
   const modalId = useId();
   const modalTitleId = `${modalId}-title`;
@@ -46,8 +63,8 @@ export const OphModal = ({
   return (
     <Dialog
       fullWidth={fullWidth}
-      maxWidth={maxWidth}
-      sx={{ minWidth: '500px' }}
+      maxWidth="md"
+      sx={{ minWidth: 'min(100%, 500px)' }}
       open={open}
       aria-labelledby={modalTitleId}
       onClose={(event, reason) => {
@@ -57,7 +74,6 @@ export const OphModal = ({
           onClose(event, reason);
         }
       }}
-      slotProps={slotProps}
       disableEscapeKeyDown={true}
     >
       <DialogTitle
@@ -82,10 +98,10 @@ export const OphModal = ({
           />
         )}
       </DialogTitle>
-      <DialogContent sx={{ textAlign: contentAlign, position: 'relative' }}>
+      <StyledDialogContent sx={{ textAlign: contentAlign }}>
         {children}
-      </DialogContent>
-      {actions && <DialogActions>{actions}</DialogActions>}
+      </StyledDialogContent>
+      {actions && <StyledDialogActions>{actions}</StyledDialogActions>}
     </Dialog>
   );
 };

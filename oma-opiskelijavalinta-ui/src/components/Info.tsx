@@ -1,5 +1,5 @@
 import { useTranslations } from '@/hooks/useTranslations';
-import { notLarge, styled } from '@/lib/theme';
+import { notDesktop, styled } from '@/lib/theme';
 import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import type { User } from '@/lib/types';
@@ -7,7 +7,7 @@ import type { User } from '@/lib/types';
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
   marginLeft: theme.spacing(2.5),
-  [notLarge(theme)]: {
+  [notDesktop(theme)]: {
     maxWidth: '95vw',
   },
 }));
