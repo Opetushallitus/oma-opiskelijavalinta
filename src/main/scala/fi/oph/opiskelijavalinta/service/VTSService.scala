@@ -32,7 +32,17 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
       case Left(e) =>
         LOG.info(s"Failed to fetch valinnantulos data for $hakuOid, $hakemusOid: ${e.getMessage}")
         Option.empty
-      case Right(o) => Option.apply(mapper.readValue(o, classOf[HakemuksenTulos]))
+      case Right(o) =>
+        Option
+          .apply(mapper.readValue(o, classOf[HakemuksenTulos]))
+          .map(ht =>
+            HakemuksenTulos(
+              ht.hakuOid,
+              ht.hakemusOid,
+              ht.hakijaOid,
+              ht.hakutoiveet.filter(toive => toive.julkaistavissa.getOrElse(false))
+            )
+          )
     }
   }
 

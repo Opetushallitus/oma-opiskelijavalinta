@@ -108,7 +108,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
-    val foo          = objectMapper.writeValueAsString(mockVTSResponse)
     val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.current.length)
     Assertions.assertEquals(0, applications.old.length)
