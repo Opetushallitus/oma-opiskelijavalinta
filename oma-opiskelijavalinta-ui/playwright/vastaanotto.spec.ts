@@ -100,9 +100,14 @@ test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
     .click();
+  //ilmoitus näkyy ja suljetaan se
   await expect(
     page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Sulje' }).click();
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeHidden();
   await expect(
     vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
   ).toBeHidden();
