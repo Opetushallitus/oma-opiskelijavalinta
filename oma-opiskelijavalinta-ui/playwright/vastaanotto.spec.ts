@@ -194,6 +194,10 @@ test('Vastaanotto on saavutettava', async ({ page }) => {
 test('Vastaanottomodaali on saavutettava', async ({ page }) => {
   await setup(page);
 
+  await page.addStyleTag({
+    content: '* {animation: none !important; transition: none !important; }',
+  });
+
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
   await vastaanotot
     .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
