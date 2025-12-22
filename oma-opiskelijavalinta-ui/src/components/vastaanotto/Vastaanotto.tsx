@@ -75,10 +75,12 @@ function VastaanottoBox({
 
 export function VastaanottoContainer({
   application,
+  hakemuksenTulokset,
 }: {
   application: Application;
+  hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
-  const vastaanotettavat = naytettavatVastaanottoTiedot(application);
+  const vastaanotettavat = naytettavatVastaanottoTiedot(hakemuksenTulokset);
 
   return isEmpty(vastaanotettavat) ? null : (
     <Box sx={{ width: '100%' }} data-test-id={`vastaanotot-${application.oid}`}>

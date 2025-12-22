@@ -9,9 +9,17 @@ import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
 import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
-import type { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
+import { useGlobalConfirmationModal } from '../ConfirmationModal';
+import {
+  VastaanottoModalContent,
+  VastaanottoModalParams,
+} from './VastaanottoModalContent';
+import { useMutation } from '@tanstack/react-query';
+import { useNotifications } from '../NotificationProvider';
+import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,8 +46,46 @@ export function VastaanottoRadio({
   application: Application;
 }) {
   const { t } = useTranslations();
+  const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
+  const { showNotification } = useNotifications();
+
+  if (!application.haku) {
+    console.error('Haku must be defined for vastaanotto!');
+    return;
+  }
+  const { refetchTulokset } = useHakemuksenTulokset(
+    application,
+    application.haku,
+  );
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await doVastaanotto(
+        application.oid,
+        hakutoive.oid,
+        selectedVastaanotto as VastaanottoTilaToiminto,
+      );
+      hideConfirmation();
+    },
+    onSuccess: () => {
+      showNotification({
+        message: t(
+          VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto]
+            .successMessage,
+        ),
+        type: 'success',
+      });
+      refetchTulokset();
+    },
+    onError: () =>
+      showNotification({
+        message: t('vastaanotto.virhe'),
+        type: 'error',
+        duration: null,
+      }),
+  });
   const vastaanottoOptions = [
     {
       label: t('vastaanotto.vaihtoehdot.sitova'),
@@ -61,11 +107,19 @@ export function VastaanottoRadio({
       setShowSelectionError(true);
       return;
     }
-    doVastaanotto(
-      application.oid,
-      hakutoive.oid,
-      selectedVastaanotto as VastaanottoTilaToiminto,
-    );
+    const modalParams =
+      VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto];
+
+    showConfirmation({
+      ...modalParams,
+      mutation,
+      content: (
+        <VastaanottoModalContent
+          modalParams={modalParams}
+          hakutoive={hakutoive}
+        />
+      ),
+    });
   };
 
   return (

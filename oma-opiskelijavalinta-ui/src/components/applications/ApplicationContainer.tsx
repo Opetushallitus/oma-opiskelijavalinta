@@ -12,6 +12,8 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
 import { isHyvaksyttyOdottaaYlempaa } from '@/lib/valinta-tulos-utils';
+import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import { FullSpinner } from '../FullSpinner';
 
 function HakukohteetContainer({
   applicationOid,
@@ -90,6 +92,16 @@ export function ApplicationContainer({
 }) {
   const { t, translateEntity } = useTranslations();
 
+  if (!application.haku) {
+    console.error('Application must have haku associated with it!');
+    throw Error('Application must have haku associated with it!');
+  }
+
+  const { hakemuksenTulokset: tulokset, isPending } = useHakemuksenTulokset(
+    application,
+    application.haku,
+  );
+
   return (
     <ApplicationPaper
       tabIndex={0}
@@ -106,18 +118,26 @@ export function ApplicationContainer({
           name={t('hakemukset.muokkaa')}
         />
       )}
-      <VastaanottoContainer application={application} />
-      <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
-        {application?.hakemuksenTulokset?.length
-          ? t('hakemukset.valintatilanne')
-          : t('hakemukset.hakutoiveet')}
-      </OphTypography>
-      <HakukohteetContainer
-        applicationOid={application.oid}
-        hakukohteet={application?.hakukohteet ?? []}
-        priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
-        hakemuksenTulokset={application.hakemuksenTulokset}
-      />
+      {isPending && <FullSpinner />}
+      {!isPending && (
+        <>
+          <VastaanottoContainer
+            application={application}
+            hakemuksenTulokset={tulokset}
+          />
+          <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
+            {tulokset?.length
+              ? t('hakemukset.valintatilanne')
+              : t('hakemukset.hakutoiveet')}
+          </OphTypography>
+          <HakukohteetContainer
+            applicationOid={application.oid}
+            hakukohteet={application?.hakukohteet ?? []}
+            priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
+            hakemuksenTulokset={tulokset}
+          />
+        </>
+      )}
     </ApplicationPaper>
   );
 }

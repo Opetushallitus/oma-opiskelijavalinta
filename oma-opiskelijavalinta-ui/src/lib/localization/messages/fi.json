@@ -1,5 +1,8 @@
 {
   "otsikko": "Oma Opiskelijavalinta",
+  "yleinen": {
+    "peruuta": "Peruuta"
+  },
   "virhe": {
     "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto."
   },
@@ -44,6 +47,7 @@
   "vastaanotto": {
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
     "laheta": "Lähetä vastaus",
+    "virhe": "Vastaanottotoiminto epäonnistui",
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
@@ -51,7 +55,21 @@
     },
     "tila": {
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
-      "peruttu": "Opiskelupaikkaa ei vastaanotettu."
+      "peruttu": "Opiskelupaikkaa ei vastaanotettu"
+    },
+    "modaali": {
+      "peru": {
+        "otsikko": "Vahvista, että et ota opiskelupaikkaa vastaan",
+        "vahvista": "En ota opiskelupaikkaa vastaan",
+        "info": "Olet ilmoittamassa että et halua ottaa seuraavaa opiskelupaikkaa vastaan:",
+        "onnistui": "Opiskelupaikkaa ei vastaanotettu."
+      },
+      "vastaanota-sitovasti": {
+        "otsikko": "Vahvista opiskelupaikan vastaanotto",
+        "vahvista": "Ota opiskelupaikka vastaan",
+        "info": "Olet vahvistamassa opiskelupaikkaa:",
+        "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
+      }
     }
   }
 }
