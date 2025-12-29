@@ -36,6 +36,7 @@ export const getConfiguration = async () => {
         muokkausUrl: `${HAKIJA_DOMAIN}/hakemus?modify`,
       },
       vastaanotto: '/oma-opiskelijavalinta/api/vastaanotto',
+      valintatulos: '/oma-opiskelijavalinta/api/valintatulos',
     },
   };
 };

@@ -13,4 +13,5 @@ object ApiConstants {
   final val SESSION_PATH               = API_PREFIX + "/session"
   final val APPLICATIONS_PATH          = API_PREFIX + "/applications"
   final val VASTAANOTTO_PATH           = API_PREFIX + "/vastaanotto"
+  final val VALINTATULOS_PATH          = API_PREFIX + "/valintatulos"
 }

@@ -108,7 +108,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
-    val foo          = objectMapper.writeValueAsString(mockVTSResponse)
     val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.current.length)
     Assertions.assertEquals(0, applications.old.length)
@@ -130,6 +129,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
+    Assertions.assertEquals(1, app.hakemuksenTulokset.size)
     val hakutoive1 = app.hakemuksenTulokset.headOption.getOrElse(
       fail("No hakemuksenTulokset returned")
     )
@@ -137,11 +137,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("VASTAANOTETTAVISSA_SITOVASTI", hakutoive1.vastaanotettavuustila.get)
     Assertions.assertEquals("KESKEN", hakutoive1.vastaanottotila.get)
     Assertions.assertEquals("2025-12-12T13:00:00Z", hakutoive1.vastaanottoDeadline.get)
-    val hakutoive2 = app.hakemuksenTulokset
-      .find(_.hakukohdeOid.contains("hakukohde-oid-2"))
-      .getOrElse(fail("hakukohde-oid-2 not found"))
-
-    Assertions.assertEquals(Some("KESKEN"), hakutoive2.vastaanottotila)
   }
 
   @Test
