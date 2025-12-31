@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import type { JonokohtainenTulostieto } from '@/lib/valinta-tulos-types';
 
-export default function ValintatapajonoTable({
+export function ValintatapajonoTable({
   jonokohtaisetTulostiedot,
 }: {
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
@@ -44,6 +44,7 @@ export default function ValintatapajonoTable({
               <TableCell>{jonotulos.pisteet ?? '-'}</TableCell>
               <TableCell>{jonotulos.alinHyvaksyttyPistemaara ?? '-'}</TableCell>
               <TableCell>{jonotulos.valintatila}</TableCell>
+              {/*TODO badge*/}
             </TableRow>
           ))}
         </TableBody>
