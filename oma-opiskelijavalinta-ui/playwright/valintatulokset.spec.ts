@@ -67,7 +67,7 @@ test('Näyttää hylätyn tuloksen', async ({ page }) => {
   await expect(
     app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(app.getByText('Et saanut opiskelupaikkaa')).toBeVisible();
+  await expect(app.getByText('Et saanut tätä opiskelupaikkaa')).toBeVisible();
 });
 
 test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos', async ({

@@ -8,7 +8,7 @@ import { ValintatilaChip } from '@/components/valinnantulos/ValintatilaChip';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
-import ValintatapajonoTable from '@/components/valinnantulos/ValintatapajonoTable';
+import { HakutoiveenTulosInfo } from '@/components/valinnantulos/HakutoiveenTulosInfo';
 
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -95,19 +95,12 @@ export function Hakutoive({
         <OphTypography variant="body1">
           {translateEntity(hakukohde.nimi)}
         </OphTypography>
-        {sijoitteluKaytossa && tulos?.jonokohtaisetTulostiedot.length ? (
-          <Box
-            sx={{
-              mt: 1.5,
-              ml: 2,
-              fontSize: '0.875rem',
-            }}
-          >
-            <ValintatapajonoTable
-              jonokohtaisetTulostiedot={tulos.jonokohtaisetTulostiedot}
-            />
-          </Box>
-        ) : null}
+        {tulos && (
+          <HakutoiveenTulosInfo
+            hakutoiveenTulos={tulos}
+            sijoitteluKaytossa={sijoitteluKaytossa}
+          />
+        )}
         {!pastApplication && (
           <ValintaperusteetLinkContainer>
             <ExternalLink
