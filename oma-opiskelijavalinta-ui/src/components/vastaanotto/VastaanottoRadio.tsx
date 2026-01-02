@@ -9,17 +9,20 @@ import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
 import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
-import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import { Valintatila } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
-import {
-  VastaanottoModalContent,
-  VastaanottoModalParams,
-} from './VastaanottoModalContent';
+import { VastaanottoModalContent } from './VastaanottoModalContent';
 import { useMutation } from '@tanstack/react-query';
 import { useNotifications } from '../NotificationProvider';
 import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
+import {
+  VastaanottoModalParams,
+  VastaanottoOption,
+  VastaanottoOptionToToiminto,
+} from './vastaanotto-utils';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -38,6 +41,83 @@ const InputContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
+const defaultVastaanottoOptions = [
+  {
+    label: 'vastaanotto.vaihtoehdot.sitova',
+    value: 'VASTAANOTA_SITOVASTI',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.peru',
+    value: 'PERU',
+  },
+];
+
+const vastaanottoOptionsWithHigherPriorityWaitingOption = [
+  {
+    label: 'vastaanotto.vaihtoehdot.ehdollinen',
+    value: 'VASTAANOTA_EHDOLLISESTI_KK',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.sitova-ei-jonotusta',
+    value: 'VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.peru',
+    value: 'PERU',
+  },
+];
+
+const vastaanottoOptionsWithHigherPriorityAcceptedNotOption = [
+  {
+    label: 'vastaanotto.vaihtoehdot.sitova-ei-jonotusta',
+    value: 'VASTAANOTA_SITOVASTI',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.peru',
+    value: 'PERU',
+  },
+];
+
+function getKKPriorityOptions(application: Application, hakukohde: Hakukohde) {
+  // Saattaa vaatii viel työstöä kesken oleville, tarkista tarviiko julkaisemattomien kuitenkin tulla bäkkäriltä
+  const indexOfHakutoive = application.hakemuksenTulokset.findIndex(
+    (ht) => ht.hakukohdeOid === hakukohde.oid,
+  );
+  const vastaanotettavissaEhdollisesti =
+    application.hakemuksenTulokset[indexOfHakutoive]?.vastaanotettavuustila ===
+    'VASTAANOTETTAVISSA_EHDOLLISESTI';
+  const upperTulokset = application.hakemuksenTulokset.slice(
+    0,
+    indexOfHakutoive,
+  );
+  if (upperTulokset.find((ut) => ut.valintatila === Valintatila.HYVAKSYTTY)) {
+    return vastaanottoOptionsWithHigherPriorityAcceptedNotOption;
+  }
+  if (
+    vastaanotettavissaEhdollisesti &&
+    upperTulokset.find(
+      (ht) =>
+        ht.valintatila === Valintatila.VARALLA ||
+        ht.valintatila === Valintatila.KESKEN,
+    )
+  ) {
+    return vastaanottoOptionsWithHigherPriorityWaitingOption;
+  }
+  return defaultVastaanottoOptions;
+}
+
+function determineVastaanottoOptions(
+  t: TFnType<DefaultParamType, string, TranslationKey>,
+  application: Application,
+  hakukohde: Hakukohde,
+): Array<{ label: string; value: string }> {
+  let options = defaultVastaanottoOptions;
+  if (application.priorisoidutHakutoiveet) {
+    options = getKKPriorityOptions(application, hakukohde);
+  }
+  return options.map((o) => ({ label: t(o.label), value: o.value }));
+}
+
 export function VastaanottoRadio({
   hakutoive,
   application,
@@ -50,6 +130,12 @@ export function VastaanottoRadio({
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
+
+  const vastaanottoOptions = determineVastaanottoOptions(
+    t,
+    application,
+    hakutoive,
+  );
 
   if (!application.haku) {
     console.error('Haku must be defined for vastaanotto!');
@@ -65,14 +151,14 @@ export function VastaanottoRadio({
       await doVastaanotto(
         application.oid,
         hakutoive.oid,
-        selectedVastaanotto as VastaanottoTilaToiminto,
+        VastaanottoOptionToToiminto[selectedVastaanotto as VastaanottoOption],
       );
       hideConfirmation();
     },
     onSuccess: () => {
       showNotification({
         message: t(
-          VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto]
+          VastaanottoModalParams[selectedVastaanotto as VastaanottoOption]
             .successMessage,
         ),
         type: 'success',
@@ -86,16 +172,6 @@ export function VastaanottoRadio({
         duration: null,
       }),
   });
-  const vastaanottoOptions = [
-    {
-      label: t('vastaanotto.vaihtoehdot.sitova'),
-      value: 'VastaanotaSitovasti',
-    },
-    {
-      label: t('vastaanotto.vaihtoehdot.peru'),
-      value: 'Peru',
-    },
-  ];
 
   const selectVastaanOtto = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedVastaanotto(event.target.value);
@@ -108,7 +184,7 @@ export function VastaanottoRadio({
       return;
     }
     const modalParams =
-      VastaanottoModalParams[selectedVastaanotto as VastaanottoTilaToiminto];
+      VastaanottoModalParams[selectedVastaanotto as VastaanottoOption];
 
     showConfirmation({
       ...modalParams,
