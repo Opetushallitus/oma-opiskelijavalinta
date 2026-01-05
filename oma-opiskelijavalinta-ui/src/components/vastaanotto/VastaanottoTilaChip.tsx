@@ -40,9 +40,9 @@ const vastaanottoTilaStyles: Record<
     color: '',
   },
   [VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT]: {
-    label: '',
-    background: '',
-    color: '',
+    label: 'vastaanotto.tila.vastaanotettu-ehdollisesti',
+    background: greenBadgeBackground,
+    color: ophColors.green1,
   },
 };
 

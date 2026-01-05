@@ -4,7 +4,8 @@
     "peruuta": "Peruuta"
   },
   "virhe": {
-    "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto."
+    "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto.",
+    "pakollinen": "Pakollinen tieto."
   },
   "info": {
     "kuvaus": "Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit",
@@ -48,16 +49,31 @@
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
     "laheta": "Lähetä vastaus",
     "virhe": "Vastaanottotoiminto epäonnistui",
+    "jonotus": {
+      "otsake": "Varasijojen jonotuksesta luopuminen",
+      "valinta": "Luovun jonotuksesta ja muutan vastaanoton sitovaksi"
+    },
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
+      "sitova-ei-jonotusta": "Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan ylempiä hakutoiveita",
+      "ehdollinen": "Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan ylempiä hakutoiveita",
       "peru": "En ota tätä opiskelupaikkaa vastaan"
     },
     "tila": {
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
+      "vastaanotettu-ehdollisesti": "Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita",
       "peruttu": "Opiskelupaikkaa ei vastaanotettu"
     },
     "modaali": {
+      "muuta-sitovaksi": {
+        "otsikko": "Vahvista jonotuksesta luopuminen",
+        "info-ylempi-toive": "Olet ilmoittamassa että et halua enää jonottaa seuraavaa opiskelupaikkaa:",
+        "info-ylemmat-toiveet": "Olet ilmoittamassa että et halua enää jonottaa seuraavia opiskelupaikkoja:",
+        "info": "Vastaanotettu opiskelupaikka muutetaan sitovaksi:",
+        "vahvista": "Luovu jonotuksesta",
+        "onnistui": "Varasijan jonotuksesta luovutta ja vastaanotto muutettu sitovaksi"
+      },
       "peru": {
         "otsikko": "Vahvista, että et ota opiskelupaikkaa vastaan",
         "vahvista": "En ota opiskelupaikkaa vastaan",

@@ -12,6 +12,7 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Application } from '@/lib/application-types';
 import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
 import { VastaanottoTilaChip } from './VastaanottoTilaChip';
+import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
 
 function VastaanottoInfo({ tulos }: { tulos: HakutoiveenTulos }) {
   const { getLanguage } = useTranslations();
@@ -66,9 +67,17 @@ function VastaanottoBox({
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
         <VastaanottoInfo tulos={tulos} />
       )}
-      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
-        <VastaanottoRadio application={application} hakutoive={hakukohde} />
-      )}
+      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
+        tulos.vastaanottotila !== 'EHDOLLISESTI_VASTAANOTTANUT' && (
+          <VastaanottoRadio application={application} hakutoive={hakukohde} />
+        )}
+      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_SITOVASTI' &&
+        tulos.vastaanottotila === 'EHDOLLISESTI_VASTAANOTTANUT' && (
+          <VastaanottoEhdollisestaSitovaksi
+            application={application}
+            hakutoive={hakukohde}
+          />
+        )}
     </Box>
   );
 }
