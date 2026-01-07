@@ -14,14 +14,14 @@ function HakutoiveContainer({ hakutoive }: { hakutoive: Hakukohde }) {
   const { translateEntity } = useTranslations();
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <OphTypography sx={{ fontWeight: 'bolder' }}>
         {translateEntity(hakutoive.jarjestyspaikkaHierarkiaNimi)}
       </OphTypography>
       <OphTypography sx={{ fontWeight: 'bolder' }}>
         {translateEntity(hakutoive.nimi)}
       </OphTypography>
-    </>
+    </Box>
   );
 }
 
