@@ -1,4 +1,10 @@
-import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import type { Application } from '@/lib/application-types';
+import type { Hakukohde } from '@/lib/kouta-types';
+import {
+  Valintatila,
+  VastaanottoTilaToiminto,
+} from '@/lib/valinta-tulos-types';
+import { isNonNullish } from 'remeda';
 
 export enum VastaanottoOption {
   PERU = 'PERU',
@@ -69,3 +75,20 @@ export const VastaanottoModalParams: Record<
     successMessage: '',
   },
 } as const;
+
+export function getVarallaOlevatYlemmatToiveet(
+  application: Application,
+  hakutoive: Hakukohde,
+): Array<Hakukohde> {
+  const indexOfHakutoive = application.hakemuksenTulokset.findIndex(
+    (ht) => ht.hakukohdeOid === hakutoive.oid,
+  );
+  const varallaOlevat = application.hakemuksenTulokset
+    .slice(0, indexOfHakutoive)
+    .filter((ht) => ht.valintatila === Valintatila.VARALLA);
+  return varallaOlevat
+    .map((ht) =>
+      application.hakukohteet?.find((hk) => hk.oid === ht.hakukohdeOid),
+    )
+    .filter(isNonNullish);
+}

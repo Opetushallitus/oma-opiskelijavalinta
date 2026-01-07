@@ -17,6 +17,7 @@ import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 import { VastaanottoMuutaSitovaksiModalContent } from './VastaanottoMuutaSitovaksiModalContent';
 import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import { getVarallaOlevatYlemmatToiveet } from './vastaanotto-utils';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -99,13 +100,10 @@ export function VastaanottoEhdollisestaSitovaksi({
       content: (
         <VastaanottoMuutaSitovaksiModalContent
           hakutoive={hakutoive}
-          ylemmatToiveet={[
+          ylemmatToiveet={getVarallaOlevatYlemmatToiveet(
+            application,
             hakutoive,
-            hakutoive,
-            hakutoive,
-            hakutoive,
-            hakutoive,
-          ]}
+          )}
         />
       ),
     });

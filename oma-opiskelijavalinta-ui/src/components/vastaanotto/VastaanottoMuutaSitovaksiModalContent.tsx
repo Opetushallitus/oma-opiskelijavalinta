@@ -2,14 +2,12 @@ import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { notDesktop, styled } from '@/lib/theme';
+import { styled } from '@/lib/theme';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
   marginLeft: theme.spacing(2.5),
-  [notDesktop(theme)]: {
-    maxWidth: '95vw',
-  },
+  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
 }));
 
 function HakutoiveContainer({ hakutoive }: { hakutoive: Hakukohde }) {
