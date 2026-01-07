@@ -9,7 +9,6 @@ import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
 import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
-import { Valintatila } from '@/lib/valinta-tulos-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Application } from '@/lib/application-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
@@ -67,40 +66,12 @@ const vastaanottoOptionsWithHigherPriorityWaitingOption = [
   },
 ];
 
-const vastaanottoOptionsWithHigherPriorityAcceptedNotOption = [
-  {
-    label: 'vastaanotto.vaihtoehdot.sitova-ei-jonotusta',
-    value: 'VASTAANOTA_SITOVASTI',
-  },
-  {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
-  },
-];
-
 function getKKPriorityOptions(application: Application, hakukohde: Hakukohde) {
-  // Saattaa vaatii viel työstöä kesken oleville, tarkista tarviiko julkaisemattomien kuitenkin tulla bäkkäriltä
-  const indexOfHakutoive = application.hakemuksenTulokset.findIndex(
-    (ht) => ht.hakukohdeOid === hakukohde.oid,
-  );
   const vastaanotettavissaEhdollisesti =
-    application.hakemuksenTulokset[indexOfHakutoive]?.vastaanotettavuustila ===
-    'VASTAANOTETTAVISSA_EHDOLLISESTI';
-  const upperTulokset = application.hakemuksenTulokset.slice(
-    0,
-    indexOfHakutoive,
-  );
-  if (upperTulokset.find((ut) => ut.valintatila === Valintatila.HYVAKSYTTY)) {
-    return vastaanottoOptionsWithHigherPriorityAcceptedNotOption;
-  }
-  if (
-    vastaanotettavissaEhdollisesti &&
-    upperTulokset.find(
-      (ht) =>
-        ht.valintatila === Valintatila.VARALLA ||
-        ht.valintatila === Valintatila.KESKEN,
-    )
-  ) {
+    application.hakemuksenTulokset.find(
+      (ht) => ht.hakukohdeOid === hakukohde.oid,
+    )?.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI';
+  if (vastaanotettavissaEhdollisesti) {
     return vastaanottoOptionsWithHigherPriorityWaitingOption;
   }
   return defaultVastaanottoOptions;
