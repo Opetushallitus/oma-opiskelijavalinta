@@ -47,6 +47,9 @@
   },
   "vastaanotto": {
     "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",
+    "info": {
+      "ylempi-automaattisesti": "Jos tulet hyväksytyksi ylemmällä sijalla olevaan paikkaan, sen vastaanotto vahvistetaan automaattisesti ja saat asiasta sähköpostiisi ilmoituksen. \n\nVoit tehdä lukuvuosi-ilmoittautumisen korkeakouluun vasta kun varasijatäyttö on päättynyt, aikaisintaan {varasijatayttoPaattyy}"
+    },
     "laheta": "Lähetä vastaus",
     "virhe": "Vastaanottotoiminto epäonnistui",
     "jonotus": {

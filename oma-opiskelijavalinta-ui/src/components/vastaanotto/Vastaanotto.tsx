@@ -8,32 +8,50 @@ import { isDefined, isEmpty } from 'remeda';
 import { T } from '@tolgee/react';
 import { VastaanottoRadio } from './VastaanottoRadio';
 import type { Hakukohde } from '@/lib/kouta-types';
-import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import {
+  VastaanottoTila,
+  type HakutoiveenTulos,
+} from '@/lib/valinta-tulos-types';
 import type { Application } from '@/lib/application-types';
 import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
 import { VastaanottoTilaChip } from './VastaanottoTilaChip';
 import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
+import type { Language } from '@/types/ui-types';
+
+const getInfoText = (lang: Language, tulos: HakutoiveenTulos) => {
+  const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
+    tulos.vastaanottoDeadline,
+    lang,
+  );
+  if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
+    <T
+      keyName={'vastaanotto.info.ylempi-automaattisesti'}
+      params={{
+        varasijatayttoPaattyy: vastaanottoPaattyy,
+      }}
+    />;
+  } else {
+    return (
+      <T
+        keyName={'vastaanotto.paattyy'}
+        params={{
+          vastaanottoPaattyy,
+          strong: <strong />,
+        }}
+      />
+    );
+  }
+};
 
 function VastaanottoInfo({ tulos }: { tulos: HakutoiveenTulos }) {
   const { getLanguage } = useTranslations();
 
   const lang = getLanguage();
-  const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
-    tulos.vastaanottoDeadline,
-    lang,
-  );
+  const info = getInfoText(lang, tulos);
 
   return (
     <InfoBox>
-      <OphTypography>
-        <T
-          keyName={'vastaanotto.paattyy'}
-          params={{
-            vastaanottoPaattyy,
-            strong: <strong />,
-          }}
-        />
-      </OphTypography>
+      <OphTypography>{info}</OphTypography>
     </InfoBox>
   );
 }
