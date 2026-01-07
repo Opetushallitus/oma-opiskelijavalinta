@@ -124,7 +124,6 @@ export function VastaanottoEhdollisestaSitovaksi({
             error={showSelectionError}
             onChange={setSitovaksiChecked}
             checked={checked}
-            aria-required={true}
           />
         )}
       />
