@@ -11,13 +11,17 @@ object KoutaMockData {
   val kaynnissaOlevaHaku = Haku(
     "haku-oid-1",
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
+    "haunkohdejoukko_20",
+    "hakutapa_01",
     Seq(Hakuaika("2024-11-19T09:32:01", koutaFormatFutureDate))
   )
 
   val hakuaikaPaattynytHaku = Haku(
     "haku-oid-1",
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
-    Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"))
+    "haunkohdejoukko_20",
+    "hakutapa_01",
+    Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01")),
   )
 
   val hakukohde1 = Hakukohde(

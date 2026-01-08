@@ -83,9 +83,9 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
     )
     val onkoHakuKaynnissa = kaynnissaOlevaHakuAika.nonEmpty
     kaynnissaOlevaHakuAika match
-      case Some(hakuaika) => HakuEnriched(haku.oid, haku.nimi, onkoHakuKaynnissa, hakuaika.paattyy)
+      case Some(hakuaika) => HakuEnriched(haku.oid, haku.nimi, onkoHakuKaynnissa, hakuaika.paattyy, haku.kohdejoukkoKoodiUri, haku.hakutapaKoodiUri)
       case _              =>
-        HakuEnriched(haku.oid, haku.nimi, onkoHakuKaynnissa, findClosestEndDate(haku.hakuajat, applicationSubmitted))
+        HakuEnriched(haku.oid, haku.nimi, onkoHakuKaynnissa, findClosestEndDate(haku.hakuajat, applicationSubmitted), haku.kohdejoukkoKoodiUri, haku.hakutapaKoodiUri)
   }
 
 }

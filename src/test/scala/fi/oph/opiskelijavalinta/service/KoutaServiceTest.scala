@@ -30,6 +30,8 @@ class KoutaServiceTest {
             Haku(
               HAKU_OID,
               TranslatedName("Purkanpurijoiden haku", "Samma på svenska", "Gumchewer search"),
+              "haunkohdejoukko_20",
+              "hakutapa_01",
               Seq(
                 Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"),
                 Hakuaika("2023-11-19T09:32:01", "2023-11-29T09:32:01"),
@@ -78,6 +80,8 @@ class KoutaServiceTest {
             Haku(
               HAKU_OID,
               TranslatedName("Ajankohtaista haku", "Samma på svenska", "Now search"),
+              "haunkohdejoukko_20",
+              "hakutapa_01",
               Seq(Hakuaika("2025-10-19T09:32:01", future))
             )
           )
@@ -89,5 +93,7 @@ class KoutaServiceTest {
     Assertions.assertEquals("Ajankohtaista haku", haku.get.nimi.fi)
     Assertions.assertTrue(haku.get.hakuaikaKaynnissa)
     Assertions.assertEquals(future, haku.get.viimeisinPaattynytHakuAika)
+    Assertions.assertEquals("haunkohdejoukko_20", haku.get.kohdejoukkoKoodiUri)
+    Assertions.assertEquals("hakutapa_01", haku.get.hakutapaKoodiUri)
   }
 }
