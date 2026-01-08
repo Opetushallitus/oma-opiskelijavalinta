@@ -11,6 +11,7 @@ type Ohjausparametrit = {
   valintaTuloksetJulkaistaanHakijoille?: number | null;
   ehdollisetValinnatPaattyy?: number | null;
   opiskelijanPaikanVastaanottoPaattyy?: number | null;
+  varasijatayttoPaattyy?: number | null;
   jarjestetytHakutoiveet?: boolean;
 };
 
@@ -43,10 +44,12 @@ function convertToApplication(
 ): Application {
   const modifyLink = app.secret ? `${muokkausUrl}=${app.secret}` : null;
   const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
+  const varasijatayttoPaattyy = app.ohjausparametrit?.varasijatayttoPaattyy;
   return {
     ...app,
     modifyLink,
     hakukierrosPaattyy,
+    varasijatayttoPaattyy,
     priorisoidutHakutoiveet:
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     submitted: new Date(app.submitted).getTime(),

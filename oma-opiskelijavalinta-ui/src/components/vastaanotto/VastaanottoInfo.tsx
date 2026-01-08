@@ -26,17 +26,26 @@ const MultiInfoContainer = styled(Box)(({ theme }) => ({
   rowGap: theme.spacing(2),
 }));
 
-const getEhdollisestiVastaanottanutInfo = (vastaanottoPaattyy: string) => (
-  <OphTypography>
-    <Translation
-      keyName={'vastaanotto.info.ylempi-automaattisesti'}
-      params={{
-        varasijatayttoPaattyy: vastaanottoPaattyy,
-        br: <br />,
-      }}
-    />
-  </OphTypography>
-);
+const getEhdollisestiVastaanottanutInfo = (
+  application: Application,
+  lang: Language,
+) => {
+  const varasijatayttoPaattyy = toFormattedDateTimeStringWithLocale(
+    application.varasijatayttoPaattyy,
+    lang,
+  );
+  return (
+    <OphTypography>
+      <Translation
+        keyName={'vastaanotto.info.ylempi-automaattisesti'}
+        params={{
+          varasijatayttoPaattyy,
+          br: <br />,
+        }}
+      />
+    </OphTypography>
+  );
+};
 
 const getVastaanottoPaattyyInfo = (vastaanottoPaattyy: string) => (
   <OphTypography>
@@ -74,7 +83,7 @@ const getInfoText = (
     0;
 
   if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
-    return getEhdollisestiVastaanottanutInfo(vastaanottoPaattyy);
+    return getEhdollisestiVastaanottanutInfo(application, lang);
   } else {
     return (
       <MultiInfoContainer>

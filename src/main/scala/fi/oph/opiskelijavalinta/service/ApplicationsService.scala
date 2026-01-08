@@ -95,6 +95,7 @@ class ApplicationsService @Autowired (
             o.PH_VTJH.flatMap(d => d.date),
             o.PH_EVR.flatMap(d => d.date),
             o.PH_OPVP.flatMap(d => d.date),
+            o.PH_VSTP.flatMap(d => d.date),
             o.jarjestetytHakutoiveet
           )
         )
