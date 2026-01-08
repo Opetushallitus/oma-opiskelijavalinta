@@ -20,6 +20,7 @@ case class HakutoiveenTulos(
   vastaanottoDeadline: Option[String],
   viimeisinHakemuksenTilanMuutos: Option[String],
   hyvaksyttyJaJulkaistuDate: Option[String],
+  varasijanumero: Option[Int],
   julkaistavissa: Option[Boolean],
   ehdollisestiHyvaksyttavissa: Option[Boolean],
   ehdollisenHyvaksymisenEhtoKoodi: Option[String],

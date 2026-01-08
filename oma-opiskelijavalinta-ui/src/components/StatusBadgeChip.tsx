@@ -62,12 +62,11 @@ export function StatusBadgeChip({
         color: badgeColor.color,
         height: '24px',
         lineHeight: '24px',
-        px: '5px',
-        fontFamily: 'Open Sans',
         fontWeight: 600,
         fontSize: '14px',
-        borderRadius: 0,
+        borderRadius: '2px',
         mt: '0px',
+        px: '4px',
         ...sx,
       }}
     />

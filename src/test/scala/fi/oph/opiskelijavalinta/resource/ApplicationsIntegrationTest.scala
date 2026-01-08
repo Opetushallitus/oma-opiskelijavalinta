@@ -108,7 +108,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
 
-    val foo          = objectMapper.writeValueAsString(mockVTSResponse)
     val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
     Assertions.assertEquals(1, applications.current.length)
     Assertions.assertEquals(0, applications.old.length)
@@ -193,7 +192,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsKeskenForUnpublishedVTSResultsWhenHakuaikaIsOver(): Unit = {
+  def doesNotReturnKeskenResultWhenHakuaikaIsOver(): Unit = {
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)

@@ -36,14 +36,29 @@
   "hakutoiveet": {
     "valintaperusteet": "Näytä valintaperusteet"
   },
+  "hakutoive": {
+    "tila": {
+      "kesken": "Opiskelijavalinta kesken",
+      "hyvaksytty": "Hyväksytty",
+      "hylatty": "Et saanut tätä opiskelupaikkaa",
+      "varalla-varasija": "Olet {varasijanumero}. varasijalla",
+      "ehdollisesti-hyvaksytty": "Ehdollinen",
+      "peruuntunut": "Peruuntunut",
+      "odottaa-ylempaa-hakutoivetta": "(odottaa ylempien hakukohteiden tuloksia)"
+    }
+  },
   "tulos": {
     "kesken": "Opiskelijavalinta kesken",
     "hyvaksytty": "Hyväksytty",
-    "hylatty": "Et saanut tätä opiskelupaikkaa",
-    "varalla-varasija": "Olet {varasijanumero}. varasijalla",
+    "hylatty": "Et saanut opiskelupaikkaa",
+    "varalla": "Varasijalla",
+    "varalla-varasija": "Varasijalla: {varasijanumero}",
     "ehdollisesti-hyvaksytty": "Ehdollinen",
     "peruuntunut": "Peruuntunut",
-    "odottaa-ylempaa-hakutoivetta": "(odottaa ylempien hakukohteiden tuloksia)"
+    "valintatapajono": {
+      "hylatty": "Ei hyväksytty tällä valintatavalla"
+    },
+    "ei-sijoittelua": "Valinnan tulos"
   },
   "vastaanotto": {
     "info": {

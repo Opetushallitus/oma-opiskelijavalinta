@@ -23,12 +23,14 @@ function HakukohteetContainer({
   hakukohteet,
   priorisoidutHakutoiveet,
   sijoitteluKaytossa,
+  hakuaikaKaynnissa,
   hakemuksenTulokset,
 }: {
   applicationOid: string;
   hakukohteet: Array<Hakukohde>;
   priorisoidutHakutoiveet: boolean;
   sijoitteluKaytossa: boolean;
+  hakuaikaKaynnissa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   const isJulkaistuTulosHakemuksella =
@@ -56,7 +58,9 @@ function HakukohteetContainer({
             prioriteetti={idx + 1}
             priorisoidutHakutoiveet={priorisoidutHakutoiveet}
             sijoitteluKaytossa={sijoitteluKaytossa}
-            naytaKeskenTulos={isJulkaistuTulosHakemuksella}
+            naytaKeskenTulos={
+              isJulkaistuTulosHakemuksella || !hakuaikaKaynnissa
+            }
             tulos={tulos}
             odottaaYlempaa={hyvaksyttyOdottaa}
           />
@@ -110,7 +114,7 @@ export function ApplicationContainer({
     application,
     application.haku,
   );
-
+  const hakuaikaKaynnissa = application.haku?.hakuaikaKaynnissa;
   return (
     <ApplicationPaper
       tabIndex={0}
@@ -135,7 +139,7 @@ export function ApplicationContainer({
             hakemuksenTulokset={tulokset}
           />
           <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
-            {tulokset?.length
+            {tulokset?.length || !hakuaikaKaynnissa
               ? t('hakemukset.valintatilanne')
               : t('hakemukset.hakutoiveet')}
           </OphTypography>
@@ -144,6 +148,7 @@ export function ApplicationContainer({
             hakukohteet={application?.hakukohteet ?? []}
             priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
             sijoitteluKaytossa={application.sijoitteluKaytossa}
+            hakuaikaKaynnissa={hakuaikaKaynnissa}
             hakemuksenTulokset={tulokset}
           />
         </>

@@ -7,7 +7,15 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import type { JonokohtainenTulostieto } from '@/lib/valinta-tulos-types';
+import {
+  type JonokohtainenTulostieto,
+  Valintatila,
+} from '@/lib/valinta-tulos-types';
+import { StatusBadgeChip } from '@/components/StatusBadgeChip';
+import {
+  valintatilaColors,
+  valintatilaIlmanJonoaLabels,
+} from '@/components/valinnantulos/tulos-display-utils';
 
 export function ValintatapajonoTable({
   jonokohtaisetTulostiedot,
@@ -37,14 +45,28 @@ export function ValintatapajonoTable({
         </TableHead>
         <TableBody>
           {jonokohtaisetTulostiedot.map((jonotulos) => (
-            <TableRow key={jonotulos.valintatapajonoPrioriteetti}>
+            <TableRow
+              key={jonotulos.valintatapajonoPrioriteetti}
+              data-test-id={`valintatapajono-${jonotulos.nimi}`}
+            >
               <TableCell>
                 {jonotulos.nimi ?? t('tulos.valintatapajono')}
               </TableCell>
               <TableCell>{jonotulos.pisteet ?? '-'}</TableCell>
               <TableCell>{jonotulos.alinHyvaksyttyPistemaara ?? '-'}</TableCell>
-              <TableCell>{jonotulos.valintatila}</TableCell>
-              {/*TODO badge*/}
+              <TableCell>
+                <StatusBadgeChip
+                  badgeProps={{
+                    label: t(
+                      valintatilaIlmanJonoaLabels[
+                        jonotulos.valintatila as Valintatila
+                      ],
+                    ),
+                    color:
+                      valintatilaColors[jonotulos.valintatila as Valintatila],
+                  }}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

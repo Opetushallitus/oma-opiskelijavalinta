@@ -10,28 +10,28 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import { HakutoiveenTulosInfo } from '@/components/valinnantulos/HakutoiveenTulosInfo';
 
+const ORDER_NUMBER_WIDTH = 40; // px
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
   columnGap: theme.spacing(2),
   borderTop: '1px solid',
   padding: `${theme.spacing(2)} 0 ${theme.spacing(3.5)}`,
   borderColor: ophColors.grey100,
   width: '100%',
-  flexWrap: 'wrap',
-  justifyContent: 'flex-start',
-  alignItems: 'flex-start',
   '&:last-child': {
     paddingBottom: theme.spacing(1),
   },
 }));
 
 const OrderNumberBox = styled(Box)(({ theme }) => ({
+  width: ORDER_NUMBER_WIDTH,
+  textAlign: 'center',
   color: ophColors.white,
   backgroundColor: ophColors.grey400,
   borderRadius: '4px',
   fontWeight: 'bold',
   fontSize: '1.2rem',
   padding: `${theme.spacing(0.5)} ${theme.spacing(1.4)}`,
+  marginRight: theme.spacing(2),
 }));
 
 const ValintaperusteetLinkContainer = styled(Box)(({ theme }) => ({
@@ -71,24 +71,38 @@ export function Hakutoive({
 
   return (
     <HakutoiveContainer>
-      {priorisoidutHakutoiveet && (
-        <OrderNumberBox>{prioriteetti}</OrderNumberBox>
-      )}
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          mb: '10px',
+        }}
+      >
+        {priorisoidutHakutoiveet && (
+          <OrderNumberBox>{prioriteetti}</OrderNumberBox>
+        )}
         <ValintatilaChip
           hakutoiveenTulos={tulos}
           odottaaYlempaa={odottaaYlempaa}
           naytaKeskenTulos={naytaKeskenTulos}
         />
-        {tulos?.ehdollisestiHyvaksyttavissa ? (
+        {tulos?.ehdollisestiHyvaksyttavissa && (
           <StatusBadgeChip
             sx={{ ml: 1 }}
             badgeProps={{
-              label: t('tulos.ehdollisesti-hyvaksytty'),
+              label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
               color: BadgeColorKey.Yellow,
             }}
           />
-        ) : null}
+        )}
+      </Box>
+      <Box
+        sx={{
+          pl: priorisoidutHakutoiveet ? `${ORDER_NUMBER_WIDTH + 15}px` : 0,
+          mt: priorisoidutHakutoiveet ? '8px' : '10px',
+        }}
+      >
         <OphTypography variant="h5">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>

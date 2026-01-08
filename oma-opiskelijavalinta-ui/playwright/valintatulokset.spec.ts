@@ -49,7 +49,7 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   await expect(
     tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(tulokset.getByText('Hyväksytty')).toBeVisible();
+  await expect(tulokset.locator('span').getByText('Hyväksytty')).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
 });
@@ -92,17 +92,11 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
   await expect(app1.getByText('Kesken')).toBeVisible();
 });
 
-test('Näyttää kesken-tuloksen jos tulosta ei ole julkaistu', async ({
+test('Näyttää kesken-tuloksen jos hakuaika on päättynyt ja tulosta ei ole julkaistu', async ({
   page,
 }) => {
-  const hyvaksyttyEiJulkaistuApplication = {
-    ...hakemus2,
-    hakemuksenTulokset: [
-      { ...hakemuksenTulosHyvaksytty, julkaistavissa: false },
-    ],
-  };
   await mockApplicationsFetch(page, {
-    current: [hyvaksyttyEiJulkaistuApplication],
+    current: [hakemus2],
     old: [],
   });
   await mockAuthenticatedUser(page);
@@ -113,7 +107,6 @@ test('Näyttää kesken-tuloksen jos tulosta ei ole julkaistu', async ({
   await expect(
     tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(tulokset.getByText('Hyväksytty')).toBeHidden();
   await expect(tulokset.getByText('Kesken')).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
@@ -137,7 +130,7 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   await expect(
     hakutoive.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(hakutoive.getByText('Hyväksytty')).toBeVisible();
+  await expect(hakutoive.locator('span').getByText('Hyväksytty')).toBeVisible();
   await expect(hakutoive.getByText('Ehdollinen')).toBeVisible();
 });
 
@@ -180,15 +173,66 @@ test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmäl
   });
   await mockAuthenticatedUser(page);
   await page.goto('');
-  const applications = page.getByTestId('active-applications');
 
-  const hyvaksyttyOdottaaApp = applications.first();
+  const hyvaksyttyOdottaaApp = page.getByTestId('application-hakemus-oid-1');
   await expect(
-    hyvaksyttyOdottaaApp.getByText('Opiskelijavalinta kesken'),
+    hyvaksyttyOdottaaApp.locator('span').getByText('Opiskelijavalinta kesken'),
   ).toBeVisible();
   await expect(
     hyvaksyttyOdottaaApp.getByText(
       'Hyväksytty (odottaa ylempien hakukohteiden tuloksia)',
     ),
   ).toBeVisible();
+});
+
+test('Näyttää hylätyn tuloksen tarkenteen ilman valintatapajonoa kun sijoittelu ei ole käytössä', async ({
+  page,
+}) => {
+  const hylattyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosHylatty],
+  };
+  await mockApplicationsFetch(page, { current: [hylattyApplication], old: [] });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const tulos = page.getByTestId('application-tulos-hakukohde-oid-3');
+  await expect(tulos.getByText('Et saanut opiskelupaikkaa')).toBeVisible();
+  await expect(tulos.getByText('Pohjakoulutus ei ole riittävä')).toBeVisible();
+});
+
+test('Näyttää hyväksytyn tuloksen ilman valintatapajonoa kun sijoittelu ei ole käytössä', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const tulos = page.getByTestId('application-tulos-hakukohde-oid-3');
+  await expect(tulos.getByText('Hyväksytty')).toBeVisible();
+});
+
+test('Näyttää varasijan ilman valintatapajonoa kun sijoittelu ei ole käytössä', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus1,
+    hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const tulos = page.getByTestId('application-tulos-hakukohde-oid-1');
+  await expect(tulos.getByText('Varasijalla: 2')).toBeVisible();
 });

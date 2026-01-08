@@ -73,10 +73,6 @@ class ApplicationsService @Autowired (
     now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
-  private def isJulkaistuTulosHakutoiveella(tulokset: List[HakutoiveenTulos]): Boolean = {
-    tulokset.exists(t => t.julkaistavissa.getOrElse(false))
-  }
-
   private def enrichApplication(application: Application): ApplicationEnriched = {
     val now                                           = new Date()
     var haku: Option[HakuEnriched]                    = Option.empty
@@ -102,15 +98,10 @@ class ApplicationsService @Autowired (
         )
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHakemus(ohjausparametrit)) {
-        // palautetaan tulokset vain jos jollain hakutoiveella on julkaistava tulos
-        // tai kesken-tulos kun hakuaika on päättynyt
+        // VTSService palauttaa vain julkaistavissa olevat hakutoiveen tulokset
         hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
-          case Some(v) =>
-            if (!haku.get.hakuaikaKaynnissa || isJulkaistuTulosHakutoiveella(v.hakutoiveet))
-              v.hakutoiveet.filter(t => t.julkaistavissa.getOrElse(false))
-            else
-              List.empty
-          case _ => List.empty
+          case Some(v) => v.hakutoiveet
+          case _       => List.empty
         }
       }
     }

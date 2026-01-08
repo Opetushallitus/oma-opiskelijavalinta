@@ -161,6 +161,7 @@ export const hakemuksenTulosVarasijalla = {
       oid: '1234',
       nimi: '',
       valintatila: 'VARALLA',
+      varasijanumero: 2,
       julkaistavissa: true,
       tilanKuvaukset: {
         FI: '',
@@ -192,7 +193,7 @@ export const hakemuksenTulosKesken = {
   vastaanottoDeadline: null,
   viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
   hyvaksyttyJaJulkaistuDate: null,
-  julkaistavissa: true,
+  julkaistavissa: false,
   ehdollisestiHyvaksyttavissa: false,
   tilanKuvaukset: {
     FI: '',
@@ -204,8 +205,8 @@ export const hakemuksenTulosKesken = {
     {
       oid: '1234',
       nimi: '',
-      valintatila: 'VARALLA',
-      julkaistavissa: true,
+      valintatila: 'KESKEN',
+      julkaistavissa: false,
       tilanKuvaukset: {
         FI: '',
         SV: '',

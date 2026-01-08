@@ -1,48 +1,43 @@
-import { Chip } from '@mui/material';
-import { ophColors } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
-import { greenBadgeBackground } from '@/lib/theme';
+import {
+  type BadgeColor,
+  BadgeColorKey,
+  StatusBadgeChip,
+} from '@/components/StatusBadgeChip';
 
 const vastaanottoTilaStyles: Record<
   VastaanottoTila,
-  { label: string; background: string; color: string }
+  { label: string; color: BadgeColor }
 > = {
   [VastaanottoTila.VASTAANOTTANUT_SITOVASTI]: {
     label: 'vastaanotto.tila.vastaanotettu',
-    background: greenBadgeBackground,
-    color: ophColors.green1,
+    color: BadgeColorKey.Green,
   },
   [VastaanottoTila.PERUNUT]: {
     label: 'vastaanotto.tila.peruttu',
-    background: ophColors.grey400,
-    color: ophColors.black,
+    color: BadgeColorKey.Grey,
   },
   //TODO nämä käydään läpi myöhemmissä taskeissa
   [VastaanottoTila.KESKEN]: {
     label: '',
-    background: '',
-    color: '',
+    color: BadgeColorKey.Yellow,
   },
   [VastaanottoTila.EI_VASTAANOTETTU_MAARA_AIKANA]: {
-    label: 'vastaanotto.tila.ei-vastaanotettu-maara-aikana',
-    background: ophColors.grey400,
-    color: ophColors.black,
+    label: '',
+    color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.PERUUTETTU]: {
     label: '',
-    background: '',
-    color: '',
+    color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.OTTANUT_VASTAAN_TOISEN_PAIKAN]: {
     label: '',
-    background: '',
-    color: '',
+    color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT]: {
-    label: 'vastaanotto.tila.vastaanotettu-ehdollisesti',
-    background: greenBadgeBackground,
-    color: ophColors.green1,
+    label: '',
+    color: BadgeColorKey.Grey,
   },
 };
 
@@ -55,15 +50,10 @@ export function VastaanottoTilaChip({
   const style = vastaanottoTilaStyles[vastaanottoTila];
   const label = t(style.label);
   return (
-    <Chip
-      label={label}
-      sx={{
-        backgroundColor: style.background,
+    <StatusBadgeChip
+      badgeProps={{
+        label: label,
         color: style.color,
-        fontWeight: 'bold',
-        borderRadius: '0px',
-        mt: '0px',
-        whiteSpace: 'normal',
       }}
     />
   );
