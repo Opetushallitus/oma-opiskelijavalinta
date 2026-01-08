@@ -4,7 +4,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { isNonNull, isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
 import { ApplicationInfo } from './ApplicationInfo';
-import { Hakutoive } from './Hakutoive';
+import { Hakutoive, type HakutoiveRenderProps } from './Hakutoive';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { ApplicationPaper } from './ApplicationPaper';
 import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
@@ -21,16 +21,12 @@ import { FullSpinner } from '../FullSpinner';
 function HakukohteetContainer({
   applicationOid,
   hakukohteet,
-  priorisoidutHakutoiveet,
-  sijoitteluKaytossa,
-  hakuaikaKaynnissa,
   hakemuksenTulokset,
+  hakutoiveRenderProps,
 }: {
   applicationOid: string;
   hakukohteet: Array<Hakukohde>;
-  priorisoidutHakutoiveet: boolean;
-  sijoitteluKaytossa: boolean;
-  hakuaikaKaynnissa: boolean;
+  hakutoiveRenderProps: HakutoiveRenderProps;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   const isJulkaistuTulosHakemuksella =
@@ -44,7 +40,7 @@ function HakukohteetContainer({
         const tulos = hakemuksenTulokset.find((t) => t.hakukohdeOid === hk.oid);
         const hyvaksyttyOdottaa =
           tulos &&
-          priorisoidutHakutoiveet &&
+          hakutoiveRenderProps.priorisoidutHakutoiveet &&
           isHyvaksyttyOdottaaYlempaa(
             hakukohteet,
             hakemuksenTulokset,
@@ -56,10 +52,13 @@ function HakukohteetContainer({
             key={hk.oid}
             hakukohde={hk}
             prioriteetti={idx + 1}
-            priorisoidutHakutoiveet={priorisoidutHakutoiveet}
-            sijoitteluKaytossa={sijoitteluKaytossa}
+            priorisoidutHakutoiveet={
+              hakutoiveRenderProps.priorisoidutHakutoiveet
+            }
+            sijoitteluKaytossa={hakutoiveRenderProps.sijoitteluKaytossa}
             naytaKeskenTulos={
-              isJulkaistuTulosHakemuksella || !hakuaikaKaynnissa
+              isJulkaistuTulosHakemuksella ||
+              !hakutoiveRenderProps.hakuaikaKaynnissa
             }
             tulos={tulos}
             odottaaYlempaa={hyvaksyttyOdottaa}
@@ -114,7 +113,13 @@ export function ApplicationContainer({
     application,
     application.haku,
   );
-  const hakuaikaKaynnissa = application.haku?.hakuaikaKaynnissa;
+
+  const hakuaikaKaynnissa = application.haku.hakuaikaKaynnissa;
+  const hakutoiveRenderProps: HakutoiveRenderProps = {
+    sijoitteluKaytossa: application.sijoitteluKaytossa,
+    hakuaikaKaynnissa: hakuaikaKaynnissa,
+    priorisoidutHakutoiveet: application.priorisoidutHakutoiveet,
+  };
   return (
     <ApplicationPaper
       tabIndex={0}
@@ -146,10 +151,8 @@ export function ApplicationContainer({
           <HakukohteetContainer
             applicationOid={application.oid}
             hakukohteet={application?.hakukohteet ?? []}
-            priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
-            sijoitteluKaytossa={application.sijoitteluKaytossa}
-            hakuaikaKaynnissa={hakuaikaKaynnissa}
             hakemuksenTulokset={tulokset}
+            hakutoiveRenderProps={hakutoiveRenderProps}
           />
         </>
       )}
