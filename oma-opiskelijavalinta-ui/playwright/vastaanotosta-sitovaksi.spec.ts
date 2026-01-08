@@ -15,7 +15,11 @@ test('Näyttää jonotustilassa olevan hakutoiveen', async ({ page }) => {
   await expect(
     vastaanotot.getByText('Hurrikaaniopisto, Myrskynsilm'),
   ).toBeVisible();
-  await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
+    ),
+  ).toBeVisible();
   await expect(
     vastaanotot.getByText(
       'Luovun jonotuksesta ja muutan vastaanoton sitovaksi',

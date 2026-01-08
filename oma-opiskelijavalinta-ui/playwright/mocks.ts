@@ -6,6 +6,8 @@ export const hakemus1 = {
     nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
     hakuaikaKaynnissa: true,
     viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
+    hakutapaKoodiUri: 'hakutapa_01',
+    kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-10-18T16:00:00',
   hakukohteet: [
@@ -39,6 +41,8 @@ export const hakemus2 = {
     nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
     hakuaikaKaynnissa: false,
     viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+    hakutapaKoodiUri: 'hakutapa_01',
+    kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-06-18T19:00:00',
   hakukohteet: [

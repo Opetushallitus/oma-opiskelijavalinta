@@ -1,4 +1,4 @@
-import { OphTypography } from '@opetushallitus/oph-design-system';
+import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
@@ -19,11 +19,15 @@ import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { Box } from '@mui/material';
 import { styled } from '@/lib/theme';
+import { isNonNullish } from 'remeda';
 
 const MultiInfoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   rowGap: theme.spacing(2),
+  a: {
+    color: ophColors.black,
+  },
 }));
 
 const getEhdollisestiVastaanottanutInfo = (
@@ -74,9 +78,10 @@ const getInfoText = (
     lang,
   );
 
-  const kkHaku = application.haku && isKorkeakouluHaku(application.haku);
+  const kkHaku =
+    isNonNullish(application.haku) && isKorkeakouluHaku(application.haku);
 
-  const YPS = hakukohde && hakukohde.yhdenPaikanSaanto.voimassa;
+  const YPS = hakukohde && hakukohde.yhdenPaikanSaanto?.voimassa;
 
   const hakutoiveIdx =
     application.hakukohteet?.findIndex((hk) => hk.oid === tulos.hakukohdeOid) ??
