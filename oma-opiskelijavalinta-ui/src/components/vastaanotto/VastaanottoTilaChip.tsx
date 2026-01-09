@@ -63,6 +63,7 @@ export function VastaanottoTilaChip({
         fontWeight: 'bold',
         borderRadius: '0px',
         mt: '0px',
+        whiteSpace: 'normal',
       }}
     />
   );
