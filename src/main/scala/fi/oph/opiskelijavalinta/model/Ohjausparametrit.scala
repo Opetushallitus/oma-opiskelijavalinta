@@ -6,7 +6,7 @@ case class OhjausparametritRaw(
   PH_VTJH: Option[DateParam], // Valintatulosten julkistaminen hakijoille
   PH_EVR: Option[DateParam],  // Ehdolliset valinnat raukeavat
   PH_OPVP: Option[DateParam], // Opiskelijan paikan vastaanotto päättyy
-  PH_VSTP: Option[DateParam], // Varasijatäyttö päättyy                            
+  PH_VSTP: Option[DateParam], // Varasijatäyttö päättyy
   jarjestetytHakutoiveet: Option[Boolean]
 )
 
