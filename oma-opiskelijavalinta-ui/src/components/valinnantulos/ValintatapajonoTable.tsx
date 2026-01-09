@@ -11,11 +11,28 @@ import {
   type JonokohtainenTulostieto,
   Valintatila,
 } from '@/lib/valinta-tulos-types';
-import { StatusBadgeChip } from '@/components/StatusBadgeChip';
+import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import {
+  getValintatapajononTilaLabel,
+  isHyvaksyttyTaiVaralla,
   valintatilaColors,
-  valintatilaIlmanJonoaLabels,
 } from '@/components/valinnantulos/tulos-display-utils';
+
+function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
+  const { t } = useTranslations();
+  const label = getValintatapajononTilaLabel(jonotulos);
+  if (isHyvaksyttyTaiVaralla(jonotulos.valintatila as Valintatila)) {
+    return (
+      <StatusBadgeChip
+        badgeProps={{
+          label: t(label),
+          color: valintatilaColors[jonotulos.valintatila as Valintatila],
+        }}
+      />
+    );
+  }
+  return t(label);
+}
 
 export function ValintatapajonoTable({
   jonokohtaisetTulostiedot,
@@ -52,20 +69,26 @@ export function ValintatapajonoTable({
               <TableCell>
                 {jonotulos.nimi ?? t('tulos.valintatapajono')}
               </TableCell>
-              <TableCell>{jonotulos.pisteet ?? '-'}</TableCell>
-              <TableCell>{jonotulos.alinHyvaksyttyPistemaara ?? '-'}</TableCell>
+              <TableCell
+                data-test-id={`valintatapajono-${jonotulos.nimi}-pisteet`}
+              >
+                {jonotulos.pisteet ?? '-'}
+              </TableCell>
+              <TableCell
+                data-test-id={`valintatapajono-${jonotulos.nimi}-alinhyvaksytty`}
+              >
+                {jonotulos.alinHyvaksyttyPistemaara ?? '-'}
+              </TableCell>
               <TableCell>
-                <StatusBadgeChip
-                  badgeProps={{
-                    label: t(
-                      valintatilaIlmanJonoaLabels[
-                        jonotulos.valintatila as Valintatila
-                      ],
-                    ),
-                    color:
-                      valintatilaColors[jonotulos.valintatila as Valintatila],
-                  }}
-                />
+                <JonoStatus jonotulos={jonotulos} />
+                {jonotulos.ehdollisestiHyvaksyttavissa && (
+                  <StatusBadgeChip
+                    badgeProps={{
+                      label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
+                      color: BadgeColorKey.Yellow,
+                    }}
+                  />
+                )}
               </TableCell>
             </TableRow>
           ))}

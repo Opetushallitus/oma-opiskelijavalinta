@@ -1,5 +1,3 @@
-import { clone } from 'remeda';
-
 export const hakemus1 = {
   oid: 'hakemus-oid-1',
   secret: 'secret-1',
@@ -424,3 +422,52 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa
     }
     return tulokset;
   })();
+
+export const jonokohtaisetTulostiedot = [
+  {
+    oid: '1234',
+    nimi: 'todistusvalinta',
+    valintatila: 'HYLATTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {
+      FI: 'Pisteraja ei ylittynyt',
+      SV: 'Pisteraja ei ylittynyt SV',
+      EN: 'Pisteraja ei ylittynyt EN',
+    },
+    pisteet: 30,
+    alinHyvaksyttyPistemaara: 40,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'HYVAKSYTTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {},
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];
+
+export const jonokohtaisetTulostiedotEhdollinen = [
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'HYVAKSYTTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {},
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: true,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];

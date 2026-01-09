@@ -51,6 +51,7 @@ export type JonokohtainenTulostieto = {
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
   ehdollisestiHyvaksyttavissa?: boolean;
   ehdollisenHyvaksymisenEhto?: { FI: string; SV: string; EN: string };
+  varasijanumero?: number;
 };
 
 export enum VastaanottoTilaToiminto {

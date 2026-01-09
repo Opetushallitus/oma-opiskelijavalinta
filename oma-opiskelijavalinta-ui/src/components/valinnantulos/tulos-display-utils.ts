@@ -1,4 +1,8 @@
-import { type HakutoiveenTulos, Valintatila } from '@/lib/valinta-tulos-types';
+import {
+  type HakutoiveenTulos,
+  type JonokohtainenTulostieto,
+  Valintatila,
+} from '@/lib/valinta-tulos-types';
 import { type BadgeColor, BadgeColorKey } from '@/components/StatusBadgeChip';
 import { mapKeys } from 'remeda';
 import { useTranslations } from '@/hooks/useTranslations';
@@ -21,6 +25,18 @@ export const valintatilaIlmanJonoaLabels: Record<Valintatila, string> = {
   [Valintatila.VARASIJALTA_HYVAKSYTTY]: 'tulos.hyvaksytty',
   [Valintatila.VARALLA]: 'tulos.varalla',
   [Valintatila.HYLATTY]: 'tulos.hylatty',
+  [Valintatila.KESKEN]: 'tulos.kesken',
+  [Valintatila.PERUUTETTU]: 'tulos.peruutettu',
+  [Valintatila.PERUNUT]: 'tulos.perunut',
+  [Valintatila.PERUUNTUNUT]: 'tulos.peruuntunut',
+};
+
+export const ValintatapajononTilaLabels: Record<Valintatila, string> = {
+  [Valintatila.HYVAKSYTTY]: 'tulos.hyvaksytty',
+  [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: 'tulos.hyvaksytty',
+  [Valintatila.VARASIJALTA_HYVAKSYTTY]: 'tulos.hyvaksytty',
+  [Valintatila.VARALLA]: 'tulos.varalla',
+  [Valintatila.HYLATTY]: 'tulos.valintatapajono.hylatty',
   [Valintatila.KESKEN]: 'tulos.kesken',
   [Valintatila.PERUUTETTU]: 'tulos.peruutettu',
   [Valintatila.PERUNUT]: 'tulos.perunut',
@@ -82,5 +98,29 @@ export function getValintatilaIlmanSijoitteluaLabel(
   }
   return t(
     valintatilaIlmanJonoaLabels[hakutoiveenTulos.valintatila as Valintatila],
+  );
+}
+
+export function getValintatapajononTilaLabel(
+  jonoTulos: JonokohtainenTulostieto,
+): string {
+  const { t } = useTranslations();
+  if (
+    jonoTulos.valintatila === Valintatila.VARALLA &&
+    jonoTulos?.varasijanumero
+  ) {
+    return t('tulos.varalla-varasija', {
+      varasijanumero: String(jonoTulos?.varasijanumero),
+    });
+  }
+  return t(ValintatapajononTilaLabels[jonoTulos.valintatila as Valintatila]);
+}
+
+export function isHyvaksyttyTaiVaralla(valintatila: Valintatila): boolean {
+  return (
+    valintatila === Valintatila.HYVAKSYTTY ||
+    valintatila === Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY ||
+    valintatila === Valintatila.VARASIJALTA_HYVAKSYTTY ||
+    valintatila === Valintatila.VARALLA
   );
 }

@@ -11,6 +11,8 @@ import {
   hakemuksenTulosVarasijalla,
   hakemus1,
   hakemus2,
+  jonokohtaisetTulostiedot,
+  jonokohtaisetTulostiedotEhdollinen,
 } from './mocks';
 
 test('Näyttää varasijanumeron', async ({ page }) => {
@@ -49,7 +51,9 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   await expect(
     tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(tulokset.locator('span').getByText('Hyväksytty')).toBeVisible();
+  await expect(
+    tulokset.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
 });
@@ -83,9 +87,7 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
   });
   await mockAuthenticatedUser(page);
   await page.goto('');
-  const applications = page.getByTestId('active-applications');
-
-  const app1 = applications.first();
+  const app1 = page.getByTestId('application-hakemus-oid-1');
   await expect(
     app1.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
   ).toBeVisible();
@@ -130,7 +132,9 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   await expect(
     hakutoive.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
-  await expect(hakutoive.locator('span').getByText('Hyväksytty')).toBeVisible();
+  await expect(
+    hakutoive.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
   await expect(hakutoive.getByText('Ehdollinen')).toBeVisible();
 });
 
@@ -176,7 +180,10 @@ test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmäl
 
   const hyvaksyttyOdottaaApp = page.getByTestId('application-hakemus-oid-1');
   await expect(
-    hyvaksyttyOdottaaApp.locator('span').getByText('Opiskelijavalinta kesken'),
+    hyvaksyttyOdottaaApp
+      .locator('.MuiChip-root')
+      .first()
+      .getByText('Opiskelijavalinta kesken'),
   ).toBeVisible();
   await expect(
     hyvaksyttyOdottaaApp.getByText(
@@ -217,6 +224,7 @@ test('Näyttää hyväksytyn tuloksen ilman valintatapajonoa kun sijoittelu ei o
 
   const tulos = page.getByTestId('application-tulos-hakukohde-oid-3');
   await expect(tulos.getByText('Hyväksytty')).toBeVisible();
+  await expect(page.getByRole('table')).toHaveCount(0);
 });
 
 test('Näyttää varasijan ilman valintatapajonoa kun sijoittelu ei ole käytössä', async ({
@@ -235,4 +243,79 @@ test('Näyttää varasijan ilman valintatapajonoa kun sijoittelu ei ole käytös
 
   const tulos = page.getByTestId('application-tulos-hakukohde-oid-1');
   await expect(tulos.getByText('Varasijalla: 2')).toBeVisible();
+});
+
+test('Näyttää valintatapajonojen tiedot kun sijoittelu on käytössä', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot: jonokohtaisetTulostiedot,
+      },
+    ],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const todistusvalintaRow = page.getByTestId(
+    'valintatapajono-todistusvalinta',
+  );
+  await expect(
+    todistusvalintaRow.getByText('Ei hyväksytty tällä valintatavalla'),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('valintatapajono-todistusvalinta-pisteet').getByText('30'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByTestId('valintatapajono-todistusvalinta-alinhyvaksytty')
+      .getByText('40'),
+  ).toBeVisible();
+  const paasykoevalintaRow = page.getByTestId(
+    'valintatapajono-paasykoevalinta',
+  );
+  await expect(paasykoevalintaRow.getByText('Hyväksytty')).toBeVisible();
+  await expect(
+    page.getByTestId('valintatapajono-paasykoevalinta-pisteet').getByText('50'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByTestId('valintatapajono-paasykoevalinta-alinhyvaksytty')
+      .getByText('45'),
+  ).toBeVisible();
+});
+
+test('Näyttää valintatapajonojen tiedoissa ehdollisen hyväksymisen', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot: jonokohtaisetTulostiedotEhdollinen,
+      },
+    ],
+  };
+  await mockApplicationsFetch(page, {
+    current: [hyvaksyttyApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const paasykoevalintaRow = page.getByTestId(
+    'valintatapajono-paasykoevalinta',
+  );
+  await expect(paasykoevalintaRow.getByText('Hyväksytty')).toBeVisible();
+  await expect(paasykoevalintaRow.getByText('Ehdollinen')).toBeVisible();
 });
