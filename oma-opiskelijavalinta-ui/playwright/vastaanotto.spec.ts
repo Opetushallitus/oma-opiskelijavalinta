@@ -4,7 +4,13 @@ import {
   mockApplicationsFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
-import { hakemuksenTulosHyvaksytty, hakemus2 } from './mocks';
+import {
+  hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty,
+  hakemuksenTulosHyvaksytty,
+  hakemus1,
+  hakemus2,
+} from './mocks';
 import { clone } from 'remeda';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
 
@@ -185,6 +191,63 @@ test('Peruu vastaanoton onnistuneesti', async ({ page }) => {
   ).toBeVisible();
 });
 
+test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+      });
+    },
+  );
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty),
+      });
+    },
+  );
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset:
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
+    })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await expect(page.getByText('Jäät jonottamaan ylempiä')).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
+    .click();
+  //ilmoitus näkyy ja suljetaan se
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Sulje' }).click();
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
+      { exact: true },
+    ),
+  ).toBeVisible();
+});
+
 test('Vastaanotto on saavutettava', async ({ page }) => {
   await setup(page);
 
@@ -234,8 +297,11 @@ const vastaanotettuTulos = (vastaanottoTila: VastaanottoTila) => {
   return tulos;
 };
 
-async function setup(page: Page) {
-  const hyvaksyttyApplication = {
+async function setup(
+  page: Page,
+  overridableApplication?: Record<string, object | string>,
+) {
+  const hyvaksyttyApplication = overridableApplication ?? {
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
   };

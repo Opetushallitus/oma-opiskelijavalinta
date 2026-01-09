@@ -1,3 +1,5 @@
+import { clone } from 'remeda';
+
 export const hakemus1 = {
   oid: 'hakemus-oid-1',
   secret: 'secret-1',
@@ -348,3 +350,13 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty = [
     ],
   },
 ];
+
+export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa =
+  (() => {
+    const tulokset = clone(hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty);
+    if (tulokset[1]) {
+      tulokset[1].vastaanotettavuustila = 'VASTAANOTETTAVISSA_EHDOLLISESTI';
+      tulokset[1].vastaanottotila = 'KESKEN';
+    }
+    return tulokset;
+  })();
