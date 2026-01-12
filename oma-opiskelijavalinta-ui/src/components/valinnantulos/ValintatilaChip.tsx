@@ -31,13 +31,13 @@ export function ValintatilaChip({
       />
     );
   const valintatila: Valintatila =
-    (hakutoiveenTulos?.valintatila as Valintatila) || Valintatila.KESKEN;
+    hakutoiveenTulos?.valintatila || Valintatila.KESKEN;
   const statusLabel = getHakutoiveenTilaLabel(hakutoiveenTulos, odottaaYlempaa);
   return (
     <StatusBadgeChip
       badgeProps={{
         label: statusLabel,
-        color: valintatilaColors[valintatila as Valintatila],
+        color: valintatilaColors[valintatila],
       }}
     />
   );

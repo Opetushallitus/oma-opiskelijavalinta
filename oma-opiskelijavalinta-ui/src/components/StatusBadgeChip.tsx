@@ -67,6 +67,7 @@ export function StatusBadgeChip({
         borderRadius: '2px',
         mt: '0px',
         px: '4px',
+        whiteSpace: 'normal',
         ...sx,
       }}
     />

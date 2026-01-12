@@ -25,10 +25,10 @@ export enum VastaanottoTila {
   EHDOLLISESTI_VASTAANOTTANUT = 'EHDOLLISESTI_VASTAANOTTANUT',
 }
 
-export type HakutoiveenTulos = {
+export type HakutoiveenTulosDto = {
   hakukohdeOid: string;
   julkaistavissa: boolean;
-  valintatila?: string;
+  valintatila: string;
   varasijanumero?: number | null;
   vastaanotettavuustila?: VastaanotettavuusTila;
   vastaanottoDeadline: string;
@@ -38,20 +38,35 @@ export type HakutoiveenTulos = {
   ehdollisenHyvaksymisenEhtoSV: string;
   ehdollisenHyvaksymisenEhtoEN: string;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
-  jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
+  jonokohtaisetTulostiedot: Array<JonokohtainenTulostietoDto>;
 };
 
-export type JonokohtainenTulostieto = {
+export type JonokohtainenTulostietoDto = {
   nimi?: string;
   pisteet?: number;
   alinHyvaksyttyPistemaara?: number;
-  valintatila?: string;
+  valintatila: string;
   julkaistavissa?: string;
   valintatapajonoPrioriteetti?: number;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
   ehdollisestiHyvaksyttavissa?: boolean;
   ehdollisenHyvaksymisenEhto?: { FI: string; SV: string; EN: string };
   varasijanumero?: number;
+};
+
+export type JonokohtainenTulostieto = Omit<
+  JonokohtainenTulostietoDto,
+  'valintatila'
+> & {
+  valintatila: Valintatila;
+};
+
+export type HakutoiveenTulos = Omit<
+  HakutoiveenTulosDto,
+  'valintatila' | 'jonokohtaisetTulostiedot'
+> & {
+  valintatila: Valintatila;
+  jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
 };
 
 export enum VastaanottoTilaToiminto {

@@ -2,7 +2,7 @@ import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
 import type { TranslatedName } from './localization/localization-types';
 import type { Haku, Hakukohde } from './kouta-types';
-import type { HakutoiveenTulos } from './valinta-tulos-types';
+import { type HakutoiveenTulosDto, Valintatila } from './valinta-tulos-types';
 import type { Application, Applications } from './application-types';
 
 type Ohjausparametrit = {
@@ -24,7 +24,7 @@ type ApplicationResponse = {
   ohjausparametrit?: Ohjausparametrit;
   submitted: string;
   formName: TranslatedName;
-  hakemuksenTulokset: Array<HakutoiveenTulos>;
+  hakemuksenTulokset: Array<HakutoiveenTulosDto>;
 };
 
 type ApplicationsResponse = {
@@ -55,6 +55,14 @@ function convertToApplication(
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     sijoitteluKaytossa: app.ohjausparametrit?.sijoittelu === true,
     submitted: new Date(app.submitted).getTime(),
+    hakemuksenTulokset: app.hakemuksenTulokset?.map((tulos) => ({
+      ...tulos,
+      valintatila: tulos.valintatila as Valintatila,
+      jonokohtaisetTulostiedot: tulos.jonokohtaisetTulostiedot.map((jono) => ({
+        ...jono,
+        valintatila: jono.valintatila as Valintatila,
+      })),
+    })),
   };
 }
 

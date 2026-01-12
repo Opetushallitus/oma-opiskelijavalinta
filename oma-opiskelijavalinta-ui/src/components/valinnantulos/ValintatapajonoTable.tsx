@@ -7,10 +7,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import {
-  type JonokohtainenTulostieto,
-  Valintatila,
-} from '@/lib/valinta-tulos-types';
+import { type JonokohtainenTulostieto } from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import {
   getValintatapajononTilaLabel,
@@ -21,12 +18,12 @@ import {
 function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
   const { t } = useTranslations();
   const label = getValintatapajononTilaLabel(jonotulos);
-  if (isHyvaksyttyTaiVaralla(jonotulos.valintatila as Valintatila)) {
+  if (isHyvaksyttyTaiVaralla(jonotulos.valintatila)) {
     return (
       <StatusBadgeChip
         badgeProps={{
           label: t(label),
-          color: valintatilaColors[jonotulos.valintatila as Valintatila],
+          color: valintatilaColors[jonotulos.valintatila],
         }}
       />
     );

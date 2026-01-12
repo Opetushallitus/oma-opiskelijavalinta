@@ -4,8 +4,62 @@ import {
   Valintatila,
 } from '@/lib/valinta-tulos-types';
 import { type BadgeColor, BadgeColorKey } from '@/components/StatusBadgeChip';
-import { mapKeys } from 'remeda';
+import { mapKeys, mapValues } from 'remeda';
 import { useTranslations } from '@/hooks/useTranslations';
+
+export type ValintatilaLabel = {
+  hakutoiveLabel: string;
+  ilmanJonoaLabel: string;
+  valintatapajonoLabel: string;
+};
+
+const ValintatilaLabels: Record<Valintatila, ValintatilaLabel> = {
+  [Valintatila.HYVAKSYTTY]: {
+    hakutoiveLabel: 'hakutoive.tila.hyvaksytty',
+    ilmanJonoaLabel: 'tulos.hyvaksytty',
+    valintatapajonoLabel: 'tulos.hyvaksytty',
+  },
+  [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: {
+    hakutoiveLabel: 'hakutoive.tila.hyvaksytty',
+    ilmanJonoaLabel: 'tulos.hyvaksytty',
+    valintatapajonoLabel: 'tulos.hyvaksytty',
+  },
+  [Valintatila.VARASIJALTA_HYVAKSYTTY]: {
+    hakutoiveLabel: 'hakutoive.tila.hyvaksytty',
+    ilmanJonoaLabel: 'tulos.hyvaksytty',
+    valintatapajonoLabel: 'tulos.hyvaksytty',
+  },
+  [Valintatila.VARALLA]: {
+    hakutoiveLabel: 'hakutoive.tila.varalla',
+    ilmanJonoaLabel: 'tulos.varalla',
+    valintatapajonoLabel: 'tulos.varalla',
+  },
+  [Valintatila.HYLATTY]: {
+    hakutoiveLabel: 'hakutoive.tila.hylatty',
+    ilmanJonoaLabel: 'tulos.hylatty',
+    valintatapajonoLabel: 'tulos.valintatapajono.hylatty',
+  },
+  [Valintatila.KESKEN]: {
+    hakutoiveLabel: 'hakutoive.tila.kesken',
+    ilmanJonoaLabel: 'tulos.kesken',
+    valintatapajonoLabel: 'tulos.kesken',
+  },
+  [Valintatila.PERUUTETTU]: {
+    hakutoiveLabel: 'hakutoive.tila.peruutettu',
+    ilmanJonoaLabel: 'tulos.peruutettu',
+    valintatapajonoLabel: 'tulos.peruutettu',
+  },
+  [Valintatila.PERUNUT]: {
+    hakutoiveLabel: 'hakutoive.tila.perunut',
+    ilmanJonoaLabel: 'tulos.perunut',
+    valintatapajonoLabel: 'tulos.perunut',
+  },
+  [Valintatila.PERUUNTUNUT]: {
+    hakutoiveLabel: 'hakutoive.tila.peruuntunut',
+    ilmanJonoaLabel: 'tulos.peruuntunut',
+    valintatapajonoLabel: 'tulos.peruuntunut',
+  },
+};
 
 export const valintatilaColors: Record<Valintatila, BadgeColor> = {
   [Valintatila.HYVAKSYTTY]: BadgeColorKey.Green,
@@ -19,41 +73,20 @@ export const valintatilaColors: Record<Valintatila, BadgeColor> = {
   [Valintatila.PERUUNTUNUT]: BadgeColorKey.Grey,
 };
 
-export const valintatilaIlmanJonoaLabels: Record<Valintatila, string> = {
-  [Valintatila.HYVAKSYTTY]: 'tulos.hyvaksytty',
-  [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: 'tulos.hyvaksytty',
-  [Valintatila.VARASIJALTA_HYVAKSYTTY]: 'tulos.hyvaksytty',
-  [Valintatila.VARALLA]: 'tulos.varalla',
-  [Valintatila.HYLATTY]: 'tulos.hylatty',
-  [Valintatila.KESKEN]: 'tulos.kesken',
-  [Valintatila.PERUUTETTU]: 'tulos.peruutettu',
-  [Valintatila.PERUNUT]: 'tulos.perunut',
-  [Valintatila.PERUUNTUNUT]: 'tulos.peruuntunut',
-};
+const hakutoiveenTilaLabels = mapValues(
+  ValintatilaLabels,
+  (label) => label.hakutoiveLabel,
+);
 
-export const ValintatapajononTilaLabels: Record<Valintatila, string> = {
-  [Valintatila.HYVAKSYTTY]: 'tulos.hyvaksytty',
-  [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: 'tulos.hyvaksytty',
-  [Valintatila.VARASIJALTA_HYVAKSYTTY]: 'tulos.hyvaksytty',
-  [Valintatila.VARALLA]: 'tulos.varalla',
-  [Valintatila.HYLATTY]: 'tulos.valintatapajono.hylatty',
-  [Valintatila.KESKEN]: 'tulos.kesken',
-  [Valintatila.PERUUTETTU]: 'tulos.peruutettu',
-  [Valintatila.PERUNUT]: 'tulos.perunut',
-  [Valintatila.PERUUNTUNUT]: 'tulos.peruuntunut',
-};
+export const valintatilaIlmanJonoaLabels = mapValues(
+  ValintatilaLabels,
+  (label) => label.ilmanJonoaLabel,
+);
 
-const hakutoiveenTilaLabels: Record<Valintatila, string> = {
-  [Valintatila.HYVAKSYTTY]: 'hakutoive.tila.hyvaksytty',
-  [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: 'hakutoive.tila.hyvaksytty',
-  [Valintatila.VARASIJALTA_HYVAKSYTTY]: 'hakutoive.tila.hyvaksytty',
-  [Valintatila.VARALLA]: 'hakutoive.tila.varalla',
-  [Valintatila.HYLATTY]: 'hakutoive.tila.hylatty',
-  [Valintatila.KESKEN]: 'hakutoive.tila.kesken',
-  [Valintatila.PERUUTETTU]: 'hakutoive.tila.peruutettu',
-  [Valintatila.PERUNUT]: 'hakutoive.tila.perunut',
-  [Valintatila.PERUUNTUNUT]: 'hakutoive.tila.peruuntunut',
-};
+export const ValintatapajononTilaLabels = mapValues(
+  ValintatilaLabels,
+  (label) => label.valintatapajonoLabel,
+);
 
 export function getHakutoiveenTilaLabel(
   hakutoiveenTulos: HakutoiveenTulos,
@@ -61,7 +94,7 @@ export function getHakutoiveenTilaLabel(
 ): string {
   const { t, translateEntity } = useTranslations();
   const hakutoiveenTilaLabel = t(
-    hakutoiveenTilaLabels[hakutoiveenTulos.valintatila as Valintatila],
+    hakutoiveenTilaLabels[hakutoiveenTulos.valintatila],
   );
   if (
     hakutoiveenTulos.valintatila === Valintatila.VARALLA &&
@@ -96,9 +129,7 @@ export function getValintatilaIlmanSijoitteluaLabel(
       varasijanumero: String(hakutoiveenTulos?.varasijanumero),
     });
   }
-  return t(
-    valintatilaIlmanJonoaLabels[hakutoiveenTulos.valintatila as Valintatila],
-  );
+  return t(valintatilaIlmanJonoaLabels[hakutoiveenTulos.valintatila]);
 }
 
 export function getValintatapajononTilaLabel(
@@ -113,14 +144,15 @@ export function getValintatapajononTilaLabel(
       varasijanumero: String(jonoTulos?.varasijanumero),
     });
   }
-  return t(ValintatapajononTilaLabels[jonoTulos.valintatila as Valintatila]);
+  return t(ValintatapajononTilaLabels[jonoTulos.valintatila]);
 }
 
-export function isHyvaksyttyTaiVaralla(valintatila: Valintatila): boolean {
-  return (
-    valintatila === Valintatila.HYVAKSYTTY ||
-    valintatila === Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY ||
-    valintatila === Valintatila.VARASIJALTA_HYVAKSYTTY ||
-    valintatila === Valintatila.VARALLA
-  );
-}
+const hyvaksyttyTaiVarallaTilat = new Set<Valintatila>([
+  Valintatila.HYVAKSYTTY,
+  Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
+  Valintatila.VARASIJALTA_HYVAKSYTTY,
+  Valintatila.VARALLA,
+]);
+
+export const isHyvaksyttyTaiVaralla = (t: Valintatila) =>
+  hyvaksyttyTaiVarallaTilat.has(t);
