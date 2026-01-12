@@ -25,9 +25,9 @@ const vastaanottoTilaStyles: Record<
     color: '',
   },
   [VastaanottoTila.EI_VASTAANOTETTU_MAARA_AIKANA]: {
-    label: '',
-    background: '',
-    color: '',
+    label: 'vastaanotto.tila.ei-vastaanotettu-maara-aikana',
+    background: ophColors.grey400,
+    color: ophColors.black,
   },
   [VastaanottoTila.PERUUTETTU]: {
     label: '',

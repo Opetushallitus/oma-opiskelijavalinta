@@ -62,6 +62,7 @@
     },
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
+      "vastaanota": "Otan tämän opiskelupaikan vastaan",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
       "sitova-ei-jonotusta": "Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan ylempiä hakutoiveita",
       "ehdollinen": "Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan ylempiä hakutoiveita",
@@ -70,7 +71,8 @@
     "tila": {
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
       "vastaanotettu-ehdollisesti": "Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita",
-      "peruttu": "Opiskelupaikkaa ei vastaanotettu"
+      "peruttu": "Opiskelupaikkaa ei vastaanotettu",
+      "ei-vastaanotettu-maara-aikana": ""
     },
     "modaali": {
       "muuta-sitovaksi": {

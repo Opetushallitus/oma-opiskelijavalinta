@@ -43,7 +43,7 @@ const InputContainer = styled(Box)(({ theme }) => ({
 
 const defaultVastaanottoOptions = [
   {
-    label: 'vastaanotto.vaihtoehdot.sitova',
+    label: 'vastaanotto.vaihtoehdot.vastaanota',
     value: 'VASTAANOTA_SITOVASTI',
   },
   {

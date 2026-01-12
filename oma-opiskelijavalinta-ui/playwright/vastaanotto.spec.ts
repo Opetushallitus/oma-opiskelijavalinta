@@ -74,6 +74,7 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa',
     ...hakemus3ToinenAste,
   });
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-3');
+  vastaanotot.getByText('Otan tämän opiskelupaikan vastaan', { exact: true });
   await vastaanotot
     .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
     .click();
