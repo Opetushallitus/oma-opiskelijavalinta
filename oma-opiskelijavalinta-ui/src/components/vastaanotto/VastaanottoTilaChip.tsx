@@ -25,9 +25,9 @@ const vastaanottoTilaStyles: Record<
     color: '',
   },
   [VastaanottoTila.EI_VASTAANOTETTU_MAARA_AIKANA]: {
-    label: '',
-    background: '',
-    color: '',
+    label: 'vastaanotto.tila.ei-vastaanotettu-maara-aikana',
+    background: ophColors.grey400,
+    color: ophColors.black,
   },
   [VastaanottoTila.PERUUTETTU]: {
     label: '',
@@ -40,9 +40,9 @@ const vastaanottoTilaStyles: Record<
     color: '',
   },
   [VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT]: {
-    label: '',
-    background: '',
-    color: '',
+    label: 'vastaanotto.tila.vastaanotettu-ehdollisesti',
+    background: greenBadgeBackground,
+    color: ophColors.green1,
   },
 };
 
@@ -63,6 +63,7 @@ export function VastaanottoTilaChip({
         fontWeight: 'bold',
         borderRadius: '0px',
         mt: '0px',
+        whiteSpace: 'normal',
       }}
     />
   );

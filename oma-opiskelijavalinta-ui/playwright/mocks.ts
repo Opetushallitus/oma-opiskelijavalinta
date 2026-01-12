@@ -1,3 +1,5 @@
+import { clone } from 'remeda';
+
 export const hakemus1 = {
   oid: 'hakemus-oid-1',
   secret: 'secret-1',
@@ -6,6 +8,8 @@ export const hakemus1 = {
     nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
     hakuaikaKaynnissa: true,
     viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
+    hakutapaKoodiUri: 'hakutapa_01',
+    kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-10-18T16:00:00',
   hakukohteet: [
@@ -39,6 +43,8 @@ export const hakemus2 = {
     nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
     hakuaikaKaynnissa: false,
     viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+    hakutapaKoodiUri: 'hakutapa_01',
+    kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-06-18T19:00:00',
   hakukohteet: [
@@ -54,6 +60,69 @@ export const hakemus2 = {
     hakukierrosPaattyy: 1763971212000,
   },
   hakemuksenTulokset: [],
+};
+
+export const hakemus3ToinenAste = {
+  oid: 'hakemus-oid-3',
+  secret: 'secret-3',
+  haku: {
+    oid: 'haku-oid-3',
+    nimi: { fi: 'Toisten asteen yhteishaku 2024' },
+    hakuaikaKaynnissa: false,
+    viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+    hakutapaKoodiUri: 'hakutapa_01',
+    kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
+  },
+  submitted: '2025-06-18T19:00:00',
+  hakukohteet: [
+    {
+      oid: 'hakukohde-oid-4',
+      nimi: { fi: 'Lukiokoulutus' },
+      jarjestyspaikkaHierarkiaNimi: {
+        fi: 'Rekun Lukio, Helsingin Kaupunki',
+      },
+    },
+  ],
+  ohjausparametrit: {
+    hakukierrosPaattyy: 1763971212000,
+  },
+  hakemuksenTulokset: [
+    {
+      hakukohdeOid: 'hakukohde-oid-4',
+      hakukohdeNimi: 'Lukiokoulutus',
+      tarjoajaOid: 'tarjoaja-oid-4',
+      tarjoajaNimi: 'Rekun Lukio, Helsingin Kaupunki',
+      valintatapajonoOid: '2349',
+      valintatila: 'HYVAKSYTTY',
+      vastaanottotila: 'KESKEN',
+      ilmoittautumistila: {
+        ilmoittautumisaika: {},
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      tilanKuvaukset: {},
+      showMigriURL: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2349',
+          nimi: '',
+          valintatila: 'HYVAKSYTTY',
+          julkaistavissa: true,
+          tilanKuvaukset: {},
+          ehdollisestiHyvaksyttavissa: false,
+          ehdollisenHyvaksymisenEhto: {},
+          eiVarasijatayttoa: false,
+          varasijasaannotKaytossa: false,
+        },
+      ],
+    },
+  ],
 };
 
 export const defaultMockApplications = {
@@ -273,3 +342,84 @@ export const hakemuksenTulosPeruuntunut = {
     },
   ],
 };
+
+export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty = [
+  {
+    hakukohdeOid: 'hakukohde-oid-1',
+    tarjoajaOid: 'tarjoaja-oid-1',
+    tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+    valintatapajonoOid: '2344',
+    valintatila: 'VARALLA',
+    vastaanottotila: 'KESKEN',
+    ilmoittautumistila: {
+      ilmoittautumisaika: {},
+      ilmoittautumistila: 'EI_TEHTY',
+      ilmoittauduttavissa: false,
+    },
+    vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+    vastaanottoDeadline: '2025-12-11T13:00:00Z',
+    viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+    hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+    julkaistavissa: true,
+    ehdollisestiHyvaksyttavissa: false,
+    tilanKuvaukset: {},
+    showMigriURL: false,
+    jonokohtaisetTulostiedot: [
+      {
+        oid: '2345',
+        nimi: '',
+        valintatila: 'VARALLA',
+        julkaistavissa: true,
+        tilanKuvaukset: {},
+        ehdollisestiHyvaksyttavissa: false,
+        ehdollisenHyvaksymisenEhto: {},
+        eiVarasijatayttoa: false,
+        varasijasaannotKaytossa: false,
+      },
+    ],
+  },
+  {
+    hakukohdeOid: 'hakukohde-oid-2',
+    tarjoajaOid: 'tarjoaja-oid-2',
+    tarjoajaNimi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+    valintatapajonoOid: '2345',
+    valintatila: 'HYVAKSYTTY',
+    vastaanottotila: 'EHDOLLISESTI_VASTAANOTTANUT',
+    ilmoittautumistila: {
+      ilmoittautumisaika: {},
+      ilmoittautumistila: 'EI_TEHTY',
+      ilmoittauduttavissa: false,
+    },
+    vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+    vastaanottoDeadline: '2025-12-11T13:00:00Z',
+    viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+    hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+    julkaistavissa: true,
+    ehdollisestiHyvaksyttavissa: false,
+    tilanKuvaukset: {},
+    showMigriURL: false,
+    jonokohtaisetTulostiedot: [
+      {
+        oid: '2345',
+        nimi: '',
+        valintatila: 'HYVAKSYTTY',
+        julkaistavissa: true,
+        tilanKuvaukset: {},
+        ehdollisestiHyvaksyttavissa: false,
+        ehdollisenHyvaksymisenEhto: {},
+        eiVarasijatayttoa: false,
+        varasijasaannotKaytossa: false,
+      },
+    ],
+  },
+];
+
+export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa =
+  (() => {
+    const tulokset = clone(hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty);
+    if (tulokset[1]) {
+      tulokset[1].vastaanotettavuustila = 'VASTAANOTETTAVISSA_EHDOLLISESTI';
+      tulokset[1].vastaanottotila = 'KESKEN';
+    }
+    return tulokset;
+  })();

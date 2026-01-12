@@ -8,6 +8,7 @@ export type Application = {
   hakukohteet?: Array<Hakukohde>;
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
+  varasijatayttoPaattyy?: number | null;
   submitted: number;
   formName: TranslatedName;
   priorisoidutHakutoiveet: boolean;

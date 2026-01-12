@@ -2,40 +2,15 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ValintatilaChip } from '../valinnantulos/ValintatilaChip';
-import { InfoBox } from '../InfoBox';
-import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { isDefined, isEmpty } from 'remeda';
-import { T } from '@tolgee/react';
 import { VastaanottoRadio } from './VastaanottoRadio';
 import type { Hakukohde } from '@/lib/kouta-types';
-import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Application } from '@/lib/application-types';
 import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
 import { VastaanottoTilaChip } from './VastaanottoTilaChip';
-
-function VastaanottoInfo({ tulos }: { tulos: HakutoiveenTulos }) {
-  const { getLanguage } = useTranslations();
-
-  const lang = getLanguage();
-  const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
-    tulos.vastaanottoDeadline,
-    lang,
-  );
-
-  return (
-    <InfoBox>
-      <OphTypography>
-        <T
-          keyName={'vastaanotto.paattyy'}
-          params={{
-            vastaanottoPaattyy,
-            strong: <strong />,
-          }}
-        />
-      </OphTypography>
-    </InfoBox>
-  );
-}
+import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
+import { VastaanottoInfo } from './VastaanottoInfo';
 
 function VastaanottoBox({
   hakukohde,
@@ -50,13 +25,13 @@ function VastaanottoBox({
 
   return (
     <Box>
-      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
-        <ValintatilaChip hakutoiveenTulos={tulos} />
-      )}
-      {tulos.vastaanotettavuustila === 'EI_VASTAANOTETTAVISSA' &&
-        tulos.vastaanottotila && (
-          <VastaanottoTilaChip vastaanottoTila={tulos.vastaanottotila} />
+      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
+        tulos.vastaanottotila === 'KESKEN' && (
+          <ValintatilaChip hakutoiveenTulos={tulos} />
         )}
+      {tulos.vastaanottotila && tulos.vastaanottotila !== 'KESKEN' && (
+        <VastaanottoTilaChip vastaanottoTila={tulos.vastaanottotila} />
+      )}
       <OphTypography variant="h5" component="div">
         {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
       </OphTypography>
@@ -64,11 +39,19 @@ function VastaanottoBox({
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
-        <VastaanottoInfo tulos={tulos} />
+        <VastaanottoInfo tulos={tulos} application={application} />
       )}
-      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
-        <VastaanottoRadio application={application} hakutoive={hakukohde} />
-      )}
+      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
+        tulos.vastaanottotila !== 'EHDOLLISESTI_VASTAANOTTANUT' && (
+          <VastaanottoRadio application={application} hakutoive={hakukohde} />
+        )}
+      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_SITOVASTI' &&
+        tulos.vastaanottotila === 'EHDOLLISESTI_VASTAANOTTANUT' && (
+          <VastaanottoEhdollisestaSitovaksi
+            application={application}
+            hakutoive={hakukohde}
+          />
+        )}
     </Box>
   );
 }
