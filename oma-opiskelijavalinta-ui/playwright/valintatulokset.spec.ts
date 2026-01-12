@@ -13,6 +13,7 @@ import {
   hakemus2,
   jonokohtaisetTulostiedot,
   jonokohtaisetTulostiedotEhdollinen,
+  jonokohtaisetTulostiedotPeruuntunut,
 } from './mocks';
 
 test('Näyttää varasijanumeron', async ({ page }) => {
@@ -272,6 +273,9 @@ test('Näyttää valintatapajonojen tiedot kun sijoittelu on käytössä', async
     todistusvalintaRow.getByText('Ei hyväksytty tällä valintatavalla'),
   ).toBeVisible();
   await expect(
+    todistusvalintaRow.getByText('Pisteraja ei ylittynyt'),
+  ).toBeVisible();
+  await expect(
     page.getByTestId('valintatapajono-todistusvalinta-pisteet').getByText('30'),
   ).toBeVisible();
   await expect(
@@ -318,4 +322,34 @@ test('Näyttää valintatapajonojen tiedoissa ehdollisen hyväksymisen', async (
   );
   await expect(paasykoevalintaRow.getByText('Hyväksytty')).toBeVisible();
   await expect(paasykoevalintaRow.getByText('Ehdollinen')).toBeVisible();
+});
+
+test('Näyttää peruuntuneelle valintatapajonolle selitteen', async ({
+  page,
+}) => {
+  const peruuntunutApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot: jonokohtaisetTulostiedotPeruuntunut,
+      },
+    ],
+  };
+  await mockApplicationsFetch(page, {
+    current: [peruuntunutApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const paasykoevalintaRow = page.getByTestId(
+    'valintatapajono-paasykoevalinta',
+  );
+  await expect(
+    paasykoevalintaRow.getByText(
+      'Peruuntunut - Olet vastaanottanut toisen opiskelupaikan',
+    ),
+  ).toBeVisible();
 });

@@ -471,3 +471,23 @@ export const jonokohtaisetTulostiedotEhdollinen = [
     varasijasaannotKaytossa: false,
   },
 ];
+
+export const jonokohtaisetTulostiedotPeruuntunut = [
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'PERUUNTUNUT',
+    julkaistavissa: true,
+    tilanKuvaukset: {
+      FI: 'Olet vastaanottanut toisen opiskelupaikan',
+      SV: 'Olet vastaanottanut toisen opiskelupaikan SV',
+      EN: 'Olet vastaanottanut toisen opiskelupaikan EN',
+    },
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];

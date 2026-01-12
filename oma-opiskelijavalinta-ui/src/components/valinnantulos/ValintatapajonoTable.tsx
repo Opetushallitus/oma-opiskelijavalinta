@@ -7,17 +7,26 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { type JonokohtainenTulostieto } from '@/lib/valinta-tulos-types';
+import {
+  type JonokohtainenTulostieto,
+  Valintatila,
+} from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import {
   getValintatapajononTilaLabel,
   isHyvaksyttyTaiVaralla,
   valintatilaColors,
 } from '@/components/valinnantulos/tulos-display-utils';
+import { OphTypography } from '@opetushallitus/oph-design-system';
+import { ophColors } from '@/lib/theme';
+import { mapKeys } from 'remeda';
 
 function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
   const label = getValintatapajononTilaLabel(jonotulos);
+  const tilanKuvaukset = jonotulos.tilanKuvaukset
+    ? mapKeys(jonotulos.tilanKuvaukset, (key) => key.toLowerCase())
+    : undefined;
   if (isHyvaksyttyTaiVaralla(jonotulos.valintatila)) {
     return (
       <StatusBadgeChip
@@ -27,6 +36,24 @@ function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
         }}
       />
     );
+  }
+  if (jonotulos.valintatila === Valintatila.HYLATTY) {
+    return (
+      <>
+        <OphTypography variant="body2">{t(label)}</OphTypography>
+        {tilanKuvaukset && (
+          <OphTypography
+            variant="body1"
+            sx={{ color: ophColors.grey600, fontSize: '0.875rem' }}
+          >
+            {translateEntity(tilanKuvaukset)}
+          </OphTypography>
+        )}
+      </>
+    );
+  }
+  if (jonotulos.valintatila === Valintatila.PERUUNTUNUT) {
+    return `${t(label)} - ${translateEntity(tilanKuvaukset)}`;
   }
   return t(label);
 }
