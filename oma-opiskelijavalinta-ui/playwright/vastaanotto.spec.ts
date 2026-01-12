@@ -10,6 +10,7 @@ import {
   hakemuksenTulosHyvaksytty,
   hakemus1,
   hakemus2,
+  hakemus3ToinenAste,
 } from './mocks';
 import { clone } from 'remeda';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
@@ -29,6 +30,23 @@ test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   ).toBeVisible();
   await expect(
     vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Sinulle tarjotaan opiskelupaikkaa hakutoiveesta'),
+  ).toBeHidden();
+});
+
+test('Näyttää monesko hakutoive on vastaanotettavissa priorisoidussa haussa', async ({
+  page,
+}) => {
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset:
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Sinulle tarjotaan opiskelupaikkaa hakutoiveesta 2'),
   ).toBeVisible();
 });
 
@@ -52,6 +70,35 @@ test('Näyttää virheen lähettäessä vastausta ilman vastaanoton valintaa', a
 test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa', async ({
   page,
 }) => {
+  await setup(page, {
+    ...hakemus3ToinenAste,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-3');
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await expect(
+    page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Huomioithan, että et voi ottaa muuta'),
+  ).toBeHidden();
+  await page.getByRole('button', { name: 'Peruuta' }).click();
+  await expect(
+    page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+});
+
+test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa korkeakouluhaulle', async ({
+  page,
+}) => {
   await setup(page);
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
   await vastaanotot
@@ -63,6 +110,9 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa',
   await sendButton.click();
   await expect(
     page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Huomioithan, että et voi ottaa muuta'),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Peruuta' }).click();
   await expect(
@@ -278,7 +328,7 @@ test('Vastaanottomodaali on saavutettava', async ({ page }) => {
     page.getByText('Vahvista opiskelupaikan vastaanotto'),
   ).toBeVisible();
   await expect(
-    page.getByText('Olet vahvistamassa opiskelupaikkaa:'),
+    page.getByText('Olet vahvistamassa opiskelupaikan vastaanottoa:'),
   ).toBeVisible();
 
   await expect(page.getByRole('button', { name: 'Peruuta' })).toBeVisible();

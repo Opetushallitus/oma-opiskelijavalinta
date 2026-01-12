@@ -62,6 +62,69 @@ export const hakemus2 = {
   hakemuksenTulokset: [],
 };
 
+export const hakemus3ToinenAste = {
+  oid: 'hakemus-oid-3',
+  secret: 'secret-3',
+  haku: {
+    oid: 'haku-oid-3',
+    nimi: { fi: 'Toisten asteen yhteishaku 2024' },
+    hakuaikaKaynnissa: false,
+    viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+    hakutapaKoodiUri: 'hakutapa_01',
+    kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
+  },
+  submitted: '2025-06-18T19:00:00',
+  hakukohteet: [
+    {
+      oid: 'hakukohde-oid-4',
+      nimi: { fi: 'Lukiokoulutus' },
+      jarjestyspaikkaHierarkiaNimi: {
+        fi: 'Rekun Lukio, Helsingin Kaupunki',
+      },
+    },
+  ],
+  ohjausparametrit: {
+    hakukierrosPaattyy: 1763971212000,
+  },
+  hakemuksenTulokset: [
+    {
+      hakukohdeOid: 'hakukohde-oid-4',
+      hakukohdeNimi: 'Lukiokoulutus',
+      tarjoajaOid: 'tarjoaja-oid-4',
+      tarjoajaNimi: 'Rekun Lukio, Helsingin Kaupunki',
+      valintatapajonoOid: '2349',
+      valintatila: 'HYVAKSYTTY',
+      vastaanottotila: 'KESKEN',
+      ilmoittautumistila: {
+        ilmoittautumisaika: {},
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      tilanKuvaukset: {},
+      showMigriURL: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2349',
+          nimi: '',
+          valintatila: 'HYVAKSYTTY',
+          julkaistavissa: true,
+          tilanKuvaukset: {},
+          ehdollisestiHyvaksyttavissa: false,
+          ehdollisenHyvaksymisenEhto: {},
+          eiVarasijatayttoa: false,
+          varasijasaannotKaytossa: false,
+        },
+      ],
+    },
+  ],
+};
+
 export const defaultMockApplications = {
   current: [hakemus1, hakemus2],
   old: [],

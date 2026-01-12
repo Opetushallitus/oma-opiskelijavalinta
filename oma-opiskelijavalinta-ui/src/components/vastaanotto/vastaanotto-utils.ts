@@ -9,6 +9,7 @@ import { isNonNullish } from 'remeda';
 export enum VastaanottoOption {
   PERU = 'PERU',
   VASTAANOTA_SITOVASTI = 'VASTAANOTA_SITOVASTI',
+  VASTAANOTA_SITOVASTI_KK = 'VASTAANOTA_SITOVASTI_KK',
   VASTAANOTA_EHDOLLISESTI_KK = 'VASTAANOTA_EHDOLLISESTI_KK',
   VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK = 'VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK',
   VASTAANOTA_SITOVASTI_PERU_ALEMMAT = 'VASTAANOTA_SITOVASTI_PERU_ALEMMAT',
@@ -20,6 +21,8 @@ export const VastaanottoOptionToToiminto: Record<
 > = {
   [VastaanottoOption.PERU]: VastaanottoTilaToiminto.PERU,
   [VastaanottoOption.VASTAANOTA_SITOVASTI]:
+    VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
+  [VastaanottoOption.VASTAANOTA_SITOVASTI_KK]:
     VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
   [VastaanottoOption.VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK]:
     VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
@@ -50,6 +53,13 @@ export const VastaanottoModalParams: Record<
     confirmLabel: 'vastaanotto.modaali.vastaanota-sitovasti.vahvista',
     info: 'vastaanotto.modaali.vastaanota-sitovasti.info',
     successMessage: 'vastaanotto.modaali.vastaanota-sitovasti.onnistui',
+  },
+  [VastaanottoOption.VASTAANOTA_SITOVASTI_KK]: {
+    title: 'vastaanotto.modaali.vastaanota-sitovasti-kk.otsikko',
+    confirmLabel: 'vastaanotto.modaali.vastaanota-sitovasti-kk.vahvista',
+    info: 'vastaanotto.modaali.vastaanota-sitovasti-kk.info',
+    info2: 'vastaanotto.modaali.vastaanota-sitovasti-kk.info2',
+    successMessage: 'vastaanotto.modaali.vastaanota-sitovasti-kk.onnistui',
   },
   [VastaanottoOption.VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK]: {
     title: 'vastaanotto.modaali.vastaanota-sitovasti-jonottamatta-kk.otsikko',

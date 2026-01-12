@@ -22,6 +22,7 @@ import {
   VastaanottoOption,
   VastaanottoOptionToToiminto,
 } from './vastaanotto-utils';
+import { isKorkeakouluHaku } from '@/lib/kouta-utils';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -44,6 +45,17 @@ const defaultVastaanottoOptions = [
   {
     label: 'vastaanotto.vaihtoehdot.sitova',
     value: 'VASTAANOTA_SITOVASTI',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.peru',
+    value: 'PERU',
+  },
+];
+
+const vastaanottoOptionsKK = [
+  {
+    label: 'vastaanotto.vaihtoehdot.sitova',
+    value: 'VASTAANOTA_SITOVASTI_KK',
   },
   {
     label: 'vastaanotto.vaihtoehdot.peru',
@@ -85,6 +97,8 @@ function determineVastaanottoOptions(
   let options = defaultVastaanottoOptions;
   if (application.priorisoidutHakutoiveet) {
     options = getKKPriorityOptions(application, hakukohde);
+  } else if (application.haku && isKorkeakouluHaku(application.haku)) {
+    options = vastaanottoOptionsKK;
   }
   return options.map((o) => ({ label: t(o.label), value: o.value }));
 }

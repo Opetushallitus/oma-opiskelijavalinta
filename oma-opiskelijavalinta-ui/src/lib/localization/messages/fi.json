@@ -93,6 +93,13 @@
         "info": "Olet vahvistamassa opiskelupaikkaa:",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       },
+      "vastaanota-sitovasti-kk": {
+        "otsikko": "Vahvista opiskelupaikan vastaanotto",
+        "vahvista": "Ota opiskelupaikka vastaan",
+        "info": "Olet vahvistamassa opiskelupaikan vastaanottoa:",
+        "info2": "Huomioithan, että et voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätöksesi on sitova, etkä voi muuttaa sitä jälkikäteen.",
+        "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
+      },
       "vastaanota-sitovasti-jonottamatta-kk": {
         "otsikko": "Vahvista opiskelupaikan vastaanotto",
         "vahvista": "Ota opiskelupaikka vastaan",
