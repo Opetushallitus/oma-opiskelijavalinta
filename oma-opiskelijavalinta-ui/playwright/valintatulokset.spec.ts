@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import {
   mockApplicationsFetch,
   mockAuthenticatedUser,
@@ -16,17 +16,22 @@ import {
   jonokohtaisetTulostiedotPeruuntunut,
 } from './mocks';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+async function fetchMockData(page: Page, application: any) {
+  await mockApplicationsFetch(page, {
+    current: [application],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+}
+
 test('Näyttää varasijanumeron', async ({ page }) => {
   const varasijaApplication = {
     ...hakemus1,
     hakemuksenTulokset: [hakemuksenTulosVarasijalla],
   };
-  await mockApplicationsFetch(page, {
-    current: [varasijaApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, varasijaApplication);
 
   const app1 = page.getByTestId('application-hakemus-oid-1');
   await expect(
@@ -40,12 +45,7 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const app = page.getByTestId('application-hakemus-oid-2');
   const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
@@ -64,9 +64,7 @@ test('Näyttää hylätyn tuloksen', async ({ page }) => {
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHylatty],
   };
-  await mockApplicationsFetch(page, { current: [hylattyApplication], old: [] });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hylattyApplication);
 
   const app = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
@@ -82,12 +80,7 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
     ...hakemus1,
     hakemuksenTulokset: [hakemuksenTulosVarasijalla],
   };
-  await mockApplicationsFetch(page, {
-    current: [varasijaApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, varasijaApplication);
   const app1 = page.getByTestId('application-hakemus-oid-1');
   await expect(
     app1.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
@@ -98,12 +91,7 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
 test('Näyttää kesken-tuloksen jos hakuaika on päättynyt ja tulosta ei ole julkaistu', async ({
   page,
 }) => {
-  await mockApplicationsFetch(page, {
-    current: [hakemus2],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hakemus2);
 
   const app = page.getByTestId('application-hakemus-oid-2');
   const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
@@ -122,12 +110,7 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
       { ...hakemuksenTulosHyvaksytty, ehdollisestiHyvaksyttavissa: true },
     ],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const hakutoive = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
@@ -144,12 +127,7 @@ test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) =>
     ...hakemus2,
     hakemuksenTulokset: [{ ...hakemuksenTulosPeruuntunut }],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const app = page.getByTestId('application-hakemus-oid-2');
   await expect(
@@ -172,12 +150,7 @@ test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmäl
       },
     ],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyOdottaaApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyOdottaaApplication);
 
   const hyvaksyttyOdottaaApp = page.getByTestId('application-hakemus-oid-1');
   await expect(
@@ -200,9 +173,7 @@ test('Näyttää hylätyn tuloksen tarkenteen ilman valintatapajonoa kun sijoitt
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHylatty],
   };
-  await mockApplicationsFetch(page, { current: [hylattyApplication], old: [] });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hylattyApplication);
 
   const tulos = page.getByTestId('application-tulos-hakukohde-oid-3');
   await expect(tulos.getByText('Et saanut opiskelupaikkaa')).toBeVisible();
@@ -216,12 +187,7 @@ test('Näyttää hyväksytyn tuloksen ilman valintatapajonoa kun sijoittelu ei o
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const tulos = page.getByTestId('application-tulos-hakukohde-oid-3');
   await expect(tulos.getByText('Hyväksytty')).toBeVisible();
@@ -235,12 +201,7 @@ test('Näyttää varasijan ilman valintatapajonoa kun sijoittelu ei ole käytös
     ...hakemus1,
     hakemuksenTulokset: [hakemuksenTulosVarasijalla],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const tulos = page.getByTestId('application-tulos-hakukohde-oid-1');
   await expect(tulos.getByText('Varasijalla: 2')).toBeVisible();
@@ -259,12 +220,7 @@ test('Näyttää valintatapajonojen tiedot kun sijoittelu on käytössä', async
       },
     ],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const todistusvalintaRow = page.getByTestId(
     'valintatapajono-todistusvalinta',
@@ -310,12 +266,7 @@ test('Näyttää valintatapajonojen tiedoissa ehdollisen hyväksymisen', async (
       },
     ],
   };
-  await mockApplicationsFetch(page, {
-    current: [hyvaksyttyApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, hyvaksyttyApplication);
 
   const paasykoevalintaRow = page.getByTestId(
     'valintatapajono-paasykoevalinta',
@@ -337,12 +288,7 @@ test('Näyttää peruuntuneelle valintatapajonolle selitteen', async ({
       },
     ],
   };
-  await mockApplicationsFetch(page, {
-    current: [peruuntunutApplication],
-    old: [],
-  });
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await fetchMockData(page, peruuntunutApplication);
 
   const paasykoevalintaRow = page.getByTestId(
     'valintatapajono-paasykoevalinta',
