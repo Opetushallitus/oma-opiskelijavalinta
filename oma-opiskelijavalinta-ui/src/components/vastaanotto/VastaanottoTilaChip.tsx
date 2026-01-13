@@ -24,7 +24,7 @@ const vastaanottoTilaStyles: Record<
     color: BadgeColorKey.Yellow,
   },
   [VastaanottoTila.EI_VASTAANOTETTU_MAARA_AIKANA]: {
-    label: '',
+    label: 'vastaanotto.tila.ei-vastaanotettu-maara-aikana',
     color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.PERUUTETTU]: {
@@ -36,7 +36,7 @@ const vastaanottoTilaStyles: Record<
     color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT]: {
-    label: '',
+    label: 'vastaanotto.tila.vastaanotettu-ehdollisesti',
     color: BadgeColorKey.Grey,
   },
 };
