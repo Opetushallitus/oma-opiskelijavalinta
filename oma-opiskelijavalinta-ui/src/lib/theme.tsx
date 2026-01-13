@@ -72,5 +72,12 @@ export const THEME_OVERRIDES: ThemeOptions = {
         }),
       },
     },
+    MuiChip: {
+      styleOverrides: {
+        label: ({ theme }) => ({
+          padding: theme.spacing(0, 0, 0, 0),
+        }),
+      },
+    },
   },
 };

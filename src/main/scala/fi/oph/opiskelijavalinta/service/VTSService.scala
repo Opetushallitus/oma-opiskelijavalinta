@@ -30,7 +30,7 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
 
     vtsClient.getValinnanTulokset(hakuOid, hakemusOid) match {
       case Left(e) =>
-        LOG.info(s"Failed to fetch valinnantulos data for $hakuOid, $hakemusOid: ${e.getMessage}")
+        LOG.error(s"Failed to fetch valinnantulos data for $hakuOid, $hakemusOid: ${e.getMessage}")
         Option.empty
       case Right(o) =>
         Option
@@ -49,7 +49,7 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
   def doVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String): Option[String] = {
     vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto) match {
       case Left(e) =>
-        LOG.info(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+        LOG.error(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
         throw RuntimeException(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
       case Right(o) => Option.apply(o)
     }

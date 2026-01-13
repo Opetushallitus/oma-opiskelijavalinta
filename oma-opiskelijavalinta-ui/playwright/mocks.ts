@@ -161,6 +161,7 @@ export const hakemuksenTulosVarasijalla = {
       oid: '1234',
       nimi: '',
       valintatila: 'VARALLA',
+      varasijanumero: 2,
       julkaistavissa: true,
       tilanKuvaukset: {
         FI: '',
@@ -192,7 +193,7 @@ export const hakemuksenTulosKesken = {
   vastaanottoDeadline: null,
   viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
   hyvaksyttyJaJulkaistuDate: null,
-  julkaistavissa: true,
+  julkaistavissa: false,
   ehdollisestiHyvaksyttavissa: false,
   tilanKuvaukset: {
     FI: '',
@@ -204,8 +205,8 @@ export const hakemuksenTulosKesken = {
     {
       oid: '1234',
       nimi: '',
-      valintatila: 'VARALLA',
-      julkaistavissa: true,
+      valintatila: 'KESKEN',
+      julkaistavissa: false,
       tilanKuvaukset: {
         FI: '',
         SV: '',
@@ -423,3 +424,72 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa
     }
     return tulokset;
   })();
+
+export const jonokohtaisetTulostiedot = [
+  {
+    oid: '1234',
+    nimi: 'todistusvalinta',
+    valintatila: 'HYLATTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {
+      FI: 'Pisteraja ei ylittynyt',
+      SV: 'Pisteraja ei ylittynyt SV',
+      EN: 'Pisteraja ei ylittynyt EN',
+    },
+    pisteet: 30,
+    alinHyvaksyttyPistemaara: 40,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'HYVAKSYTTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {},
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];
+
+export const jonokohtaisetTulostiedotEhdollinen = [
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'HYVAKSYTTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {},
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: true,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];
+
+export const jonokohtaisetTulostiedotPeruuntunut = [
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'PERUUNTUNUT',
+    julkaistavissa: true,
+    tilanKuvaukset: {
+      FI: 'Olet vastaanottanut toisen opiskelupaikan',
+      SV: 'Olet vastaanottanut toisen opiskelupaikan SV',
+      EN: 'Olet vastaanottanut toisen opiskelupaikan EN',
+    },
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];

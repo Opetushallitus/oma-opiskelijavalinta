@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulos}
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulostieto}
 
 object VTSMockData {
 
@@ -23,6 +23,7 @@ object VTSMockData {
     vastaanottoDeadline = Some("2025-12-12T13:00:00Z"),
     viimeisinHakemuksenTilanMuutos = Some("2025-11-17T08:25:19Z"),
     hyvaksyttyJaJulkaistuDate = Some("2025-11-17T08:25:23Z"),
+    varasijanumero = None,
     julkaistavissa = Some(true),
     ehdollisestiHyvaksyttavissa = Some(false),
     ehdollisenHyvaksymisenEhtoKoodi = None,
@@ -32,15 +33,20 @@ object VTSMockData {
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = Some(false),
     jonokohtaisetTulostiedot = List(
-      JonokohtainenTulos(
+      JonokohtainenTulostieto(
         oid = Some("12246562200000000000000007599136"),
-        nimi = Some(""),
+        nimi = Some("todistusvalinta"),
+        pisteet = None,
+        alinHyvaksyttyPistemaara = None,
         valintatila = Some("HYVAKSYTTY"),
         julkaistavissa = Some(true),
+        valintatapajonoPrioriteetti = Some(1),
         tilanKuvaukset = Some(Map.empty),
         ehdollisestiHyvaksyttavissa = Some(false),
         ehdollisenHyvaksymisenEhto = Some(Map.empty),
         eiVarasijatayttoa = Some(false),
+        varasijanumero = None,
+        varasijat = None,
         varasijasaannotKaytossa = Some(false)
       )
     )
@@ -65,6 +71,7 @@ object VTSMockData {
     vastaanottoDeadline = None,
     viimeisinHakemuksenTilanMuutos = None,
     hyvaksyttyJaJulkaistuDate = None,
+    varasijanumero = None,
     julkaistavissa = Some(false),
     ehdollisestiHyvaksyttavissa = Some(false),
     ehdollisenHyvaksymisenEhtoKoodi = None,

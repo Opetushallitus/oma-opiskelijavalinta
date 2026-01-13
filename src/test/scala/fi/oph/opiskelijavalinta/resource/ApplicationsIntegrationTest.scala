@@ -83,7 +83,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsVTSResultsForApplications(): Unit = {
+  def returnsPublishedVTSResultsForApplications(): Unit = {
     Mockito
       .when(koutaClient.getHaku("haku-oid-1"))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
@@ -129,7 +129,6 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
-    Assertions.assertEquals(1, app.hakemuksenTulokset.size)
     val hakutoive1 = app.hakemuksenTulokset.headOption.getOrElse(
       fail("No hakemuksenTulokset returned")
     )
@@ -137,6 +136,9 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("VASTAANOTETTAVISSA_SITOVASTI", hakutoive1.vastaanotettavuustila.get)
     Assertions.assertEquals("KESKEN", hakutoive1.vastaanottotila.get)
     Assertions.assertEquals("2025-12-12T13:00:00Z", hakutoive1.vastaanottoDeadline.get)
+    val hakutoive2 = app.hakemuksenTulokset
+      .find(_.hakukohdeOid.contains("hakukohde-oid-2"))
+    Assertions.assertEquals(None, hakutoive2)
   }
 
   @Test
@@ -190,7 +192,7 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsKeskenForUnpublishedVTSResultsWhenHakuaikaIsOver(): Unit = {
+  def doesNotReturnKeskenResultWhenHakuaikaIsOver(): Unit = {
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)

@@ -13,6 +13,7 @@ object OhjausparametritMockData {
       PH_EVR = None,
       PH_OPVP = None,
       PH_VSTP = None,
+      None,
       None
     )
   )
@@ -25,6 +26,7 @@ object OhjausparametritMockData {
       PH_EVR = None,
       PH_OPVP = None,
       PH_VSTP = None,
+      None,
       None
     )
   )

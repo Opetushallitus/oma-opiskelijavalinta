@@ -1,6 +1,12 @@
 import type { Hakukohde } from '@/lib/kouta-types';
-import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { isNullish } from 'remeda';
+
+export const isJulkaistuHakutoiveenTulos = (
+  tulokset: Array<HakutoiveenTulos>,
+): boolean => {
+  return tulokset.some((tulos) => tulos.julkaistavissa);
+};
 
 export const isHyvaksyttyOdottaaYlempaa = (
   hakukohteet: Array<Hakukohde>,
