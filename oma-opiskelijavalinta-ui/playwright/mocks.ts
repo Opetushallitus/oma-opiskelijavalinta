@@ -1,3 +1,5 @@
+import { clone } from 'remeda';
+
 export const hakemus1 = {
   oid: 'hakemus-oid-1',
   secret: 'secret-1',
