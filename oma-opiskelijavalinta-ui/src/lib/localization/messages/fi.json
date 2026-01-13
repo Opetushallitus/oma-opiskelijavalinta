@@ -78,6 +78,7 @@
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
       "vastaanota": "Otan tämän opiskelupaikan vastaan",
+      "vastaanota-peru-aiempi": "Otan tämän opiskelupaikan vastaan ja perun aiemmin vastaanotetun paikan",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
       "sitova-ei-jonotusta": "Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan ylempiä hakutoiveita",
       "ehdollinen": "Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan ylempiä hakutoiveita",
@@ -130,6 +131,13 @@
         "info": "Olet vahvistamassa opiskelupaikkaa:",
         "info2": "Jäät jonottamaan ylempiä hakutoiveita varasijalta. <br></br><br></br>Ymmärrän, että en voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätökseni on sitova, enkä voi muuttaa sitä jälkikäteen.",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
+      },
+      "vastaanota-peru-alemmat": {
+        "otsikko": "Vahvista opiskelupaikan vastaanotto",
+        "vahvista": "Ota opiskelupaikka vastaan",
+        "info": "Olet vahvistamassa opiskelupaikkaa:",
+        "info-alemmat-toiveet": "",
+        "info-alempi-toive": ""
       }
     }
   }

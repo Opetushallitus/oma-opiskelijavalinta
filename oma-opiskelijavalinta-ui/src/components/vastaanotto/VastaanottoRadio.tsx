@@ -18,11 +18,14 @@ import { useNotifications } from '../NotificationProvider';
 import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
+  getAlemmatVastaanotot,
+  hasAlemmatVastaanotot,
   VastaanottoModalParams,
   VastaanottoOption,
   VastaanottoOptionToToiminto,
 } from './vastaanotto-utils';
-import { isKorkeakouluHaku } from '@/lib/kouta-utils';
+import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
+import { VastaanottoPeruAiemmatModalContent } from './VastaanottoPeruAlemmatModalContent';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -45,6 +48,21 @@ const defaultVastaanottoOptions = [
   {
     label: 'vastaanotto.vaihtoehdot.vastaanota',
     value: 'VASTAANOTA_SITOVASTI',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.peru',
+    value: 'PERU',
+  },
+];
+
+const vastaanottoOptionsPeruAlemmat = [
+  {
+    label: 'vastaanotto.vaihtoehdot.vastaanota',
+    value: 'VASTAANOTA_SITOVASTI',
+  },
+  {
+    label: 'vastaanotto.vaihtoehdot.vastaanota-peru-alemmat',
+    value: 'VASTAANOTA_SITOVASTI_PERU_ALEMMAT',
   },
   {
     label: 'vastaanotto.vaihtoehdot.peru',
@@ -95,10 +113,21 @@ function determineVastaanottoOptions(
   hakukohde: Hakukohde,
 ): Array<{ label: string; value: string }> {
   let options = defaultVastaanottoOptions;
-  if (application.priorisoidutHakutoiveet) {
+  if (
+    application.priorisoidutHakutoiveet &&
+    application.haku &&
+    isKorkeakouluHaku(application.haku)
+  ) {
     options = getKKPriorityOptions(application, hakukohde);
   } else if (application.haku && isKorkeakouluHaku(application.haku)) {
     options = vastaanottoOptionsKK;
+  } else if (
+    application.priorisoidutHakutoiveet &&
+    application.haku &&
+    isToisenAsteenYhteisHaku(application.haku) &&
+    hasAlemmatVastaanotot(hakukohde, application)
+  ) {
+    options = vastaanottoOptionsPeruAlemmat;
   }
   return options.map((o) => ({ label: t(o.label), value: o.value }));
 }
@@ -168,13 +197,21 @@ export function VastaanottoRadio({
       setShowSelectionError(true);
       return;
     }
+
     const modalParams =
       VastaanottoModalParams[selectedVastaanotto as VastaanottoOption];
-
+    if (!modalParams) {
+      throw Error('modalParams not specified for vastaanottoOption');
+    }
     showConfirmation({
       ...modalParams,
       mutation,
-      content: (
+      content: modalParams.useVastaanottoPeruAiemmatModal ? (
+        <VastaanottoPeruAiemmatModalContent
+          hakutoive={hakutoive}
+          alemmatToiveet={getAlemmatVastaanotot(hakutoive, application)}
+        />
+      ) : (
         <VastaanottoModalContent
           modalParams={modalParams}
           hakutoive={hakutoive}
