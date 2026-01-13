@@ -1,5 +1,6 @@
 import { useTranslations } from '@/hooks/useTranslations';
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -17,7 +18,6 @@ import {
   isHyvaksyttyTaiVaralla,
   valintatilaColors,
 } from '@/components/valinnantulos/tulos-display-utils';
-import { OphTypography } from '@opetushallitus/oph-design-system';
 import { ophColors } from '@/lib/theme';
 import { mapKeys } from 'remeda';
 
@@ -39,17 +39,14 @@ function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
   }
   if (jonotulos.valintatila === Valintatila.HYLATTY) {
     return (
-      <>
-        <OphTypography variant="body2">{t(label)}</OphTypography>
+      <Box>
+        <Box sx={{ whiteSpace: 'nowrap' }}>{t(label)}</Box>
         {tilanKuvaukset && (
-          <OphTypography
-            variant="body1"
-            sx={{ color: ophColors.grey600, fontSize: '0.875rem' }}
-          >
+          <Box sx={{ color: ophColors.grey600, mt: '4px' }}>
             {translateEntity(tilanKuvaukset)}
-          </OphTypography>
+          </Box>
         )}
-      </>
+      </Box>
     );
   }
   if (jonotulos.valintatila === Valintatila.PERUUNTUNUT) {
@@ -70,9 +67,11 @@ export function ValintatapajonoTable({
         size="small"
         aria-label={t('tulos.valintatapajonon-tiedot')}
         sx={{
-          '& td, & th': {
-            borderBottom: '2px solid',
+          '& td': {
+            borderTop: '1px solid',
             borderColor: 'divider',
+            borderBottom: 'none',
+            verticalAlign: 'top',
           },
         }}
       >

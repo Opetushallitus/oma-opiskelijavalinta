@@ -54,7 +54,7 @@ export function HakutoiveenTulosInfo({
       <Box
         sx={{
           mt: 1.5,
-          ml: 2,
+          ml: 0,
           fontSize: '0.875rem',
         }}
       >
