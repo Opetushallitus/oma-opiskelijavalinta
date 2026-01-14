@@ -67,7 +67,9 @@
       "yhden-paikan-saanto": "Huom! Voit ottaa vastaan vain yhden korkeakoulututkintoon johtavan opiskelupaikan samana lukukautena alkavista korkeakoulututkinnoista.",
       "ohje-kk": "Lue ohjeet paikan vastaanottamisesta ja korkeakouluun ilmoittautumisesta.",
       "jonotus": "Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.",
-      "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}."
+      "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}.",
+      "peru-alempi": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetun paikan.",
+      "peru-alemmat": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetut paikat."
     },
     "laheta": "Lähetä vastaus",
     "virhe": "Vastaanottotoiminto epäonnistui",
@@ -136,8 +138,8 @@
         "otsikko": "Vahvista opiskelupaikan vastaanotto",
         "vahvista": "Ota opiskelupaikka vastaan",
         "info": "Olet vahvistamassa opiskelupaikkaa:",
-        "info-alemmat-toiveet": "",
-        "info-alempi-toive": ""
+        "info-alemmat-toiveet": "Seuraavat aiemmin vastaanottamasi opiskelupaikat perutaan samalla:",
+        "info-alempi-toive": "Seuraava aiemmin vastaanottamasi opiskelupaikka perutaan samalla:"
       }
     }
   }

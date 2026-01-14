@@ -200,9 +200,7 @@ export function VastaanottoRadio({
 
     const modalParams =
       VastaanottoModalParams[selectedVastaanotto as VastaanottoOption];
-    if (!modalParams) {
-      throw Error('modalParams not specified for vastaanottoOption');
-    }
+
     showConfirmation({
       ...modalParams,
       mutation,
