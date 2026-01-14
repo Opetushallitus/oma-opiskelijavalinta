@@ -80,7 +80,8 @@
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
       "vastaanota": "Otan tämän opiskelupaikan vastaan",
-      "vastaanota-peru-aiempi": "Otan tämän opiskelupaikan vastaan ja perun aiemmin vastaanotetun paikan",
+      "vastaanota-peru-alempi": "Otan tämän opiskelupaikan vastaan ja perun aiemmin vastaanotetun paikan",
+      "vastaanota-peru-alemmat": "Otan tämän opiskelupaikan vastaan ja perun aiemmin vastaanotetut paikat",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
       "sitova-ei-jonotusta": "Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan ylempiä hakutoiveita",
       "ehdollinen": "Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan ylempiä hakutoiveita",
@@ -90,7 +91,7 @@
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
       "vastaanotettu-ehdollisesti": "Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita",
       "peruttu": "Opiskelupaikkaa ei vastaanotettu",
-      "ei-vastaanotettu-maara-aikana": ""
+      "ei-vastaanotettu-maara-aikana": "Opiskelupaikkaa ei vastaanotettu määräaikaan mennessä"
     },
     "modaali": {
       "muuta-sitovaksi": {
@@ -139,7 +140,8 @@
         "vahvista": "Ota opiskelupaikka vastaan",
         "info": "Olet vahvistamassa opiskelupaikkaa:",
         "info-alemmat-toiveet": "Seuraavat aiemmin vastaanottamasi opiskelupaikat perutaan samalla:",
-        "info-alempi-toive": "Seuraava aiemmin vastaanottamasi opiskelupaikka perutaan samalla:"
+        "info-alempi-toive": "Seuraava aiemmin vastaanottamasi opiskelupaikka perutaan samalla:",
+        "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       }
     }
   }

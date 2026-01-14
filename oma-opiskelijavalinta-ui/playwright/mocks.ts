@@ -62,17 +62,19 @@ export const hakemus2 = {
   hakemuksenTulokset: [],
 };
 
+export const TOISEN_ASTEEN_YHTEISHAKU = {
+  oid: 'haku-oid-3',
+  nimi: { fi: 'Toisten asteen yhteishaku 2024' },
+  hakuaikaKaynnissa: false,
+  viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+  hakutapaKoodiUri: 'hakutapa_01',
+  kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
+};
+
 export const hakemus3ToinenAste = {
   oid: 'hakemus-oid-3',
   secret: 'secret-3',
-  haku: {
-    oid: 'haku-oid-3',
-    nimi: { fi: 'Toisten asteen yhteishaku 2024' },
-    hakuaikaKaynnissa: false,
-    viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
-    hakutapaKoodiUri: 'hakutapa_01',
-    kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
-  },
+  haku: TOISEN_ASTEEN_YHTEISHAKU,
   submitted: '2025-06-18T19:00:00',
   hakukohteet: [
     {
@@ -111,6 +113,147 @@ export const hakemus3ToinenAste = {
       jonokohtaisetTulostiedot: [
         {
           oid: '2349',
+          nimi: '',
+          valintatila: 'HYVAKSYTTY',
+          julkaistavissa: true,
+          tilanKuvaukset: {},
+          ehdollisestiHyvaksyttavissa: false,
+          ehdollisenHyvaksymisenEhto: {},
+          eiVarasijatayttoa: false,
+          varasijasaannotKaytossa: false,
+        },
+      ],
+    },
+  ],
+};
+
+export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
+  oid: 'hakemus-oid-4',
+  secret: 'secret-4',
+  haku: TOISEN_ASTEEN_YHTEISHAKU,
+  submitted: '2025-06-18T19:00:00',
+  hakukohteet: [
+    {
+      oid: 'hakukohde-oid-4',
+      nimi: { fi: 'Lukiokoulutus' },
+      jarjestyspaikkaHierarkiaNimi: {
+        fi: 'Rekun Lukio, Helsingin Kaupunki',
+      },
+    },
+    {
+      oid: 'hakukohde-oid-5',
+      nimi: { fi: 'Ajoneuvoalan perustutkinto' },
+      jarjestyspaikkaHierarkiaNimi: {
+        fi: 'Romuttamo, Romujenkerääjät RY',
+      },
+    },
+    {
+      oid: 'hakukohde-oid-6',
+      nimi: { fi: 'Putkimiehen perustutkinto' },
+      jarjestyspaikkaHierarkiaNimi: {
+        fi: 'Putkittamo, Putket Vuotaa OY',
+      },
+    },
+  ],
+  ohjausparametrit: {
+    hakukierrosPaattyy: 1763971212000,
+    jarjestetytHakutoiveet: true,
+  },
+  hakemuksenTulokset: [
+    {
+      hakukohdeOid: 'hakukohde-oid-4',
+      hakukohdeNimi: 'Lukiokoulutus',
+      tarjoajaOid: 'tarjoaja-oid-4',
+      tarjoajaNimi: 'Rekun Lukio, Helsingin Kaupunki',
+      valintatapajonoOid: '2349',
+      valintatila: 'HYVAKSYTTY',
+      vastaanottotila: 'KESKEN',
+      ilmoittautumistila: {
+        ilmoittautumisaika: {},
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      tilanKuvaukset: {},
+      showMigriURL: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2349',
+          nimi: '',
+          valintatila: 'HYVAKSYTTY',
+          julkaistavissa: true,
+          tilanKuvaukset: {},
+          ehdollisestiHyvaksyttavissa: false,
+          ehdollisenHyvaksymisenEhto: {},
+          eiVarasijatayttoa: false,
+          varasijasaannotKaytossa: false,
+        },
+      ],
+    },
+    {
+      hakukohdeOid: 'hakukohde-oid-5',
+      hakukohdeNimi: 'Ajoneuvoalan perustutkinto',
+      tarjoajaOid: 'tarjoaja-oid-5',
+      tarjoajaNimi: 'Romuttamo, Romujenkerääjät RY',
+      valintatapajonoOid: '2358',
+      valintatila: 'HYVAKSYTTY',
+      vastaanottotila: 'VASTAANOTTANUT_SITOVASTI',
+      ilmoittautumistila: {
+        ilmoittautumisaika: {},
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      tilanKuvaukset: {},
+      showMigriURL: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2358',
+          nimi: '',
+          valintatila: 'HYVAKSYTTY',
+          julkaistavissa: true,
+          tilanKuvaukset: {},
+          ehdollisestiHyvaksyttavissa: false,
+          ehdollisenHyvaksymisenEhto: {},
+          eiVarasijatayttoa: false,
+          varasijasaannotKaytossa: false,
+        },
+      ],
+    },
+    {
+      hakukohdeOid: 'hakukohde-oid-6',
+      hakukohdeNimi: 'Putkimiehen perustutkinto',
+      tarjoajaOid: 'tarjoaja-oid-6',
+      tarjoajaNimi: 'Putkittamo, Putket Vuotaa OY',
+      valintatapajonoOid: '2359',
+      valintatila: 'HYVAKSYTTY',
+      vastaanottotila: 'VASTAANOTTANUT_SITOVASTI',
+      ilmoittautumistila: {
+        ilmoittautumisaika: {},
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      tilanKuvaukset: {},
+      showMigriURL: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2359',
           nimi: '',
           valintatila: 'HYVAKSYTTY',
           julkaistavissa: true,
@@ -424,6 +567,19 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa
     }
     return tulokset;
   })();
+
+export const hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet = (() => {
+  const tulokset = clone(
+    hakemus4ToinenAsteAlempiaHyvaksyttyja.hakemuksenTulokset,
+  );
+  if (tulokset[0] && tulokset[1] && tulokset[2]) {
+    tulokset[0].vastaanotettavuustila = 'EI_VASTAANOTETTAVISSA';
+    tulokset[0].vastaanottotila = 'VASTAANOTTANUT_SITOVASTI';
+    tulokset[1].vastaanottotila = 'PERUNUT';
+    tulokset[2].vastaanottotila = 'PERUNUT';
+  }
+  return tulokset;
+})();
 
 export const jonokohtaisetTulostiedot = [
   {
