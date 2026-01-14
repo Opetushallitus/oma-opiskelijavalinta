@@ -1,12 +1,15 @@
 import { useTranslations } from '@/hooks/useTranslations';
 import {
   Box,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   type JonokohtainenTulostieto,
@@ -20,6 +23,7 @@ import {
 } from '@/components/valinnantulos/tulos-display-utils';
 import { ophColors } from '@/lib/theme';
 import { mapKeys } from 'remeda';
+import { OphTypography } from '@opetushallitus/oph-design-system';
 
 function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
   const { t, translateEntity } = useTranslations();
@@ -55,6 +59,23 @@ function JonoStatus({ jonotulos }: { jonotulos: JonokohtainenTulostieto }) {
   return t(label);
 }
 
+export function ValintatapajonoInfo({
+  jonokohtaisetTulostiedot,
+}: {
+  jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
+}) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  return isMobile ? (
+    <ValintatapajonoMobile
+      jonokohtaisetTulostiedot={jonokohtaisetTulostiedot}
+    />
+  ) : (
+    <ValintatapajonoTable jonokohtaisetTulostiedot={jonokohtaisetTulostiedot} />
+  );
+}
+
 export function ValintatapajonoTable({
   jonokohtaisetTulostiedot,
 }: {
@@ -77,10 +98,10 @@ export function ValintatapajonoTable({
       >
         <TableHead>
           <TableRow>
-            <TableCell>Valintatapa</TableCell>
-            <TableCell>Pisteesi</TableCell>
-            <TableCell>Alimmat hyväksytyt pisteet</TableCell>
-            <TableCell>Valinnan tulos</TableCell>
+            <TableCell>{t('valintatapa.nimi')}</TableCell>
+            <TableCell>{t('vaintatapa.pisteet')}Pisteesi</TableCell>
+            <TableCell>{t('valintatapa.alimmat-hyvaksytyt-pisteet')}</TableCell>
+            <TableCell>{t('valintatapa.tulos')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -118,5 +139,56 @@ export function ValintatapajonoTable({
         </TableBody>
       </Table>
     </TableContainer>
+  );
+}
+
+function ValintatapajonoMobile({
+  jonokohtaisetTulostiedot,
+}: {
+  jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
+}) {
+  const { t } = useTranslations();
+
+  return (
+    <Stack spacing={2}>
+      {jonokohtaisetTulostiedot.map((jonotulos, index) => (
+        <Box
+          key={jonotulos.valintatapajonoPrioriteetti}
+          sx={{
+            backgroundColor: index % 2 === 1 ? ophColors.grey50 : 'transparent',
+          }}
+        >
+          <Stack spacing={1} margin={2}>
+            <Box>
+              <OphTypography sx={{ fontWeight: 600 }}>
+                {t('valintatapa.nimi')}
+              </OphTypography>
+              <Box>{jonotulos.nimi ?? t('tulos.valintatapajono')}</Box>
+            </Box>
+
+            <Box>
+              <OphTypography sx={{ fontWeight: 600 }}>
+                {t('valintatapa.pisteet')}
+              </OphTypography>
+              <Box>{jonotulos.pisteet ?? '-'}</Box>
+            </Box>
+
+            <Box>
+              <OphTypography sx={{ fontWeight: 600 }}>
+                {t('valintatapa.alimmat-hyvaksytyt-pisteet')}
+              </OphTypography>
+              <Box>{jonotulos.alinHyvaksyttyPistemaara ?? '-'}</Box>
+            </Box>
+
+            <Box>
+              <OphTypography sx={{ fontWeight: 600 }}>
+                {t('valintatapa.tulos')}
+              </OphTypography>
+              <JonoStatus jonotulos={jonotulos} />
+            </Box>
+          </Stack>
+        </Box>
+      ))}
+    </Stack>
   );
 }

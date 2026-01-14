@@ -1,6 +1,6 @@
 import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { Box } from '@mui/material';
-import { ValintatapajonoTable } from '@/components/valinnantulos/ValintatapajonoTable';
+import { ValintatapajonoInfo } from '@/components/valinnantulos/ValintatapajonoTable';
 import { useTranslations } from '@/hooks/useTranslations';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { mapKeys } from 'remeda';
@@ -58,7 +58,7 @@ export function HakutoiveenTulosInfo({
           fontSize: '0.875rem',
         }}
       >
-        <ValintatapajonoTable
+        <ValintatapajonoInfo
           jonokohtaisetTulostiedot={hakutoiveenTulos.jonokohtaisetTulostiedot}
         />
       </Box>
