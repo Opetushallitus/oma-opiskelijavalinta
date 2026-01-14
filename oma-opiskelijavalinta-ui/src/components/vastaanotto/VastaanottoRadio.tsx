@@ -44,30 +44,34 @@ const InputContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const defaultVastaanottoOptions = [
-  {
-    label: 'vastaanotto.vaihtoehdot.vastaanota',
-    value: 'VASTAANOTA_SITOVASTI',
-  },
-  {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
-  },
-];
+const PERU_OPTION = {
+  label: 'vastaanotto.vaihtoehdot.peru',
+  value: 'PERU',
+};
+
+const VASTAANOTTO_OPTION = {
+  label: 'vastaanotto.vaihtoehdot.vastaanota',
+  value: 'VASTAANOTA_SITOVASTI',
+};
+
+const defaultVastaanottoOptions = [VASTAANOTTO_OPTION, PERU_OPTION];
 
 const vastaanottoOptionsPeruAlemmat = [
-  {
-    label: 'vastaanotto.vaihtoehdot.vastaanota',
-    value: 'VASTAANOTA_SITOVASTI',
-  },
+  VASTAANOTTO_OPTION,
   {
     label: 'vastaanotto.vaihtoehdot.vastaanota-peru-alemmat',
     value: 'VASTAANOTA_SITOVASTI_PERU_ALEMMAT',
   },
+  PERU_OPTION,
+];
+
+const vastaanottoOptionsPeruAlempi = [
+  VASTAANOTTO_OPTION,
   {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
+    label: 'vastaanotto.vaihtoehdot.vastaanota-peru-alempi',
+    value: 'VASTAANOTA_SITOVASTI_PERU_ALEMMAT',
   },
+  PERU_OPTION,
 ];
 
 const vastaanottoOptionsKK = [
@@ -75,10 +79,7 @@ const vastaanottoOptionsKK = [
     label: 'vastaanotto.vaihtoehdot.sitova',
     value: 'VASTAANOTA_SITOVASTI_KK',
   },
-  {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
-  },
+  PERU_OPTION,
 ];
 
 const vastaanottoOptionsWithHigherPriorityWaitingOption = [
@@ -90,10 +91,7 @@ const vastaanottoOptionsWithHigherPriorityWaitingOption = [
     label: 'vastaanotto.vaihtoehdot.sitova-ei-jonotusta',
     value: 'VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK',
   },
-  {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
-  },
+  PERU_OPTION,
 ];
 
 function getKKPriorityOptions(application: Application, hakukohde: Hakukohde) {
@@ -127,7 +125,10 @@ function determineVastaanottoOptions(
     isToisenAsteenYhteisHaku(application.haku) &&
     hasAlemmatVastaanotot(hakukohde, application)
   ) {
-    options = vastaanottoOptionsPeruAlemmat;
+    options =
+      getAlemmatVastaanotot(hakukohde, application).length > 1
+        ? vastaanottoOptionsPeruAlemmat
+        : vastaanottoOptionsPeruAlempi;
   }
   return options.map((o) => ({ label: t(o.label), value: o.value }));
 }
