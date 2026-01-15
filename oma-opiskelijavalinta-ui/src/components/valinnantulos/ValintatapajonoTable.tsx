@@ -99,7 +99,7 @@ export function ValintatapajonoTable({
         <TableHead>
           <TableRow>
             <TableCell>{t('valintatapa.nimi')}</TableCell>
-            <TableCell>{t('vaintatapa.pisteet')}Pisteesi</TableCell>
+            <TableCell>{t('vaintatapa.pisteet')}</TableCell>
             <TableCell>{t('valintatapa.alimmat-hyvaksytyt-pisteet')}</TableCell>
             <TableCell>{t('valintatapa.tulos')}</TableCell>
           </TableRow>
@@ -150,7 +150,7 @@ function ValintatapajonoMobile({
   const { t } = useTranslations();
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} data-test-id="valintatapajono-mobile">
       {jonokohtaisetTulostiedot.map((jonotulos, index) => (
         <Box
           key={jonotulos.valintatapajonoPrioriteetti}
@@ -158,7 +158,11 @@ function ValintatapajonoMobile({
             backgroundColor: index % 2 === 1 ? ophColors.grey50 : 'transparent',
           }}
         >
-          <Stack spacing={1} margin={2}>
+          <Stack
+            spacing={1}
+            margin={2}
+            data-test-id={`valintatapajono-${jonotulos.nimi}`}
+          >
             <Box>
               <OphTypography sx={{ fontWeight: 600 }}>
                 {t('valintatapa.nimi')}
@@ -170,14 +174,20 @@ function ValintatapajonoMobile({
               <OphTypography sx={{ fontWeight: 600 }}>
                 {t('valintatapa.pisteet')}
               </OphTypography>
-              <Box>{jonotulos.pisteet ?? '-'}</Box>
+              <Box data-test-id={`valintatapajono-${jonotulos.nimi}-pisteet`}>
+                {jonotulos.pisteet ?? '-'}
+              </Box>
             </Box>
 
             <Box>
               <OphTypography sx={{ fontWeight: 600 }}>
                 {t('valintatapa.alimmat-hyvaksytyt-pisteet')}
               </OphTypography>
-              <Box>{jonotulos.alinHyvaksyttyPistemaara ?? '-'}</Box>
+              <Box
+                data-test-id={`valintatapajono-${jonotulos.nimi}-alinhyvaksytty`}
+              >
+                {jonotulos.alinHyvaksyttyPistemaara ?? '-'}
+              </Box>
             </Box>
 
             <Box>
