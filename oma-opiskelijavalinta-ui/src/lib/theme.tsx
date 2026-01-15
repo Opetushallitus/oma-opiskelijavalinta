@@ -79,5 +79,20 @@ export const THEME_OVERRIDES: ThemeOptions = {
         }),
       },
     },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          padding: '8px 10px',
+          color: ophColors.grey900,
+          lineHeight: '18px',
+          '& .MuiTypography-root': {
+            color: ophColors.grey900,
+          },
+        },
+        head: {
+          whiteSpace: 'nowrap',
+        },
+      },
+    },
   },
 };

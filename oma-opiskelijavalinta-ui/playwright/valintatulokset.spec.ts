@@ -299,3 +299,55 @@ test('Näyttää peruuntuneelle valintatapajonolle selitteen', async ({
     ),
   ).toBeVisible();
 });
+
+test('Näyttää valintatapajonot mobiililayoutissa ilman taulukkoa', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot,
+      },
+    ],
+  };
+
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  await expect(page.getByTestId('valintatapajono-mobile')).toBeVisible();
+
+  await expect(page.getByRole('table')).toHaveCount(0);
+
+  await expect(page.getByText('Valintatapa').first()).toBeVisible();
+  await expect(page.getByText('Pisteesi').first()).toBeVisible();
+  await expect(page.getByText('Valinnan tulos').first()).toBeVisible();
+  await expect(page.getByText('Todistusvalinta').first()).toBeVisible();
+
+  const todistusvalintaRow = page.getByTestId('valintatapajono-1234');
+  await expect(
+    todistusvalintaRow.getByText('Ei hyväksytty tällä valintatavalla'),
+  ).toBeVisible();
+  await expect(
+    todistusvalintaRow.getByText('Pisteraja ei ylittynyt'),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('valintatapajono-1234-pisteet').getByText('30'),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('valintatapajono-1234-alinhyvaksytty').getByText('40'),
+  ).toBeVisible();
+  const paasykoevalintaRow = page.getByTestId('valintatapajono-2345');
+  await expect(
+    paasykoevalintaRow.getByText('Hyväksytty', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('valintatapajono-2345-pisteet').getByText('50'),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('valintatapajono-2345-alinhyvaksytty').getByText('45'),
+  ).toBeVisible();
+});
