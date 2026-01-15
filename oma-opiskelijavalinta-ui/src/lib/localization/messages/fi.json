@@ -67,7 +67,9 @@
       "yhden-paikan-saanto": "Huom! Voit ottaa vastaan vain yhden korkeakoulututkintoon johtavan opiskelupaikan samana lukukautena alkavista korkeakoulututkinnoista.",
       "ohje-kk": "Lue ohjeet paikan vastaanottamisesta ja korkeakouluun ilmoittautumisesta.",
       "jonotus": "Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.",
-      "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}."
+      "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}.",
+      "peru-alempi": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetun paikan.",
+      "peru-alemmat": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetut paikat."
     },
     "laheta": "Lähetä vastaus",
     "virhe": "Vastaanottotoiminto epäonnistui",
@@ -78,6 +80,8 @@
     "vaihtoehdot": {
       "otsake": "Opiskelupaikan vastaanotto",
       "vastaanota": "Otan tämän opiskelupaikan vastaan",
+      "vastaanota-peru-alempi": "Otan tämän opiskelupaikan vastaan ja perun aiemmin vastaanotetun paikan",
+      "vastaanota-peru-alemmat": "Otan tämän opiskelupaikan vastaan ja perun aiemmin vastaanotetut paikat",
       "sitova": "Otan tämän opiskelupaikan vastaan sitovasti",
       "sitova-ei-jonotusta": "Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan ylempiä hakutoiveita",
       "ehdollinen": "Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan ylempiä hakutoiveita",
@@ -87,7 +91,7 @@
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
       "vastaanotettu-ehdollisesti": "Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita",
       "peruttu": "Opiskelupaikkaa ei vastaanotettu",
-      "ei-vastaanotettu-maara-aikana": ""
+      "ei-vastaanotettu-maara-aikana": "Opiskelupaikkaa ei vastaanotettu määräaikaan mennessä"
     },
     "modaali": {
       "muuta-sitovaksi": {
@@ -129,6 +133,14 @@
         "vahvista": "Ota opiskelupaikka vastaan",
         "info": "Olet vahvistamassa opiskelupaikkaa:",
         "info2": "Jäät jonottamaan ylempiä hakutoiveita varasijalta. <br></br><br></br>Ymmärrän, että en voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätökseni on sitova, enkä voi muuttaa sitä jälkikäteen.",
+        "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
+      },
+      "vastaanota-peru-alemmat": {
+        "otsikko": "Vahvista opiskelupaikan vastaanotto",
+        "vahvista": "Ota opiskelupaikka vastaan",
+        "info": "Olet vahvistamassa opiskelupaikkaa:",
+        "info-alemmat-toiveet": "Seuraavat aiemmin vastaanottamasi opiskelupaikat perutaan samalla:",
+        "info-alempi-toive": "Seuraava aiemmin vastaanottamasi opiskelupaikka perutaan samalla:",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       }
     }

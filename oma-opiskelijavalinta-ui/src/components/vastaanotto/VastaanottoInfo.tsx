@@ -14,12 +14,13 @@ import {
 } from '@/lib/valinta-tulos-types';
 import type { Language } from '@/types/ui-types';
 import type { Application } from '@/lib/application-types';
-import { isKorkeakouluHaku } from '@/lib/kouta-utils';
+import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { Box } from '@mui/material';
 import { styled } from '@/lib/theme';
 import { isNonNullish } from 'remeda';
+import { getAlemmatVastaanotot } from './vastaanotto-utils';
 
 const MultiInfoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -81,6 +82,18 @@ const getInfoText = (
   const kkHaku =
     isNonNullish(application.haku) && isKorkeakouluHaku(application.haku);
 
+  const yksiAlempiVastaanotto =
+    hakukohde &&
+    isNonNullish(application.haku) &&
+    isToisenAsteenYhteisHaku(application.haku) &&
+    getAlemmatVastaanotot(hakukohde, application).length === 1;
+
+  const useampiAlempiVastaanotto =
+    hakukohde &&
+    isNonNullish(application.haku) &&
+    isToisenAsteenYhteisHaku(application.haku) &&
+    getAlemmatVastaanotot(hakukohde, application).length > 1;
+
   const YPS = hakukohde && hakukohde.yhdenPaikanSaanto?.voimassa;
 
   const hakutoiveIdx =
@@ -108,6 +121,16 @@ const getInfoText = (
         {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
           <OphTypography sx={{ fontWeight: 'bolder' }}>
             {t('vastaanotto.info.jonotus')}
+          </OphTypography>
+        )}
+        {yksiAlempiVastaanotto && (
+          <OphTypography sx={{ fontWeight: 'bolder' }}>
+            {t('vastaanotto.info.peru-alempi')}
+          </OphTypography>
+        )}
+        {useampiAlempiVastaanotto && (
+          <OphTypography sx={{ fontWeight: 'bolder' }}>
+            {t('vastaanotto.info.peru-alemmat')}
           </OphTypography>
         )}
         {kkHaku && (

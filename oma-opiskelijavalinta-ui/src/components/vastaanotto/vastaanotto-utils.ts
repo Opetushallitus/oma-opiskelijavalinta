@@ -2,9 +2,10 @@ import type { Application } from '@/lib/application-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import {
   Valintatila,
+  VastaanottoTila,
   VastaanottoTilaToiminto,
 } from '@/lib/valinta-tulos-types';
-import { isNonNullish } from 'remeda';
+import { isDefined, isNonNullish } from 'remeda';
 
 export enum VastaanottoOption {
   PERU = 'PERU',
@@ -40,6 +41,7 @@ export const VastaanottoModalParams: Record<
     title: string;
     confirmLabel: string;
     successMessage: string;
+    useVastaanottoPeruAiemmatModal?: boolean;
   }
 > = {
   [VastaanottoOption.PERU]: {
@@ -77,12 +79,12 @@ export const VastaanottoModalParams: Record<
     info2: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.info2',
     successMessage: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.onnistui',
   },
-  //TODO: tämä taitaa liittyä vain toisen asteen yhteishakuun, toteutus myöhemmin
   [VastaanottoOption.VASTAANOTA_SITOVASTI_PERU_ALEMMAT]: {
-    title: '',
-    confirmLabel: '',
-    info: '',
-    successMessage: '',
+    title: 'vastaanotto.modaali.vastaanota-peru-alemmat.otsikko',
+    confirmLabel: 'vastaanotto.modaali.vastaanota-peru-alemmat.vahvista',
+    info: 'vastaanotto.modaali.vastaanota-peru-alemmat.info',
+    successMessage: 'vastaanotto.modaali.vastaanota-peru-alemmat.onnistui',
+    useVastaanottoPeruAiemmatModal: true,
   },
 } as const;
 
@@ -101,4 +103,31 @@ export function getVarallaOlevatYlemmatToiveet(
       application.hakukohteet?.find((hk) => hk.oid === ht.hakukohdeOid),
     )
     .filter(isNonNullish);
+}
+
+export function getAlemmatVastaanotot(
+  hakutoive: Hakukohde,
+  application: Application,
+) {
+  const index = application.hakukohteet?.findIndex(
+    (hk) => hk.oid === hakutoive.oid,
+  );
+  if (isDefined(index)) {
+    const alemmatToiveet = application.hakukohteet?.slice(index + 1) ?? [];
+    return alemmatToiveet?.filter((hk) =>
+      application.hakemuksenTulokset.find(
+        (t) =>
+          t.hakukohdeOid === hk.oid &&
+          t.vastaanottotila === VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
+      ),
+    );
+  }
+  return [];
+}
+
+export function hasAlemmatVastaanotot(
+  hakutoive: Hakukohde,
+  application: Application,
+) {
+  return getAlemmatVastaanotot(hakutoive, application).length > 0;
 }

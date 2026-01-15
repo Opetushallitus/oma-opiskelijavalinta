@@ -18,11 +18,14 @@ import { useNotifications } from '../NotificationProvider';
 import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
+  getAlemmatVastaanotot,
+  hasAlemmatVastaanotot,
   VastaanottoModalParams,
   VastaanottoOption,
   VastaanottoOptionToToiminto,
 } from './vastaanotto-utils';
-import { isKorkeakouluHaku } from '@/lib/kouta-utils';
+import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
+import { VastaanottoPeruAiemmatModalContent } from './VastaanottoPeruAlemmatModalContent';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -41,15 +44,34 @@ const InputContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const defaultVastaanottoOptions = [
+const PERU_OPTION = {
+  label: 'vastaanotto.vaihtoehdot.peru',
+  value: 'PERU',
+};
+
+const VASTAANOTTO_OPTION = {
+  label: 'vastaanotto.vaihtoehdot.vastaanota',
+  value: 'VASTAANOTA_SITOVASTI',
+};
+
+const defaultVastaanottoOptions = [VASTAANOTTO_OPTION, PERU_OPTION];
+
+const vastaanottoOptionsPeruAlemmat = [
+  VASTAANOTTO_OPTION,
   {
-    label: 'vastaanotto.vaihtoehdot.vastaanota',
-    value: 'VASTAANOTA_SITOVASTI',
+    label: 'vastaanotto.vaihtoehdot.vastaanota-peru-alemmat',
+    value: 'VASTAANOTA_SITOVASTI_PERU_ALEMMAT',
   },
+  PERU_OPTION,
+];
+
+const vastaanottoOptionsPeruAlempi = [
+  VASTAANOTTO_OPTION,
   {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
+    label: 'vastaanotto.vaihtoehdot.vastaanota-peru-alempi',
+    value: 'VASTAANOTA_SITOVASTI_PERU_ALEMMAT',
   },
+  PERU_OPTION,
 ];
 
 const vastaanottoOptionsKK = [
@@ -57,10 +79,7 @@ const vastaanottoOptionsKK = [
     label: 'vastaanotto.vaihtoehdot.sitova',
     value: 'VASTAANOTA_SITOVASTI_KK',
   },
-  {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
-  },
+  PERU_OPTION,
 ];
 
 const vastaanottoOptionsWithHigherPriorityWaitingOption = [
@@ -72,10 +91,7 @@ const vastaanottoOptionsWithHigherPriorityWaitingOption = [
     label: 'vastaanotto.vaihtoehdot.sitova-ei-jonotusta',
     value: 'VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK',
   },
-  {
-    label: 'vastaanotto.vaihtoehdot.peru',
-    value: 'PERU',
-  },
+  PERU_OPTION,
 ];
 
 function getKKPriorityOptions(application: Application, hakukohde: Hakukohde) {
@@ -95,10 +111,24 @@ function determineVastaanottoOptions(
   hakukohde: Hakukohde,
 ): Array<{ label: string; value: string }> {
   let options = defaultVastaanottoOptions;
-  if (application.priorisoidutHakutoiveet) {
+  if (
+    application.priorisoidutHakutoiveet &&
+    application.haku &&
+    isKorkeakouluHaku(application.haku)
+  ) {
     options = getKKPriorityOptions(application, hakukohde);
   } else if (application.haku && isKorkeakouluHaku(application.haku)) {
     options = vastaanottoOptionsKK;
+  } else if (
+    application.priorisoidutHakutoiveet &&
+    application.haku &&
+    isToisenAsteenYhteisHaku(application.haku) &&
+    hasAlemmatVastaanotot(hakukohde, application)
+  ) {
+    options =
+      getAlemmatVastaanotot(hakukohde, application).length > 1
+        ? vastaanottoOptionsPeruAlemmat
+        : vastaanottoOptionsPeruAlempi;
   }
   return options.map((o) => ({ label: t(o.label), value: o.value }));
 }
@@ -168,13 +198,19 @@ export function VastaanottoRadio({
       setShowSelectionError(true);
       return;
     }
+
     const modalParams =
       VastaanottoModalParams[selectedVastaanotto as VastaanottoOption];
 
     showConfirmation({
       ...modalParams,
       mutation,
-      content: (
+      content: modalParams.useVastaanottoPeruAiemmatModal ? (
+        <VastaanottoPeruAiemmatModalContent
+          hakutoive={hakutoive}
+          alemmatToiveet={getAlemmatVastaanotot(hakutoive, application)}
+        />
+      ) : (
         <VastaanottoModalContent
           modalParams={modalParams}
           hakutoive={hakutoive}
