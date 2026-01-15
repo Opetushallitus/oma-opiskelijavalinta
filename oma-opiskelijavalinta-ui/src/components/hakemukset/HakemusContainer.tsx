@@ -2,36 +2,36 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { isNonNull, isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
-import { ApplicationInfo } from './ApplicationInfo';
+import { HakemusInfo } from './HakemusInfo';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
-import { ApplicationPaper } from './ApplicationPaper';
+import { HakemusPaper } from './HakemusPaper';
 import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 
-function TilaInfo({ application }: { application: Application }) {
+function TilaInfo({ hakemus }: { hakemus: Hakemus }) {
   const { t, getLanguage } = useTranslations();
 
   const lang = getLanguage();
 
   let tila = null;
 
-  if (isTruthy(application.haku)) {
-    if (application.haku.hakuaikaKaynnissa) {
+  if (isTruthy(hakemus.haku)) {
+    if (hakemus.haku.hakuaikaKaynnissa) {
       tila = t('hakemukset.tilankuvaukset.hakuaika-kesken', {
         hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
-          application.haku.viimeisinPaattynytHakuAika,
+          hakemus.haku.viimeisinPaattynytHakuAika,
           lang,
         ),
       });
-    } else if (!application.haku.hakuaikaKaynnissa) {
+    } else if (!hakemus.haku.hakuaikaKaynnissa) {
       tila = t('hakemukset.tilankuvaukset.valinnat-kesken', {
         hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
-          application.haku.viimeisinPaattynytHakuAika,
+          hakemus.haku.viimeisinPaattynytHakuAika,
           lang,
         ),
       });
@@ -41,36 +41,29 @@ function TilaInfo({ application }: { application: Application }) {
   return isNonNull(tila) ? <OphTypography>{tila}</OphTypography> : null;
 }
 
-export function ApplicationContainer({
-  application,
-}: {
-  application: Application;
-}) {
+export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
 
-  if (!application.haku) {
+  if (!hakemus.haku) {
     console.error('Application must have haku associated with it!');
     throw Error('Application must have haku associated with it!');
   }
 
   const { hakemuksenTulokset: tulokset, isPending } = useHakemuksenTulokset(
-    application,
-    application.haku,
+    hakemus,
+    hakemus.haku,
   );
 
   return (
-    <ApplicationPaper
-      tabIndex={0}
-      data-test-id={`application-${application.oid}`}
-    >
+    <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
       <OphTypography variant="h3">
-        {translateEntity(application?.haku?.nimi)}
+        {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
-      <TilaInfo application={application} />
-      <ApplicationInfo application={application} />
-      {isTruthy(application.modifyLink) && (
+      <TilaInfo hakemus={hakemus} />
+      <HakemusInfo hakemus={hakemus} />
+      {isTruthy(hakemus.modifyLink) && (
         <ExternalLinkButton
-          href={application.modifyLink ?? ''}
+          href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.muokkaa')}
         />
       )}
@@ -78,23 +71,20 @@ export function ApplicationContainer({
       {!isPending && (
         <>
           <VastaanottoContainer
-            application={application}
+            application={hakemus}
             hakemuksenTulokset={tulokset}
           />
           {onkoVastaanottoTehty(tulokset) && (
-            <HakukohteetAccordion
-              application={application}
-              tulokset={tulokset}
-            />
+            <HakukohteetAccordion application={hakemus} tulokset={tulokset} />
           )}
           {!onkoVastaanottoTehty(tulokset) && (
             <HakukohteetContainer
-              application={application}
+              application={hakemus}
               hakemuksenTulokset={tulokset}
             />
           )}
         </>
       )}
-    </ApplicationPaper>
+    </HakemusPaper>
   );
 }

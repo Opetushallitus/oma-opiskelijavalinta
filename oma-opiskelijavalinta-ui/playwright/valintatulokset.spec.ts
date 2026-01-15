@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
-  mockApplicationsFetch,
+  mockHakemuksetFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
 import {
@@ -18,7 +18,7 @@ import {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function fetchMockData(page: Page, application: any) {
-  await mockApplicationsFetch(page, {
+  await mockHakemuksetFetch(page, {
     current: [application],
     old: [],
   });

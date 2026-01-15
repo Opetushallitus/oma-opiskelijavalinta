@@ -3,7 +3,7 @@ package fi.oph.opiskelijavalinta.model
 import com.fasterxml.jackson.annotation.{JsonKey, JsonProperty}
 import fi.oph.opiskelijavalinta.model.Haku
 
-case class Application(
+case class Hakemus(
   oid: String,
   haku: String,
   hakukohteet: List[String],

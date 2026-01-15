@@ -18,7 +18,7 @@ class AtaruClient @Autowired (ataruCasClient: CasClient) {
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  def getApplications(oppijanumero: String): Either[Throwable, String] = {
+  def getHakemukset(oppijanumero: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/lomake-editori/api/external/omatsivut/applications/$oppijanumero"
     fetch(url)
   }

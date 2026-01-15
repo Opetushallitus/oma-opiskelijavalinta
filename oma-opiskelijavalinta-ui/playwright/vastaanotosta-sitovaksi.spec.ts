@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
-  mockApplicationsFetch,
+  mockHakemuksetFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
 import {
@@ -189,7 +189,7 @@ test('Sitova vastaanottomodaali on saavutettava', async ({ page }) => {
 });
 
 async function setup(page: Page) {
-  await mockApplicationsFetch(page, {
+  await mockHakemuksetFetch(page, {
     current: [
       {
         ...hakemus1,

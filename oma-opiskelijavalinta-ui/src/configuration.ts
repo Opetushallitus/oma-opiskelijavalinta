@@ -32,7 +32,7 @@ export const getConfiguration = async () => {
         konfo: `${HAKIJA_DOMAIN}/konfo`,
       },
       hakemukset: {
-        hakemuksetUrl: `/oma-opiskelijavalinta/api/applications`,
+        hakemuksetUrl: `/oma-opiskelijavalinta/api/hakemukset`,
         muokkausUrl: `${HAKIJA_DOMAIN}/hakemus?modify`,
       },
       vastaanotto: '/oma-opiskelijavalinta/api/vastaanotto',

@@ -14,7 +14,7 @@ import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
   paattynytHakukierrosMock
 }
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
-import fi.oph.opiskelijavalinta.model.ApplicationsEnriched
+import fi.oph.opiskelijavalinta.model.HakemuksetEnriched
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -22,14 +22,14 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class ApplicationsIntegrationTest extends BaseIntegrationTest {
+class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
     mvc
       .perform(
         MockMvcRequestBuilders
-          .get(ApiConstants.APPLICATIONS_PATH)
+          .get(ApiConstants.HAKEMUKSET_PATH)
       )
       .andExpect(status().isUnauthorized)
   }
@@ -51,16 +51,16 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     val result = mvc
       .perform(
         MockMvcRequestBuilders
-          .get(ApiConstants.APPLICATIONS_PATH)
+          .get(ApiConstants.HAKEMUKSET_PATH)
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
-    Assertions.assertEquals(1, applications.old.length)
-    Assertions.assertEquals(0, applications.current.length)
-    val app = applications.old.head
+    val hakemukset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[HakemuksetEnriched])
+    Assertions.assertEquals(1, hakemukset.old.length)
+    Assertions.assertEquals(0, hakemukset.current.length)
+    val app = hakemukset.old.head
     Assertions.assertEquals("hakemus-oid-1", app.oid)
     Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
@@ -102,16 +102,16 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     val result = mvc
       .perform(
         MockMvcRequestBuilders
-          .get(ApiConstants.APPLICATIONS_PATH)
+          .get(ApiConstants.HAKEMUKSET_PATH)
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
-    Assertions.assertEquals(1, applications.current.length)
-    Assertions.assertEquals(0, applications.old.length)
-    val app = applications.current.head
+    val hakemukset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[HakemuksetEnriched])
+    Assertions.assertEquals(1, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    val app = hakemukset.current.head
     Assertions.assertEquals("hakemus-oid-1", app.oid)
     Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
@@ -161,16 +161,16 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     val result = mvc
       .perform(
         MockMvcRequestBuilders
-          .get(ApiConstants.APPLICATIONS_PATH)
+          .get(ApiConstants.HAKEMUKSET_PATH)
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
-    Assertions.assertEquals(1, applications.current.length)
-    Assertions.assertEquals(0, applications.old.length)
-    val app = applications.current.head
+    val hakemukset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[HakemuksetEnriched])
+    Assertions.assertEquals(1, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    val app = hakemukset.current.head
     Assertions.assertEquals("hakemus-oid-1", app.oid)
     Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
@@ -202,16 +202,16 @@ class ApplicationsIntegrationTest extends BaseIntegrationTest {
     val result = mvc
       .perform(
         MockMvcRequestBuilders
-          .get(ApiConstants.APPLICATIONS_PATH)
+          .get(ApiConstants.HAKEMUKSET_PATH)
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
       .andReturn()
 
-    val applications = objectMapper.readValue(result.getResponse.getContentAsString, classOf[ApplicationsEnriched])
-    Assertions.assertEquals(1, applications.current.length)
-    Assertions.assertEquals(0, applications.old.length)
-    val app = applications.current.head
+    val hakemukset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[HakemuksetEnriched])
+    Assertions.assertEquals(1, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    val app = hakemukset.current.head
     Assertions.assertEquals("hakemus-oid-1", app.oid)
     Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)

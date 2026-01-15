@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { useTranslations } from '@/hooks/useTranslations';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import { ExpandMore } from '@mui/icons-material';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
@@ -32,7 +32,7 @@ export function HakukohteetAccordion({
   application,
   tulokset,
 }: {
-  application: Application;
+  application: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
 }) {
   const { t } = useTranslations();

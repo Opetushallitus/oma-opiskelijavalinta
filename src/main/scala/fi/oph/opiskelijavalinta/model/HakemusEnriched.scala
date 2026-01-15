@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.model
 
-case class ApplicationEnriched(
+case class HakemusEnriched(
   oid: String,
   haku: Option[HakuEnriched],
   hakukohteet: List[Option[Hakukohde]],
@@ -11,4 +11,4 @@ case class ApplicationEnriched(
   formName: TranslatedName
 )
 
-case class ApplicationsEnriched(current: Seq[ApplicationEnriched], old: Seq[ApplicationEnriched])
+case class HakemuksetEnriched(current: Seq[HakemusEnriched], old: Seq[HakemusEnriched])

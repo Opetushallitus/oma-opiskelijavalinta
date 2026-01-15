@@ -1,4 +1,4 @@
-import Applications from '@/components/applications/Applications';
+import Hakemukset from '@/components/hakemukset/Hakemukset';
 import Info from '@/components/Info';
 import { getUser } from '@/lib/session-utils';
 import { useTranslations } from '@/hooks/useTranslations';
@@ -31,7 +31,7 @@ export default function HomePage() {
       <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>
       <StyledBox>
         <Info user={user} />
-        <Applications />
+        <Hakemukset />
       </StyledBox>
     </Box>
   );

@@ -1,23 +1,23 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.resource.ApiConstants.APPLICATIONS_PATH
+import fi.oph.opiskelijavalinta.resource.ApiConstants.HAKEMUKSET_PATH
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
-import fi.oph.opiskelijavalinta.model.ApplicationsEnriched
-import fi.oph.opiskelijavalinta.service.ApplicationsService
+import fi.oph.opiskelijavalinta.model.HakemuksetEnriched
+import fi.oph.opiskelijavalinta.service.HakemuksetService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
-@RequestMapping(path = Array(APPLICATIONS_PATH))
+@RequestMapping(path = Array(HAKEMUKSET_PATH))
 @RestController
-class ApplicationsResource @Autowired (applicationService: ApplicationsService) {
+class HakemuksetResource @Autowired (hakemuksetService: HakemuksetService) {
 
   @GetMapping(path = Array(""))
-  def response: ResponseEntity[ApplicationsEnriched] = {
+  def response: ResponseEntity[HakemuksetEnriched] = {
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.attributes.get("personOid")
-    val applications              = applicationService.getApplications(personOid.get)
-    ResponseEntity.ok(applications)
+    val hakemukset                = hakemuksetService.getHakemukset(personOid.get)
+    ResponseEntity.ok(hakemukset)
   }
 }

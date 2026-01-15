@@ -1,4 +1,4 @@
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import {
   Valintatila,
@@ -89,7 +89,7 @@ export const VastaanottoModalParams: Record<
 } as const;
 
 export function getVarallaOlevatYlemmatToiveet(
-  application: Application,
+  application: Hakemus,
   hakutoive: Hakukohde,
 ): Array<Hakukohde> {
   const indexOfHakutoive = application.hakemuksenTulokset.findIndex(
@@ -107,7 +107,7 @@ export function getVarallaOlevatYlemmatToiveet(
 
 export function getAlemmatVastaanotot(
   hakutoive: Hakukohde,
-  application: Application,
+  application: Hakemus,
 ) {
   const index = application.hakukohteet?.findIndex(
     (hk) => hk.oid === hakutoive.oid,
@@ -127,7 +127,7 @@ export function getAlemmatVastaanotot(
 
 export function hasAlemmatVastaanotot(
   hakutoive: Hakukohde,
-  application: Application,
+  application: Hakemus,
 ) {
   return getAlemmatVastaanotot(hakutoive, application).length > 0;
 }

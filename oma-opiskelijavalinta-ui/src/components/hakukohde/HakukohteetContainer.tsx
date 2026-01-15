@@ -1,5 +1,5 @@
 import { useTranslations } from '@/hooks/useTranslations';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import {
   isHyvaksyttyOdottaaYlempaa,
@@ -13,7 +13,7 @@ export function HakukohteetContainer({
   application,
   hakemuksenTulokset,
 }: {
-  application: Application;
+  application: Hakemus;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   const { t } = useTranslations();

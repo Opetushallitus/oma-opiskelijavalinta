@@ -268,7 +268,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
   ],
 };
 
-export const defaultMockApplications = {
+export const defaultMockHakemukset = {
   current: [hakemus1, hakemus2],
   old: [],
 };
