@@ -5,7 +5,7 @@ import {
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
 
-test('Näyttää käyttäjän hakemukset', async ({ page }) => {
+test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
   await mockHakemuksetFetch(page);
   await mockAuthenticatedUser(page);
   await page.goto('');
@@ -67,6 +67,12 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(
     activehakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
   ).toHaveCount(2);
+
+  await expect(
+    page
+      .getByTestId('past-hakemukset')
+      .getByText('Sinulla ei ole aiempia hakemuksia.', { exact: true }),
+  ).toBeVisible();
 });
 
 test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({
@@ -143,6 +149,14 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
   await expect(
     hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
   ).toHaveCount(1);
+
+  await expect(
+    page
+      .getByTestId('active-hakemukset')
+      .getByText('Sinulla ei ole ajankohtaisia opiskelupaikan hakemuksia.', {
+        exact: true,
+      }),
+  ).toBeVisible();
 });
 
 test('Näyttää hauttoman hakemuksen', async ({ page }) => {
