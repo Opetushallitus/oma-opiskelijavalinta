@@ -34,6 +34,14 @@ export function naytettavatVastaanottoTiedot(
   );
 }
 
+export function onkoVastaanottoTehty(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+) {
+  return hakemuksenTulokset.some(
+    (ht) => ht.vastaanottotila && ht.vastaanottotila !== VastaanottoTila.KESKEN,
+  );
+}
+
 export async function doVastaanotto(
   hakemusOid: string,
   hakukohdeOid: string,
