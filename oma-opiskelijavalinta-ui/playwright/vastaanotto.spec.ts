@@ -9,6 +9,7 @@ import {
   hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty,
   hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet,
   hakemuksenTulosHyvaksytty,
+  hakemuksenTulosVastaanotettu,
   hakemus1,
   hakemus2,
   hakemus3ToinenAste,
@@ -382,6 +383,38 @@ test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async (
   await expect(
     vastaanotot.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
   ).toBeVisible();
+});
+
+test('Valintatulokset on haitarin alla piilossa jos vastaanotto on tehty', async ({
+  page,
+}) => {
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset: [hakemuksenTulosVastaanotettu],
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Opiskelijavalintojen tulokset' }),
+  ).toBeVisible();
+  await expect(page.getByText('Valintatilanteesi')).toBeHidden();
+  await page
+    .getByRole('button', { name: 'Opiskelijavalintojen tulokset' })
+    .click();
+  await expect(page.getByText('Valintatilanteesi')).toBeVisible();
+  await expect(
+    page
+      .getByTestId('application-hakutoiveet-hakemus-oid-1')
+      .getByText('1', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByTestId('application-hakutoiveet-hakemus-oid-1')
+      .getByText('2', { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('Valinnan tulos')).toBeVisible();
 });
 
 test('Vastaanotto on saavutettava', async ({ page }) => {
