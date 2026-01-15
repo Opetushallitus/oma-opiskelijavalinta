@@ -11,6 +11,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { notDesktop } from '@/lib/theme';
 import {
   type JonokohtainenTulostieto,
   Valintatila,
@@ -65,7 +66,7 @@ export function ValintatapajonoInfo({
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
 }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(notDesktop(theme));
 
   return isMobile ? (
     <ValintatapajonoMobile
@@ -161,7 +162,7 @@ function ValintatapajonoMobile({
           <Stack
             spacing={1}
             margin={2}
-            data-test-id={`valintatapajono-${jonotulos.nimi}`}
+            data-test-id={`valintatapajono-${jonotulos.oid}`}
           >
             <Box>
               <OphTypography sx={{ fontWeight: 600 }}>
@@ -174,7 +175,7 @@ function ValintatapajonoMobile({
               <OphTypography sx={{ fontWeight: 600 }}>
                 {t('valintatapa.pisteet')}
               </OphTypography>
-              <Box data-test-id={`valintatapajono-${jonotulos.nimi}-pisteet`}>
+              <Box data-test-id={`valintatapajono-${jonotulos.oid}-pisteet`}>
                 {jonotulos.pisteet ?? '-'}
               </Box>
             </Box>
@@ -184,7 +185,7 @@ function ValintatapajonoMobile({
                 {t('valintatapa.alimmat-hyvaksytyt-pisteet')}
               </OphTypography>
               <Box
-                data-test-id={`valintatapajono-${jonotulos.nimi}-alinhyvaksytty`}
+                data-test-id={`valintatapajono-${jonotulos.oid}-alinhyvaksytty`}
               >
                 {jonotulos.alinHyvaksyttyPistemaara ?? '-'}
               </Box>

@@ -42,6 +42,7 @@ export type HakutoiveenTulosDto = {
 };
 
 export type JonokohtainenTulostietoDto = {
+  oid: string;
   nimi?: string;
   pisteet?: number;
   alinHyvaksyttyPistemaara?: number;
