@@ -63,6 +63,16 @@ class HakemuksetService @Autowired (
     }
   }
 
+  def getHakemusOids(oppijanumero: String): List[String] = {
+    ataruClient.getHakemukset(oppijanumero) match {
+      case Left(e) =>
+        LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+        throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+      case Right(o) =>
+        mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
+    }
+  }
+
   private def isAjankohtainenHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
     val now = System.currentTimeMillis()
     now < ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
