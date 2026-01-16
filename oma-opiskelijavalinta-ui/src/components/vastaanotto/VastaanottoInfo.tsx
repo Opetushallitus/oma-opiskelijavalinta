@@ -13,7 +13,7 @@ import {
   type HakutoiveenTulos,
 } from '@/lib/valinta-tulos-types';
 import type { Language } from '@/types/ui-types';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
@@ -32,7 +32,7 @@ const MultiInfoContainer = styled(Box)(({ theme }) => ({
 }));
 
 const getEhdollisestiVastaanottanutInfo = (
-  application: Application,
+  application: Hakemus,
   lang: Language,
 ) => {
   const varasijatayttoPaattyy = toFormattedDateTimeStringWithLocale(
@@ -68,7 +68,7 @@ const getInfoText = (
   t: TFnType<DefaultParamType, string, TranslationKey>,
   lang: Language,
   tulos: HakutoiveenTulos,
-  application: Application,
+  application: Hakemus,
 ) => {
   const config = useConfig();
   const hakukohde = application.hakukohteet?.find(
@@ -149,7 +149,7 @@ export function VastaanottoInfo({
   application,
 }: {
   tulos: HakutoiveenTulos;
-  application: Application;
+  application: Hakemus;
 }) {
   const { getLanguage, t } = useTranslations();
 

@@ -44,7 +44,7 @@ class KoutaServiceTest {
   }
 
   @Test
-  def returnsHakuForApplication(): Unit = {
+  def returnsHakuForHakemus(): Unit = {
     val haku = koutaService.getHaku(HAKU_OID, "2024-11-19T10:32:01Z")
     Assertions.assertFalse(haku.isEmpty)
     Assertions.assertEquals(HAKU_OID, haku.get.oid)
@@ -54,7 +54,7 @@ class KoutaServiceTest {
   }
 
   @Test
-  def returnsAlwaysFittingLatestHakuAikaForPastApplication(): Unit = {
+  def returnsAlwaysFittingLatestHakuAikaForMennytHakemus(): Unit = {
     Assertions.assertEquals(
       "2023-11-29T09:32:01",
       koutaService.getHaku(HAKU_OID, "2023-11-19T10:32:01Z").get.viimeisinPaattynytHakuAika
@@ -70,7 +70,7 @@ class KoutaServiceTest {
   }
 
   @Test
-  def returnsHakuWithHakuaikaKaynnissaForApplication(): Unit = {
+  def returnsHakuWithHakuaikaKaynnissaForHakemus(): Unit = {
     val future = KOUTA_DATETIME_FORMATTER.format(ZonedDateTime.now(ZONE_FINLAND).plusDays(1))
     Mockito
       .when(koutaClient.getHaku(HAKU_OID))

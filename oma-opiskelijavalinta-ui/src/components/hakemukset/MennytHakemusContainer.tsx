@@ -4,10 +4,10 @@ import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { isTruthy } from 'remeda';
 import { ExternalLink } from '../ExternalLink';
-import { Hakutoive } from './Hakutoive';
-import { ApplicationPaper } from './ApplicationPaper';
+import { Hakutoive } from '../hakukohde/Hakutoive';
+import { HakemusPaper } from './HakemusPaper';
 import type { Hakukohde } from '@/lib/kouta-types';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 
 const StyledInfoBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -37,7 +37,7 @@ function PastHakukohteetContainer({
   );
 }
 
-function PastTilaInfo({ application }: { application: Application }) {
+function PastTilaInfo({ application }: { application: Hakemus }) {
   const { t } = useTranslations();
 
   return (
@@ -57,29 +57,22 @@ function PastTilaInfo({ application }: { application: Application }) {
   );
 }
 
-export function PastApplicationContainer({
-  application,
-}: {
-  application: Application;
-}) {
+export function MennytHakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
 
   return (
-    <ApplicationPaper
-      tabIndex={0}
-      data-test-id={`past-application-${application.oid}`}
-    >
+    <HakemusPaper tabIndex={0} data-test-id={`past-application-${hakemus.oid}`}>
       <OphTypography variant="h3">
-        {translateEntity(application?.haku?.nimi)}
+        {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
-      <PastTilaInfo application={application} />
+      <PastTilaInfo application={hakemus} />
       <OphTypography variant="h4" sx={{ fontWeight: 'normal' }}>
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <PastHakukohteetContainer
-        hakukohteet={application?.hakukohteet ?? []}
-        priorisoidutHakutoiveet={application?.priorisoidutHakutoiveet}
+        hakukohteet={hakemus?.hakukohteet ?? []}
+        priorisoidutHakutoiveet={hakemus?.priorisoidutHakutoiveet}
       />
-    </ApplicationPaper>
+    </HakemusPaper>
   );
 }

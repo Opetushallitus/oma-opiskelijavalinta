@@ -7,9 +7,9 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.vm.sade.javautils.nio.cas.CasClient
 import fi.oph.opiskelijavalinta.model.{
-  Application,
-  ApplicationEnriched,
-  ApplicationsEnriched,
+  HakemuksetEnriched,
+  Hakemus,
+  HakemusEnriched,
   Haku,
   HakuEnriched,
   Hakukohde,
@@ -31,7 +31,7 @@ import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 @Service
-class ApplicationsService @Autowired (
+class HakemuksetService @Autowired (
   ataruClient: AtaruClient,
   koutaService: KoutaService,
   ohjausparametritService: OhjausparametritService,
@@ -46,17 +46,17 @@ class ApplicationsService @Autowired (
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[ApplicationsService]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[HakemuksetService]);
 
-  def getApplications(oppijanumero: String): ApplicationsEnriched = {
-    ataruClient.getApplications(oppijanumero) match {
+  def getHakemukset(oppijanumero: String): HakemuksetEnriched = {
+    ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
         LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
         throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
       case Right(o) =>
-        val apps     = mapper.readValue(o, classOf[Array[Application]]).toSeq
-        val enriched = apps.map(a => enrichApplication(a))
-        ApplicationsEnriched(
+        val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
+        val enriched = apps.map(a => enrichHakemus(a))
+        HakemuksetEnriched(
           enriched.filter(a => isAjankohtainenHakemus(a.ohjausparametrit)),
           enriched.filter(a => isVanhaHakemus(a.ohjausparametrit))
         )
@@ -73,17 +73,17 @@ class ApplicationsService @Autowired (
     now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
-  private def enrichApplication(application: Application): ApplicationEnriched = {
+  private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
     val now                                           = new Date()
     var haku: Option[HakuEnriched]                    = Option.empty
     var hakukohteet: List[Option[Hakukohde]]          = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]    = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
-    if (application.haku != null) {
-      haku = koutaService.getHaku(application.haku, application.submitted)
-      hakukohteet = application.hakukohteet.map(koutaService.getHakukohde)
+    if (hakemus.haku != null) {
+      haku = koutaService.getHaku(hakemus.haku, hakemus.submitted)
+      hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
       ohjausparametrit = ohjausparametritService
-        .getOhjausparametritForHaku(application.haku)
+        .getOhjausparametritForHaku(hakemus.haku)
         .map(o =>
           Ohjausparametrit(
             o.PH_HKP.flatMap(d => d.date),
@@ -99,21 +99,21 @@ class ApplicationsService @Autowired (
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHakemus(ohjausparametrit)) {
         // VTSService palauttaa vain julkaistavissa olevat hakutoiveen tulokset
-        hakutoiveidenTulokset = VTSService.getValinnanTulokset(application.haku, application.oid) match {
+        hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
           case Some(v) => v.hakutoiveet
           case _       => List.empty
         }
       }
     }
-    ApplicationEnriched(
-      application.oid,
+    HakemusEnriched(
+      hakemus.oid,
       haku,
       hakukohteet,
       ohjausparametrit,
-      application.secret,
-      application.submitted,
+      hakemus.secret,
+      hakemus.submitted,
       hakutoiveidenTulokset,
-      application.formName
+      hakemus.formName
     )
   }
 }

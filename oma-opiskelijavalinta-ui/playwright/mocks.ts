@@ -268,7 +268,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
   ],
 };
 
-export const defaultMockApplications = {
+export const defaultMockHakemukset = {
   current: [hakemus1, hakemus2],
   old: [],
 };
@@ -305,6 +305,50 @@ export const hakemuksenTulosVarasijalla = {
       nimi: '',
       valintatila: 'VARALLA',
       varasijanumero: 2,
+      julkaistavissa: true,
+      tilanKuvaukset: {
+        FI: '',
+        SV: '',
+        EN: '',
+      },
+      ehdollisestiHyvaksyttavissa: false,
+      ehdollisenHyvaksymisenEhto: null,
+      eiVarasijatayttoa: false,
+      varasijasaannotKaytossa: false,
+    },
+  ],
+};
+
+export const hakemuksenTulosVastaanotettu = {
+  hakukohdeOid: 'hakukohde-oid-1',
+  hakukohdeNimi: 'Meteorologi, Tornadoinen tutkimislinja',
+  tarjoajaOid: 'tarjoaja-oid-1',
+  tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+  valintatapajonoOid: '1234',
+  valintatila: 'HYVAKSYTTY',
+  vastaanottotila: 'VASTAANOTTANUT_SITOVASTI',
+  ilmoittautumistila: {
+    ilmoittautumisaika: {},
+    ilmoittautumistila: 'EI_TEHTY',
+    ilmoittauduttavissa: false,
+  },
+  vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+  vastaanottoDeadline: null,
+  viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
+  hyvaksyttyJaJulkaistuDate: null,
+  julkaistavissa: true,
+  ehdollisestiHyvaksyttavissa: false,
+  tilanKuvaukset: {
+    FI: '',
+    SV: '',
+    EN: '',
+  },
+  showMigriURL: null,
+  jonokohtaisetTulostiedot: [
+    {
+      oid: '1234',
+      nimi: '',
+      valintatila: 'HYVAKSYTTY',
       julkaistavissa: true,
       tilanKuvaukset: {
         FI: '',

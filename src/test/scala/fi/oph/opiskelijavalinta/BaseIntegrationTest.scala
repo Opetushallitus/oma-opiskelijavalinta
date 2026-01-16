@@ -9,8 +9,8 @@ import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
 import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
 import fi.oph.opiskelijavalinta.model.{
-  Application,
   DateParam,
+  Hakemus,
   Haku,
   Hakuaika,
   Hakukohde,
@@ -139,12 +139,12 @@ class BaseIntegrationTest {
     evictAllCaches()
     mvc = intermediate.build
     Mockito
-      .when(ataruClient.getApplications("someValue"))
+      .when(ataruClient.getHakemukset("someValue"))
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
             Array(
-              Application(
+              Hakemus(
                 "hakemus-oid-1",
                 "haku-oid-1",
                 List("hakukohde-oid-1", "hakukohde-oid-2"),

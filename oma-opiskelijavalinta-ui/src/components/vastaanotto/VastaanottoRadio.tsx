@@ -10,7 +10,7 @@ import { useState, type ChangeEvent } from 'react';
 import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
 import type { Hakukohde } from '@/lib/kouta-types';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
 import { VastaanottoModalContent } from './VastaanottoModalContent';
 import { useMutation } from '@tanstack/react-query';
@@ -94,7 +94,7 @@ const vastaanottoOptionsWithHigherPriorityWaitingOption = [
   PERU_OPTION,
 ];
 
-function getKKPriorityOptions(application: Application, hakukohde: Hakukohde) {
+function getKKPriorityOptions(application: Hakemus, hakukohde: Hakukohde) {
   const vastaanotettavissaEhdollisesti =
     application.hakemuksenTulokset.find(
       (ht) => ht.hakukohdeOid === hakukohde.oid,
@@ -107,7 +107,7 @@ function getKKPriorityOptions(application: Application, hakukohde: Hakukohde) {
 
 function determineVastaanottoOptions(
   t: TFnType<DefaultParamType, string, TranslationKey>,
-  application: Application,
+  application: Hakemus,
   hakukohde: Hakukohde,
 ): Array<{ label: string; value: string }> {
   let options = defaultVastaanottoOptions;
@@ -138,7 +138,7 @@ export function VastaanottoRadio({
   application,
 }: {
   hakutoive: Hakukohde;
-  application: Application;
+  application: Hakemus;
 }) {
   const { t } = useTranslations();
   const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();

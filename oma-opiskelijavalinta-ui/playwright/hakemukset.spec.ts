@@ -1,15 +1,15 @@
 import { expect, test } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
-  mockApplicationsFetch,
+  mockHakemuksetFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
 
-test('Näyttää käyttäjän hakemukset', async ({ page }) => {
-  await mockApplicationsFetch(page);
+test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
+  await mockHakemuksetFetch(page);
   await mockAuthenticatedUser(page);
   await page.goto('');
-  const activeApplications = page.getByTestId('active-applications');
+  const activehakemukset = page.getByTestId('active-hakemukset');
 
   const app1 = page.getByTestId('application-hakemus-oid-1');
   await expect(
@@ -61,18 +61,24 @@ test('Näyttää käyttäjän hakemukset', async ({ page }) => {
   await expect(app2.getByText('1', { exact: true })).toBeHidden();
 
   await expect(
-    activeApplications.getByRole('link', { name: 'Näytä valintaperusteet' }),
+    activehakemukset.getByRole('link', { name: 'Näytä valintaperusteet' }),
   ).toHaveCount(3);
 
   await expect(
-    activeApplications.getByRole('link', { name: 'Muokkaa hakemusta' }),
+    activehakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
   ).toHaveCount(2);
+
+  await expect(
+    page
+      .getByTestId('past-hakemukset')
+      .getByText('Sinulla ei ole aiempia hakemuksia.', { exact: true }),
+  ).toBeVisible();
 });
 
 test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({
   page,
 }) => {
-  await mockApplicationsFetch(page, { current: [], old: [] });
+  await mockHakemuksetFetch(page, { current: [], old: [] });
   await mockAuthenticatedUser(page);
   await page.goto('');
   await expect(
@@ -108,11 +114,11 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
     },
     hakutoiveenTulokset: [],
   };
-  await mockApplicationsFetch(page, { current: [], old: [oldApplication] });
+  await mockHakemuksetFetch(page, { current: [], old: [oldApplication] });
   await mockAuthenticatedUser(page);
   await page.goto('');
 
-  const applications = page.getByTestId('past-applications');
+  const hakemukset = page.getByTestId('past-hakemukset');
 
   const app = page.getByTestId('past-application-hakemus-oid-3');
   await expect(
@@ -133,16 +139,24 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
   ).toBeVisible();
 
   await expect(
-    applications.getByRole('link', { name: 'Näytä valintaperusteet' }),
+    hakemukset.getByRole('link', { name: 'Näytä valintaperusteet' }),
   ).toHaveCount(0);
 
   await expect(
-    applications.getByRole('link', { name: 'Muokkaa hakemusta' }),
+    hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
   ).toHaveCount(0);
 
   await expect(
-    applications.getByRole('link', { name: 'Näytä hakemus' }),
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
   ).toHaveCount(1);
+
+  await expect(
+    page
+      .getByTestId('active-hakemukset')
+      .getByText('Sinulla ei ole ajankohtaisia opiskelupaikan hakemuksia.', {
+        exact: true,
+      }),
+  ).toBeVisible();
 });
 
 test('Näyttää hauttoman hakemuksen', async ({ page }) => {
@@ -157,23 +171,23 @@ test('Näyttää hauttoman hakemuksen', async ({ page }) => {
     hakukohteet: [],
     ohjausparametrit: null,
   };
-  await mockApplicationsFetch(page, { current: [], old: [oldApplication] });
+  await mockHakemuksetFetch(page, { current: [], old: [oldApplication] });
   await mockAuthenticatedUser(page);
   await page.goto('');
 
-  const applications = page.getByTestId('past-applications');
+  const hakemukset = page.getByTestId('past-hakemukset');
 
   const app = page.getByTestId('application-hakemus-oid-07');
   await expect(app.getByText('Hajuton hakemus')).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
 
   await expect(
-    applications.getByRole('link', { name: 'Näytä hakemus' }),
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
   ).toHaveCount(1);
 });
 
 test('Hakemusten saavutettavuus', async ({ page }) => {
-  await mockApplicationsFetch(page);
+  await mockHakemuksetFetch(page);
   await mockAuthenticatedUser(page);
   await page.goto('');
   await expect(

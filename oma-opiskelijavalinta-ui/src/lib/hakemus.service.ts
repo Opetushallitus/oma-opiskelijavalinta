@@ -3,7 +3,7 @@ import { getConfiguration } from '@/configuration';
 import type { TranslatedName } from './localization/localization-types';
 import type { Haku, Hakukohde } from './kouta-types';
 import { type HakutoiveenTulosDto, Valintatila } from './valinta-tulos-types';
-import type { Application, Applications } from './application-types';
+import type { Hakemus, Hakemukset } from './hakemus-types';
 
 type Ohjausparametrit = {
   hakukierrosPaattyy?: number | null;
@@ -16,7 +16,7 @@ type Ohjausparametrit = {
   jarjestetytHakutoiveet?: boolean;
 };
 
-type ApplicationResponse = {
+type HakemusResponse = {
   oid: string;
   haku: Haku;
   hakukohteet: Array<Hakukohde>;
@@ -27,22 +27,19 @@ type ApplicationResponse = {
   hakemuksenTulokset: Array<HakutoiveenTulosDto>;
 };
 
-type ApplicationsResponse = {
-  current: Array<ApplicationResponse>;
-  old: Array<ApplicationResponse>;
+type HakemuksetResponse = {
+  current: Array<HakemusResponse>;
+  old: Array<HakemusResponse>;
 };
 
-async function fetchApplications() {
+async function fetchHakemukset() {
   const config = await getConfiguration();
-  return await client.get<ApplicationsResponse>(
+  return await client.get<HakemuksetResponse>(
     config.routes.hakemukset.hakemuksetUrl,
   );
 }
 
-function convertToApplication(
-  app: ApplicationResponse,
-  muokkausUrl: string,
-): Application {
+function convertToHakemus(app: HakemusResponse, muokkausUrl: string): Hakemus {
   const modifyLink = app.secret ? `${muokkausUrl}=${app.secret}` : null;
   const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
   const varasijatayttoPaattyy = app.ohjausparametrit?.varasijatayttoPaattyy;
@@ -66,15 +63,15 @@ function convertToApplication(
   };
 }
 
-export async function getApplications(): Promise<Applications> {
+export async function getHakemukset(): Promise<Hakemukset> {
   const config = await getConfiguration();
-  const response = await fetchApplications();
+  const response = await fetchHakemukset();
   const muokkausUrl = config.routes.hakemukset.muokkausUrl;
   const current = response.data.current
-    .map((app) => convertToApplication(app, muokkausUrl))
+    .map((app) => convertToHakemus(app, muokkausUrl))
     .sort((a, b) => b.submitted - a.submitted);
   const old = response.data.old
-    .map((app) => convertToApplication(app, muokkausUrl))
+    .map((app) => convertToHakemus(app, muokkausUrl))
     .sort((a, b) => b.submitted - a.submitted);
   return { current, old };
 }

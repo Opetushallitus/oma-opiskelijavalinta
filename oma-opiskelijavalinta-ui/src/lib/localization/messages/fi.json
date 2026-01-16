@@ -34,7 +34,8 @@
     }
   },
   "hakutoiveet": {
-    "valintaperusteet": "Näytä valintaperusteet"
+    "valintaperusteet": "Näytä valintaperusteet",
+    "haitari": "Opiskelijavalintojen tulokset"
   },
   "hakutoive": {
     "tila": {

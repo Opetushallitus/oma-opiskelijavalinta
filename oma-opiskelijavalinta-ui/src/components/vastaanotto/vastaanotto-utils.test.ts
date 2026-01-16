@@ -4,7 +4,7 @@ import {
   getAlemmatVastaanotot,
   hasAlemmatVastaanotot,
 } from './vastaanotto-utils';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import {
   Valintatila,
@@ -29,7 +29,7 @@ describe('getVarallaOlevatYlemmatToiveet', () => {
   } as Hakukohde;
 
   it('palauttaa tyhjän arrayn jos ylemmät hakutoiveet eivät ole varalla', () => {
-    const application: Application = {
+    const application: Hakemus = {
       hakemuksenTulokset: [
         {
           hakukohdeOid: 'hk1',
@@ -45,7 +45,7 @@ describe('getVarallaOlevatYlemmatToiveet', () => {
         } as HakutoiveenTulos,
       ],
       hakukohteet: [mockHakukohde1, mockHakukohde2, mockHakukohde3],
-    } as Application;
+    } as Hakemus;
 
     expect(getVarallaOlevatYlemmatToiveet(application, mockHakukohde1)).toEqual(
       [],
@@ -59,7 +59,7 @@ describe('getVarallaOlevatYlemmatToiveet', () => {
   });
 
   it('palauttaa ylemmät hakutoiveet jotka ovat varalla', () => {
-    const application: Application = {
+    const application: Hakemus = {
       hakemuksenTulokset: [
         {
           hakukohdeOid: 'hk1',
@@ -75,7 +75,7 @@ describe('getVarallaOlevatYlemmatToiveet', () => {
         } as HakutoiveenTulos,
       ],
       hakukohteet: [mockHakukohde1, mockHakukohde2, mockHakukohde3],
-    } as Application;
+    } as Hakemus;
 
     expect(getVarallaOlevatYlemmatToiveet(application, mockHakukohde1)).toEqual(
       [],
@@ -89,7 +89,7 @@ describe('getVarallaOlevatYlemmatToiveet', () => {
   });
 
   it('palauttaa vain ylemmät hakutoiveet jotka ovat varalla', () => {
-    const application: Application = {
+    const application: Hakemus = {
       hakemuksenTulokset: [
         {
           hakukohdeOid: 'hk1',
@@ -105,7 +105,7 @@ describe('getVarallaOlevatYlemmatToiveet', () => {
         } as HakutoiveenTulos,
       ],
       hakukohteet: [mockHakukohde1, mockHakukohde2, mockHakukohde3],
-    } as Application;
+    } as Hakemus;
 
     expect(getVarallaOlevatYlemmatToiveet(application, mockHakukohde1)).toEqual(
       [],
@@ -126,7 +126,7 @@ describe('getAlemmatVastaanotot', () => {
       nimi: { fi: 'Hakukohde 2' },
     } as Hakukohde;
 
-    const application: Application = {
+    const application: Hakemus = {
       hakemuksenTulokset: [
         {
           hakukohdeOid: 'hk1',
@@ -152,7 +152,7 @@ describe('getAlemmatVastaanotot', () => {
           nimi: { fi: 'Hakukohde 3' },
         } as Hakukohde,
       ],
-    } as Application;
+    } as Hakemus;
 
     const alemmatVastaanotot = getAlemmatVastaanotot(hakukohde, application);
     expect(alemmatVastaanotot).toHaveLength(1);
@@ -166,7 +166,7 @@ describe('getAlemmatVastaanotot', () => {
       nimi: { fi: 'Hakukohde 1' },
     } as Hakukohde;
 
-    const application: Application = {
+    const application: Hakemus = {
       hakemuksenTulokset: [
         {
           hakukohdeOid: 'hk1',
@@ -192,7 +192,7 @@ describe('getAlemmatVastaanotot', () => {
           nimi: { fi: 'Hakukohde 3' },
         } as Hakukohde,
       ],
-    } as Application;
+    } as Hakemus;
 
     const alemmatVastaanotot = getAlemmatVastaanotot(hakukohde, application);
     expect(alemmatVastaanotot).toHaveLength(2);
@@ -207,7 +207,7 @@ describe('getAlemmatVastaanotot', () => {
       nimi: { fi: 'Hakukohde 1' },
     } as Hakukohde;
 
-    const application: Application = {
+    const application: Hakemus = {
       hakemuksenTulokset: [
         {
           hakukohdeOid: 'hk1',
@@ -225,7 +225,7 @@ describe('getAlemmatVastaanotot', () => {
           nimi: { fi: 'Hakukohde 2' },
         } as Hakukohde,
       ],
-    } as Application;
+    } as Hakemus;
 
     expect(getAlemmatVastaanotot(hakukohde, application)).toHaveLength(0);
     expect(hasAlemmatVastaanotot(hakukohde, application)).toBe(false);

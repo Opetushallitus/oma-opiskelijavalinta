@@ -10,12 +10,6 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import { HakutoiveenTulosInfo } from '@/components/valinnantulos/HakutoiveenTulosInfo';
 
-export type HakutoiveRenderProps = {
-  sijoitteluKaytossa: boolean;
-  hakuaikaKaynnissa: boolean;
-  priorisoidutHakutoiveet: boolean;
-};
-
 const ORDER_NUMBER_WIDTH = 40; // px
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   columnGap: theme.spacing(2),

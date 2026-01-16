@@ -6,7 +6,7 @@ import { isDefined, isEmpty } from 'remeda';
 import { VastaanottoRadio } from './VastaanottoRadio';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import type { Application } from '@/lib/application-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
 import { VastaanottoTilaChip } from './VastaanottoTilaChip';
 import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
@@ -19,7 +19,7 @@ function VastaanottoBox({
 }: {
   hakukohde: Hakukohde;
   tulos: HakutoiveenTulos;
-  application: Application;
+  application: Hakemus;
 }) {
   const { translateEntity } = useTranslations();
 
@@ -60,7 +60,7 @@ export function VastaanottoContainer({
   application,
   hakemuksenTulokset,
 }: {
-  application: Application;
+  application: Hakemus;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 }) {
   const vastaanotettavat = naytettavatVastaanottoTiedot(hakemuksenTulokset);

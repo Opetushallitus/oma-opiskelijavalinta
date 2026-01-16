@@ -2,7 +2,7 @@ import type { Haku, Hakukohde } from './kouta-types';
 import type { TranslatedName } from './localization/localization-types';
 import type { HakutoiveenTulos } from './valinta-tulos-types';
 
-export type Application = {
+export type Hakemus = {
   oid: string;
   haku?: Haku | null;
   hakukohteet?: Array<Hakukohde>;
@@ -16,7 +16,7 @@ export type Application = {
   hakemuksenTulokset: Array<HakutoiveenTulos>;
 };
 
-export type Applications = {
-  current: Array<Application>;
-  old: Array<Application>;
+export type Hakemukset = {
+  current: Array<Hakemus>;
+  old: Array<Hakemus>;
 };
