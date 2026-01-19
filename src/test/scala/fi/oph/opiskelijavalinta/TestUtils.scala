@@ -9,6 +9,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import java.util
 
 object TestUtils {
+
+  val PERSON_OID = "TEST_PERSON_OID"
+
+  val HAKEMUS_OID = "hakemus-oid-1"
+
   val objectMapper: ObjectMapper =
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
@@ -20,7 +25,7 @@ object TestUtils {
     mapper
 
   val oppijaUser: OppijaUser =
-    val attributes  = Map("personOid" -> "someValue")
+    val attributes  = Map("personOid" -> PERSON_OID)
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     new OppijaUser(attributes, "testuser", authorities)

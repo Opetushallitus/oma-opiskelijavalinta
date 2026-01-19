@@ -1,9 +1,9 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{mockVTSKeskenResponse, mockVTSResponse}
-import fi.oph.opiskelijavalinta.model.HakutoiveenTulos
+import fi.oph.opiskelijavalinta.model.{Hakemus, HakutoiveenTulos}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -13,8 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class ValintaTulosIntegrationTest extends BaseIntegrationTest {
 
-  val HAKEMUS_OID = "HAKEMUS-OID-1"
-  val HAKU_OID    = "HAKU-OID-1"
+  val HAKU_OID = "HAKU-OID-1"
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
@@ -24,6 +23,20 @@ class ValintaTulosIntegrationTest extends BaseIntegrationTest {
           .get(s"${ApiConstants.VALINTATULOS_PATH}/hakemus/$HAKEMUS_OID/haku/$HAKU_OID")
       )
       .andExpect(status().isUnauthorized)
+  }
+
+  @Test
+  def get403ResponseFromUnauthorizedUser(): Unit = {
+    Mockito
+      .when(ataruClient.getHakemukset("hakemus-not-found"))
+      .thenReturn(Right(objectMapper.writeValueAsString(Array.empty[Hakemus])))
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.VALINTATULOS_PATH}/hakemus/hakemus-not-found/haku/$HAKU_OID")
+          .`with`(user(oppijaUser))
+      )
+      .andExpect(status().isForbidden)
   }
 
   @Test
