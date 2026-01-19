@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, personOid}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, PERSON_OID}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
@@ -29,7 +29,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
   @Test
   def get403ResponseFromUnauthorizedUserWithoutHakemus(): Unit = {
     Mockito
-      .when(ataruClient.getHakemukset(personOid))
+      .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(Array.empty[Hakemus])))
     mvc
       .perform(
@@ -44,7 +44,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
   @Test
   def get403ResponseFromUnauthorizedUserTryingToAccessWrongHakemus(): Unit = {
     Mockito
-      .when(ataruClient.getHakemukset(personOid))
+      .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
@@ -74,7 +74,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
   @Test
   def doesVastaanotto(): Unit = {
     Mockito
-      .when(ataruClient.getHakemukset(personOid))
+      .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
