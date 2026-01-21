@@ -5,7 +5,7 @@ import { Valintatila, type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import {
   getHakutoiveenTilaLabel,
   valintatilaColors,
-} from '@/components/valinnantulos/tulos-display-utils';
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 
 export function ValintatilaChip({
   hakutoiveenTulos,

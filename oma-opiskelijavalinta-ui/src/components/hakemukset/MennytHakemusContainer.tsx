@@ -16,21 +16,21 @@ const StyledInfoBox = styled(Box)(({ theme }) => ({
 }));
 
 function PastHakukohteetContainer({
+  hakemus,
   hakukohteet,
-  priorisoidutHakutoiveet,
 }: {
+  hakemus: Hakemus;
   hakukohteet: Array<Hakukohde>;
-  priorisoidutHakutoiveet: boolean;
 }) {
   return (
     <Box sx={{ width: '100%' }}>
       {hakukohteet.map((hk, idx) => (
         <Hakutoive
+          hakemus={hakemus}
           key={hk.oid}
           hakukohde={hk}
           prioriteetti={idx + 1}
           pastApplication={true}
-          priorisoidutHakutoiveet={priorisoidutHakutoiveet}
         />
       ))}
     </Box>
@@ -70,8 +70,8 @@ export function MennytHakemusContainer({ hakemus }: { hakemus: Hakemus }) {
         {t('hakemukset.hakutoiveet')}
       </OphTypography>
       <PastHakukohteetContainer
+        hakemus={hakemus}
         hakukohteet={hakemus?.hakukohteet ?? []}
-        priorisoidutHakutoiveet={hakemus?.priorisoidutHakutoiveet}
       />
     </HakemusPaper>
   );

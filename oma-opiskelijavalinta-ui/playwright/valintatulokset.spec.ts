@@ -6,7 +6,6 @@ import {
 import {
   hakemuksenTulosHylatty,
   hakemuksenTulosHyvaksytty,
-  hakemuksenTulosKesken,
   hakemuksenTulosPeruuntunut,
   hakemuksenTulosVarasijalla,
   hakemus1,
@@ -38,6 +37,16 @@ test('Näyttää varasijanumeron', async ({ page }) => {
     app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
   ).toBeVisible();
   await expect(app1.getByText('Olet 2. varasijalla')).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Varasijalta hyväksytään opiskelijoita, jos aloituspaikkoja vapautuu.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Voit tulla hyväksytyksi varasijalta 11.1.2026 klo 17:00 asti.',
+    ),
+  ).toBeVisible();
 });
 
 test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
@@ -57,6 +66,80 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   ).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
+});
+
+test('Näyttää hyväksytylle tulokselle vastaanottoinfon', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
+  await expect(
+    tulokset.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
+  await expect(
+    tulokset.getByText(
+      'Ota opiskelupaikka vastaan viimeistään 11.12.2025 klo 15:00 mennessä tai menetät paikan.',
+    ),
+  ).toBeVisible();
+});
+
+test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruuntumisesta', async ({
+  page,
+}) => {
+  const varallaApplication = {
+    ...hakemus2,
+    ohjausparametrit: {
+      ...hakemus2.ohjausparametrit,
+      jarjestetytHakutoiveet: false,
+    },
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
+  };
+  await fetchMockData(page, varallaApplication);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
+  await expect(
+    tulokset.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
+  await expect(
+    tulokset.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeVisible();
+});
+
+test('Näyttää priorisoinnittoman kk-haun varasijalla-tulokselle infon peruuntumisesta kun toinen hakutoive on hyväksytty', async ({
+  page,
+}) => {
+  const hyvaksyttyJaVarallaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      jarjestetytHakutoiveet: false,
+    },
+    hakemuksenTulokset: [
+      hakemuksenTulosVarasijalla,
+      {
+        ...hakemuksenTulosHyvaksytty,
+        hakukohdeOid: 'hakukohde-oid-2',
+        valintatila: 'HYVAKSYTTY',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA',
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyJaVarallaApplication);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-1');
+  await expect(
+    tulokset.locator('.MuiChip-root').first().getByText('Varasijalla'),
+  ).toBeVisible();
+  await expect(
+    tulokset.getByText(
+      'Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.',
+    ),
+  ).toBeVisible();
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
@@ -119,7 +202,12 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   await expect(
     hakutoive.locator('.MuiChip-root').first().getByText('Hyväksytty'),
   ).toBeVisible();
-  await expect(hakutoive.getByText('Ehdollinen')).toBeVisible();
+  await expect(
+    hakutoive.locator('.MuiChip-root').getByText('Ehdollinen'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText('Huomioithan, että valintatietosi on ehdollinen'),
+  ).toBeVisible();
 });
 
 test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) => {
@@ -141,7 +229,6 @@ test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmäl
   const hyvaksyttyOdottaaApplication = {
     ...hakemus1,
     hakemuksenTulokset: [
-      { ...hakemuksenTulosKesken, hakukohdeOid: 'hakukohde-oid-1' },
       {
         ...hakemuksenTulosHyvaksytty,
         hakukohdeOid: 'hakukohde-oid-2',
@@ -162,6 +249,16 @@ test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmäl
   await expect(
     hyvaksyttyOdottaaApp.getByText(
       'Hyväksytty (odottaa ylempien hakukohteiden tuloksia)',
+    ),
+  ).toBeVisible();
+  await expect(
+    hyvaksyttyOdottaaApp.getByText(
+      'Et voi ottaa tätä opiskelupaikkaa vastaan.',
+    ),
+  ).toBeVisible();
+  await expect(
+    hyvaksyttyOdottaaApp.getByText(
+      'Jos tulet hyväksytyksi ylempään hakutoiveeseesi, tämä hakukohde peruuntuu automaattisesti.',
     ),
   ).toBeVisible();
 });

@@ -5,7 +5,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { mapKeys } from 'remeda';
 import { ophColors } from '@/lib/theme';
-import { getValintatilaIlmanSijoitteluaLabel } from '@/components/valinnantulos/tulos-display-utils';
+import { getValintatilaIlmanSijoitteluaLabel } from '@/components/valinnantulos/valinnan-tulos-utils';
 
 function ValintatilaIlmanSijoittelua({
   hakutoiveenTulos,

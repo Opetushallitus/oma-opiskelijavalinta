@@ -30,6 +30,7 @@ export const hakemus1 = {
   ],
   ohjausparametrit: {
     hakukierrosPaattyy: 1763471212000,
+    varasijatayttoPaattyy: 1768143600000,
     jarjestetytHakutoiveet: true,
     valintaTuloksetJulkaistaanHakijoilleAlkaa: 1779271212000,
     varasijatayttoPaattyy: 1779471212000,
@@ -56,6 +57,7 @@ export const hakemus2 = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Tsunamiopisto, Merenpohjan kampus',
       },
+      yhdenPaikanSaanto: { voimassa: true },
     },
   ],
   ohjausparametrit: {
@@ -385,50 +387,6 @@ export const hakemuksenTulosVastaanotettu = {
       nimi: '',
       valintatila: 'HYVAKSYTTY',
       julkaistavissa: true,
-      tilanKuvaukset: {
-        FI: '',
-        SV: '',
-        EN: '',
-      },
-      ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: null,
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
-    },
-  ],
-};
-
-export const hakemuksenTulosKesken = {
-  hakukohdeOid: 'hakukohde-oid-2',
-  hakukohdeNimi: 'Meteorologi, Hurrikaanien tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-2',
-  tarjoajaNimi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
-  valintatapajonoOid: '1234',
-  valintatila: 'KESKEN',
-  vastaanottotila: 'KESKEN',
-  ilmoittautumistila: {
-    ilmoittautumisaika: {},
-    ilmoittautumistila: 'EI_TEHTY',
-    ilmoittauduttavissa: false,
-  },
-  vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
-  hyvaksyttyJaJulkaistuDate: null,
-  julkaistavissa: false,
-  ehdollisestiHyvaksyttavissa: false,
-  tilanKuvaukset: {
-    FI: '',
-    SV: '',
-    EN: '',
-  },
-  showMigriURL: null,
-  jonokohtaisetTulostiedot: [
-    {
-      oid: '1234',
-      nimi: '',
-      valintatila: 'KESKEN',
-      julkaistavissa: false,
       tilanKuvaukset: {
         FI: '',
         SV: '',

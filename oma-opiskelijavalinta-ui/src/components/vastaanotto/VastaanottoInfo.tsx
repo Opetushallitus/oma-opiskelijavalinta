@@ -1,4 +1,4 @@
-import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
+import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { InfoBox } from '../InfoBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
@@ -17,19 +17,9 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { Box } from '@mui/material';
-import { styled } from '@/lib/theme';
 import { isNonNullish } from 'remeda';
 import { getAlemmatVastaanotot } from './vastaanotto-utils';
-
-const MultiInfoContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  rowGap: theme.spacing(2),
-  a: {
-    color: ophColors.black,
-  },
-}));
+import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 
 const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -52,7 +42,7 @@ const getEhdollisestiVastaanottanutInfo = (
   );
 };
 
-const getVastaanottoPaattyyInfo = (vastaanottoPaattyy: string) => (
+export const getVastaanottoPaattyyInfo = (vastaanottoPaattyy: string) => (
   <OphTypography>
     <Translation
       keyName={'vastaanotto.info.paattyy'}

@@ -21,7 +21,7 @@ import {
   getValintatapajononTilaLabel,
   isHyvaksyttyTaiVaralla,
   valintatilaColors,
-} from '@/components/valinnantulos/tulos-display-utils';
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ophColors } from '@/lib/theme';
 import { mapKeys } from 'remeda';
 import { OphTypography } from '@opetushallitus/oph-design-system';
@@ -100,7 +100,7 @@ export function ValintatapajonoTable({
         <TableHead>
           <TableRow>
             <TableCell>{t('valintatapa.nimi')}</TableCell>
-            <TableCell>{t('vaintatapa.pisteet')}</TableCell>
+            <TableCell>{t('valintatapa.pisteet')}</TableCell>
             <TableCell>{t('valintatapa.alimmat-hyvaksytyt-pisteet')}</TableCell>
             <TableCell>{t('valintatapa.tulos')}</TableCell>
           </TableRow>
