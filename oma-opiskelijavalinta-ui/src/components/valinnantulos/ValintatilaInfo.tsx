@@ -16,12 +16,14 @@ import { isNonNullish } from 'remeda';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import {
+  getVarallaOlevatMuutToiveet,
   hasAlempiHyvaksytty,
   isHyvaksytty,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ExternalLink } from '@/components/ExternalLink';
 import { List, ListItem } from '@mui/material';
 import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
+import { getVarallaOlevatYlemmatToiveet } from '@/components/vastaanotto/vastaanotto-utils';
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -107,10 +109,11 @@ const getOdottaaYlempaaInfo = (
 };
 
 const getVastaanottoInfo = (
+  hakemus: Hakemus,
   tulos: HakutoiveenTulos,
   kk: boolean,
   yps: boolean | undefined,
-  priorisoidutHakutoiveet: boolean,
+  ylempiaVaralla: boolean,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
@@ -119,17 +122,30 @@ const getVastaanottoInfo = (
     tulos.vastaanottoDeadline,
     lang,
   );
+
+  const muitaHakutoiveitaVaralla =
+    getVarallaOlevatMuutToiveet(hakemus, tulos.hakukohdeOid).length > 0;
   return (
     <>
+      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
+        <OphTypography sx={{ fontWeight: 'bolder' }}>
+          {t('vastaanotto.info.jonotus')}
+        </OphTypography>
+      )}
       {getVastaanottoPaattyyInfo(vastaanottoPaattyy)}
       {kk && yps && (
         <OphTypography>
           {t('vastaanotto.info.yhden-paikan-saanto')}
         </OphTypography>
       )}
-      {kk && !priorisoidutHakutoiveet && (
+      {kk && !hakemus.priorisoidutHakutoiveet && muitaHakutoiveitaVaralla && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
+        </OphTypography>
+      )}
+      {kk && hakemus.priorisoidutHakutoiveet && ylempiaVaralla && (
+        <OphTypography sx={{ fontWeight: 'bolder' }}>
+          {t('vastaanotto.info.jonotus')}
         </OphTypography>
       )}
       {kk && (
@@ -167,8 +183,11 @@ const getInfoText = (
     hakukohde &&
     hasAlempiHyvaksytty(tulos.hakukohdeOid, application);
 
+  const ylempiaVaralla =
+    isNonNullish(hakukohde) &&
+    getVarallaOlevatYlemmatToiveet(application, hakukohde).length > 0;
   return (
-    <MultiInfoContainer>
+    <MultiInfoContainer data-test-id={`valintatilainfo-${tulos.hakukohdeOid}`}>
       {toinenAsteVarallaYlempaanAlempiHyvaksytty && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('tulos.info.varalla-ylempaan-alempi-hyvaksytty')}
@@ -185,10 +204,11 @@ const getInfoText = (
       {kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
         getVastaanottoInfo(
+          application,
           tulos,
           kkHaku,
           YPS,
-          application.priorisoidutHakutoiveet,
+          ylempiaVaralla,
           lang,
           t,
         )}
@@ -217,6 +237,5 @@ export function ValintatilaInfo({
     odottaaYlempaa,
   );
 
-  // näytetään info jos ehdollinen / varalla / kaikki hylätty
   return <InfoBox>{info}</InfoBox>;
 }

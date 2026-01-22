@@ -4,7 +4,7 @@ import {
   Valintatila,
 } from '@/lib/valinta-tulos-types';
 import { type BadgeColor, BadgeColorKey } from '@/components/StatusBadgeChip';
-import { isDefined, mapKeys, mapValues } from 'remeda';
+import { isDefined, isNonNullish, mapKeys, mapValues } from 'remeda';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
@@ -244,3 +244,19 @@ export const isHyvaksyttyOdottaaYlempaa = (
     );
   });
 };
+
+export function getVarallaOlevatMuutToiveet(
+  application: Hakemus,
+  hakukohdeOid: string,
+): Array<Hakukohde> {
+  const varallaOlevat = application.hakemuksenTulokset.filter(
+    (ht) =>
+      ht.valintatila === Valintatila.VARALLA &&
+      ht.hakukohdeOid !== hakukohdeOid,
+  );
+  return varallaOlevat
+    .map((ht) =>
+      application.hakukohteet?.find((hk) => hk.oid === ht.hakukohdeOid),
+    )
+    .filter(isNonNullish);
+}

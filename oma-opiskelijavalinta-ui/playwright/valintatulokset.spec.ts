@@ -66,6 +66,9 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   ).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
+  await expect(
+    page.getByTestId('valintatilainfo-hakukohde-oid-3'),
+  ).toBeVisible();
 });
 
 test('Näyttää hyväksytylle tulokselle vastaanottoinfon', async ({ page }) => {
@@ -86,7 +89,39 @@ test('Näyttää hyväksytylle tulokselle vastaanottoinfon', async ({ page }) =>
   ).toBeVisible();
 });
 
-test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruuntumisesta', async ({
+test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruuntumisesta jos on toinen hakutoive varasijalla', async ({
+  page,
+}) => {
+  const varallaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      jarjestetytHakutoiveet: false,
+    },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosVarasijalla,
+        hakukohdeOid: 'hakukohde-oid-1',
+      },
+      {
+        ...hakemuksenTulosHyvaksytty,
+        hakukohdeOid: 'hakukohde-oid-2',
+        valintatila: 'HYVAKSYTTY',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA',
+      },
+    ],
+  };
+  await fetchMockData(page, varallaApplication);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-1');
+  await expect(
+    tulokset.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeVisible();
+});
+
+test('Ei näytä priorisoinnittoman kk-haun hyväksytylle tulokselle infoa peruuntumisesta jos ei ole muu hakutoive varasijalla', async ({
   page,
 }) => {
   const varallaApplication = {
@@ -107,7 +142,7 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
     tulokset.getByText(
       'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
     ),
-  ).toBeVisible();
+  ).toBeHidden();
 });
 
 test('Näyttää priorisoinnittoman kk-haun varasijalla-tulokselle infon peruuntumisesta kun toinen hakutoive on hyväksytty', async ({
@@ -142,6 +177,35 @@ test('Näyttää priorisoinnittoman kk-haun varasijalla-tulokselle infon peruunt
   ).toBeVisible();
 });
 
+test('Näyttää priorisoidun kk-haun alemman hakutoiveen hyväksytylle tulokselle infon jonotuksesta', async ({
+  page,
+}) => {
+  const ylempiVarallaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      jarjestetytHakutoiveet: true,
+    },
+    hakemuksenTulokset: [
+      hakemuksenTulosVarasijalla,
+      {
+        ...hakemuksenTulosHyvaksytty,
+        hakukohdeOid: 'hakukohde-oid-2',
+        valintatila: 'HYVAKSYTTY',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA',
+      },
+    ],
+  };
+  await fetchMockData(page, ylempiVarallaApplication);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-1');
+  await expect(
+    tulokset.getByText(
+      'Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.',
+    ),
+  ).toBeVisible();
+});
+
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
   const hylattyApplication = {
     ...hakemus2,
@@ -169,6 +233,12 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
     app1.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
   ).toBeVisible();
   await expect(app1.getByText('Kesken')).toBeVisible();
+  await expect(
+    page.getByTestId('valintatilainfo-hakukohde-oid-1'),
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('valintatilainfo-hakukohde-oid-2'),
+  ).toBeHidden();
 });
 
 test('Näyttää kesken-tuloksen jos hakuaika on päättynyt ja tulosta ei ole julkaistu', async ({

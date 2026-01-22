@@ -11,7 +11,10 @@ import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import { HakutoiveenTulosInfo } from '@/components/valinnantulos/HakutoiveenTulosInfo';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { ValintatilaInfo } from '@/components/valinnantulos/ValintatilaInfo';
-import { isHyvaksyttyOdottaaYlempaa } from '@/components/valinnantulos/valinnan-tulos-utils';
+import {
+  isHyvaksyttyOdottaaYlempaa,
+  isHyvaksyttyTaiVaralla,
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 
 const ORDER_NUMBER_WIDTH = 40; // px
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
@@ -118,7 +121,7 @@ export function Hakutoive({
         <OphTypography variant="body1">
           {translateEntity(hakukohde.nimi)}
         </OphTypography>
-        {tulos && (
+        {tulos && isHyvaksyttyTaiVaralla(tulos.valintatila) && (
           <ValintatilaInfo
             tulos={tulos}
             application={hakemus}
