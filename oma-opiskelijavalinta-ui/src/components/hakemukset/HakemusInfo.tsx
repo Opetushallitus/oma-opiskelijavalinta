@@ -16,6 +16,11 @@ import {
 } from '@/lib/kouta-utils';
 import { styled } from '@/lib/theme';
 import { List, ListItem } from '@mui/material';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import {
+  naytettavatVastaanottoTiedot,
+  onkoVastaanottoTehty,
+} from '@/lib/vastaanotto.service';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
@@ -163,8 +168,16 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
   return null;
 }
 
-export function HakemusInfo({ hakemus }: { hakemus: Hakemus }) {
-  return isTruthy(hakemus.haku) ? (
+export function HakemusInfo({
+  hakemus,
+  tulokset,
+}: {
+  hakemus: Hakemus;
+  tulokset: Array<HakutoiveenTulos>;
+}) {
+  return isTruthy(hakemus.haku) &&
+    isEmpty(naytettavatVastaanottoTiedot(tulokset)) &&
+    !onkoVastaanottoTehty(tulokset) ? (
     <HakuMuokkausInfo haku={hakemus.haku} hakemus={hakemus} />
   ) : null;
 }

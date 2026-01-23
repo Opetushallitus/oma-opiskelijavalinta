@@ -67,7 +67,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
         {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
       <TilaInfo hakemus={hakemus} />
-      <HakemusInfo hakemus={hakemus} />
+      <HakemusInfo hakemus={hakemus} tulokset={tulokset} />
       {isTruthy(hakemus.modifyLink) && hakemustaVoiMuokata ? (
         <ExternalLinkButton
           href={hakemus.modifyLink ?? ''}
