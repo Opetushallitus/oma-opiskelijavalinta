@@ -11,7 +11,7 @@ function HakuMuokkausInfo({ haku }: { haku: Haku }) {
 
   const lang = getLanguage();
   const hakuaikaPaattyy = toFormattedDateTimeStringWithLocale(
-    haku.viimeisinPaattynytHakuAika, //Tämä saattaa muuttua riippuen OPHYOS-49:n toteutuksesta
+    haku.viimeisinPaattynytHakuAika,
     lang,
   );
 

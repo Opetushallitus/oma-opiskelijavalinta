@@ -8,6 +8,7 @@ case class HakemusEnriched(
   secret: String,
   submitted: String,
   hakemuksenTulokset: List[HakutoiveenTulos],
+  processing: Boolean,
   formName: TranslatedName
 )
 

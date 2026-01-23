@@ -9,5 +9,8 @@ case class Hakemus(
   hakukohteet: List[String],
   secret: String,
   submitted: String,
-  @JsonProperty("form-name") formName: TranslatedName
+  processing: Boolean,
+  @JsonProperty("form-name") formName: TranslatedName,
+  hakuaikaIsOn: Option[Boolean],
+  hakuaikaEnds: Option[Long]
 )

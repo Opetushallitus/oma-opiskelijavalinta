@@ -6,14 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
-import fi.oph.opiskelijavalinta.model.{Hakemus, Haku, HakuEnriched, Hakuaika, Hakukohde}
-import fi.oph.opiskelijavalinta.util.TimeUtils.{isDateTimeBetween, isNowBetween, KOUTA_DATETIME_FORMATTER, ZONE_FINLAND}
+import fi.oph.opiskelijavalinta.model.{Haku, Hakukohde}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
-
-import java.time.{Instant, ZonedDateTime}
 
 @Service
 class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = new ObjectMapper()) {
@@ -28,7 +25,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
 
   @Cacheable(value = Array(CacheConstants.KOUTA_HAKU_CACHE_NAME), sync = true)
-  def getHaku(hakuOid: String, applicationSubmitted: String): Option[HakuEnriched] = {
+  def getHaku(hakuOid: String): Option[Haku] = {
 
     koutaClient.getHaku(hakuOid) match {
       case Left(e) =>
@@ -37,7 +34,6 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
       case Right(o) =>
         Option
           .apply(mapper.readValue(o, classOf[Haku]))
-          .map(h => enrichHaku(h, applicationSubmitted))
     }
   }
 
@@ -49,58 +45,6 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
         Option.empty
       case Right(o) => Option.apply(mapper.readValue(o, classOf[Hakukohde]))
     }
-  }
-
-  private def findClosestEndDate(hakuajat: Seq[Hakuaika], applicationSubmitted: String): String = {
-    val submitted     = ZonedDateTime.ofInstant(Instant.parse(applicationSubmitted), ZONE_FINLAND)
-    var lahinHakuaika = hakuajat
-      .find(ha =>
-        ha.alkaa != null && ha.paattyy != null && isDateTimeBetween(
-          ha.alkaa,
-          ha.paattyy,
-          submitted,
-          KOUTA_DATETIME_FORMATTER
-        )
-      )
-      .map(h => h.paattyy)
-    if (lahinHakuaika.isEmpty) {
-      val now      = ZonedDateTime.now(ZONE_FINLAND)
-      val pastAjat = hakuajat
-        .map(ha => ZonedDateTime.parse(ha.paattyy, KOUTA_DATETIME_FORMATTER))
-        .filter(end => now.isAfter(end))
-        .sorted
-        .map(t => Option(KOUTA_DATETIME_FORMATTER.format(t)))
-      if (pastAjat.nonEmpty) {
-        lahinHakuaika = pastAjat.last
-      }
-    }
-    lahinHakuaika.getOrElse("")
-  }
-
-  private def enrichHaku(haku: Haku, applicationSubmitted: String): HakuEnriched = {
-    val kaynnissaOlevaHakuAika = haku.hakuajat.find(ha =>
-      ha.alkaa != null && ha.paattyy != null && isNowBetween(ha.alkaa, ha.paattyy, KOUTA_DATETIME_FORMATTER)
-    )
-    val onkoHakuKaynnissa = kaynnissaOlevaHakuAika.nonEmpty
-    kaynnissaOlevaHakuAika match
-      case Some(hakuaika) =>
-        HakuEnriched(
-          haku.oid,
-          haku.nimi,
-          onkoHakuKaynnissa,
-          hakuaika.paattyy,
-          haku.kohdejoukkoKoodiUri,
-          haku.hakutapaKoodiUri
-        )
-      case _ =>
-        HakuEnriched(
-          haku.oid,
-          haku.nimi,
-          onkoHakuKaynnissa,
-          findClosestEndDate(haku.hakuajat, applicationSubmitted),
-          haku.kohdejoukkoKoodiUri,
-          haku.hakutapaKoodiUri
-        )
   }
 
 }

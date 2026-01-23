@@ -45,55 +45,11 @@ class KoutaServiceTest {
 
   @Test
   def returnsHakuForHakemus(): Unit = {
-    val haku = koutaService.getHaku(HAKU_OID, "2024-11-19T10:32:01Z")
+    val haku = koutaService.getHaku(HAKU_OID)
     Assertions.assertFalse(haku.isEmpty)
     Assertions.assertEquals(HAKU_OID, haku.get.oid)
     Assertions.assertEquals("Purkanpurijoiden haku", haku.get.nimi.fi)
-    Assertions.assertFalse(haku.get.hakuaikaKaynnissa)
-    Assertions.assertEquals("2024-11-29T09:32:01", haku.get.viimeisinPaattynytHakuAika)
-  }
-
-  @Test
-  def returnsAlwaysFittingLatestHakuAikaForMennytHakemus(): Unit = {
-    Assertions.assertEquals(
-      "2023-11-29T09:32:01",
-      koutaService.getHaku(HAKU_OID, "2023-11-19T10:32:01Z").get.viimeisinPaattynytHakuAika
-    )
-    Assertions.assertEquals(
-      "2022-11-29T09:32:01",
-      koutaService.getHaku(HAKU_OID, "2022-11-19T10:32:01Z").get.viimeisinPaattynytHakuAika
-    )
-    Assertions.assertEquals(
-      "2024-11-29T09:32:01",
-      koutaService.getHaku(HAKU_OID, "2025-10-19T10:32:01Z").get.viimeisinPaattynytHakuAika
-    )
-  }
-
-  @Test
-  def returnsHakuWithHakuaikaKaynnissaForHakemus(): Unit = {
-    val future = KOUTA_DATETIME_FORMATTER.format(ZonedDateTime.now(ZONE_FINLAND).plusDays(1))
-    Mockito
-      .when(koutaClient.getHaku(HAKU_OID))
-      .thenReturn(
-        Right(
-          objectMapper.writeValueAsString(
-            Haku(
-              HAKU_OID,
-              TranslatedName("Ajankohtaista haku", "Samma på svenska", "Now search"),
-              "hakutapa_01",
-              "haunkohdejoukko_20",
-              Seq(Hakuaika("2025-10-19T09:32:01", future))
-            )
-          )
-        )
-      )
-    val haku = koutaService.getHaku(HAKU_OID, "2025-12-19T10:32:01Z")
-    Assertions.assertFalse(haku.isEmpty)
-    Assertions.assertEquals(HAKU_OID, haku.get.oid)
-    Assertions.assertEquals("Ajankohtaista haku", haku.get.nimi.fi)
-    Assertions.assertTrue(haku.get.hakuaikaKaynnissa)
-    Assertions.assertEquals(future, haku.get.viimeisinPaattynytHakuAika)
-    Assertions.assertEquals("haunkohdejoukko_20", haku.get.kohdejoukkoKoodiUri)
-    Assertions.assertEquals("hakutapa_01", haku.get.hakutapaKoodiUri)
+    Assertions.assertEquals("Samma på svenska", haku.get.nimi.sv)
+    Assertions.assertEquals("Gumchewer search", haku.get.nimi.en)
   }
 }

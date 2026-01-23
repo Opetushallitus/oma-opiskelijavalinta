@@ -82,6 +82,17 @@ class HakemuksetService @Autowired (
     val now = System.currentTimeMillis()
     now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
+  
+  private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
+    HakuEnriched(
+      haku.oid,
+      haku.nimi,
+      hakemus.hakuaikaIsOn.getOrElse(false),
+      hakemus.hakuaikaEnds,
+      haku.kohdejoukkoKoodiUri,
+      haku.hakutapaKoodiUri
+    )
+  }
 
   private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
     val now                                           = new Date()
@@ -90,7 +101,7 @@ class HakemuksetService @Autowired (
     var ohjausparametrit: Option[Ohjausparametrit]    = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
     if (hakemus.haku != null) {
-      haku = koutaService.getHaku(hakemus.haku, hakemus.submitted)
+      haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
       hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
       ohjausparametrit = ohjausparametritService
         .getOhjausparametritForHaku(hakemus.haku)
@@ -123,6 +134,7 @@ class HakemuksetService @Autowired (
       hakemus.secret,
       hakemus.submitted,
       hakutoiveidenTulokset,
+      hakemus.processing,
       hakemus.formName
     )
   }
