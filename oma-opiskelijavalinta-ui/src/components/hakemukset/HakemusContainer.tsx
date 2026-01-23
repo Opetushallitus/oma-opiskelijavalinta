@@ -1,7 +1,7 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { isNonNull, isTruthy } from 'remeda';
-import { ExternalLinkButton } from '../ExternalLink';
+import { isNonNull, isNullish, isTruthy } from 'remeda';
+import { ExternalLink, ExternalLinkButton } from '../ExternalLink';
 import { HakemusInfo } from './HakemusInfo';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { HakemusPaper } from './HakemusPaper';
@@ -12,6 +12,7 @@ import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
+import { isJatkuvaTaiJoustavaHaku } from '@/lib/kouta-utils';
 
 function TilaInfo({ hakemus }: { hakemus: Hakemus }) {
   const { t, getLanguage } = useTranslations();
@@ -20,7 +21,7 @@ function TilaInfo({ hakemus }: { hakemus: Hakemus }) {
 
   let tila = null;
 
-  if (isTruthy(hakemus.haku)) {
+  if (isTruthy(hakemus.haku) && !isJatkuvaTaiJoustavaHaku(hakemus.haku)) {
     if (hakemus.haku.hakuaikaKaynnissa) {
       tila = t('hakemukset.tilankuvaukset.hakuaika-kesken', {
         hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
@@ -54,6 +55,12 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     hakemus.haku,
   );
 
+  const hakemustaVoiMuokata =
+    !hakemus.processing &&
+    (isNullish(hakemus.haku) ||
+      isJatkuvaTaiJoustavaHaku(hakemus.haku) ||
+      hakemus.haku.hakuaikaKaynnissa);
+
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
       <OphTypography variant="h3">
@@ -61,10 +68,15 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
       </OphTypography>
       <TilaInfo hakemus={hakemus} />
       <HakemusInfo hakemus={hakemus} />
-      {isTruthy(hakemus.modifyLink) && (
+      {isTruthy(hakemus.modifyLink) && hakemustaVoiMuokata ? (
         <ExternalLinkButton
           href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.muokkaa')}
+        />
+      ) : (
+        <ExternalLink
+          href={hakemus.modifyLink ?? ''}
+          name={t('hakemukset.nayta')}
         />
       )}
       {isPending && <FullSpinner />}

@@ -9,11 +9,14 @@ export type Hakemus = {
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
   varasijatayttoPaattyy?: number | null;
+  valintaTuloksetJulkaistaanHakijoilleAlkaa?: number | null;
+  valintaTuloksetJulkaistaanHakijoillePaattyy?: number | null;
   submitted: number;
   formName: TranslatedName;
   priorisoidutHakutoiveet: boolean;
   sijoitteluKaytossa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
+  processing: boolean;
 };
 
 export type Hakemukset = {

@@ -13,3 +13,10 @@ export function isToisenAsteenYhteisHaku(haku: Haku): boolean {
 export function isKorkeakouluHaku(haku: Haku): boolean {
   return haku.kohdejoukkoKoodiUri.startsWith('haunkohdejoukko_12');
 }
+
+export function isJatkuvaTaiJoustavaHaku(haku: Haku): boolean {
+  return (
+    haku.hakutapaKoodiUri.startsWith('hakutapa_03') ||
+    haku.hakutapaKoodiUri.startsWith('hakutapa_04')
+  );
+}

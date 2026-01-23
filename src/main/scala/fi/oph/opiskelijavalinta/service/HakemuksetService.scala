@@ -105,17 +105,19 @@ class HakemuksetService @Autowired (
       hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
       ohjausparametrit = ohjausparametritService
         .getOhjausparametritForHaku(hakemus.haku)
-        .map(o =>
+        .map(o => {
+          LOG.info(s"VTJH: ${o.PH_VTJH}")
           Ohjausparametrit(
             o.PH_HKP.flatMap(d => d.date),
             o.PH_IP.flatMap(d => d.date),
-            o.PH_VTJH.flatMap(d => d.date),
+            o.PH_VTJH.flatMap(d => d.dateStart),
+            o.PH_VTJH.flatMap(d => d.dateEnd),
             o.PH_EVR.flatMap(d => d.date),
             o.PH_OPVP.flatMap(d => d.date),
             o.PH_VSTP.flatMap(d => d.date),
             o.sijoittelu,
             o.jarjestetytHakutoiveet
-          )
+          )}
         )
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHakemus(ohjausparametrit)) {
