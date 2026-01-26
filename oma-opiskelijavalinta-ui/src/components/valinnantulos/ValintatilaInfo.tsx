@@ -32,21 +32,11 @@ const getVarasijallaInfo = (
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
-  console.log('kk in varasijalla info:', kk);
-  console.log(
-    'priorisoidutHakutoiveet in varasijalla info:',
-    priorisoidutHakutoiveet,
-  );
-  console.log(
-    'priorisoidutHakutoiveet value:',
-    priorisoidutHakutoiveet,
-    'type:',
-    typeof priorisoidutHakutoiveet,
-  );
   const varasijatayttoPaattyy = toFormattedDateTimeStringWithLocale(
     application.varasijatayttoPaattyy,
     lang,
   );
+  console.log(varasijatayttoPaattyy);
   return (
     <>
       {kk && !priorisoidutHakutoiveet && (
@@ -54,12 +44,13 @@ const getVarasijallaInfo = (
           {t('tulos.info.varalla-peruuntuu')}
         </OphTypography>
       )}
+      <OphTypography>{t('tulos.info.varasijalla')}</OphTypography>
       <OphTypography>
         <Translation
-          keyName={'tulos.info.varasijalla'}
+          keyName={'tulos.info.varasijalta-hyvaksyminen'}
           params={{
             varasijatayttoPaattyy,
-            br: <br />,
+            b: <b></b>,
           }}
         />
       </OphTypography>

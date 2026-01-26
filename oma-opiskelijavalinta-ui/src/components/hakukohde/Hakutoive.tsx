@@ -78,7 +78,6 @@ export function Hakutoive({
       hakemus.priorisoidutHakutoiveet &&
       isHyvaksyttyOdottaaYlempaa(hakemus, tulos),
   );
-  console.log('odottaaYlempaa', odottaaYlempaa);
   return (
     <HakutoiveContainer>
       <Box
