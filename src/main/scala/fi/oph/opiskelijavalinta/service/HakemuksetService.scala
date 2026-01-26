@@ -82,7 +82,7 @@ class HakemuksetService @Autowired (
     val now = System.currentTimeMillis()
     now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
-  
+
   private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
     HakuEnriched(
       haku.oid,
@@ -117,8 +117,8 @@ class HakemuksetService @Autowired (
             o.PH_VSTP.flatMap(d => d.date),
             o.sijoittelu,
             o.jarjestetytHakutoiveet
-          )}
-        )
+          )
+        })
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHakemus(ohjausparametrit)) {
         // VTSService palauttaa vain julkaistavissa olevat hakutoiveen tulokset
