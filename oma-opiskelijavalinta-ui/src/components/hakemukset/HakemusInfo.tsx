@@ -17,10 +17,8 @@ import {
 import { styled } from '@/lib/theme';
 import { List, ListItem } from '@mui/material';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import {
-  naytettavatVastaanottoTiedot,
-  onkoVastaanottoTehty,
-} from '@/lib/vastaanotto.service';
+import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
+import { onkoKeskenTilaisiaValinnantiloja } from '@/lib/valinta-tulos-utils';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
@@ -176,7 +174,7 @@ export function HakemusInfo({
   tulokset: Array<HakutoiveenTulos>;
 }) {
   return isTruthy(hakemus.haku) &&
-    isEmpty(naytettavatVastaanottoTiedot(tulokset)) &&
+    (isEmpty(tulokset) || onkoKeskenTilaisiaValinnantiloja(tulokset)) &&
     !onkoVastaanottoTehty(tulokset) ? (
     <HakuMuokkausInfo haku={hakemus.haku} hakemus={hakemus} />
   ) : null;
