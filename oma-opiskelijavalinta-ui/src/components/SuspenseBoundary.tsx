@@ -9,7 +9,7 @@ type FallbackRenderType = ErrorBoundaryPropsWithRender['fallbackRender'];
 const errorFallbackRender: FallbackRenderType = ({
   resetErrorBoundary,
   error,
-}) => <ErrorView error={error} reset={resetErrorBoundary} />;
+}) => <ErrorView error={error as Error} reset={resetErrorBoundary} />;
 
 export const SuspenseBoundary = ({
   children,

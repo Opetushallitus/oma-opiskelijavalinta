@@ -76,7 +76,7 @@ export const JATKUVA_HAKU = {
   nimi: { fi: 'Rötkönperän jatkuva haku' },
   hakuaikaKaynnissa: true,
   hakutapaKoodiUri: 'hakutapa_03',
-  kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
+  kohdejoukkoKoodiUri: 'haunkohdejoukko_23',
 };
 
 export const hakemus3ToinenAste = {

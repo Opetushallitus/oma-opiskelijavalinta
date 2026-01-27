@@ -28,12 +28,16 @@ export const isHyvaksyttyOdottaaYlempaa = (
   );
 };
 
-export function onkoKeskenTilaisiaValinnantiloja(
+export function onkoJulkaisemattomiaValinnantiloja(
   hakemuksenTulokset: Array<HakutoiveenTulos>,
+  hakutoiveet: Array<Hakukohde>,
 ): boolean {
   return (
+    hakutoiveet.length > hakemuksenTulokset.length ||
     hakemuksenTulokset.filter(
-      (ht) => ht.valintatila && ht.valintatila === Valintatila.KESKEN,
+      (ht) =>
+        ht.valintatila &&
+        (ht.valintatila === Valintatila.KESKEN || !ht.julkaistavissa),
     ).length > 0
   );
 }

@@ -13,7 +13,7 @@ import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import { isJatkuvaTaiJoustavaHaku } from '@/lib/kouta-utils';
-import { onkoKeskenTilaisiaValinnantiloja } from '@/lib/valinta-tulos-utils';
+import { onkoJulkaisemattomiaValinnantiloja } from '@/lib/valinta-tulos-utils';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 function TilaInfo({
@@ -31,7 +31,8 @@ function TilaInfo({
 
   if (isTruthy(hakemus.haku) && !isJatkuvaTaiJoustavaHaku(hakemus.haku)) {
     const tuloksetJulkaistu =
-      tulokset.length > 0 && !onkoKeskenTilaisiaValinnantiloja(tulokset);
+      tulokset.length > 0 &&
+      !onkoJulkaisemattomiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []);
 
     if (hakemus.haku.hakuaikaKaynnissa && !tuloksetJulkaistu) {
       tila = (
@@ -91,7 +92,11 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     (isNullish(hakemus.haku) ||
       isJatkuvaTaiJoustavaHaku(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
-        (isEmpty(tulokset) || onkoKeskenTilaisiaValinnantiloja(tulokset))));
+        (isEmpty(tulokset) ||
+          onkoJulkaisemattomiaValinnantiloja(
+            tulokset,
+            hakemus.hakukohteet ?? [],
+          ))));
 
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
@@ -107,7 +112,10 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
         />
       ) : (
         (isEmpty(tulokset) ||
-          onkoKeskenTilaisiaValinnantiloja(tulokset) ||
+          onkoJulkaisemattomiaValinnantiloja(
+            tulokset,
+            hakemus.hakukohteet ?? [],
+          ) ||
           isJatkuvaTaiJoustavaHaku(hakemus.haku)) && (
           <ExternalLinkButton
             href={hakemus.modifyLink ?? ''}

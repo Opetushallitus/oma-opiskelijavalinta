@@ -24,7 +24,7 @@
     "muokkaa": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
     "info": {
-      "lahettanyt": "Olet tayttanyt hakemuksen.",
+      "lahettanyt": "Olet täyttänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen.",
       "hakuaika-paattynyt": "Hakuaika on päättynyt. Tällä hetkellä oppilaitokset tarkistavat hakemuksia. Seuraa Oma Opintopolkua ja sähköpostiasi.",
       "julkaistaan": "Valintojen tulokset julkaistaan hakijoille {tuloksetJulkaistaan}.",
