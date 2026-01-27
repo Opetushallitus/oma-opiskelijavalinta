@@ -15,7 +15,6 @@ import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import { isJatkuvaTaiJoustavaHaku } from '@/lib/kouta-utils';
 import { onkoKeskenTilaisiaValinnantiloja } from '@/lib/valinta-tulos-utils';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import { Box } from '@mui/material';
 
 function TilaInfo({
   hakemus,
@@ -47,17 +46,15 @@ function TilaInfo({
       );
     } else if (tuloksetJulkaistu) {
       tila = (
-        <Box sx={{ display: 'inline-flex', columnGap: '0.4rem' }}>
-          <OphTypography>
-            {t('hakemukset.tilankuvaukset.kaikki-julkaistu')}
-          </OphTypography>
+        <OphTypography>
+          {t('hakemukset.tilankuvaukset.kaikki-julkaistu')}
           {hakemus.modifyLink && (
             <ExternalLink
               href={hakemus.modifyLink ?? ''}
-              name={t('hakemukset.nayta')}
+              name={` ${t('hakemukset.nayta')}`}
             />
           )}
-        </Box>
+        </OphTypography>
       );
     } else if (!hakemus.haku.hakuaikaKaynnissa) {
       tila = (
