@@ -1,3 +1,4 @@
+import { isTruthy } from 'remeda';
 import type { Haku } from './kouta-types';
 
 export const isYhteishaku = (haku: Haku): boolean =>
@@ -14,9 +15,10 @@ export function isKorkeakouluHaku(haku: Haku): boolean {
   return haku.kohdejoukkoKoodiUri.startsWith('haunkohdejoukko_12');
 }
 
-export function isJatkuvaTaiJoustavaHaku(haku: Haku): boolean {
+export function isJatkuvaTaiJoustavaHaku(haku?: Haku): boolean {
   return (
-    haku.hakutapaKoodiUri.startsWith('hakutapa_03') ||
-    haku.hakutapaKoodiUri.startsWith('hakutapa_04')
+    isTruthy(haku) &&
+    (haku.hakutapaKoodiUri.startsWith('hakutapa_03') ||
+      haku.hakutapaKoodiUri.startsWith('hakutapa_04'))
   );
 }

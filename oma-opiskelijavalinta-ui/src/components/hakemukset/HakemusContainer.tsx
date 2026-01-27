@@ -109,7 +109,9 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
           name={t('hakemukset.muokkaa')}
         />
       ) : (
-        (isEmpty(tulokset) || onkoKeskenTilaisiaValinnantiloja(tulokset)) && (
+        (isEmpty(tulokset) ||
+          onkoKeskenTilaisiaValinnantiloja(tulokset) ||
+          isJatkuvaTaiJoustavaHaku(hakemus.haku)) && (
           <ExternalLinkButton
             href={hakemus.modifyLink ?? ''}
             name={t('hakemukset.nayta')}
