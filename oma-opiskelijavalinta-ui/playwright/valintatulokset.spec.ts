@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import {
   mockHakemuksetFetch,
   mockAuthenticatedUser,
+  expectPageAccessibilityOk,
 } from './lib/playwrightUtils';
 import {
   hakemuksenTulosHylatty,
@@ -517,4 +518,54 @@ test('Näyttää valintatapajonot mobiililayoutissa ilman taulukkoa', async ({
   await expect(
     page.getByTestId('valintatapajono-2345-alinhyvaksytty').getByText('45'),
   ).toBeVisible();
+});
+
+test('Tulos ilman valintatapajonoa on saavutettava', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus1,
+    hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+  const tulos = page.getByTestId('application-tulos-hakukohde-oid-1');
+  await expect(tulos.getByText('Varasijalla: 2')).toBeVisible();
+  await expectPageAccessibilityOk(page);
+});
+
+test('Valintatapajonojen tulos on saavutettava', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot: jonokohtaisetTulostiedot,
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+  const todistusvalintaRow = page.getByTestId(
+    'valintatapajono-todistusvalinta',
+  );
+  await expect(
+    todistusvalintaRow.getByText('Ei hyväksytty tällä valintatavalla'),
+  ).toBeVisible();
+  await expectPageAccessibilityOk(page);
+});
+
+test('Valintatapajonojen mobiililayout on saavutettava', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot,
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+  await expect(page.getByTestId('valintatapajono-mobile')).toBeVisible();
+  await expectPageAccessibilityOk(page);
 });
