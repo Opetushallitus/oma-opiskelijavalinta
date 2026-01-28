@@ -3,6 +3,7 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
+import fi.oph.opiskelijavalinta.security.AuditOperation
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -73,6 +74,40 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def doesVastaanotto(): Unit = {
+    initProperVastaanotto()
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .content("VastaanotaSitovasti")
+          .`with`(user(oppijaUser))
+      )
+      .andExpect(status().isOk)
+  }
+
+  @Test
+  def auditLogsVastaanotto(): Unit = {
+    initProperVastaanotto()
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .content("VastaanotaSitovasti")
+          .`with`(user(oppijaUser))
+      )
+    val auditLogEntry = getLatestAuditLogEntry
+    Assertions.assertEquals(AuditOperation.TallennaVastaanotto.name, auditLogEntry.operation)
+    Assertions.assertEquals(
+      Map(
+        "hakemusOid"   -> HAKEMUS_OID,
+        "hakukohdeOid" -> HAKUKOHDE_OID,
+        "vastaanotto"  -> "VastaanotaSitovasti"
+      ),
+      auditLogEntry.target
+    )
+  }
+
+  def initProperVastaanotto(): Unit = {
     Mockito
       .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(
@@ -97,13 +132,6 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
       .thenReturn(Right("OK"))
-    mvc
-      .perform(
-        MockMvcRequestBuilders
-          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
-          .`with`(user(oppijaUser))
-      )
-      .andExpect(status().isOk)
+    None
   }
 }
