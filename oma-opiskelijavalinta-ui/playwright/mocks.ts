@@ -8,7 +8,7 @@ export const hakemus1 = {
     nimi: { fi: 'Hurrikaaniopiston erillishaku 2025' },
     hakuaikaKaynnissa: true,
     viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
-    hakutapaKoodiUri: 'hakutapa_01',
+    hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-10-18T16:00:00',
@@ -31,6 +31,8 @@ export const hakemus1 = {
   ohjausparametrit: {
     hakukierrosPaattyy: 1763471212000,
     jarjestetytHakutoiveet: true,
+    valintaTuloksetJulkaistaanHakijoilleAlkaa: 1779271212000,
+    varasijatayttoPaattyy: 1779471212000,
   },
   hakemuksenTulokset: [],
 };
@@ -43,7 +45,7 @@ export const hakemus2 = {
     nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
     hakuaikaKaynnissa: false,
     viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
-    hakutapaKoodiUri: 'hakutapa_01',
+    hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-06-18T19:00:00',

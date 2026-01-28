@@ -4,7 +4,12 @@ import {
   mockHakemuksetFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
-import { hakemuksenTulosHyvaksytty, hakemus5JatkuvaHaku } from './mocks';
+import {
+  hakemuksenTulosHyvaksytty,
+  hakemuksenTulosVarasijalla,
+  hakemus1,
+  hakemus5JatkuvaHaku,
+} from './mocks';
 
 test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
   await mockHakemuksetFetch(page);
@@ -76,6 +81,54 @@ test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
       .getByTestId('past-hakemukset')
       .getByText('Sinulla ei ole aiempia hakemuksia.', { exact: true }),
   ).toBeVisible();
+});
+
+test('Näyttää käyttäjän hakemukset joiden tulokset ovat osittain valmiit', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        haku: { ...hakemus1.haku, hakuaikaKaynnissa: false },
+        hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+  const app = page.getByTestId('application-hakemus-oid-1');
+  await expect(
+    app.getByText('Hurrikaaniopiston erillishaku 2025'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app.getByText(
+      'Olet täyttänyt hakemuksen. Voit muokata hakemustasi alla olevan painikkeen kautta',
+    ),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Hakuaika on päättynyt. Tällä hetkellä'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Valintojen tulokset julkaistaan hakijoille 20.5.2026.'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Varasijoilta valitseminen päättyy 22.5.2026'),
+  ).toBeVisible();
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(0);
 });
 
 test('Näyttää jatkuvan haun hakemuksen joka ei ole käsittelyssä', async ({
