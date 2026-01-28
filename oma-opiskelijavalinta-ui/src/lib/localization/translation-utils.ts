@@ -21,6 +21,7 @@ export function translateName(
 
 const toFinnishDate = (date: Date) => new TZDateMini(date, 'Europe/Helsinki');
 
+export const DEFAULT_DATE_FORMAT = `d.M.yyyy`;
 export const DEFAULT_DATE_TIME_FORMAT = `d.M.yyyy 'klo' HH:mm`;
 export const SWEDISH_DATE_TIME_FORMAT = `d.M.yyyy 'kl.' HH:mm`;
 export const ENGLISH_DATE_TIME_FORMAT = `MMM. d, yyyy 'at' HH:mm a z`;

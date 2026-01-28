@@ -16,7 +16,7 @@ case class HakuEnriched(
   oid: String,
   nimi: TranslatedName,
   hakuaikaKaynnissa: Boolean,
-  viimeisinPaattynytHakuAika: String,
+  viimeisinPaattynytHakuAika: Option[Long],
   kohdejoukkoKoodiUri: String,
   hakutapaKoodiUri: String
 )

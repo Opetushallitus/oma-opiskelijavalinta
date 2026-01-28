@@ -1,5 +1,5 @@
 import type { Hakukohde } from '@/lib/kouta-types';
-import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { Valintatila, type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { isNullish } from 'remeda';
 
 export const isJulkaistuHakutoiveenTulos = (
@@ -27,3 +27,17 @@ export const isHyvaksyttyOdottaaYlempaa = (
     (ht) => ht?.valintatila === 'KESKEN' || ht?.valintatila === 'VARALLA',
   );
 };
+
+export function onkoJulkaisemattomiaValinnantiloja(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+  hakutoiveet: Array<Hakukohde>,
+): boolean {
+  return (
+    hakutoiveet.length > hakemuksenTulokset.length ||
+    hakemuksenTulokset.filter(
+      (ht) =>
+        ht.valintatila &&
+        (ht.valintatila === Valintatila.KESKEN || !ht.julkaistavissa),
+    ).length > 0
+  );
+}

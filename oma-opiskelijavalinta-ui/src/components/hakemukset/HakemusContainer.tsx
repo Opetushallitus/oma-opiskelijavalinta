@@ -1,7 +1,7 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { isNonNull, isTruthy } from 'remeda';
-import { ExternalLinkButton } from '../ExternalLink';
+import { isEmpty, isNullish, isTruthy } from 'remeda';
+import { ExternalLink, ExternalLinkButton } from '../ExternalLink';
 import { HakemusInfo } from './HakemusInfo';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { HakemusPaper } from './HakemusPaper';
@@ -12,33 +12,66 @@ import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
+import { isJatkuvaTaiJoustavaHaku } from '@/lib/kouta-utils';
+import { onkoJulkaisemattomiaValinnantiloja } from '@/lib/valinta-tulos-utils';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
-function TilaInfo({ hakemus }: { hakemus: Hakemus }) {
+function TilaInfo({
+  hakemus,
+  tulokset,
+}: {
+  hakemus: Hakemus;
+  tulokset: Array<HakutoiveenTulos>;
+}) {
   const { t, getLanguage } = useTranslations();
 
   const lang = getLanguage();
 
   let tila = null;
 
-  if (isTruthy(hakemus.haku)) {
-    if (hakemus.haku.hakuaikaKaynnissa) {
-      tila = t('hakemukset.tilankuvaukset.hakuaika-kesken', {
-        hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
-          hakemus.haku.viimeisinPaattynytHakuAika,
-          lang,
-        ),
-      });
+  if (isTruthy(hakemus.haku) && !isJatkuvaTaiJoustavaHaku(hakemus.haku)) {
+    const tuloksetJulkaistu =
+      tulokset.length > 0 &&
+      !onkoJulkaisemattomiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []);
+
+    if (hakemus.haku.hakuaikaKaynnissa && !tuloksetJulkaistu) {
+      tila = (
+        <OphTypography>
+          {t('hakemukset.tilankuvaukset.hakuaika-kesken', {
+            hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+              hakemus.haku.viimeisinPaattynytHakuAika,
+              lang,
+            ),
+          })}
+        </OphTypography>
+      );
+    } else if (tuloksetJulkaistu) {
+      tila = (
+        <OphTypography>
+          {t('hakemukset.tilankuvaukset.kaikki-julkaistu')}
+          {hakemus.modifyLink && (
+            <ExternalLink
+              href={hakemus.modifyLink ?? ''}
+              name={` ${t('hakemukset.nayta')}`}
+            />
+          )}
+        </OphTypography>
+      );
     } else if (!hakemus.haku.hakuaikaKaynnissa) {
-      tila = t('hakemukset.tilankuvaukset.valinnat-kesken', {
-        hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
-          hakemus.haku.viimeisinPaattynytHakuAika,
-          lang,
-        ),
-      });
+      tila = (
+        <OphTypography>
+          {t('hakemukset.tilankuvaukset.valinnat-kesken', {
+            hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+              hakemus.haku.viimeisinPaattynytHakuAika,
+              lang,
+            ),
+          })}
+        </OphTypography>
+      );
     }
   }
 
-  return isNonNull(tila) ? <OphTypography>{tila}</OphTypography> : null;
+  return tila;
 }
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
@@ -54,18 +87,42 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     hakemus.haku,
   );
 
+  const hakemustaVoiMuokata =
+    !hakemus.processing &&
+    (isNullish(hakemus.haku) ||
+      isJatkuvaTaiJoustavaHaku(hakemus.haku) ||
+      (hakemus.haku.hakuaikaKaynnissa &&
+        (isEmpty(tulokset) ||
+          onkoJulkaisemattomiaValinnantiloja(
+            tulokset,
+            hakemus.hakukohteet ?? [],
+          ))));
+
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
       <OphTypography variant="h3">
         {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
-      <TilaInfo hakemus={hakemus} />
-      <HakemusInfo hakemus={hakemus} />
-      {isTruthy(hakemus.modifyLink) && (
+      <TilaInfo hakemus={hakemus} tulokset={tulokset} />
+      <HakemusInfo hakemus={hakemus} tulokset={tulokset} />
+      {isTruthy(hakemus.modifyLink) && hakemustaVoiMuokata ? (
         <ExternalLinkButton
           href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.muokkaa')}
         />
+      ) : (
+        (isEmpty(tulokset) ||
+          onkoJulkaisemattomiaValinnantiloja(
+            tulokset,
+            hakemus.hakukohteet ?? [],
+          ) ||
+          isJatkuvaTaiJoustavaHaku(hakemus.haku)) && (
+          <ExternalLinkButton
+            href={hakemus.modifyLink ?? ''}
+            name={t('hakemukset.nayta')}
+            variant="outlined"
+          />
+        )
       )}
       {isPending && <FullSpinner />}
       {!isPending && (

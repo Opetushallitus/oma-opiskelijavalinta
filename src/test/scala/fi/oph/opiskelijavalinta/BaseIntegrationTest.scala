@@ -150,7 +150,10 @@ class BaseIntegrationTest {
                 List("hakukohde-oid-1", "hakukohde-oid-2"),
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform")
+                false,
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                Option.empty,
+                Option.empty
               )
             )
           )

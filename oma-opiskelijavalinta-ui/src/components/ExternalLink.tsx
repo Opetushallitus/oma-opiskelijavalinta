@@ -4,14 +4,19 @@ import { OphButton, OphLink } from '@opetushallitus/oph-design-system';
 export type ExternalLinkProps = {
   name: string;
   href: string;
+  variant?: 'contained' | 'text' | 'outlined';
 };
 
-export const ExternalLinkButton = ({ name, href }: ExternalLinkProps) => {
+export const ExternalLinkButton = ({
+  name,
+  href,
+  variant = 'contained',
+}: ExternalLinkProps) => {
   return (
     <OphButton
       endIcon={<OpenInNew />}
       href={href}
-      variant="contained"
+      variant={variant}
       target="_blank"
     >
       {name}

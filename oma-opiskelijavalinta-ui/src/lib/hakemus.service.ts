@@ -8,7 +8,8 @@ import type { Hakemus, Hakemukset } from './hakemus-types';
 type Ohjausparametrit = {
   hakukierrosPaattyy?: number | null;
   ilmoittautuminenPaattyy?: number | null;
-  valintaTuloksetJulkaistaanHakijoille?: number | null;
+  valintaTuloksetJulkaistaanHakijoilleAlkaa?: number | null;
+  valintaTuloksetJulkaistaanHakijoillePaattyy?: number | null;
   ehdollisetValinnatPaattyy?: number | null;
   opiskelijanPaikanVastaanottoPaattyy?: number | null;
   varasijatayttoPaattyy?: number | null;
@@ -23,6 +24,7 @@ type HakemusResponse = {
   secret?: string;
   ohjausparametrit?: Ohjausparametrit;
   submitted: string;
+  processing: boolean;
   formName: TranslatedName;
   hakemuksenTulokset: Array<HakutoiveenTulosDto>;
 };
@@ -43,11 +45,17 @@ function convertToHakemus(app: HakemusResponse, muokkausUrl: string): Hakemus {
   const modifyLink = app.secret ? `${muokkausUrl}=${app.secret}` : null;
   const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
   const varasijatayttoPaattyy = app.ohjausparametrit?.varasijatayttoPaattyy;
+  const valintaTuloksetJulkaistaanHakijoilleAlkaa =
+    app.ohjausparametrit?.valintaTuloksetJulkaistaanHakijoilleAlkaa;
+  const valintaTuloksetJulkaistaanHakijoillePaattyy =
+    app.ohjausparametrit?.valintaTuloksetJulkaistaanHakijoillePaattyy;
   return {
     ...app,
     modifyLink,
     hakukierrosPaattyy,
     varasijatayttoPaattyy,
+    valintaTuloksetJulkaistaanHakijoilleAlkaa,
+    valintaTuloksetJulkaistaanHakijoillePaattyy,
     priorisoidutHakutoiveet:
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     sijoitteluKaytossa: app.ohjausparametrit?.sijoittelu === true,

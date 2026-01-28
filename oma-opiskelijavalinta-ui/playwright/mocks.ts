@@ -5,10 +5,10 @@ export const hakemus1 = {
   secret: 'secret-1',
   haku: {
     oid: 'haku-oid-1',
-    nimi: { fi: 'Hurrikaaniopiston jatkuva haku 2025' },
+    nimi: { fi: 'Hurrikaaniopiston erillishaku 2025' },
     hakuaikaKaynnissa: true,
     viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
-    hakutapaKoodiUri: 'hakutapa_01',
+    hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-10-18T16:00:00',
@@ -31,6 +31,8 @@ export const hakemus1 = {
   ohjausparametrit: {
     hakukierrosPaattyy: 1763471212000,
     jarjestetytHakutoiveet: true,
+    valintaTuloksetJulkaistaanHakijoilleAlkaa: 1779271212000,
+    varasijatayttoPaattyy: 1779471212000,
   },
   hakemuksenTulokset: [],
 };
@@ -43,7 +45,7 @@ export const hakemus2 = {
     nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
     hakuaikaKaynnissa: false,
     viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
-    hakutapaKoodiUri: 'hakutapa_01',
+    hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-06-18T19:00:00',
@@ -69,6 +71,14 @@ export const TOISEN_ASTEEN_YHTEISHAKU = {
   viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
   hakutapaKoodiUri: 'hakutapa_01',
   kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
+};
+
+export const JATKUVA_HAKU = {
+  oid: 'haku-oid-4',
+  nimi: { fi: 'Rötkönperän jatkuva haku' },
+  hakuaikaKaynnissa: true,
+  hakutapaKoodiUri: 'hakutapa_03',
+  kohdejoukkoKoodiUri: 'haunkohdejoukko_23',
 };
 
 export const hakemus3ToinenAste = {
@@ -266,6 +276,31 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
       ],
     },
   ],
+};
+
+export const hakemus5JatkuvaHaku = {
+  oid: 'hakemus-oid-5',
+  secret: 'secret-5',
+  haku: JATKUVA_HAKU,
+  submitted: '2025-12-18T19:00:00',
+  processing: false,
+  hakukohteet: [
+    {
+      oid: 'hakukohde-oid-7',
+      nimi: { fi: 'Penkkiurheilijan diplomi' },
+      jarjestyspaikkaHierarkiaNimi: {
+        fi: 'Lötkönperän koulutuskeskus, Sohva',
+      },
+    },
+  ],
+  ohjausparametrit: {
+    hakukierrosPaattyy: 1769971212000,
+    jarjestetytHakutoiveet: false,
+    valintaTuloksetJulkaistaanHakijoilleAlkaa: 1769271212000,
+    valintaTuloksetJulkaistaanHakijoillePaattyy: 1769371212000,
+    varasijatayttoPaattyy: 1769471212000,
+  },
+  hakemuksenTulokset: [],
 };
 
 export const defaultMockHakemukset = {

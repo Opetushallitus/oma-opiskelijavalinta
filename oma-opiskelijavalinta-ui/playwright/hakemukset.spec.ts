@@ -4,6 +4,12 @@ import {
   mockHakemuksetFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
+import {
+  hakemuksenTulosHyvaksytty,
+  hakemuksenTulosVarasijalla,
+  hakemus1,
+  hakemus5JatkuvaHaku,
+} from './mocks';
 
 test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
   await mockHakemuksetFetch(page);
@@ -13,7 +19,7 @@ test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
 
   const app1 = page.getByTestId('application-hakemus-oid-1');
   await expect(
-    app1.getByText('Hurrikaaniopiston jatkuva haku 2025'),
+    app1.getByText('Hurrikaaniopiston erillishaku 2025'),
   ).toBeVisible();
   await expect(
     app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
@@ -49,10 +55,8 @@ test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
     app2.getByText('Tsunamiopisto, Merenpohjan kampus'),
   ).toBeVisible();
   await expect(
-    app2.getByText(
-      'Voit muokata hakemustasi hakuajan päättymiseen 19.6.2025 klo 09:00 asti.',
-    ),
-  ).toBeVisible();
+    app2.getByText('Voit muokata hakemustasi hakuajan päättymiseen'),
+  ).toBeHidden();
   await expect(
     app2.getByText(
       'Opiskelijavalinta on kesken. Hakuaika päättyi 19.6.2025 klo 09:00.',
@@ -66,13 +70,197 @@ test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
 
   await expect(
     activehakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
-  ).toHaveCount(2);
+  ).toHaveCount(1);
+
+  await expect(
+    activehakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
 
   await expect(
     page
       .getByTestId('past-hakemukset')
       .getByText('Sinulla ei ole aiempia hakemuksia.', { exact: true }),
   ).toBeVisible();
+});
+
+test('Näyttää käyttäjän hakemukset joiden tulokset ovat osittain valmiit', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        haku: { ...hakemus1.haku, hakuaikaKaynnissa: false },
+        hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+  const app = page.getByTestId('application-hakemus-oid-1');
+  await expect(
+    app.getByText('Hurrikaaniopiston erillishaku 2025'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app.getByText(
+      'Olet täyttänyt hakemuksen. Voit muokata hakemustasi alla olevan painikkeen kautta',
+    ),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Hakuaika on päättynyt. Tällä hetkellä'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Valintojen tulokset julkaistaan hakijoille 20.5.2026.'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Varasijoilta valitseminen päättyy 22.5.2026'),
+  ).toBeVisible();
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(0);
+});
+
+test('Näyttää jatkuvan haun hakemuksen joka ei ole käsittelyssä', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, { current: [hakemus5JatkuvaHaku], old: [] });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+
+  const app = page.getByTestId('application-hakemus-oid-5');
+  await expect(app.getByText('Rötkönperän jatkuva haku')).toBeVisible();
+  await expect(
+    app.getByText('Lötkönperän koulutuskeskus, Sohva'),
+  ).toBeVisible();
+  await expect(
+    app.getByText(
+      'Olet täyttänyt hakemuksen. Voit muokata hakemustasi alla olevan painikkeen kautta',
+    ),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Hakemuksesi on otettu käsittelyyn.'),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Valintojen tulokset julkaistaan hakijoille 24.1-25.1.2026.'),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Varasijoilta valitseminen päättyy 27.1.2026'),
+  ).toBeHidden();
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(1);
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(0);
+});
+
+test('Näyttää jatkuvan haun hakemuksen joka on käsittelyssä', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus5JatkuvaHaku, processing: true }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+
+  const app = page.getByTestId('application-hakemus-oid-5');
+  await expect(app.getByText('Rötkönperän jatkuva haku')).toBeVisible();
+  await expect(
+    app.getByText('Lötkönperän koulutuskeskus, Sohva'),
+  ).toBeVisible();
+  await expect(
+    app.getByText(
+      'Olet täyttänyt hakemuksen. Voit muokata hakemustasi alla olevan painikkeen kautta',
+    ),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Hakemuksesi on otettu käsittelyyn.'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Valintojen tulokset julkaistaan hakijoille 24.1-25.1.2026.'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Varasijoilta valitseminen päättyy 27.1.2026'),
+  ).toBeVisible();
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(0);
+});
+
+test('Näyttää jatkuvan haun hakemuksen jonka tulokset ovat valmiit', async ({
+  page,
+}) => {
+  const tulosHyvaksytty = {
+    ...hakemuksenTulosHyvaksytty,
+    hakukohdeOid: hakemus5JatkuvaHaku?.hakukohteet[0]?.oid,
+    hakukohdeNimi: hakemus5JatkuvaHaku?.hakukohteet[1]?.nimi.fi,
+  };
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus5JatkuvaHaku,
+        processing: true,
+        hakemuksenTulokset: [tulosHyvaksytty],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+
+  const app = page.getByTestId('application-hakemus-oid-5');
+  await expect(app.getByText('Rötkönperän jatkuva haku')).toBeVisible();
+  await expect(app.getByText('Lötkönperän koulutuskeskus, Sohva')).toHaveCount(
+    2,
+  );
+  await expect(
+    app.getByText(
+      'Olet täyttänyt hakemuksen. Voit muokata hakemustasi alla olevan painikkeen kautta',
+    ),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Hakemuksesi on otettu käsittelyyn.'),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Valintojen tulokset julkaistaan hakijoille 24.1-25.1.2026.'),
+  ).toBeHidden();
+  await expect(
+    app.getByText('Varasijoilta valitseminen päättyy 27.1.2026'),
+  ).toBeHidden();
+  await expect(app.getByText('Ota opiskelupaikka vastaan')).toBeVisible();
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveCount(0);
 });
 
 test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({
@@ -191,7 +379,7 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await page.goto('');
   await expect(
-    page.getByText('Hurrikaaniopiston jatkuva haku 2025'),
+    page.getByText('Hurrikaaniopiston erillishaku 2025'),
   ).toBeVisible();
   await expectPageAccessibilityOk(page);
 });

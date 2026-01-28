@@ -83,6 +83,17 @@ class HakemuksetService @Autowired (
     now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
+  private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
+    HakuEnriched(
+      haku.oid,
+      haku.nimi,
+      hakemus.hakuaikaIsOn.getOrElse(false),
+      hakemus.hakuaikaEnds,
+      haku.kohdejoukkoKoodiUri,
+      haku.hakutapaKoodiUri
+    )
+  }
+
   private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
     val now                                           = new Date()
     var haku: Option[HakuEnriched]                    = Option.empty
@@ -90,22 +101,24 @@ class HakemuksetService @Autowired (
     var ohjausparametrit: Option[Ohjausparametrit]    = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
     if (hakemus.haku != null) {
-      haku = koutaService.getHaku(hakemus.haku, hakemus.submitted)
+      haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
       hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
       ohjausparametrit = ohjausparametritService
         .getOhjausparametritForHaku(hakemus.haku)
-        .map(o =>
+        .map(o => {
+          LOG.info(s"VTJH: ${o.PH_VTJH}")
           Ohjausparametrit(
             o.PH_HKP.flatMap(d => d.date),
             o.PH_IP.flatMap(d => d.date),
-            o.PH_VTJH.flatMap(d => d.date),
+            o.PH_VTJH.flatMap(d => d.dateStart),
+            o.PH_VTJH.flatMap(d => d.dateEnd),
             o.PH_EVR.flatMap(d => d.date),
             o.PH_OPVP.flatMap(d => d.date),
             o.PH_VSTP.flatMap(d => d.date),
             o.sijoittelu,
             o.jarjestetytHakutoiveet
           )
-        )
+        })
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHakemus(ohjausparametrit)) {
         // VTSService palauttaa vain julkaistavissa olevat hakutoiveen tulokset
@@ -123,6 +136,7 @@ class HakemuksetService @Autowired (
       hakemus.secret,
       hakemus.submitted,
       hakutoiveidenTulokset,
+      hakemus.processing,
       hakemus.formName
     )
   }

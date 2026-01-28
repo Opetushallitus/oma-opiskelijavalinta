@@ -38,7 +38,10 @@ class HakemuksetServiceTest {
                 List.empty,
                 "secret-1",
                 "2025-02-02T19:32:01Z",
-                TranslatedName("Hajuton lomake", null, null)
+                false,
+                TranslatedName("Hajuton lomake", null, null),
+                Option.empty,
+                Option.empty
               )
             )
           )

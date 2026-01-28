@@ -77,7 +77,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoilleAlkaa)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoillePaattyy)
     Mockito.verifyNoInteractions(valintaTulosServiceClient)
     Assertions.assertEquals(List.empty, app.hakemuksenTulokset)
   }
@@ -128,7 +129,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoilleAlkaa)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoillePaattyy)
     val hakutoive1 = app.hakemuksenTulokset.headOption.getOrElse(
       fail("No hakemuksenTulokset returned")
     )
@@ -187,7 +189,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoilleAlkaa)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoillePaattyy)
     Assertions.assertEquals(List.empty, app.hakemuksenTulokset)
   }
 
@@ -228,7 +231,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoille)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoilleAlkaa)
+    Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoillePaattyy)
     Assertions.assertEquals(List.empty, app.hakemuksenTulokset)
   }
 }

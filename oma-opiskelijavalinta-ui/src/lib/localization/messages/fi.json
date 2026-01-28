@@ -24,8 +24,17 @@
     "muokkaa": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
     "info": {
-      "lahettanyt": "Olet lähettänyt hakemuksen.",
-      "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen."
+      "lahettanyt": "Olet täyttänyt hakemuksen.",
+      "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen.",
+      "hakuaika-paattynyt": "Hakuaika on päättynyt. Tällä hetkellä oppilaitokset tarkistavat hakemuksia. Seuraa Oma Opintopolkua ja sähköpostiasi.",
+      "julkaistaan": "Valintojen tulokset julkaistaan hakijoille {tuloksetJulkaistaan}.",
+      "liitepyynnot": "Mahdollisten liitepyyntöjen osalta näet liitteen palauttamisen määräajan hakemukselta, liitepyynnön kohdalta.",
+      "yhteystiedot": "Voit vielä muokata yhteystietojasi hakemuksen kautta.",
+      "varasijat": "Varasijoilta valitseminen päättyy {varasijatPaattyy}.",
+      "jatkuva": {
+        "voit-muokata": "Olet täyttänyt hakemuksen. Voit muokata hakemustasi alla olevan painikkeen kautta.",
+        "kasittelyssa": "Hakemuksesi on otettu käsittelyyn. Tällä hetkellä oppilaitokset tarkistavat hakemuksia. Seuraa Oma Opintopolkua ja sähköpostiasi."
+      }
     },
     "tilankuvaukset": {
       "hakuaika-kesken": "Hakuaika päättyy {hakuaikaPaattyy}.",
