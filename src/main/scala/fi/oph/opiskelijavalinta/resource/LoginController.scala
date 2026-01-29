@@ -20,7 +20,7 @@ class LoginController(@Value("${host.oppija:localhost:3777}") val hostOppija: St
   @GetMapping(path = Array("/login"))
   def login(): RedirectView = {
     val redirectUrl = s"https://$hostOppija/oma-opiskelijavalinta"
-    LOG.debug(s"Redirecting to: $redirectUrl")
+    LOG.info(s"Redirecting to: $redirectUrl")
     new RedirectView(redirectUrl)
   }
 
