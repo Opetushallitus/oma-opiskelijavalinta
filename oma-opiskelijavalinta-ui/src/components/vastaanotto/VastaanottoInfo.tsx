@@ -42,17 +42,25 @@ const getEhdollisestiVastaanottanutInfo = (
   );
 };
 
-export const getVastaanottoPaattyyInfo = (vastaanottoPaattyy: string) => (
-  <OphTypography>
-    <Translation
-      keyName={'vastaanotto.info.paattyy'}
-      params={{
-        vastaanottoPaattyy,
-        strong: <strong />,
-      }}
-    />
-  </OphTypography>
-);
+export const getVastaanottoPaattyyInfo = (
+  vastaanottoPaattyy: string,
+  kkHaku: boolean,
+) => {
+  const textKey = kkHaku
+    ? 'vastaanotto.info.paattyy'
+    : 'vastaanotto.info.2aste-paattyy';
+  return (
+    <OphTypography>
+      <Translation
+        keyName={textKey}
+        params={{
+          vastaanottoPaattyy,
+          strong: <strong />,
+        }}
+      />
+    </OphTypography>
+  );
+};
 
 const getInfoText = (
   t: TFnType<DefaultParamType, string, TranslationKey>,
@@ -102,7 +110,7 @@ const getInfoText = (
             })}
           </OphTypography>
         )}
-        {getVastaanottoPaattyyInfo(vastaanottoPaattyy)}
+        {getVastaanottoPaattyyInfo(vastaanottoPaattyy, kkHaku)}
         {kkHaku && YPS && (
           <OphTypography>
             {t('vastaanotto.info.yhden-paikan-saanto')}

@@ -51,6 +51,7 @@
       "kesken": "Opiskelijavalinta kesken",
       "hyvaksytty": "Hyväksytty",
       "hylatty": "Et saanut tätä opiskelupaikkaa",
+      "varalla": "Olet varasijalla",
       "varalla-varasija": "Olet {varasijanumero}. varasijalla",
       "ehdollisesti-hyvaksytty": "Ehdollinen",
       "peruuntunut": "Peruuntunut",
@@ -81,7 +82,8 @@
       "hyvaksytty-odottaa-ehto2": "2. Et ole ottanut vastaan suomalaiseen korkeakoulututkintoon johtavaa opiskelupaikkaa mistään muusta samana lukukautena alkavasta koulutuksesta.",
       "hyvaksytty-odottaa-peruuntuu": "Jos tulet hyväksytyksi ylempään hakutoiveeseesi, tämä hakukohde peruuntuu automaattisesti.",
       "hyvaksytty-muut-peruuntuvat": "Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.",
-      "varalla-peruuntuu": "Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan."
+      "varalla-peruuntuu": "Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.",
+      "kaikki-hylatty": "Valitettavasti et tällä kertaa saanut opiskelupaikkaa hakemistasi oppilaitoksista."
     }
   },
   "valintatapa": {
@@ -99,7 +101,9 @@
       "jonotus": "Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.",
       "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}.",
       "peru-alempi": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetun paikan.",
-      "peru-alemmat": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetut paikat."
+      "peru-alemmat": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetut paikat.",
+      "2aste-paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai voit menettää paikan.",
+      "2aste-ylempia-varalla": "Opiskelupaikan vastaanottaminen ei vaikuta varasijoihin. Kun otat tämän opiskelupaikan vastaan, olet edelleen varasijalla ylempään hakutoiveeseen."
     },
     "laheta": "Lähetä vastaus",
     "virhe": "Vastaanottotoiminto epäonnistui",

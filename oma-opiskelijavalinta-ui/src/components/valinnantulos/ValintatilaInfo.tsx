@@ -36,7 +36,6 @@ const getVarasijallaInfo = (
     application.varasijatayttoPaattyy,
     lang,
   );
-  console.log(varasijatayttoPaattyy);
   return (
     <>
       {kk && !priorisoidutHakutoiveet && (
@@ -99,10 +98,9 @@ const getOdottaaYlempaaInfo = (
   );
 };
 
-const getVastaanottoInfo = (
+const getKkVastaanottoInfo = (
   hakemus: Hakemus,
   tulos: HakutoiveenTulos,
-  kk: boolean,
   yps: boolean | undefined,
   ylempiaVaralla: boolean,
   lang: Language,
@@ -123,27 +121,51 @@ const getVastaanottoInfo = (
           {t('vastaanotto.info.jonotus')}
         </OphTypography>
       )}
-      {getVastaanottoPaattyyInfo(vastaanottoPaattyy)}
-      {kk && yps && (
+      {getVastaanottoPaattyyInfo(vastaanottoPaattyy, true)}
+      {yps && (
         <OphTypography>
           {t('vastaanotto.info.yhden-paikan-saanto')}
         </OphTypography>
       )}
-      {kk && !hakemus.priorisoidutHakutoiveet && muitaHakutoiveitaVaralla && (
+      {!hakemus.priorisoidutHakutoiveet && muitaHakutoiveitaVaralla && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
         </OphTypography>
       )}
-      {kk && hakemus.priorisoidutHakutoiveet && ylempiaVaralla && (
+      {hakemus.priorisoidutHakutoiveet && ylempiaVaralla && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('vastaanotto.info.jonotus')}
         </OphTypography>
       )}
-      {kk && (
-        <ExternalLink
-          name={t('vastaanotto.info.ohje-kk')}
-          href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
-        />
+      <ExternalLink
+        name={t('vastaanotto.info.ohje-kk')}
+        href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
+      />
+    </>
+  );
+};
+
+const getVastaanottoInfo = (
+  tulos: HakutoiveenTulos,
+  ylempiaVaralla: boolean,
+  lang: Language,
+) => {
+  const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
+    tulos.vastaanottoDeadline,
+    lang,
+  );
+  return (
+    <>
+      {getVastaanottoPaattyyInfo(vastaanottoPaattyy, false)}
+      {ylempiaVaralla && (
+        <OphTypography>
+          <Translation
+            keyName={'vastaanotto.info.2aste-ylempia-varalla'}
+            params={{
+              b: <b></b>,
+            }}
+          />
+        </OphTypography>
       )}
     </>
   );
@@ -194,15 +216,10 @@ const getInfoText = (
         )}
       {kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
-        getVastaanottoInfo(
-          application,
-          tulos,
-          kkHaku,
-          YPS,
-          ylempiaVaralla,
-          lang,
-          t,
-        )}
+        getKkVastaanottoInfo(application, tulos, YPS, ylempiaVaralla, lang, t)}
+      {!kkHaku &&
+        isHyvaksytty(tulos.valintatila) &&
+        getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(lang, t)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
     </MultiInfoContainer>

@@ -11,6 +11,8 @@ import {
   hakemuksenTulosVarasijalla,
   hakemus1,
   hakemus2,
+  hakemus3ToinenAste,
+  hakemus4ToinenAsteAlempiaHyvaksyttyja,
   jonokohtaisetTulostiedot,
   jonokohtaisetTulostiedotEhdollinen,
   jonokohtaisetTulostiedotPeruuntunut,
@@ -72,7 +74,9 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('Näyttää hyväksytylle tulokselle vastaanottoinfon', async ({ page }) => {
+test('Näyttää hyväksytylle kk-tulokselle vastaanottoinfon', async ({
+  page,
+}) => {
   const hyvaksyttyApplication = {
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
@@ -86,6 +90,22 @@ test('Näyttää hyväksytylle tulokselle vastaanottoinfon', async ({ page }) =>
   await expect(
     tulokset.getByText(
       'Ota opiskelupaikka vastaan viimeistään 11.12.2025 klo 15:00 mennessä tai menetät paikan.',
+    ),
+  ).toBeVisible();
+});
+
+test('Näyttää hyväksytylle 2. asteen tulokselle vastaanottoinfon', async ({
+  page,
+}) => {
+  await fetchMockData(page, hakemus3ToinenAste);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-3');
+  await expect(
+    tulokset.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
+  await expect(
+    tulokset.getByText(
+      'Ota opiskelupaikka vastaan viimeistään 11.12.2025 klo 15:00 mennessä tai voit menettää paikan.',
     ),
   ).toBeVisible();
 });
@@ -205,6 +225,56 @@ test('Näyttää priorisoidun kk-haun alemman hakutoiveen hyväksytylle tuloksel
       'Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.',
     ),
   ).toBeVisible();
+});
+
+test('Näyttää 2. asteen haussa infon varasijan säilymisestä jos on ylempi hakutoive varalla ja alempi hyväksytty', async ({
+  page,
+}) => {
+  const hyvaksyttyJaVaralla2asteApplication = {
+    ...hakemus4ToinenAsteAlempiaHyvaksyttyja,
+    hakemuksenTulokset: [
+      {
+        ...hakemus4ToinenAsteAlempiaHyvaksyttyja.hakemuksenTulokset[0],
+        valintatila: 'VARALLA',
+        vastaanottotila: 'KESKEN',
+        vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      },
+      {
+        ...hakemus4ToinenAsteAlempiaHyvaksyttyja.hakemuksenTulokset[1],
+        vastaanottotila: 'KESKEN',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      },
+      {
+        ...hakemus4ToinenAsteAlempiaHyvaksyttyja.hakemuksenTulokset[2],
+        vastaanottotila: 'KESKEN',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyJaVaralla2asteApplication);
+
+  const infoToive1 = page.getByTestId('valintatilainfo-hakukohde-oid-4');
+  await expect(
+    infoToive1.getByText(
+      'Kun otat toisen opiskelupaikan vastaan, olet edelleen varasijalla tähän hakukohteeseen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    infoToive1.getByText(
+      'Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.',
+    ),
+  ).toBeHidden();
+  const infoToive2 = page.getByTestId('valintatilainfo-hakukohde-oid-5');
+  await expect(
+    infoToive2.getByText(
+      'Opiskelupaikan vastaanottaminen ei vaikuta varasijoihin. Kun otat tämän opiskelupaikan vastaan, olet edelleen varasijalla ylempään hakutoiveeseen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    infoToive2.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeHidden();
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
