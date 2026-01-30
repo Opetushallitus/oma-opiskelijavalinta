@@ -30,7 +30,6 @@ export const hakemus1 = {
   ],
   ohjausparametrit: {
     hakukierrosPaattyy: 1763471212000,
-    varasijatayttoPaattyy: 1768143600000,
     jarjestetytHakutoiveet: true,
     valintaTuloksetJulkaistaanHakijoilleAlkaa: 1779271212000,
     varasijatayttoPaattyy: 1779471212000,

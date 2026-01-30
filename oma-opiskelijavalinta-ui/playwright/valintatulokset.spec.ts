@@ -31,6 +31,10 @@ async function fetchMockData(page: Page, application: any) {
 test('Näyttää varasijanumeron', async ({ page }) => {
   const varasijaApplication = {
     ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      varasijatayttoPaattyy: 1768143600000,
+    },
     hakemuksenTulokset: [hakemuksenTulosVarasijalla],
   };
   await fetchMockData(page, varasijaApplication);
