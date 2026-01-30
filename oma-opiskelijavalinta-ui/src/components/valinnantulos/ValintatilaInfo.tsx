@@ -23,7 +23,10 @@ import {
 import { ExternalLink } from '@/components/ExternalLink';
 import { List, ListItem } from '@mui/material';
 import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
-import { getVarallaOlevatYlemmatToiveet } from '@/components/vastaanotto/vastaanotto-utils';
+import {
+  getVarallaOlevatYlemmatToiveet,
+  vastaanotettavissa,
+} from '@/components/vastaanotto/vastaanotto-utils';
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -213,9 +216,11 @@ const getInfoText = (
         )}
       {kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
+        vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getKkVastaanottoInfo(application, tulos, YPS, ylempiaVaralla, lang, t)}
       {!kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
+        vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(lang, t)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}

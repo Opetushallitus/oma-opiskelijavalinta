@@ -402,6 +402,9 @@ test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmäl
     ),
   ).toBeVisible();
   await expect(
+    hyvaksyttyOdottaaApp.getByText('Ota opiskelupaikka vastaan'),
+  ).toBeHidden();
+  await expect(
     hyvaksyttyOdottaaApp.getByText(
       'Jos tulet hyväksytyksi ylempään hakutoiveeseesi, tämä hakukohde peruuntuu automaattisesti.',
     ),
