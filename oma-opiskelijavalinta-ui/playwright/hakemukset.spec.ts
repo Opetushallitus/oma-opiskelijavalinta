@@ -252,7 +252,10 @@ test('Näyttää jatkuvan haun hakemuksen jonka tulokset ovat valmiit', async ({
   await expect(
     app.getByText('Varasijoilta valitseminen päättyy 27.1.2026'),
   ).toBeHidden();
-  await expect(app.getByText('Ota opiskelupaikka vastaan')).toBeVisible();
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-5');
+  await expect(
+    vastaanotot.getByText('Ota opiskelupaikka vastaan'),
+  ).toBeVisible();
 
   await expect(
     hakemukset.getByRole('link', { name: 'Näytä hakemus' }),

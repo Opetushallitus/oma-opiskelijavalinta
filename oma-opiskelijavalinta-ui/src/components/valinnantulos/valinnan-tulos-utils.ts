@@ -4,8 +4,10 @@ import {
   Valintatila,
 } from '@/lib/valinta-tulos-types';
 import { type BadgeColor, BadgeColorKey } from '@/components/StatusBadgeChip';
-import { mapKeys, mapValues } from 'remeda';
+import { isDefined, isNonNullish, mapKeys, mapValues } from 'remeda';
 import { useTranslations } from '@/hooks/useTranslations';
+import type { Hakukohde } from '@/lib/kouta-types';
+import type { Hakemus } from '@/lib/hakemus-types';
 
 export type ValintatilaLabel = {
   hakutoiveLabel: string;
@@ -147,12 +149,128 @@ export function getValintatapajononTilaLabel(
   return t(ValintatapajononTilaLabels[jonoTulos.valintatila]);
 }
 
-const hyvaksyttyTaiVarallaTilat = new Set<Valintatila>([
+const HYVAKSYTTY_TAI_VARALLA_TILAT = new Set<Valintatila>([
   Valintatila.HYVAKSYTTY,
   Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
   Valintatila.VARASIJALTA_HYVAKSYTTY,
   Valintatila.VARALLA,
 ]);
 
+const HYVAKSYTTY_TILAT = new Set<Valintatila>([
+  Valintatila.HYVAKSYTTY,
+  Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
+  Valintatila.VARASIJALTA_HYVAKSYTTY,
+]);
+
 export const isHyvaksyttyTaiVaralla = (t: Valintatila) =>
-  hyvaksyttyTaiVarallaTilat.has(t);
+  HYVAKSYTTY_TAI_VARALLA_TILAT.has(t);
+
+export const isHyvaksytty = (t: Valintatila) => HYVAKSYTTY_TILAT.has(t);
+
+export const isJulkaistuHakutoiveenTulos = (
+  tulokset: Array<HakutoiveenTulos>,
+): boolean => {
+  return tulokset.some((tulos) => tulos.julkaistavissa);
+};
+
+export function getYlemmatHakutoiveet(
+  application: Hakemus,
+  hakukohdeOid: string,
+): Array<Hakukohde> {
+  const hakukohteet = application.hakukohteet ?? [];
+
+  const index = hakukohteet.findIndex((hk) => hk.oid === hakukohdeOid);
+
+  if (index <= 0) {
+    return [];
+  }
+
+  return hakukohteet.slice(0, index);
+}
+
+export function getAlemmatHyvaksytyt(
+  hakukohdeOid: string,
+  application: Hakemus,
+) {
+  const index = application.hakukohteet?.findIndex(
+    (hk) => hk.oid === hakukohdeOid,
+  );
+  if (isDefined(index)) {
+    const alemmatHyvaksytyt = application.hakukohteet?.slice(index + 1) ?? [];
+    return alemmatHyvaksytyt?.filter((hk) =>
+      application.hakemuksenTulokset.find(
+        (t) => t.hakukohdeOid === hk.oid && HYVAKSYTTY_TILAT.has(t.valintatila),
+      ),
+    );
+  }
+  return [];
+}
+
+export function hasAlempiHyvaksytty(
+  hakukohdeOid: string,
+  application: Hakemus,
+) {
+  return getAlemmatHyvaksytyt(hakukohdeOid, application).length > 0;
+}
+
+export const isHyvaksyttyOdottaaYlempaa = (
+  application: Hakemus,
+  tulos: HakutoiveenTulos,
+): boolean => {
+  if (
+    !HYVAKSYTTY_TILAT.has(tulos.valintatila) ||
+    tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA'
+  ) {
+    return false;
+  }
+
+  const ylemmatHakutoiveet = getYlemmatHakutoiveet(
+    application,
+    tulos.hakukohdeOid,
+  );
+
+  if (ylemmatHakutoiveet.length === 0) {
+    return false;
+  }
+  return ylemmatHakutoiveet.some((hk) => {
+    const ylempiTulos = application.hakemuksenTulokset.find(
+      (ht) => ht.hakukohdeOid === hk.oid,
+    );
+
+    return (
+      !ylempiTulos ||
+      ylempiTulos.valintatila === Valintatila.KESKEN ||
+      ylempiTulos.valintatila === Valintatila.VARALLA
+    );
+  });
+};
+
+export function getVarallaOlevatMuutToiveet(
+  application: Hakemus,
+  hakukohdeOid: string,
+): Array<Hakukohde> {
+  const varallaOlevat = application.hakemuksenTulokset.filter(
+    (ht) =>
+      ht.valintatila === Valintatila.VARALLA &&
+      ht.hakukohdeOid !== hakukohdeOid,
+  );
+  return varallaOlevat
+    .map((ht) =>
+      application.hakukohteet?.find((hk) => hk.oid === ht.hakukohdeOid),
+    )
+    .filter(isNonNullish);
+}
+
+export function onkoJulkaisemattomiaValinnantiloja(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+  hakutoiveet: Array<Hakukohde>,
+): boolean {
+  return (
+    hakutoiveet.length > hakemuksenTulokset.length ||
+    hakemuksenTulokset.filter(
+      (ht) =>
+        ht.valintatila &&
+        (ht.valintatila === Valintatila.KESKEN || !ht.julkaistavissa),
+    ).length > 0
+  );
+}

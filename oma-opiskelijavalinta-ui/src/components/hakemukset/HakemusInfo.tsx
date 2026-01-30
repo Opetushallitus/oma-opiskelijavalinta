@@ -18,7 +18,7 @@ import { styled } from '@/lib/theme';
 import { List, ListItem } from '@mui/material';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
-import { onkoJulkaisemattomiaValinnantiloja } from '@/lib/valinta-tulos-utils';
+import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',

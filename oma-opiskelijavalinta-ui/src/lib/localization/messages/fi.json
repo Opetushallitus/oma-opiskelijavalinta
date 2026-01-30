@@ -51,6 +51,7 @@
       "kesken": "Opiskelijavalinta kesken",
       "hyvaksytty": "Hyväksytty",
       "hylatty": "Et saanut tätä opiskelupaikkaa",
+      "varalla": "Olet varasijalla",
       "varalla-varasija": "Olet {varasijanumero}. varasijalla",
       "ehdollisesti-hyvaksytty": "Ehdollinen",
       "peruuntunut": "Peruuntunut",
@@ -68,7 +69,22 @@
     "valintatapajono": {
       "hylatty": "Ei hyväksytty tällä valintatavalla"
     },
-    "ei-sijoittelua": "Valinnan tulos"
+    "ei-sijoittelua": "Valinnan tulos",
+    "info": {
+      "varasijalla": "Varasijalta hyväksytään opiskelijoita, jos aloituspaikkoja vapautuu. Tiedot päivittyvät Opintopolkuun sitä mukaa kun vapautuvia paikkoja täytetään.",
+      "varasijalta-hyvaksyminen": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen. Voit tulla hyväksytyksi varasijalta {varasijatayttoPaattyy} asti.",
+      "varalla-ylempaan-alempi-hyvaksytty": "Kun otat toisen opiskelupaikan vastaan, olet edelleen varasijalla tähän hakukohteeseen.",
+      "ehdollinen": "Huomioithan, että valintatietosi on ehdollinen. Mikäli sinulle tarjotaan tätä opiskelupaikkaa, sinun on toimittava alla olevan ehdon mukaisesti:",
+      "ehdollinen-lisatietoa": "Lisätietoja opiskelijavalintasi ehdollisuudesta saat",
+      "hakijapalvelut": "korkeakoulun hakijapalveluista",
+      "hyvaksytty-odottaa-ylempaa": "Et voi ottaa tätä opiskelupaikkaa vastaan. Sinulle tarjotaan opiskelupaikkaa tässä hakukohteessa, jos seuraavat kaksi ehtoa täyttyvät:",
+      "hyvaksytty-odottaa-ehto1": "1. Et tule valituksi ylempiin hakutoiveisiisi.",
+      "hyvaksytty-odottaa-ehto2": "2. Et ole ottanut vastaan suomalaiseen korkeakoulututkintoon johtavaa opiskelupaikkaa mistään muusta samana lukukautena alkavasta koulutuksesta.",
+      "hyvaksytty-odottaa-peruuntuu": "Jos tulet hyväksytyksi ylempään hakutoiveeseesi, tämä hakukohde peruuntuu automaattisesti.",
+      "hyvaksytty-muut-peruuntuvat": "Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.",
+      "varalla-peruuntuu": "Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.",
+      "kaikki-hylatty": "Valitettavasti et tällä kertaa saanut opiskelupaikkaa hakemistasi oppilaitoksista."
+    }
   },
   "valintatapa": {
     "nimi": "Valintatapa",
@@ -85,7 +101,9 @@
       "jonotus": "Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.",
       "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}.",
       "peru-alempi": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetun paikan.",
-      "peru-alemmat": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetut paikat."
+      "peru-alemmat": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetut paikat.",
+      "2aste-paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai voit menettää paikan.",
+      "2aste-ylempia-varalla": "Opiskelupaikan vastaanottaminen ei vaikuta varasijoihin. Kun otat tämän opiskelupaikan vastaan, olet edelleen varasijalla ylempään hakutoiveeseen."
     },
     "laheta": "Lähetä vastaus",
     "virhe": "Vastaanottotoiminto epäonnistui",

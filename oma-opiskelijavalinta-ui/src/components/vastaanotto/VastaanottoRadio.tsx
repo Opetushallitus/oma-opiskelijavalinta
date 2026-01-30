@@ -117,11 +117,10 @@ function determineVastaanottoOptions(
     isKorkeakouluHaku(application.haku)
   ) {
     options = getKKPriorityOptions(application, hakukohde);
-  } else if (application.haku && isKorkeakouluHaku(application.haku)) {
+  } else if (isKorkeakouluHaku(application.haku)) {
     options = vastaanottoOptionsKK;
   } else if (
     application.priorisoidutHakutoiveet &&
-    application.haku &&
     isToisenAsteenYhteisHaku(application.haku) &&
     hasAlemmatVastaanotot(hakukohde, application)
   ) {

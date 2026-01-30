@@ -9,6 +9,12 @@ import type { Hakukohde } from '@/lib/kouta-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import { HakutoiveenTulosInfo } from '@/components/valinnantulos/HakutoiveenTulosInfo';
+import type { Hakemus } from '@/lib/hakemus-types';
+import { ValintatilaInfo } from '@/components/valinnantulos/ValintatilaInfo';
+import {
+  isHyvaksyttyOdottaaYlempaa,
+  isHyvaksyttyTaiVaralla,
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 
 const ORDER_NUMBER_WIDTH = 40; // px
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
@@ -43,23 +49,21 @@ function formValintaperusteetHref(baseHref: string, hakukohdeOid: string) {
 }
 
 export function Hakutoive({
+  hakemus,
   hakukohde,
   prioriteetti,
   pastApplication = false,
-  priorisoidutHakutoiveet = false,
   sijoitteluKaytossa = false,
   naytaKeskenTulos = false,
   tulos,
-  odottaaYlempaa = false,
 }: {
+  hakemus: Hakemus;
   hakukohde: Hakukohde;
   prioriteetti?: number;
   pastApplication?: boolean;
-  priorisoidutHakutoiveet?: boolean;
   sijoitteluKaytossa?: boolean;
   naytaKeskenTulos?: boolean;
   tulos?: HakutoiveenTulos;
-  odottaaYlempaa?: boolean;
 }) {
   const config = useConfig();
   const { translateEntity, t } = useTranslations();
@@ -69,6 +73,11 @@ export function Hakutoive({
     hakukohde.oid,
   );
 
+  const odottaaYlempaa = Boolean(
+    tulos &&
+      hakemus.priorisoidutHakutoiveet &&
+      isHyvaksyttyOdottaaYlempaa(hakemus, tulos),
+  );
   return (
     <HakutoiveContainer>
       <Box
@@ -79,7 +88,7 @@ export function Hakutoive({
           mb: '10px',
         }}
       >
-        {priorisoidutHakutoiveet && (
+        {hakemus.priorisoidutHakutoiveet && (
           <OrderNumberBox>{prioriteetti}</OrderNumberBox>
         )}
         <ValintatilaChip
@@ -99,8 +108,10 @@ export function Hakutoive({
       </Box>
       <Box
         sx={{
-          pl: priorisoidutHakutoiveet ? `${ORDER_NUMBER_WIDTH + 15}px` : 0,
-          mt: priorisoidutHakutoiveet ? '8px' : '10px',
+          pl: hakemus.priorisoidutHakutoiveet
+            ? `${ORDER_NUMBER_WIDTH + 15}px`
+            : 0,
+          mt: hakemus.priorisoidutHakutoiveet ? '8px' : '10px',
         }}
       >
         <OphTypography variant="h5">
@@ -109,6 +120,13 @@ export function Hakutoive({
         <OphTypography variant="body1">
           {translateEntity(hakukohde.nimi)}
         </OphTypography>
+        {tulos && isHyvaksyttyTaiVaralla(tulos.valintatila) && (
+          <ValintatilaInfo
+            tulos={tulos}
+            application={hakemus}
+            odottaaYlempaa={odottaaYlempaa}
+          />
+        )}
         {tulos && (
           <HakutoiveenTulosInfo
             hakutoiveenTulos={tulos}
