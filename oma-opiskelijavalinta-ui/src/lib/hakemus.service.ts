@@ -67,6 +67,7 @@ function convertToHakemus(app: HakemusResponse, muokkausUrl: string): Hakemus {
         ...jono,
         valintatila: jono.valintatila as Valintatila,
       })),
+      ilmoittautuminen: tulos.ilmoittautumistila,
     })),
   };
 }

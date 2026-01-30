@@ -35,7 +35,8 @@ case class HakutoiveenTulos(
 case class Ilmoittautumistila(
   ilmoittautumisaika: Option[Map[String, String]],
   ilmoittautumistila: Option[String],
-  ilmoittauduttavissa: Option[Boolean]
+  ilmoittauduttavissa: Option[Boolean],
+  ilmoittautumistapa: Option[String],
 )
 
 case class JonokohtainenTulostieto(

@@ -11,6 +11,7 @@ import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
 import { VastaanottoTilaChip } from './VastaanottoTilaChip';
 import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
 import { VastaanottoInfo } from './VastaanottoInfo';
+import { IlmoittautuminenContainer } from '../ilmoittautuminen/Ilmoittautuminen';
 
 function VastaanottoBox({
   hakukohde,
@@ -52,6 +53,11 @@ function VastaanottoBox({
             hakutoive={hakukohde}
           />
         )}
+      <IlmoittautuminenContainer
+        hakemus={application}
+        hakemuksenTulos={tulos}
+        hakukohde={hakukohde}
+      />
     </Box>
   );
 }

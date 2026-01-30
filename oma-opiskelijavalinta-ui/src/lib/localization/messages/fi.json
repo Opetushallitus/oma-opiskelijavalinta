@@ -92,6 +92,17 @@
     "alimmat-hyvaksytyt-pisteet": "Alin hyväksytty pistemäärä",
     "tulos": "Valinnan tulos"
   },
+  "ilmoittautuminen": {
+    "otsikko": "Lukuvuosi-ilmoittautuminen",
+    "info": "Ilmoittaudu oppilaitokseen läsnäolevaksi lukuvuoden ajaksi. Jos olet poissa kauden tai lukuvuoden, ota yhteys oppilaitokseen.",
+    "laheta": "Lähetä ilmoittautuminen",
+    "lasna": "Läsnä koko lukuvuoden",
+    "modaali": {
+      "otsikko": "Vahvista lukuvuosi-ilmoittautuminen",
+      "vahvista": "Lähetä ilmoittautuminen",
+      "info": "Olet vahvistamassa lukuvuosi-ilmoittautumisen oppilaitokseen:"
+    }
+  },
   "vastaanotto": {
     "info": {
       "paattyy": "Ota opiskelupaikka vastaan <strong>viimeistään {vastaanottoPaattyy} mennessä</strong> tai menetät paikan.",

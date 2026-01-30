@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { HakutoiveContainer, HakutoiveList } from './HakutoiveContainer';
+import { HakutoiveName, HakutoiveList } from '../hakukohde/HakutoiveName';
 
 export function VastaanottoPeruAiemmatModalContent({
   hakutoive,
@@ -18,7 +18,7 @@ export function VastaanottoPeruAiemmatModalContent({
       <OphTypography>
         {t('vastaanotto.modaali.vastaanota-peru-alemmat.info')}
       </OphTypography>
-      <HakutoiveContainer hakutoive={hakutoive} />
+      <HakutoiveName hakutoive={hakutoive} />
       <OphTypography>
         {t(
           alemmatToiveet.length > 1
@@ -28,7 +28,7 @@ export function VastaanottoPeruAiemmatModalContent({
       </OphTypography>
       {alemmatToiveet.length > 1 && <HakutoiveList toiveet={alemmatToiveet} />}
       {alemmatToiveet.length === 1 && alemmatToiveet[0] && (
-        <HakutoiveContainer hakutoive={alemmatToiveet[0]} />
+        <HakutoiveName hakutoive={alemmatToiveet[0]} />
       )}
     </Box>
   );

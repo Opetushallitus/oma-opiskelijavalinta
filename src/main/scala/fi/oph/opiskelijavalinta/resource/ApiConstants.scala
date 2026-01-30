@@ -12,6 +12,7 @@ object ApiConstants {
   final val HEALTHCHECK_PATH           = API_PREFIX + "/healthcheck"
   final val SESSION_PATH               = API_PREFIX + "/session"
   final val HAKEMUKSET_PATH            = API_PREFIX + "/hakemukset"
+  final val ILMOITTAUTUMINEN_PATH      = API_PREFIX + "/ilmoittautuminen"
   final val VASTAANOTTO_PATH           = API_PREFIX + "/vastaanotto"
   final val VALINTATULOS_PATH          = API_PREFIX + "/valintatulos"
 }

@@ -10,7 +10,7 @@ const BulletItem = styled(ListItem)(({ theme }) => ({
   maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
 }));
 
-export function HakutoiveContainer({ hakutoive }: { hakutoive: Hakukohde }) {
+export function HakutoiveName({ hakutoive }: { hakutoive: Hakukohde }) {
   const { translateEntity } = useTranslations();
 
   return (
@@ -30,7 +30,7 @@ export function HakutoiveList({ toiveet }: { toiveet: Array<Hakukohde> }) {
     <List sx={{ listStyleType: 'disc' }}>
       {toiveet.map((toive) => (
         <BulletItem disablePadding key={`hakutoive-${toive.oid}`}>
-          <HakutoiveContainer hakutoive={toive} />
+          <HakutoiveName hakutoive={toive} />
         </BulletItem>
       ))}
     </List>
