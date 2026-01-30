@@ -182,13 +182,10 @@ const getInfoText = (
     (hk) => hk.oid === tulos.hakukohdeOid,
   );
 
-  const kkHaku =
-    isNonNullish(application.haku) && isKorkeakouluHaku(application.haku);
+  const kkHaku = isKorkeakouluHaku(application.haku);
 
   const YPS = hakukohde && hakukohde.yhdenPaikanSaanto?.voimassa;
-  const toisenAsteenYhteisHaku =
-    isNonNullish(application.haku) &&
-    isToisenAsteenYhteisHaku(application.haku);
+  const toisenAsteenYhteisHaku = isToisenAsteenYhteisHaku(application.haku);
 
   const toinenAsteVarallaYlempaanAlempiHyvaksytty =
     tulos.valintatila === Valintatila.VARALLA &&

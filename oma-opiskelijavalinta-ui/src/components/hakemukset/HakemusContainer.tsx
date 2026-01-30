@@ -13,8 +13,8 @@ import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import { isJatkuvaTaiJoustavaHaku } from '@/lib/kouta-utils';
-import { onkoJulkaisemattomiaValinnantiloja } from '@/lib/valinta-tulos-utils';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 
 function TilaInfo({
   hakemus,

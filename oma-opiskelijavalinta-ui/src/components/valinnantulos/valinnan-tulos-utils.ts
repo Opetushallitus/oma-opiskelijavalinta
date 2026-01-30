@@ -149,23 +149,23 @@ export function getValintatapajononTilaLabel(
   return t(ValintatapajononTilaLabels[jonoTulos.valintatila]);
 }
 
-const hyvaksyttyTaiVarallaTilat = new Set<Valintatila>([
+const HYVAKSYTTY_TAI_VARALLA_TILAT = new Set<Valintatila>([
   Valintatila.HYVAKSYTTY,
   Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
   Valintatila.VARASIJALTA_HYVAKSYTTY,
   Valintatila.VARALLA,
 ]);
 
-const hyvaksyttyTilat = new Set<Valintatila>([
+const HYVAKSYTTY_TILAT = new Set<Valintatila>([
   Valintatila.HYVAKSYTTY,
   Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
   Valintatila.VARASIJALTA_HYVAKSYTTY,
 ]);
 
 export const isHyvaksyttyTaiVaralla = (t: Valintatila) =>
-  hyvaksyttyTaiVarallaTilat.has(t);
+  HYVAKSYTTY_TAI_VARALLA_TILAT.has(t);
 
-export const isHyvaksytty = (t: Valintatila) => hyvaksyttyTilat.has(t);
+export const isHyvaksytty = (t: Valintatila) => HYVAKSYTTY_TILAT.has(t);
 
 export const isJulkaistuHakutoiveenTulos = (
   tulokset: Array<HakutoiveenTulos>,
@@ -199,7 +199,7 @@ export function getAlemmatHyvaksytyt(
     const alemmatHyvaksytyt = application.hakukohteet?.slice(index + 1) ?? [];
     return alemmatHyvaksytyt?.filter((hk) =>
       application.hakemuksenTulokset.find(
-        (t) => t.hakukohdeOid === hk.oid && hyvaksyttyTilat.has(t.valintatila),
+        (t) => t.hakukohdeOid === hk.oid && HYVAKSYTTY_TILAT.has(t.valintatila),
       ),
     );
   }
@@ -218,7 +218,7 @@ export const isHyvaksyttyOdottaaYlempaa = (
   tulos: HakutoiveenTulos,
 ): boolean => {
   if (
-    !hyvaksyttyTilat.has(tulos.valintatila) ||
+    !HYVAKSYTTY_TILAT.has(tulos.valintatila) ||
     tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA'
   ) {
     return false;
@@ -259,4 +259,18 @@ export function getVarallaOlevatMuutToiveet(
       application.hakukohteet?.find((hk) => hk.oid === ht.hakukohdeOid),
     )
     .filter(isNonNullish);
+}
+
+export function onkoJulkaisemattomiaValinnantiloja(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+  hakutoiveet: Array<Hakukohde>,
+): boolean {
+  return (
+    hakutoiveet.length > hakemuksenTulokset.length ||
+    hakemuksenTulokset.filter(
+      (ht) =>
+        ht.valintatila &&
+        (ht.valintatila === Valintatila.KESKEN || !ht.julkaistavissa),
+    ).length > 0
+  );
 }

@@ -17,7 +17,6 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { isNonNullish } from 'remeda';
 import { getAlemmatVastaanotot } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 
@@ -77,18 +76,15 @@ const getInfoText = (
     lang,
   );
 
-  const kkHaku =
-    isNonNullish(application.haku) && isKorkeakouluHaku(application.haku);
+  const kkHaku = isKorkeakouluHaku(application.haku);
 
   const yksiAlempiVastaanotto =
     hakukohde &&
-    isNonNullish(application.haku) &&
     isToisenAsteenYhteisHaku(application.haku) &&
     getAlemmatVastaanotot(hakukohde, application).length === 1;
 
   const useampiAlempiVastaanotto =
     hakukohde &&
-    isNonNullish(application.haku) &&
     isToisenAsteenYhteisHaku(application.haku) &&
     getAlemmatVastaanotot(hakukohde, application).length > 1;
 
