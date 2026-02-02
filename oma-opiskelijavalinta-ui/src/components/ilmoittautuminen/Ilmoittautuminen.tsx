@@ -5,6 +5,8 @@ import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { IlmoittautumisCheckbox } from './IlmoittautumisCheckbox';
 import type { Hakukohde } from '@/lib/kouta-types';
+import { isTruthy } from 'remeda';
+import { Ilmoittauduttu } from './Ilmoittauduttu';
 
 export function IlmoittautuminenContainer({
   hakemus,
@@ -17,15 +19,33 @@ export function IlmoittautuminenContainer({
 }) {
   const { t } = useTranslations();
 
-  return !hakemuksenTulos.ilmoittautuminen.ilmoittauduttavissa ? null : (
-    <Box
-      sx={{ width: '100%', mt: '1.5rem' }}
-      data-test-id={`ilmoittautuminen-${hakemus.oid}-${hakemuksenTulos.hakukohdeOid}`}
-    >
-      <OphTypography variant="body1">
-        {t('ilmoittautuminen.otsikko')}
-      </OphTypography>
-      <IlmoittautumisCheckbox hakutoive={hakukohde} application={hakemus} />
-    </Box>
-  );
+  if (hakemuksenTulos.ilmoittautuminen.ilmoittauduttavissa) {
+    return (
+      <Box
+        sx={{ width: '100%', margin: '1.5rem 0' }}
+        data-test-id={`ilmoittautuminen-${hakemus.oid}-${hakemuksenTulos.hakukohdeOid}`}
+      >
+        <OphTypography variant="body1" sx={{ fontWeight: 600 }}>
+          {t('ilmoittautuminen.otsikko')}
+        </OphTypography>
+        <IlmoittautumisCheckbox hakutoive={hakukohde} application={hakemus} />
+      </Box>
+    );
+  }
+
+  if (isTruthy(hakemuksenTulos.ilmoittautuminen.ilmoittautumistila)) {
+    return (
+      <Box
+        sx={{ width: '100%', margin: '1.5rem 0' }}
+        data-test-id={`ilmoittautuminen-${hakemus.oid}-${hakemuksenTulos.hakukohdeOid}`}
+      >
+        <OphTypography variant="body1" sx={{ fontWeight: 600 }}>
+          {t('ilmoittautuminen.otsikko')}
+        </OphTypography>
+        <Ilmoittauduttu ilmoittautuminen={hakemuksenTulos.ilmoittautuminen} />
+      </Box>
+    );
+  }
+
+  return null;
 }

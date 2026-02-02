@@ -57,8 +57,16 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
     }
   }
 
-  def doIlmoittautuminen(oppijanumero: String, hakemusOid: String, hakukohdeOid: String, hakuOid: String, ilmoittautumisTila: String): Option[String] = {
-    val requestBody = mapper.writeValueAsString(IlmoittautuminenRequestBody(hakukohdeOid, ilmoittautumisTila, oppijanumero, "oma-opiskelijavalinta"))
+  def doIlmoittautuminen(
+    oppijanumero: String,
+    hakemusOid: String,
+    hakukohdeOid: String,
+    hakuOid: String,
+    ilmoittautumisTila: String
+  ): Option[String] = {
+    val requestBody = mapper.writeValueAsString(
+      IlmoittautuminenRequestBody(hakukohdeOid, ilmoittautumisTila, oppijanumero, "oma-opiskelijavalinta")
+    )
     vtsClient.postIlmoittautuminen(hakemusOid, hakuOid, requestBody) match {
       case Left(e) =>
         LOG.error(s"Failed to do ilmoittautuminen for $hakemusOid, $hakukohdeOid: ${e.getMessage}")

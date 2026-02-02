@@ -101,6 +101,10 @@
       "otsikko": "Vahvista lukuvuosi-ilmoittautuminen",
       "vahvista": "Lähetä ilmoittautuminen",
       "info": "Olet vahvistamassa lukuvuosi-ilmoittautumisen oppilaitokseen:"
+    },
+    "ilmoittauduttu": "Olet ilmoittautunut {ilmoittautumisAika} vastauksella: ",
+    "tila": {
+      "LASNA_KOKO_LUKUVUOSI": "Läsnä koko lukuvuoden"
     }
   },
   "vastaanotto": {

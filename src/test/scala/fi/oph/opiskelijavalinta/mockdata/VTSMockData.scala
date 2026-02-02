@@ -33,6 +33,7 @@ object VTSMockData {
     ehdollisenHyvaksymisenEhtoEN = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = Some(false),
+    ilmoittautumisenAikaleima = None,
     jonokohtaisetTulostiedot = List(
       JonokohtainenTulostieto(
         oid = Some("12246562200000000000000007599136"),
@@ -82,6 +83,7 @@ object VTSMockData {
     ehdollisenHyvaksymisenEhtoEN = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = None,
+    ilmoittautumisenAikaleima = None,
     jonokohtaisetTulostiedot = List.empty
   )
 
