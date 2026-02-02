@@ -134,7 +134,7 @@ export function hasAlemmatVastaanotot(
 
 const VASTAANOTETTAVISSA_TILAT = new Set<string>([
   'VASTAANOTETTAVISSA_EHDOLLISESTI',
-  'VASTAANOTETTAVISSA',
+  'VASTAANOTETTAVISSA_SITOVASTI',
 ]);
 
 export const vastaanotettavissa = (vastaanotettavuustila: string | undefined) =>

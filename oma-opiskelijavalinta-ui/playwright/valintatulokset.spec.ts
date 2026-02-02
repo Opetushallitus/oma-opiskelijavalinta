@@ -132,7 +132,7 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
         ...hakemuksenTulosHyvaksytty,
         hakukohdeOid: 'hakukohde-oid-2',
         valintatila: 'HYVAKSYTTY',
-        vastaanotettavuustila: 'VASTAANOTETTAVISSA',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
       },
     ],
   };
@@ -217,7 +217,7 @@ test('Näyttää priorisoidun kk-haun alemman hakutoiveen hyväksytylle tuloksel
         ...hakemuksenTulosHyvaksytty,
         hakukohdeOid: 'hakukohde-oid-2',
         valintatila: 'HYVAKSYTTY',
-        vastaanotettavuustila: 'VASTAANOTETTAVISSA',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
       },
     ],
   };
