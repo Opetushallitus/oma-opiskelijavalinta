@@ -103,6 +103,8 @@
       "info": "Olet vahvistamassa lukuvuosi-ilmoittautumisen oppilaitokseen:"
     },
     "ilmoittauduttu": "Olet ilmoittautunut {ilmoittautumisAika} vastauksella: ",
+    "onnistui": "Lukuvuosi-ilmoittautuminen onnistui",
+    "virhe": "Lukuvuosi-ilmoittautuminen epäonnistui",
     "tila": {
       "LASNA_KOKO_LUKUVUOSI": "Läsnä koko lukuvuoden"
     }

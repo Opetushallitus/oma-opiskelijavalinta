@@ -19,7 +19,7 @@ export function IlmoittautuminenContainer({
 }) {
   const { t } = useTranslations();
 
-  if (hakemuksenTulos.ilmoittautuminen.ilmoittauduttavissa) {
+  if (hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa) {
     return (
       <Box
         sx={{ width: '100%', margin: '1.5rem 0' }}
@@ -33,7 +33,10 @@ export function IlmoittautuminenContainer({
     );
   }
 
-  if (isTruthy(hakemuksenTulos.ilmoittautuminen.ilmoittautumistila)) {
+  if (
+    isTruthy(hakemuksenTulos.ilmoittautuminen?.ilmoittautumistila) &&
+    hakemuksenTulos.ilmoittautuminen?.ilmoittautumistila !== 'EI_TEHTY'
+  ) {
     return (
       <Box
         sx={{ width: '100%', margin: '1.5rem 0' }}

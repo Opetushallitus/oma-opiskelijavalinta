@@ -68,16 +68,17 @@ export function IlmoittautumisCheckbox({
     },
     onError: () =>
       showNotification({
-        message: t('vastaanotto.virhe'),
+        message: t('ilmoittautuminen.virhe'),
         type: 'error',
         duration: null,
       }),
   });
 
   if (!application.haku) {
-    console.error('Haku must be defined for vastaanotto!');
+    console.error('Haku must be defined for ilmoittautuminen!');
     return;
   }
+
   const { refetchTulokset } = useHakemuksenTulokset(
     application,
     application.haku,
