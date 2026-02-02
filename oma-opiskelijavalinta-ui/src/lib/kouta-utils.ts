@@ -1,22 +1,22 @@
-import { isNonNullish, isTruthy } from 'remeda';
+import { isTruthy } from 'remeda';
 import type { Haku } from './kouta-types';
 
 export const isYhteishaku = (haku: Haku): boolean =>
   haku.hakutapaKoodiUri.startsWith('hakutapa_01');
 
 export function isToisenAsteenYhteisHaku(
-  haku: Haku | null | undefined,
+  haku?: Haku | null,
 ): boolean {
   return (
-    isNonNullish(haku) &&
+    isTruthy(haku) &&
     isYhteishaku(haku) &&
     haku.kohdejoukkoKoodiUri.startsWith('haunkohdejoukko_11')
   );
 }
 
-export function isKorkeakouluHaku(haku: Haku | null | undefined): boolean {
+export function isKorkeakouluHaku(haku?: Haku | null): boolean {
   return (
-    isNonNullish(haku) &&
+    isTruthy(haku) &&
     haku.kohdejoukkoKoodiUri.startsWith('haunkohdejoukko_12')
   );
 }

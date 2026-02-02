@@ -7,6 +7,7 @@ import { IlmoittautumisCheckbox } from './IlmoittautumisCheckbox';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { isTruthy } from 'remeda';
 import { Ilmoittauduttu } from './Ilmoittauduttu';
+import { isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 
 export function IlmoittautuminenContainer({
   hakemus,
@@ -19,7 +20,12 @@ export function IlmoittautuminenContainer({
 }) {
   const { t } = useTranslations();
 
-  if (hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa) {
+  const toisenAsteenYhteisHaku = isToisenAsteenYhteisHaku(hakemus.haku);
+
+  if (
+    toisenAsteenYhteisHaku &&
+    hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa
+  ) {
     return (
       <Box
         sx={{ width: '100%', margin: '1.5rem 0' }}
@@ -28,12 +34,16 @@ export function IlmoittautuminenContainer({
         <OphTypography variant="body1" sx={{ fontWeight: 600 }}>
           {t('ilmoittautuminen.otsikko')}
         </OphTypography>
+        <OphTypography variant="body1">
+          {t('ilmoittautuminen.info')}
+        </OphTypography>
         <IlmoittautumisCheckbox hakutoive={hakukohde} application={hakemus} />
       </Box>
     );
   }
 
   if (
+    toisenAsteenYhteisHaku &&
     isTruthy(hakemuksenTulos.ilmoittautuminen?.ilmoittautumistila) &&
     hakemuksenTulos.ilmoittautuminen?.ilmoittautumistila !== 'EI_TEHTY'
   ) {
