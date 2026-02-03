@@ -6,7 +6,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, HAKEMUS_OID, PERSON_OID}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  objectMapper,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID,
+  PERSON_OID
+}
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
 import fi.oph.opiskelijavalinta.model.{
   DateParam,
@@ -146,8 +153,8 @@ class BaseIntegrationTest {
             Array(
               Hakemus(
                 HAKEMUS_OID,
-                "haku-oid-1",
-                List("hakukohde-oid-1", "hakukohde-oid-2"),
+                HAKU_OID,
+                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,

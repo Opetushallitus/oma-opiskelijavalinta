@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, PERSON_OID}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.service.AllowedIlmoittautumisTila.LASNA_KOKO_LUKUVUOSI
@@ -14,10 +14,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
-
-  val HAKEMUS_OID   = "HAKEMUS-OID-1"
-  val HAKUKOHDE_OID = "HAKUKOHDE-OID-1"
-  val HAKU_OID      = "HAKU-OID-1"
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
@@ -55,8 +51,8 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
           objectMapper.writeValueAsString(
             Array(
               Hakemus(
-                "HAKEMUS-OID-3",
-                "haku-oid-1",
+                "1.2.246.562.11.00000000000002121542",
+                HAKU_OID,
                 List("hakukohde-oid-1", "hakukohde-oid-2"),
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
@@ -91,7 +87,7 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
               Hakemus(
                 HAKEMUS_OID,
                 HAKU_OID,
-                List("hakukohde-oid-1", "hakukohde-oid-2"),
+                List(HAKUKOHDE_OID, "hakukohde-oid-2"),
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,

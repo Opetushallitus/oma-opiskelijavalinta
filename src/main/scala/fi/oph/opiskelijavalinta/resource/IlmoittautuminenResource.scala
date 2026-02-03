@@ -2,9 +2,8 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
 import fi.oph.opiskelijavalinta.resource.ApiConstants.ILMOITTAUTUMINEN_PATH
-import fi.oph.opiskelijavalinta.service.{AllowedIlmoittautumisTila, AuthorizationService, VTSService}
-import jakarta.validation.Valid
-import jakarta.validation.constraints.{NotBlank, NotNull, Pattern}
+import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService}
+import jakarta.validation.constraints.Pattern
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.{HttpStatus, ResponseEntity}
 import org.springframework.validation.annotation.Validated
@@ -19,7 +18,7 @@ class IlmoittautuminenResource @Autowired (vtsService: VTSService, authorization
   def doVastaanotto(
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakemusOid: String,
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakukohdeOid: String,
-    @Valid @RequestBody ilmoittautuminen: IlmoittautuminenDTO
+    @RequestBody(required = true) ilmoittautuminen: IlmoittautuminenDTO
   ): ResponseEntity[String] = {
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build

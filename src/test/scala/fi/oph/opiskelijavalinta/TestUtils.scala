@@ -10,9 +10,14 @@ import java.util
 
 object TestUtils {
 
-  val PERSON_OID = "TEST_PERSON_OID"
+  final val PERSON_OID = "TEST_PERSON_OID"
 
-  val HAKEMUS_OID = "hakemus-oid-1"
+  final val HAKEMUS_OID = "1.2.246.562.11.00000000000002121541"
+
+  final val HAKU_OID = "1.2.246.562.29.00000000000000038404"
+
+  final val HAKUKOHDE_OID   = "1.2.246.562.29.00000000000000065738"
+  final val HAKUKOHDE_OID_2 = "1.2.246.562.29.00000000000000065739"
 
   val objectMapper: ObjectMapper =
     val mapper = new ObjectMapper()
