@@ -35,6 +35,9 @@ test('Ilmoittautuminen on saavutettava', async ({ page }) => {
 
 test('Ilmoittautumismodaali on saavutettava', async ({ page }) => {
   await setup(page);
+  await page.addStyleTag({
+    content: '* {animation: none !important; transition: none !important; }',
+  });
   await expect(page.getByText('Opiskelupaikka vastaanotettu')).toBeVisible();
   const ilmoittautuminen = page.getByTestId(
     'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
