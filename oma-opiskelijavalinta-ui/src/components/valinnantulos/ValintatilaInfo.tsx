@@ -67,6 +67,9 @@ const getEhdollisuusInfo = (
   const config = useConfig();
   return (
     <>
+      <OphTypography sx={{ fontWeight: 'bold' }}>
+        {t('tulos.info.ehdollinen-otsikko')}
+      </OphTypography>
       <OphTypography>{t('tulos.info.ehdollinen')}</OphTypography>
       <List>
         <ListItem>TODO tiketillä OPHYOS-32</ListItem>
@@ -222,8 +225,8 @@ const getInfoText = (
         isHyvaksytty(tulos.valintatila) &&
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
-      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(lang, t)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
+      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(lang, t)}
     </MultiInfoContainer>
   );
 };

@@ -7,6 +7,7 @@ import {
 import {
   hakemuksenTulosHylatty,
   hakemuksenTulosHyvaksytty,
+  hakemuksenTulosHyvaksyttyVastaanottoPerunut,
   hakemuksenTulosPeruuntunut,
   hakemuksenTulosVarasijalla,
   hakemus1,
@@ -351,6 +352,9 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
     hakutoive.locator('.MuiChip-root').getByText('Ehdollinen'),
   ).toBeVisible();
   await expect(
+    hakutoive.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
     hakutoive.getByText('Huomioithan, että valintatietosi on ehdollinen'),
   ).toBeVisible();
 });
@@ -366,6 +370,29 @@ test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) =>
   await expect(
     app.getByText('Peruuntunut - Sait ylemmän hakutoiveen opiskelupaikan'),
   ).toBeVisible();
+});
+
+test('Näyttää ensisijaisesti vastaanottotilan jos vastaanottotila ja valintatila ei ole synkassa', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [{ ...hakemuksenTulosHyvaksyttyVastaanottoPerunut }],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const vastaanototChip = page
+    .getByTestId('vastaanotot-hakemus-oid-2')
+    .getByText('Opiskelupaikkaa ei vastaanotettu', { exact: true });
+  await expect(vastaanototChip).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Opiskelijavalintojen tulokset' })
+    .click();
+  const hakutoiveetChip = page
+    .getByTestId('application-hakutoiveet-hakemus-oid-2')
+    .getByText('Opiskelupaikkaa ei vastaanotettu', { exact: true });
+
+  await expect(hakutoiveetChip).toBeVisible();
 });
 
 test('Näyttää Hyväksytty -tiedon tarkenteella jos priorisoidun haun ylemmällä hakutoiveella on valinta kesken', async ({

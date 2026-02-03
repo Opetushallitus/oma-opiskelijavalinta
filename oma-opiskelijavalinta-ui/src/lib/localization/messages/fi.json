@@ -74,6 +74,7 @@
       "varasijalla": "Varasijalta hyväksytään opiskelijoita, jos aloituspaikkoja vapautuu. Tiedot päivittyvät Opintopolkuun sitä mukaa kun vapautuvia paikkoja täytetään.",
       "varasijalta-hyvaksyminen": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen. Voit tulla hyväksytyksi varasijalta {varasijatayttoPaattyy} asti.",
       "varalla-ylempaan-alempi-hyvaksytty": "Kun otat toisen opiskelupaikan vastaan, olet edelleen varasijalla tähän hakukohteeseen.",
+      "ehdollinen-otsikko": "Ehdollinen opiskelijavalinta",
       "ehdollinen": "Huomioithan, että valintatietosi on ehdollinen. Mikäli sinulle tarjotaan tätä opiskelupaikkaa, sinun on toimittava alla olevan ehdon mukaisesti:",
       "ehdollinen-lisatietoa": "Lisätietoja opiskelijavalintasi ehdollisuudesta saat",
       "hakijapalvelut": "korkeakoulun hakijapalveluista",
@@ -142,7 +143,8 @@
       "vastaanotettu": "Opiskelupaikka vastaanotettu",
       "vastaanotettu-ehdollisesti": "Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita",
       "peruttu": "Opiskelupaikkaa ei vastaanotettu",
-      "ei-vastaanotettu-maara-aikana": "Opiskelupaikkaa ei vastaanotettu määräaikaan mennessä"
+      "ei-vastaanotettu-maara-aikana": "Opiskelupaikkaa ei vastaanotettu määräaikaan mennessä",
+      "peruutettu": "Oppilaitos perui opiskelupaikan"
     },
     "modaali": {
       "muuta-sitovaksi": {

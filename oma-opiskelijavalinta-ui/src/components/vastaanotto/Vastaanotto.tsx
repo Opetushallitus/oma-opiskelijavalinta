@@ -1,17 +1,16 @@
 import { Box } from '@mui/material';
 import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { ValintatilaChip } from '../valinnantulos/ValintatilaChip';
 import { isDefined, isEmpty } from 'remeda';
 import { VastaanottoRadio } from './VastaanottoRadio';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { type HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { naytettavatVastaanottoTiedot } from '@/lib/vastaanotto.service';
-import { VastaanottoTilaChip } from './VastaanottoTilaChip';
 import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
 import { VastaanottoInfo } from './VastaanottoInfo';
 import { IlmoittautuminenContainer } from '../ilmoittautuminen/Ilmoittautuminen';
+import { HakutoiveenTilaBadge } from '@/components/valinnantulos/HakutoiveenTilaBadge';
 import { styled } from '@/lib/theme';
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -35,13 +34,7 @@ function VastaanottoBox({
 
   return (
     <StyledBox>
-      {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
-        tulos.vastaanottotila === 'KESKEN' && (
-          <ValintatilaChip hakutoiveenTulos={tulos} />
-        )}
-      {tulos.vastaanottotila && tulos.vastaanottotila !== 'KESKEN' && (
-        <VastaanottoTilaChip vastaanottoTila={tulos.vastaanottotila} />
-      )}
+      <HakutoiveenTilaBadge hakutoiveenTulos={tulos} />
       <OphTypography variant="h5" component="div">
         {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
       </OphTypography>

@@ -14,11 +14,14 @@ const vastaanottoTilaStyles: Record<
     label: 'vastaanotto.tila.vastaanotettu',
     color: BadgeColorKey.Green,
   },
+  [VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT]: {
+    label: 'vastaanotto.tila.vastaanotettu-ehdollisesti',
+    color: BadgeColorKey.Green,
+  },
   [VastaanottoTila.PERUNUT]: {
     label: 'vastaanotto.tila.peruttu',
     color: BadgeColorKey.Grey,
   },
-  //TODO nämä käydään läpi myöhemmissä taskeissa
   [VastaanottoTila.KESKEN]: {
     label: '',
     color: BadgeColorKey.Yellow,
@@ -28,15 +31,11 @@ const vastaanottoTilaStyles: Record<
     color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.PERUUTETTU]: {
-    label: '',
+    label: 'vastaanotto.tila.peruutettu',
     color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.OTTANUT_VASTAAN_TOISEN_PAIKAN]: {
-    label: '',
-    color: BadgeColorKey.Grey,
-  },
-  [VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT]: {
-    label: 'vastaanotto.tila.vastaanotettu-ehdollisesti',
+    label: 'vastaanotto.tila',
     color: BadgeColorKey.Grey,
   },
 };
