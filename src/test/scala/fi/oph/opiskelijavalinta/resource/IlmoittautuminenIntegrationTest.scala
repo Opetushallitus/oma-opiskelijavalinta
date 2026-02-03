@@ -2,23 +2,26 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
+import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
+import fi.oph.opiskelijavalinta.service.AllowedIlmoittautumisTila.LASNA_KOKO_LUKUVUOSI
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class VastaanottoIntegrationTest extends BaseIntegrationTest {
+class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
     mvc
       .perform(
         MockMvcRequestBuilders
-          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
       )
       .andExpect(status().isUnauthorized)
   }
@@ -31,8 +34,9 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     mvc
       .perform(
         MockMvcRequestBuilders
-          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .contentType("application/json")
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
@@ -47,8 +51,8 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
           objectMapper.writeValueAsString(
             Array(
               Hakemus(
-                "HAKEMUS-OID-3",
-                "haku-oid-1",
+                "1.2.246.562.11.00000000000002121542",
+                HAKU_OID,
                 List("hakukohde-oid-1", "hakukohde-oid-2"),
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
@@ -64,15 +68,16 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     mvc
       .perform(
         MockMvcRequestBuilders
-          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .contentType("application/json")
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
   }
 
   @Test
-  def doesVastaanotto(): Unit = {
+  def doesIlmoittautuminen(): Unit = {
     Mockito
       .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(
@@ -95,13 +100,14 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
         )
       )
     Mockito
-      .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
+      .when(valintaTulosServiceClient.postIlmoittautuminen(anyString(), anyString(), anyString()))
       .thenReturn(Right("OK"))
     mvc
       .perform(
         MockMvcRequestBuilders
-          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .contentType("application/json")
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)

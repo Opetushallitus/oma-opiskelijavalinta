@@ -29,13 +29,15 @@ case class HakutoiveenTulos(
   ehdollisenHyvaksymisenEhtoEN: Option[String],
   tilanKuvaukset: Option[Map[String, String]],
   showMigriURL: Option[Boolean],
+  ilmoittautumisenAikaleima: Option[String],
   jonokohtaisetTulostiedot: List[JonokohtainenTulostieto] // empty list if missing
 )
 
 case class Ilmoittautumistila(
   ilmoittautumisaika: Option[Map[String, String]],
   ilmoittautumistila: Option[String],
-  ilmoittauduttavissa: Option[Boolean]
+  ilmoittauduttavissa: Option[Boolean],
+  ilmoittautumistapa: Option[String]
 )
 
 case class JonokohtainenTulostieto(

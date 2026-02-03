@@ -4,7 +4,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { T } from '@tolgee/react';
 import { styled } from '@/lib/theme';
-import { HakutoiveContainer } from './HakutoiveContainer';
+import { HakutoiveName } from '../hakukohde/HakutoiveName';
 
 const ModalBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -29,7 +29,7 @@ export function VastaanottoModalContent({
   return (
     <ModalBox>
       <OphTypography>{t(modalParams.info)}</OphTypography>
-      <HakutoiveContainer hakutoive={hakutoive} />
+      <HakutoiveName hakutoive={hakutoive} />
       {modalParams.info2 && (
         <OphTypography>
           <T

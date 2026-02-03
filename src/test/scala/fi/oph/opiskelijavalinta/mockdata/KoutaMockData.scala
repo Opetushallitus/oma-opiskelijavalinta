@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.mockdata
 
+import fi.oph.opiskelijavalinta.TestUtils.{HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID}
 import fi.oph.opiskelijavalinta.model.{Haku, Hakuaika, Hakukohde, TranslatedName}
 import fi.oph.opiskelijavalinta.util.TimeUtils.{KOUTA_DATETIME_FORMATTER, ZONE_FINLAND}
 
@@ -9,7 +10,7 @@ object KoutaMockData {
   val koutaFormatFutureDate = KOUTA_DATETIME_FORMATTER.format(ZonedDateTime.now(ZONE_FINLAND).plusDays(1))
 
   val kaynnissaOlevaHaku = Haku(
-    "haku-oid-1",
+    HAKU_OID,
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
     "haunkohdejoukko_20",
     "hakutapa_01",
@@ -17,7 +18,7 @@ object KoutaMockData {
   )
 
   val hakuaikaPaattynytHaku = Haku(
-    "haku-oid-1",
+    "1.2.246.562.29.00000000000000038405",
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
     "haunkohdejoukko_20",
     "hakutapa_01",
@@ -25,12 +26,12 @@ object KoutaMockData {
   )
 
   val hakukohde1 = Hakukohde(
-    "hakukohde-oid-1",
+    HAKUKOHDE_OID,
     TranslatedName("Liukumäen lisensiaatti", "", ""),
     TranslatedName("Leikkipuisto, Liukumäki", "", "")
   )
   val hakukohde2 = Hakukohde(
-    "hakukohde-oid-2",
+    HAKUKOHDE_OID_2,
     TranslatedName("Hiekkalaatikon arkeologi", "", ""),
     TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")
   )

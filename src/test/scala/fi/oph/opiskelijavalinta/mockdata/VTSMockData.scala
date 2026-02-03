@@ -16,7 +16,8 @@ object VTSMockData {
       Ilmoittautumistila(
         ilmoittautumisaika = Some(Map("loppu" -> "2026-01-16T21:59:59Z")),
         ilmoittautumistila = Some("EI_TEHTY"),
-        ilmoittauduttavissa = Some(false)
+        ilmoittauduttavissa = Some(false),
+        None
       )
     ),
     vastaanotettavuustila = Some("VASTAANOTETTAVISSA_SITOVASTI"),
@@ -32,6 +33,7 @@ object VTSMockData {
     ehdollisenHyvaksymisenEhtoEN = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = Some(false),
+    ilmoittautumisenAikaleima = None,
     jonokohtaisetTulostiedot = List(
       JonokohtainenTulostieto(
         oid = Some("12246562200000000000000007599136"),
@@ -64,7 +66,8 @@ object VTSMockData {
       Ilmoittautumistila(
         ilmoittautumisaika = Some(Map("loppu" -> "2026-01-16T21:59:59Z")),
         ilmoittautumistila = Some("EI_TEHTY"),
-        ilmoittauduttavissa = Some(false)
+        ilmoittauduttavissa = Some(false),
+        None
       )
     ),
     vastaanotettavuustila = Some("EI_VASTAANOTETTAVISSA"),
@@ -80,6 +83,7 @@ object VTSMockData {
     ehdollisenHyvaksymisenEhtoEN = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = None,
+    ilmoittautumisenAikaleima = None,
     jonokohtaisetTulostiedot = List.empty
   )
 

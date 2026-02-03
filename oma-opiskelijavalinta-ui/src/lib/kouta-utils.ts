@@ -1,30 +1,40 @@
-import { isNonNullish, isTruthy } from 'remeda';
+import { isTruthy } from 'remeda';
 import type { Haku } from './kouta-types';
 
+const HAKUTAPA_YHTEISHAKU = 'hakutapa_01';
+const HAKUTAPA_JATKUVA = 'hakutapa_03';
+const HAKUTAPA_JOUSTAVA = 'hakutapa_04';
+
+const HAUN_KOHDEJOUKKO_PERUSOPETUKSEN_JALKEISEN_KOULUTUKSEN_YHTEISHAKU =
+  'haunkohdejoukko_11';
+const HAUN_KOHDEJOUKKO_KORKEAKOULUTUS = 'haunkohdejoukko_12';
+
 export const isYhteishaku = (haku: Haku): boolean =>
-  haku.hakutapaKoodiUri.startsWith('hakutapa_01');
+  haku.hakutapaKoodiUri.startsWith(HAKUTAPA_YHTEISHAKU);
 
 export function isToisenAsteenYhteisHaku(
-  haku: Haku | null | undefined,
+  haku?: Haku | null,
 ): boolean {
   return (
-    isNonNullish(haku) &&
+    isTruthy(haku) &&
     isYhteishaku(haku) &&
-    haku.kohdejoukkoKoodiUri.startsWith('haunkohdejoukko_11')
+    haku.kohdejoukkoKoodiUri.startsWith(
+      HAUN_KOHDEJOUKKO_PERUSOPETUKSEN_JALKEISEN_KOULUTUKSEN_YHTEISHAKU,
+    )
   );
 }
 
-export function isKorkeakouluHaku(haku: Haku | null | undefined): boolean {
+export function isKorkeakouluHaku(haku?: Haku | null): boolean {
   return (
-    isNonNullish(haku) &&
-    haku.kohdejoukkoKoodiUri.startsWith('haunkohdejoukko_12')
+    isTruthy(haku) &&
+    haku.kohdejoukkoKoodiUri.startsWith(HAUN_KOHDEJOUKKO_KORKEAKOULUTUS)
   );
 }
 
 export function isJatkuvaTaiJoustavaHaku(haku?: Haku): boolean {
   return (
     isTruthy(haku) &&
-    (haku.hakutapaKoodiUri.startsWith('hakutapa_03') ||
-      haku.hakutapaKoodiUri.startsWith('hakutapa_04'))
+    (haku.hakutapaKoodiUri.startsWith(HAKUTAPA_JATKUVA) ||
+      haku.hakutapaKoodiUri.startsWith(HAKUTAPA_JOUSTAVA))
   );
 }

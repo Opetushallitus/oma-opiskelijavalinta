@@ -50,3 +50,31 @@ export async function doVastaanotto(
   const response = await postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto);
   return response.data;
 }
+
+async function postIlmoittautuminen(
+  hakemusOid: string,
+  hakukohdeOid: string,
+  hakuOid: string,
+) {
+  const config = await getConfiguration();
+  return await client.post<string>(
+    `${config.routes.ilmoittautuminen}/hakemus/${hakemusOid}/hakukohde/${hakukohdeOid}`,
+    {
+      hakuOid,
+      ilmoittautumisTila: 'LASNA_KOKO_LUKUVUOSI',
+    },
+  );
+}
+
+export async function doIlmoittautuminen(
+  hakemusOid: string,
+  hakukohdeOid: string,
+  hakuOid: string,
+): Promise<string> {
+  const response = await postIlmoittautuminen(
+    hakemusOid,
+    hakukohdeOid,
+    hakuOid,
+  );
+  return response.data;
+}

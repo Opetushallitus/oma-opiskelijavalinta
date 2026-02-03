@@ -106,7 +106,6 @@ class HakemuksetService @Autowired (
       ohjausparametrit = ohjausparametritService
         .getOhjausparametritForHaku(hakemus.haku)
         .map(o => {
-          LOG.info(s"VTJH: ${o.PH_VTJH}")
           Ohjausparametrit(
             o.PH_HKP.flatMap(d => d.date),
             o.PH_IP.flatMap(d => d.date),

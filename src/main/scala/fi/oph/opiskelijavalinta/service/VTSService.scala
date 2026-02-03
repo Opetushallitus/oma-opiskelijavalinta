@@ -11,6 +11,11 @@ import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+enum AllowedIlmoittautumisTila:
+  case LASNA_KOKO_LUKUVUOSI, LASNA_KEVAT
+
+case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokkaaja: String, selite: String)
+
 @Service
 class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: ObjectMapper = new ObjectMapper()) {
 
@@ -51,6 +56,24 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
       case Left(e) =>
         LOG.error(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
         throw RuntimeException(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+      case Right(o) => Option.apply(o)
+    }
+  }
+
+  def doIlmoittautuminen(
+    oppijanumero: String,
+    hakemusOid: String,
+    hakukohdeOid: String,
+    hakuOid: String,
+    ilmoittautumisTila: AllowedIlmoittautumisTila
+  ): Option[String] = {
+    val requestBody = mapper.writeValueAsString(
+      IlmoittautuminenRequestBody(hakukohdeOid, ilmoittautumisTila.toString, oppijanumero, "oma-opiskelijavalinta")
+    )
+    vtsClient.postIlmoittautuminen(hakemusOid, hakuOid, requestBody) match {
+      case Left(e) =>
+        LOG.error(s"Failed to do ilmoittautuminen for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+        throw RuntimeException(s"Failed to do ilmoittautuminen for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
       case Right(o) => Option.apply(o)
     }
   }

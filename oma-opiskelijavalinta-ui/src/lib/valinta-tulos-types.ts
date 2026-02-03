@@ -39,6 +39,8 @@ export type HakutoiveenTulosDto = {
   ehdollisenHyvaksymisenEhtoEN: string;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostietoDto>;
+  ilmoittautumistila: Ilmoittautuminen;
+  ilmoittautumisenAikaleima: string | null;
 };
 
 export type JonokohtainenTulostietoDto = {
@@ -62,12 +64,20 @@ export type JonokohtainenTulostieto = Omit<
   valintatila: Valintatila;
 };
 
+export type Ilmoittautuminen = {
+  ilmoittautumistila?: string | null;
+  ilmoittauduttavissa: boolean;
+  ilmoittautumistapa?: string | null;
+  ilmoittautumisenAikaleima?: string | null;
+};
+
 export type HakutoiveenTulos = Omit<
   HakutoiveenTulosDto,
-  'valintatila' | 'jonokohtaisetTulostiedot'
+  'valintatila' | 'jonokohtaisetTulostiedot' | 'ilmoittautumistila'
 > & {
   valintatila: Valintatila;
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
+  ilmoittautuminen: Ilmoittautuminen;
 };
 
 export enum VastaanottoTilaToiminto {

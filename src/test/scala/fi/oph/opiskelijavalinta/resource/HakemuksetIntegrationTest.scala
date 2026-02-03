@@ -1,7 +1,14 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  objectMapper,
+  oppijaUser,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID
+}
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{
   hakuaikaPaattynytHaku,
   hakukohde1,
@@ -38,16 +45,16 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
   def returnsApplicationsOfUser(): Unit = {
     Mockito.reset(valintaTulosServiceClient)
     Mockito
-      .when(koutaClient.getHaku("haku-oid-1"))
+      .when(koutaClient.getHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(hakuaikaPaattynytHaku)))
     Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
     Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
 
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1")).thenReturn(paattynytHakukierrosMock)
+    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock)
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -61,16 +68,16 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(1, hakemukset.old.length)
     Assertions.assertEquals(0, hakemukset.current.length)
     val app = hakemukset.old.head
-    Assertions.assertEquals("hakemus-oid-1", app.oid)
-    Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
+    Assertions.assertEquals(HAKEMUS_OID, app.oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000038404", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
     Assertions.assertEquals("Playground search", app.haku.get.nimi.en)
     Assertions.assertEquals("Samma på svenska", app.haku.get.nimi.sv)
     val hakukohteet = app.hakukohteet.map(a => a.get).toSeq
-    Assertions.assertEquals("hakukohde-oid-1", hakukohteet.head.oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065738", hakukohteet.head.oid)
     Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet.head.nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet.head.jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065739", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertEquals(mennytTimestamp, app.ohjausparametrit.get.hakukierrosPaattyy.get)
@@ -86,19 +93,19 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
   @Test
   def returnsPublishedVTSResultsForApplications(): Unit = {
     Mockito
-      .when(koutaClient.getHaku("haku-oid-1"))
+      .when(koutaClient.getHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
     Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
     Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
-      .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
+      .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
-      .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
+      .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
     val result = mvc
       .perform(
@@ -113,16 +120,16 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(1, hakemukset.current.length)
     Assertions.assertEquals(0, hakemukset.old.length)
     val app = hakemukset.current.head
-    Assertions.assertEquals("hakemus-oid-1", app.oid)
-    Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
+    Assertions.assertEquals(HAKEMUS_OID, app.oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000038404", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
     Assertions.assertEquals("Playground search", app.haku.get.nimi.en)
     Assertions.assertEquals("Samma på svenska", app.haku.get.nimi.sv)
     val hakukohteet = app.hakukohteet.map(a => a.get).toSeq
-    Assertions.assertEquals("hakukohde-oid-1", hakukohteet(0).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065738", hakukohteet(0).oid)
     Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet(0).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet(0).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065739", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
@@ -146,19 +153,19 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
   @Test
   def doesNotReturnUnpublishedVTSResults(): Unit = {
     Mockito
-      .when(koutaClient.getHaku("haku-oid-1"))
+      .when(koutaClient.getHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
     Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-1"))
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
     Mockito
-      .when(koutaClient.getHakukohde("hakukohde-oid-2"))
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
-      .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
+      .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
-      .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
+      .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
     val result = mvc
       .perform(
@@ -173,16 +180,16 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(1, hakemukset.current.length)
     Assertions.assertEquals(0, hakemukset.old.length)
     val app = hakemukset.current.head
-    Assertions.assertEquals("hakemus-oid-1", app.oid)
-    Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
+    Assertions.assertEquals(HAKEMUS_OID, app.oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000038404", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
     Assertions.assertEquals("Playground search", app.haku.get.nimi.en)
     Assertions.assertEquals("Samma på svenska", app.haku.get.nimi.sv)
     val hakukohteet = app.hakukohteet.map(a => a.get).toSeq
-    Assertions.assertEquals("hakukohde-oid-1", hakukohteet(0).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065738", hakukohteet(0).oid)
     Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet(0).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet(0).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065739", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
@@ -197,10 +204,10 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
   @Test
   def doesNotReturnKeskenResultWhenHakuaikaIsOver(): Unit = {
     Mockito
-      .when(ohjausparametritService.getOhjausparametritForHaku("haku-oid-1"))
+      .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
-      .when(valintaTulosServiceClient.getValinnanTulokset("haku-oid-1", "hakemus-oid-1"))
+      .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
     val result = mvc
       .perform(
@@ -215,16 +222,16 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(1, hakemukset.current.length)
     Assertions.assertEquals(0, hakemukset.old.length)
     val app = hakemukset.current.head
-    Assertions.assertEquals("hakemus-oid-1", app.oid)
-    Assertions.assertEquals("haku-oid-1", app.haku.get.oid)
+    Assertions.assertEquals(HAKEMUS_OID, app.oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000038404", app.haku.get.oid)
     Assertions.assertEquals("Leikkipuiston jatkuva haku", app.haku.get.nimi.fi)
     Assertions.assertEquals("Playground search", app.haku.get.nimi.en)
     Assertions.assertEquals("Samma på svenska", app.haku.get.nimi.sv)
     val hakukohteet = app.hakukohteet.map(a => a.get).toSeq
-    Assertions.assertEquals("hakukohde-oid-1", hakukohteet(0).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065738", hakukohteet(0).oid)
     Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet(0).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet(0).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals("hakukohde-oid-2", hakukohteet(1).oid)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065739", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
