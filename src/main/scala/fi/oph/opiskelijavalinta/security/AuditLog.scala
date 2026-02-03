@@ -44,9 +44,6 @@ object AuditLog {
     val target = new Target.Builder()
     for ((key, value) <- targetFields)
       target.setField(key, value)
-    // Tämä kludge on lisätty koska audit-lokirjaston gson-konfiguraatio ei kykene serialisoimaan esim. java.time.Instant-luokkia
-    // (eikä paljon muutakaan), mutta kirjaston metodit haluavat kuitenkin parametreina gson-objekteja.
-    // Tällä tavoin audit lokille voi antaa suoraan entiteetin ja kaikki kentät tallennetaan.
     val elements: JsonArray = new JsonArray()
     if (entity.isDefined)
       elements.add(JsonParser.parseString(mapper.writeValueAsString(entity.get)))

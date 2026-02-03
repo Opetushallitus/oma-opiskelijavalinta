@@ -38,7 +38,7 @@ class VastaanottoResource @Autowired (vtsService: VTSService, authorizationServi
           "vastaanotto"  -> vastaanotto
         ),
         AuditOperation.TallennaVastaanotto,
-        result
+        None
       )
       ResponseEntity.ok(result.get)
     }

@@ -12,4 +12,6 @@ object AuditOperation {
   case object HaeValintaTulokset extends AuditOperation("HAE VALINTATULOKSET")
 
   case object TallennaVastaanotto extends AuditOperation("TALLENNA VASTAANOTTO")
+
+  case object TallennaIlmoittautuminen extends AuditOperation("TALLENNA ILMOITTAUTUMINEN")
 }
