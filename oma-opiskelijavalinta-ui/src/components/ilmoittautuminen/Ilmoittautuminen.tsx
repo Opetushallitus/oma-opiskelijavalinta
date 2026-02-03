@@ -8,6 +8,12 @@ import type { Hakukohde } from '@/lib/kouta-types';
 import { isTruthy } from 'remeda';
 import { Ilmoittauduttu } from './Ilmoittauduttu';
 import { isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
+import { styled } from '@/lib/theme';
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  width: '100%',
+  marginTop: theme.spacing(2),
+}));
 
 export function IlmoittautuminenContainer({
   hakemus,
@@ -27,8 +33,7 @@ export function IlmoittautuminenContainer({
     hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa
   ) {
     return (
-      <Box
-        sx={{ width: '100%', margin: '1.5rem 0' }}
+      <StyledBox
         data-test-id={`ilmoittautuminen-${hakemus.oid}-${hakemuksenTulos.hakukohdeOid}`}
       >
         <OphTypography variant="body1" sx={{ fontWeight: 600 }}>
@@ -38,7 +43,7 @@ export function IlmoittautuminenContainer({
           {t('ilmoittautuminen.info')}
         </OphTypography>
         <IlmoittautumisCheckbox hakutoive={hakukohde} application={hakemus} />
-      </Box>
+      </StyledBox>
     );
   }
 

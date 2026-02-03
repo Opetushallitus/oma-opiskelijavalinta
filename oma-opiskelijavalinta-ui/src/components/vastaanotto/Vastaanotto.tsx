@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { OphTypography } from '@opetushallitus/oph-design-system';
+import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ValintatilaChip } from '../valinnantulos/ValintatilaChip';
 import { isDefined, isEmpty } from 'remeda';
@@ -12,6 +12,15 @@ import { VastaanottoTilaChip } from './VastaanottoTilaChip';
 import { VastaanottoEhdollisestaSitovaksi } from './VastaanottoEhdollisestaSitovaksi';
 import { VastaanottoInfo } from './VastaanottoInfo';
 import { IlmoittautuminenContainer } from '../ilmoittautuminen/Ilmoittautuminen';
+import { styled } from '@/lib/theme';
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  ':not(:first-child)': {
+    borderTop: '1px solid',
+    borderColor: ophColors.grey100,
+    paddingTop: theme.spacing(2),
+  },
+}));
 
 function VastaanottoBox({
   hakukohde,
@@ -25,7 +34,7 @@ function VastaanottoBox({
   const { translateEntity } = useTranslations();
 
   return (
-    <Box>
+    <StyledBox>
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
         tulos.vastaanottotila === 'KESKEN' && (
           <ValintatilaChip hakutoiveenTulos={tulos} />
@@ -58,7 +67,7 @@ function VastaanottoBox({
         hakemuksenTulos={tulos}
         hakukohde={hakukohde}
       />
-    </Box>
+    </StyledBox>
   );
 }
 
