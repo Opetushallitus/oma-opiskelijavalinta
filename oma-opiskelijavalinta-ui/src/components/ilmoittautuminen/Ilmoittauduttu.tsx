@@ -12,7 +12,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   columnGap: theme.spacing(0.5),
 }));
 
-const StyledCheck = styled(CheckCircle)(() => ({
+const OkCheck = styled(CheckCircle)(() => ({
   color: ophColors.green2,
 }));
 
@@ -30,7 +30,7 @@ export function Ilmoittauduttu({
 
   return (
     <StyledBox>
-      <StyledCheck />
+      <OkCheck />
       <OphTypography variant="body1">
         {t('ilmoittautuminen.ilmoittauduttu', { ilmoittautumisAika })}
         {t(`ilmoittautuminen.tila.${ilmoittautuminen.ilmoittautumistila}`)}

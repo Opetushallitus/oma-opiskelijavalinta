@@ -2,7 +2,9 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, PERSON_OID}
+import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
+import fi.oph.opiskelijavalinta.service.AllowedIlmoittautumisTila.LASNA_KOKO_LUKUVUOSI
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.ArgumentMatchers.anyString
@@ -23,7 +25,7 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO("LASNA_KOKO_LUKUVUOSI", HAKU_OID)))
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
       )
       .andExpect(status().isUnauthorized)
   }
@@ -38,7 +40,7 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
         MockMvcRequestBuilders
           .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
           .contentType("application/json")
-          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO("LASNA_KOKO_LUKUVUOSI", HAKU_OID)))
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
@@ -72,7 +74,7 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
         MockMvcRequestBuilders
           .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
           .contentType("application/json")
-          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO("LASNA_KOKO_LUKUVUOSI", HAKU_OID)))
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
@@ -109,7 +111,7 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
         MockMvcRequestBuilders
           .post(s"${ApiConstants.ILMOITTAUTUMINEN_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
           .contentType("application/json")
-          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO("LASNA_KOKO_LUKUVUOSI", HAKU_OID)))
+          .content(objectMapper.writeValueAsString(IlmoittautuminenDTO(LASNA_KOKO_LUKUVUOSI, HAKU_OID)))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)

@@ -11,6 +11,9 @@ import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+enum AllowedIlmoittautumisTila:
+  case LASNA_KOKO_LUKUVUOSI, LASNA_KEVAT
+
 case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokkaaja: String, selite: String)
 
 @Service
@@ -62,10 +65,10 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
     hakemusOid: String,
     hakukohdeOid: String,
     hakuOid: String,
-    ilmoittautumisTila: String
+    ilmoittautumisTila: AllowedIlmoittautumisTila
   ): Option[String] = {
     val requestBody = mapper.writeValueAsString(
-      IlmoittautuminenRequestBody(hakukohdeOid, ilmoittautumisTila, oppijanumero, "oma-opiskelijavalinta")
+      IlmoittautuminenRequestBody(hakukohdeOid, ilmoittautumisTila.toString, oppijanumero, "oma-opiskelijavalinta")
     )
     vtsClient.postIlmoittautuminen(hakemusOid, hakuOid, requestBody) match {
       case Left(e) =>

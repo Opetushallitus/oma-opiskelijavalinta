@@ -1,22 +1,25 @@
 package fi.oph.opiskelijavalinta.resource
 
+import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
 import fi.oph.opiskelijavalinta.resource.ApiConstants.ILMOITTAUTUMINEN_PATH
-import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService}
+import fi.oph.opiskelijavalinta.service.{AllowedIlmoittautumisTila, AuthorizationService, VTSService}
+import jakarta.validation.Valid
+import jakarta.validation.constraints.{NotBlank, NotNull, Pattern}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.{HttpStatus, ResponseEntity}
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.{PathVariable, PostMapping, RequestBody, RequestMapping, RestController}
 
-case class IlmoittautuminenDTO(ilmoittautumisTila: String, hakuOid: String)
-
 @RequestMapping(path = Array(ILMOITTAUTUMINEN_PATH))
+@Validated
 @RestController
 class IlmoittautuminenResource @Autowired (vtsService: VTSService, authorizationService: AuthorizationService) {
 
   @PostMapping(path = Array("/hakemus/{hakemusOid}/hakukohde/{hakukohdeOid}"))
   def doVastaanotto(
-    @PathVariable hakemusOid: String,
-    @PathVariable hakukohdeOid: String,
-    @RequestBody ilmoittautuminen: IlmoittautuminenDTO
+    @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakemusOid: String,
+    @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakukohdeOid: String,
+    @Valid @RequestBody ilmoittautuminen: IlmoittautuminenDTO
   ): ResponseEntity[String] = {
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
