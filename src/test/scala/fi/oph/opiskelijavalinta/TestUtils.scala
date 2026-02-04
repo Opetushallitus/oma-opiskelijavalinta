@@ -10,7 +10,7 @@ import java.util
 
 object TestUtils {
 
-  final val PERSON_OID = "TEST_PERSON_OID"
+  val PERSON_OID = "1.2.246.562.24.83491118298"
 
   final val HAKEMUS_OID = "1.2.246.562.11.00000000000002121541"
 

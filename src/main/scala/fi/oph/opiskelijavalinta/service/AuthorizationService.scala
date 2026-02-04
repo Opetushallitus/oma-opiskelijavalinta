@@ -1,20 +1,25 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
+import fi.oph.opiskelijavalinta.service.AuthorizationService.getPersonOid
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+
+object AuthorizationService {
+  def getPersonOid: Option[String] = {
+    val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
+    principal.attributes.get("personOid")
+  }
+}
 
 @Service
 class AuthorizationService @Autowired (hakemuksetService: HakemuksetService) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[HakemuksetService]);
 
-  def getPersonOid: Option[String] = {
-    val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
-    principal.attributes.get("personOid")
-  }
+  export AuthorizationService.getPersonOid
 
   def hasAuthAccessToHakemus(hakemusOid: String): Boolean = {
     val oppijanumero = getPersonOid

@@ -15,8 +15,8 @@ import { IlmoittautuminenContainer } from '../ilmoittautuminen/Ilmoittautuminen'
 import { styled } from '@/lib/theme';
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  ':not(:first-child)': {
-    borderTop: '1px solid',
+  ':not(:first-of-type)': {
+    borderTop: '2px solid',
     borderColor: ophColors.grey100,
     paddingTop: theme.spacing(2),
   },
