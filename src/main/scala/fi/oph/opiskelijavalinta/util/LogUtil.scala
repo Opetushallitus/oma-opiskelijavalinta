@@ -1,21 +1,21 @@
-package fi.oph.opiskelijavalinta.security
+package fi.oph.opiskelijavalinta.util
 
 import fi.oph.opiskelijavalinta.model.HakutoiveenTulos
 
-case class AuditValintaTulos(
+case class LogValintaTulos(
   hakukohdeOid: Option[String],
   valintatila: Option[String],
   ilmoittautumistila: Option[String],
   vastaanottotila: Option[String]
 )
 
-case class AuditHakemus(hakemusOid: String, hakemuksenTulokset: List[AuditValintaTulos])
+case class LogHakemus(hakemusOid: String, hakemuksenTulokset: List[LogValintaTulos])
 
-class AuditObjects {}
+class LogUtil {}
 
-object AuditObjects {
-  def toValintaTulos(toive: HakutoiveenTulos): AuditValintaTulos = {
-    AuditValintaTulos(
+object LogUtil {
+  def toValintaTulos(toive: HakutoiveenTulos): LogValintaTulos = {
+    LogValintaTulos(
       toive.hakukohdeOid,
       toive.valintatila,
       toive.ilmoittautumistila.flatMap(it => it.ilmoittautumistila),

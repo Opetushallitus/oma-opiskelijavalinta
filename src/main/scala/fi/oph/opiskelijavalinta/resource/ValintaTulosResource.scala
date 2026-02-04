@@ -2,8 +2,9 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.model.HakutoiveenTulos
 import fi.oph.opiskelijavalinta.resource.ApiConstants.VALINTATULOS_PATH
-import fi.oph.opiskelijavalinta.security.{AuditLog, AuditObjects, AuditOperation, AuditValintaTulos}
+import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
 import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService}
+import fi.oph.opiskelijavalinta.util.LogUtil
 import jakarta.validation.constraints.Pattern
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
@@ -37,8 +38,10 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
           "hakuOid"    -> hakuOid
         ),
         AuditOperation.HaeValintaTulokset,
-        result.map(ht => ht.hakutoiveet.map(AuditObjects.toValintaTulos))
+        None
       )
+      LOG.info(s"Hakemukselle $hakemusOid löytyi seuraavat tulokset: ${result
+          .map(ht => ht.hakutoiveet.map(LogUtil.toValintaTulos))}")
       ResponseEntity.ok(result.get.hakutoiveet)
     }
   }
