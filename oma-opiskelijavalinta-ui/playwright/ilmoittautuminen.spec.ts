@@ -99,6 +99,11 @@ test('Lähettää ilmoittautumisen onnistuneesti', async ({ page }) => {
   await expect(
     ilmoittautuminen.getByRole('button', { name: 'Lähetä ilmoittautuminen' }),
   ).toBeHidden();
+  await expect(
+    ilmoittautuminen.getByText(
+      'Olet ilmoittautunut 2.2.2026 klo 15:00 vastauksella: Läsnä koko lukuvuoden',
+    ),
+  ).toBeVisible();
 });
 
 test('Lähettää ilmoittautumisen epäonnistuneesti', async ({ page }) => {
