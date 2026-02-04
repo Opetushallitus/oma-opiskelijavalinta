@@ -23,7 +23,10 @@ import {
 import { ExternalLink } from '@/components/ExternalLink';
 import { List, ListItem } from '@mui/material';
 import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
-import { getVarallaOlevatYlemmatToiveet } from '@/components/vastaanotto/vastaanotto-utils';
+import {
+  getVarallaOlevatYlemmatToiveet,
+  vastaanotettavissa,
+} from '@/components/vastaanotto/vastaanotto-utils';
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -58,13 +61,21 @@ const getVarasijallaInfo = (
 };
 
 const getEhdollisuusInfo = (
+  valintatila: Valintatila,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
   const config = useConfig();
   return (
     <>
-      <OphTypography>{t('tulos.info.ehdollinen')}</OphTypography>
+      <OphTypography variant="h5">
+        {t('tulos.info.ehdollinen-otsikko')}
+      </OphTypography>
+      {valintatila === Valintatila.HYVAKSYTTY ? (
+        <OphTypography>{t('tulos.info.ehdollinen-hyvaksytty')}</OphTypography>
+      ) : (
+        <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
+      )}
       <List>
         <ListItem>TODO tiketillä OPHYOS-32</ListItem>
       </List>
@@ -213,12 +224,15 @@ const getInfoText = (
         )}
       {kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
+        vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getKkVastaanottoInfo(application, tulos, YPS, ylempiaVaralla, lang, t)}
       {!kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
+        vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
-      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(lang, t)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
+      {tulos.ehdollisestiHyvaksyttavissa &&
+        getEhdollisuusInfo(tulos.valintatila, lang, t)}
     </MultiInfoContainer>
   );
 };

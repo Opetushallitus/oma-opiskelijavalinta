@@ -4,10 +4,8 @@ import { styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { ValintatilaChip } from '@/components/valinnantulos/ValintatilaChip';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import { HakutoiveenTulosInfo } from '@/components/valinnantulos/HakutoiveenTulosInfo';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { ValintatilaInfo } from '@/components/valinnantulos/ValintatilaInfo';
@@ -15,6 +13,7 @@ import {
   isHyvaksyttyOdottaaYlempaa,
   isHyvaksyttyTaiVaralla,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { HakutoiveenTilaBadge } from '@/components/valinnantulos/HakutoiveenTilaBadge';
 
 const ORDER_NUMBER_WIDTH = 40; // px
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
@@ -91,20 +90,11 @@ export function Hakutoive({
         {hakemus.priorisoidutHakutoiveet && (
           <OrderNumberBox>{prioriteetti}</OrderNumberBox>
         )}
-        <ValintatilaChip
+        <HakutoiveenTilaBadge
           hakutoiveenTulos={tulos}
           odottaaYlempaa={odottaaYlempaa}
           naytaKeskenTulos={naytaKeskenTulos}
         />
-        {tulos?.ehdollisestiHyvaksyttavissa && (
-          <StatusBadgeChip
-            sx={{ ml: 1 }}
-            badgeProps={{
-              label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
-              color: BadgeColorKey.Yellow,
-            }}
-          />
-        )}
       </Box>
       <Box
         sx={{

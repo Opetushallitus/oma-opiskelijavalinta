@@ -39,6 +39,36 @@ test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   ).toBeHidden();
 });
 
+test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async ({
+  page,
+}) => {
+  const ehdollisestiHyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosHyvaksytty, ehdollisestiHyvaksyttavissa: true },
+    ],
+  };
+  await setup(page, ehdollisestiHyvaksyttyApplication);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await expect(
+    vastaanotot.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
+  await expect(vastaanotot.getByText('Ehdollinen')).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Otan tämän opiskelupaikan'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('En ota tätä opiskelupaikkaa'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Sinulle tarjotaan opiskelupaikkaa hakutoiveesta'),
+  ).toBeHidden();
+});
+
 test('Näyttää monesko hakutoive on vastaanotettavissa priorisoidussa haussa', async ({
   page,
 }) => {
@@ -299,12 +329,12 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
   await expect(
     vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
   ).toBeVisible();
-  await expect(
-    vastaanotot.getByText(
-      'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
-      { exact: true },
-    ),
-  ).toBeVisible();
+  const statusChip = vastaanotot.getByText(
+    'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
+    { exact: true },
+  );
+  await expect(statusChip).toBeVisible();
+  await expect(statusChip).toHaveCSS('color', 'rgb(37, 73, 5)');
 });
 
 test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async ({
@@ -415,6 +445,44 @@ test('Valintatulokset on haitarin alla piilossa jos vastaanotto on tehty', async
       .getByText('2', { exact: true }),
   ).toBeVisible();
   await expect(page.getByText('Valinnan tulos')).toBeVisible();
+});
+
+test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila että vastaanottotila', async ({
+  page,
+}) => {
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosVastaanotettu, ehdollisestiHyvaksyttavissa: true },
+    ],
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Hyväksytty', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Ehdollinen', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Opiskelijavalintojen tulokset' }),
+  ).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Opiskelijavalintojen tulokset' })
+    .click();
+  const tulos = page.getByTestId('application-hakutoiveet-hakemus-oid-1');
+  await expect(
+    tulos
+      .locator('.MuiChip-root')
+      .first()
+      .getByText('Hyväksytty', { exact: true }),
+  ).toBeVisible();
+  await expect(tulos.getByText('Ehdollinen', { exact: true })).toBeVisible();
+  await expect(
+    tulos.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
 });
 
 test('Vastaanotto on saavutettava', async ({ page }) => {

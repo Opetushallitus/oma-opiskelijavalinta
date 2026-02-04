@@ -8,7 +8,11 @@ import { hakemus3ToinenAste } from './mocks';
 
 test('Näyttää ilmoittauduttavan hakutoiveen', async ({ page }) => {
   await setup(page);
-  await expect(page.getByText('Opiskelupaikka vastaanotettu')).toBeVisible();
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-3')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
   const ilmoittautuminen = page.getByTestId(
     'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
   );
@@ -22,7 +26,11 @@ test('Näyttää ilmoittauduttavan hakutoiveen', async ({ page }) => {
 
 test('Ilmoittautuminen on saavutettava', async ({ page }) => {
   await setup(page);
-  await expect(page.getByText('Opiskelupaikka vastaanotettu')).toBeVisible();
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-3')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
   const ilmoittautuminen = page.getByTestId(
     'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
   );
@@ -38,7 +46,11 @@ test('Ilmoittautumismodaali on saavutettava', async ({ page }) => {
   await page.addStyleTag({
     content: '* {animation: none !important; transition: none !important; }',
   });
-  await expect(page.getByText('Opiskelupaikka vastaanotettu')).toBeVisible();
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-3')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
   const ilmoittautuminen = page.getByTestId(
     'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
   );
@@ -74,7 +86,11 @@ test('Lähettää ilmoittautumisen onnistuneesti', async ({ page }) => {
     },
   );
   await setup(page);
-  await expect(page.getByText('Opiskelupaikka vastaanotettu')).toBeVisible();
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-3')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
   const ilmoittautuminen = page.getByTestId(
     'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
   );
@@ -111,7 +127,11 @@ test('Lähettää ilmoittautumisen epäonnistuneesti', async ({ page }) => {
     },
   );
   await setup(page);
-  await expect(page.getByText('Opiskelupaikka vastaanotettu')).toBeVisible();
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-3')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
   const ilmoittautuminen = page.getByTestId(
     'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
   );

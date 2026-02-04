@@ -131,3 +131,12 @@ export function hasAlemmatVastaanotot(
 ) {
   return getAlemmatVastaanotot(hakutoive, application).length > 0;
 }
+
+const VASTAANOTETTAVISSA_TILAT = new Set<string>([
+  'VASTAANOTETTAVISSA_EHDOLLISESTI',
+  'VASTAANOTETTAVISSA_SITOVASTI',
+]);
+
+export const vastaanotettavissa = (vastaanotettavuustila: string | undefined) =>
+  isNonNullish(vastaanotettavuustila) &&
+  VASTAANOTETTAVISSA_TILAT.has(vastaanotettavuustila);

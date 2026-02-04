@@ -523,6 +523,45 @@ export const hakemuksenTulosPeruuntunut = {
   ],
 };
 
+export const hakemuksenTulosHyvaksyttyVastaanottoPerunut = {
+  hakukohdeOid: 'hakukohde-oid-3',
+  hakukohdeNimi: 'Meteorologi, Hyökyaaltojen tutkimislinja',
+  tarjoajaOid: 'tarjoaja-oid-2',
+  tarjoajaNimi: 'Tsunamiopisto, Merenpohjan kampus',
+  valintatapajonoOid: '2345',
+  valintatila: 'HYVAKSYTTY',
+  vastaanottotila: 'PERUNUT',
+  ilmoittautumistila: {
+    ilmoittautumisaika: {},
+    ilmoittautumistila: 'KESKEN',
+    ilmoittauduttavissa: false,
+  },
+  vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+  vastaanottoDeadline: null,
+  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
+  hyvaksyttyJaJulkaistuDate: null,
+  julkaistavissa: true,
+  ehdollisestiHyvaksyttavissa: false,
+  tilanKuvaukset: {
+    FI: 'Sait ylemmän hakutoiveen opiskelupaikan',
+    SV: 'Sait ylemmän hakutoiveen opiskelupaikan SV',
+    EN: 'Sait ylemmän hakutoiveen opiskelupaikan EN',
+  },
+  showMigriURL: false,
+  jonokohtaisetTulostiedot: [
+    {
+      oid: '2345',
+      nimi: '',
+      valintatila: 'HYVAKSYTTY',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      ehdollisenHyvaksymisenEhto: {},
+      eiVarasijatayttoa: false,
+      varasijasaannotKaytossa: false,
+    },
+  ],
+};
+
 export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty = [
   {
     hakukohdeOid: 'hakukohde-oid-1',
