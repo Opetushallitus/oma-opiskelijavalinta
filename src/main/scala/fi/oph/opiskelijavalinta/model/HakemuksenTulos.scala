@@ -45,9 +45,9 @@ case class Ilmoittautumistila(
 )
 
 case class Ilmoittautumistapa(
-                               nimi: Option[Map[String, String]],
-                               url: Option[String],
-                             )
+  nimi: Option[Map[String, String]],
+  url: Option[String]
+)
 
 case class JonokohtainenTulostieto(
   oid: Option[String],
