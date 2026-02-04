@@ -34,11 +34,10 @@ class VastaanottoResource @Autowired (vtsService: VTSService, authorizationServi
         request,
         Map(
           "hakemusOid"   -> hakemusOid,
-          "hakukohdeOid" -> hakukohdeOid,
-          "vastaanotto"  -> vastaanotto
+          "hakukohdeOid" -> hakukohdeOid
         ),
         AuditOperation.TallennaVastaanotto,
-        None
+        Some(vastaanotto)
       )
       ResponseEntity.ok(result.get)
     }

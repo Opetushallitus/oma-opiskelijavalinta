@@ -100,11 +100,11 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(
       Map(
         "hakemusOid"   -> HAKEMUS_OID,
-        "hakukohdeOid" -> HAKUKOHDE_OID,
-        "vastaanotto"  -> "VastaanotaSitovasti"
+        "hakukohdeOid" -> HAKUKOHDE_OID
       ),
       auditLogEntry.target
     )
+    Assertions.assertTrue(auditLogEntry.changes.contains("VastaanotaSitovasti"));
   }
 
   def initProperVastaanotto(): Unit = {

@@ -36,12 +36,11 @@ class IlmoittautuminenResource @Autowired (vtsService: VTSService, authorization
       AuditLog.log(
         request,
         Map(
-          "hakemusOid"         -> hakemusOid,
-          "hakukohdeOid"       -> hakukohdeOid,
-          "ilmoittautumistila" -> ilmoittautuminen.ilmoittautumisTila.toString
+          "hakemusOid"   -> hakemusOid,
+          "hakukohdeOid" -> hakukohdeOid
         ),
         AuditOperation.TallennaIlmoittautuminen,
-        None
+        Some(ilmoittautuminen)
       )
       ResponseEntity.ok(result.get)
     }

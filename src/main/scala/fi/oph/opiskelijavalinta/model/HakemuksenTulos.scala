@@ -33,11 +33,15 @@ case class HakutoiveenTulos(
   jonokohtaisetTulostiedot: List[JonokohtainenTulostieto] // empty list if missing
 )
 
+case class Ilmoittautumistapa(
+  nimi: Option[TranslatedName]
+)
+
 case class Ilmoittautumistila(
   ilmoittautumisaika: Option[Map[String, String]],
   ilmoittautumistila: Option[String],
   ilmoittauduttavissa: Option[Boolean],
-  ilmoittautumistapa: Option[String]
+  ilmoittautumistapa: Option[Ilmoittautumistapa]
 )
 
 case class JonokohtainenTulostieto(
