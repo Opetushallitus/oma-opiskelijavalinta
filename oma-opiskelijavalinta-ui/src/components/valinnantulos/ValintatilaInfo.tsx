@@ -61,16 +61,21 @@ const getVarasijallaInfo = (
 };
 
 const getEhdollisuusInfo = (
+  valintatila: Valintatila,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
   const config = useConfig();
   return (
     <>
-      <OphTypography sx={{ fontWeight: 'bold' }}>
+      <OphTypography variant="h5">
         {t('tulos.info.ehdollinen-otsikko')}
       </OphTypography>
-      <OphTypography>{t('tulos.info.ehdollinen')}</OphTypography>
+      {valintatila === Valintatila.HYVAKSYTTY ? (
+        <OphTypography>{t('tulos.info.ehdollinen-hyvaksytty')}</OphTypography>
+      ) : (
+        <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
+      )}
       <List>
         <ListItem>TODO tiketillä OPHYOS-32</ListItem>
       </List>
@@ -226,7 +231,8 @@ const getInfoText = (
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
-      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(lang, t)}
+      {tulos.ehdollisestiHyvaksyttavissa &&
+        getEhdollisuusInfo(tulos.valintatila, lang, t)}
     </MultiInfoContainer>
   );
 };

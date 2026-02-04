@@ -355,8 +355,52 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
     hakutoive.getByText('Ehdollinen opiskelijavalinta'),
   ).toBeVisible();
   await expect(
-    hakutoive.getByText('Huomioithan, että valintatietosi on ehdollinen'),
+    hakutoive.getByText('Huomioithan, että opiskelijavalintasi on ehdollinen.'),
   ).toBeVisible();
+  await expect(
+    hakutoive.getByText('muuten menetät sinulle tarjotun opiskelupaikan'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText('Mikäli sinulle tarjotaan tätä opiskelupaikkaa'),
+  ).toBeHidden();
+});
+
+test('Näyttää ehdollisuuden varasijalla', async ({ page }) => {
+  const varasijaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      varasijatayttoPaattyy: 1768143600000,
+    },
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosVarasijalla, ehdollisestiHyvaksyttavissa: true },
+    ],
+  };
+  await fetchMockData(page, varasijaApplication);
+
+  const app1 = page.getByTestId('application-hakemus-oid-1');
+  await expect(
+    app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(app1.getByText('Olet 2. varasijalla')).toBeVisible();
+  await expect(
+    app1.locator('.MuiChip-root').getByText('Ehdollinen'),
+  ).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Varasijalta hyväksytään opiskelijoita, jos aloituspaikkoja vapautuu.',
+    ),
+  ).toBeVisible();
+  await expect(app1.getByText('Ehdollinen opiskelijavalinta')).toBeVisible();
+  await expect(
+    app1.getByText('Huomioithan, että valintatietosi on ehdollinen.'),
+  ).toBeVisible();
+  await expect(
+    app1.getByText('Mikäli sinulle tarjotaan tätä opiskelupaikkaa'),
+  ).toBeVisible();
+  await expect(
+    app1.getByText('muuten menetät sinulle tarjotun opiskelupaikan'),
+  ).toBeHidden();
 });
 
 test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) => {
