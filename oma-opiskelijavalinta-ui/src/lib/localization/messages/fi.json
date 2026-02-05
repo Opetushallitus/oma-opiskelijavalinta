@@ -96,7 +96,10 @@
   },
   "ilmoittautuminen": {
     "otsikko": "Lukuvuosi-ilmoittautuminen",
+    "kk-muistathan-otsikko": "Muista tehdä lukuvuosi-ilmoittautuminen korkeakouluun",
+    "siirry": "Siirry ilmoittautumaan",
     "info": "Ilmoittaudu oppilaitokseen läsnäolevaksi lukuvuoden ajaksi. Jos olet poissa kauden tai lukuvuoden, ota yhteys oppilaitokseen.",
+    "kk-info": "Saadaksesi opiskeluoikeuden vastaanottamassasi opiskelupaikassa sinun tulee tehdä lukuvuosi-ilmoittautuminen.",
     "laheta": "Lähetä ilmoittautuminen",
     "lasna": "Läsnä koko lukuvuoden",
     "modaali": {

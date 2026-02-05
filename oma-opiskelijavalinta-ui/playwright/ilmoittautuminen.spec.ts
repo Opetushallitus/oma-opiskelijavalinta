@@ -4,7 +4,11 @@ import {
   mockHakemuksetFetch,
   mockAuthenticatedUser,
 } from './lib/playwrightUtils';
-import { hakemus3ToinenAste } from './mocks';
+import {
+  hakemuksenTulosVastaanotettu,
+  hakemus1,
+  hakemus3ToinenAste,
+} from './mocks';
 
 test('Näyttää ilmoittauduttavan hakutoiveen', async ({ page }) => {
   await setup(page);
@@ -160,6 +164,57 @@ test('Lähettää ilmoittautumisen epäonnistuneesti', async ({ page }) => {
   ).toBeHidden();
   await expect(
     ilmoittautuminen.getByRole('button', { name: 'Lähetä ilmoittautuminen' }),
+  ).toBeVisible();
+});
+
+test('Näyttää ilmoittauduttavan hakutoiveen korkeakouluhakuun', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        hakemuksenTulokset: [
+          {
+            ...hakemuksenTulosVastaanotettu,
+            ilmoittautumistila: {
+              ilmoittautumistila: 'EI_TEHTY',
+              ilmoittauduttavissa: true,
+              ilmoittautumistapa: {
+                nimi: { fi: 'Oili', sv: 'Oili', en: 'Oili' },
+                url: '/oili/',
+              },
+            },
+          },
+        ],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-1')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
+  const ilmoittautuminen = page.getByTestId(
+    'ilmoittautuminen-hakemus-oid-1-hakukohde-oid-1',
+  );
+  await expect(
+    ilmoittautuminen.getByText('Läsnä koko lukuvuoden'),
+  ).toBeHidden();
+  await expect(
+    ilmoittautuminen.getByText('Muista tehdä lukuvuosi-'),
+  ).toBeVisible();
+  await expect(
+    ilmoittautuminen.getByText('Saadaksesi opiskeluoikeuden'),
+  ).toBeVisible();
+  await expect(
+    ilmoittautuminen.getByRole('button', { name: 'Lähetä ilmoittautuminen' }),
+  ).toBeHidden();
+  await expect(
+    ilmoittautuminen.getByRole('link', { name: 'Siirry ilmoittautumaan' }),
   ).toBeVisible();
 });
 

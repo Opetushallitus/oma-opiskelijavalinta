@@ -9,6 +9,8 @@ import { isTruthy } from 'remeda';
 import { Ilmoittauduttu } from './Ilmoittauduttu';
 import { isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { styled } from '@/lib/theme';
+import { isOili } from './ilmoittautuminen-utils';
+import { ExternalLinkButton } from '../ExternalLink';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -48,20 +50,41 @@ export function IlmoittautuminenContainer({
   }
 
   if (
-    toisenAsteenYhteisHaku &&
+    !toisenAsteenYhteisHaku &&
+    hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa &&
+    isOili(hakemuksenTulos.ilmoittautuminen)
+  ) {
+    return (
+      <StyledBox
+        data-test-id={`ilmoittautuminen-${hakemus.oid}-${hakemuksenTulos.hakukohdeOid}`}
+      >
+        <OphTypography variant="body1" sx={{ fontWeight: 600 }}>
+          {t('ilmoittautuminen.kk-muistathan-otsikko')}
+        </OphTypography>
+        <OphTypography variant="body1" sx={{ mb: '0.5rem' }}>
+          {t('ilmoittautuminen.kk-info')}
+        </OphTypography>
+        <ExternalLinkButton
+          href={hakemuksenTulos.ilmoittautuminen.ilmoittautumistapa?.url ?? ''}
+          name={t('ilmoittautuminen.siirry')}
+        />
+      </StyledBox>
+    );
+  }
+
+  if (
     isTruthy(hakemuksenTulos.ilmoittautuminen?.ilmoittautumistila) &&
     hakemuksenTulos.ilmoittautuminen?.ilmoittautumistila !== 'EI_TEHTY'
   ) {
     return (
-      <Box
-        sx={{ width: '100%', margin: '1.5rem 0' }}
+      <StyledBox
         data-test-id={`ilmoittautuminen-${hakemus.oid}-${hakemuksenTulos.hakukohdeOid}`}
       >
         <OphTypography variant="body1" sx={{ fontWeight: 600 }}>
           {t('ilmoittautuminen.otsikko')}
         </OphTypography>
         <Ilmoittauduttu ilmoittautuminen={hakemuksenTulos.ilmoittautuminen} />
-      </Box>
+      </StyledBox>
     );
   }
 
