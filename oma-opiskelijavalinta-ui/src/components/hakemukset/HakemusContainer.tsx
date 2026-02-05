@@ -1,6 +1,6 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { isEmpty, isNullish, isTruthy } from 'remeda';
+import { isEmpty, isEmptyish, isNullish, isTruthy } from 'remeda';
 import { ExternalLink, ExternalLinkButton } from '../ExternalLink';
 import { HakemusInfo } from './HakemusInfo';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
@@ -12,7 +12,6 @@ import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
-import { isJatkuvaTaiJoustavaHaku } from '@/lib/kouta-utils';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 
@@ -29,12 +28,16 @@ function TilaInfo({
 
   let tila = null;
 
-  if (isTruthy(hakemus.haku) && !isJatkuvaTaiJoustavaHaku(hakemus.haku)) {
+  if (isTruthy(hakemus.haku)) {
     const tuloksetJulkaistu =
       tulokset.length > 0 &&
       !onkoJulkaisemattomiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []);
 
-    if (hakemus.haku.hakuaikaKaynnissa && !tuloksetJulkaistu) {
+    if (
+      hakemus.haku.hakuaikaKaynnissa &&
+      !tuloksetJulkaistu &&
+      !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
+    ) {
       tila = (
         <OphTypography>
           {t('hakemukset.tilankuvaukset.hakuaika-kesken', {
@@ -57,7 +60,10 @@ function TilaInfo({
           )}
         </OphTypography>
       );
-    } else if (!hakemus.haku.hakuaikaKaynnissa) {
+    } else if (
+      !hakemus.haku.hakuaikaKaynnissa &&
+      !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
+    ) {
       tila = (
         <OphTypography>
           {t('hakemukset.tilankuvaukset.valinnat-kesken', {
@@ -90,7 +96,6 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const hakemustaVoiMuokata =
     !hakemus.processing &&
     (isNullish(hakemus.haku) ||
-      isJatkuvaTaiJoustavaHaku(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
         (isEmpty(tulokset) ||
           onkoJulkaisemattomiaValinnantiloja(
@@ -115,8 +120,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
           onkoJulkaisemattomiaValinnantiloja(
             tulokset,
             hakemus.hakukohteet ?? [],
-          ) ||
-          isJatkuvaTaiJoustavaHaku(hakemus.haku)) && (
+          )) && (
           <ExternalLinkButton
             href={hakemus.modifyLink ?? ''}
             name={t('hakemukset.nayta')}

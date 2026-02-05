@@ -94,7 +94,6 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
         <OphTypography>
           {t('hakemukset.info.jatkuva.kasittelyssa')}
         </OphTypography>
-        <br />
         <OphTypography>{t('hakemukset.info.yhteystiedot')}</OphTypography>
         <OphTypography>{t('hakemukset.info.liitepyynnot')}</OphTypography>
         <JulkaistaanJaVarasijatList
@@ -109,7 +108,6 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
     return (
       <InfoBox>
         <OphTypography>{t('hakemukset.info.lahettanyt')}</OphTypography>
-        <br />
         <OphTypography>
           {t('hakemukset.info.voit-muokata', { hakuaikaPaattyy })}
         </OphTypography>
@@ -135,7 +133,6 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
     return (
       <InfoBox>
         <OphTypography>{t('hakemukset.info.lahettanyt')}</OphTypography>
-        <br />
         <OphTypography>
           {t('hakemukset.info.voit-muokata', { hakuaikaPaattyy })}
         </OphTypography>
@@ -149,7 +146,6 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
     return (
       <InfoBox>
         <OphTypography>{t('hakemukset.info.hakuaika-paattynyt')}</OphTypography>
-        <br />
         <OphTypography>{t('hakemukset.info.yhteystiedot')}</OphTypography>
         <br />
         <OphTypography>{t('hakemukset.info.liitepyynnot')}</OphTypography>
