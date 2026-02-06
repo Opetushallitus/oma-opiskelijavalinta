@@ -14,6 +14,7 @@ import fi.oph.opiskelijavalinta.model.{
   HakuEnriched,
   Hakukohde,
   HakutoiveenTulos,
+  HakutoiveenTulosEnriched,
   Ohjausparametrit
 }
 import org.asynchttpclient.RequestBuilder
@@ -99,11 +100,11 @@ class HakemuksetService @Autowired (
   }
 
   private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
-    val now                                           = new Date()
-    var haku: Option[HakuEnriched]                    = Option.empty
-    var hakukohteet: List[Option[Hakukohde]]          = List.empty
-    var ohjausparametrit: Option[Ohjausparametrit]    = Option.empty
-    var hakutoiveidenTulokset: List[HakutoiveenTulos] = List.empty
+    val now                                                   = new Date()
+    var haku: Option[HakuEnriched]                            = Option.empty
+    var hakukohteet: List[Option[Hakukohde]]                  = List.empty
+    var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
+    var hakutoiveidenTulokset: List[HakutoiveenTulosEnriched] = List.empty
     if (hakemus.haku != null) {
       haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
       hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)

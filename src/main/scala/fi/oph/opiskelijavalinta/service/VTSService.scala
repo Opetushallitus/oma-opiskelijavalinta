@@ -6,7 +6,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
-import fi.oph.opiskelijavalinta.model.HakemuksenTulos
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched}
+import fi.oph.opiskelijavalinta.util.TranslationUtil
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -17,7 +18,11 @@ enum AllowedIlmoittautumisTila:
 case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokkaaja: String, selite: String)
 
 @Service
-class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: ObjectMapper = new ObjectMapper()) {
+class VTSService @Autowired (
+  vtsClient: ValintaTulosServiceClient,
+  koodistoService: KoodistoService,
+  mapper: ObjectMapper = new ObjectMapper()
+) {
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -31,23 +36,74 @@ class VTSService @Autowired (vtsClient: ValintaTulosServiceClient, mapper: Objec
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
 
-  def getValinnanTulokset(hakuOid: String, hakemusOid: String): Option[HakemuksenTulos] = {
+  private val MUU_KOODI = "muu"
 
+  private def enrichHakutoiveenTulos(
+    tulos: HakutoiveenTulos
+  ): HakutoiveenTulosEnriched = {
+
+    val hyvaksymisenEhto =
+      if (!tulos.ehdollisestiHyvaksyttavissa.contains(true)) {
+        None
+      } else {
+        tulos.ehdollisenHyvaksymisenEhtoKoodi match {
+          case Some(koodi) if koodi != MUU_KOODI =>
+            koodistoService
+              .getKooditForKoodisto("hyvaksynnanehdot")
+              .find(_.koodiarvo == koodi)
+              .map(_.toTranslatedName)
+              .orElse(TranslationUtil.inlineHyvaksymisenEhto(tulos))
+
+          case _ =>
+            TranslationUtil.inlineHyvaksymisenEhto(tulos)
+        }
+      }
+
+    HakutoiveenTulosEnriched(
+      hakukohdeOid = tulos.hakukohdeOid,
+      hakukohdeNimi = tulos.hakukohdeNimi,
+      tarjoajaOid = tulos.tarjoajaOid,
+      tarjoajaNimi = tulos.tarjoajaNimi,
+      valintatapajonoOid = tulos.valintatapajonoOid,
+      valintatila = tulos.valintatila,
+      vastaanottotila = tulos.vastaanottotila,
+      ilmoittautumistila = tulos.ilmoittautumistila,
+      vastaanotettavuustila = tulos.vastaanotettavuustila,
+      vastaanottoDeadline = tulos.vastaanottoDeadline,
+      viimeisinHakemuksenTilanMuutos = tulos.viimeisinHakemuksenTilanMuutos,
+      hyvaksyttyJaJulkaistuDate = tulos.hyvaksyttyJaJulkaistuDate,
+      varasijanumero = tulos.varasijanumero,
+      julkaistavissa = tulos.julkaistavissa,
+      ehdollisestiHyvaksyttavissa = tulos.ehdollisestiHyvaksyttavissa,
+      ehdollisenHyvaksymisenEhto = hyvaksymisenEhto,
+      tilanKuvaukset = tulos.tilanKuvaukset,
+      showMigriURL = tulos.showMigriURL,
+      ilmoittautumisenAikaleima = tulos.ilmoittautumisenAikaleima,
+      jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot
+    )
+  }
+
+  def getValinnanTulokset(hakuOid: String, hakemusOid: String): Option[HakemuksenTulos] = {
     vtsClient.getValinnanTulokset(hakuOid, hakemusOid) match {
       case Left(e) =>
-        LOG.error(s"Failed to fetch valinnantulos data for $hakuOid, $hakemusOid: ${e.getMessage}")
+        LOG.error(
+          s"Failed to fetch valinnantulos data for hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}"
+        )
         Option.empty
       case Right(o) =>
-        Option
-          .apply(mapper.readValue(o, classOf[HakemuksenTulos]))
-          .map(ht =>
-            HakemuksenTulos(
-              ht.hakuOid,
-              ht.hakemusOid,
-              ht.hakijaOid,
-              ht.hakutoiveet.filter(toive => toive.julkaistavissa.getOrElse(false))
-            )
+        val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
+        val enrichedHakutoiveenTulokset =
+          raw.hakutoiveet
+            .filter(_.julkaistavissa.getOrElse(false))
+            .map(enrichHakutoiveenTulos)
+        Some(
+          HakemuksenTulos(
+            hakuOid = raw.hakuOid,
+            hakemusOid = raw.hakemusOid,
+            hakijaOid = raw.hakijaOid,
+            hakutoiveet = enrichedHakutoiveenTulokset
           )
+        )
     }
   }
 

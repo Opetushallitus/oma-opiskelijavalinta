@@ -7,7 +7,7 @@ case class HakemusEnriched(
   ohjausparametrit: Option[Ohjausparametrit],
   secret: String,
   submitted: String,
-  hakemuksenTulokset: List[HakutoiveenTulos],
+  hakemuksenTulokset: List[HakutoiveenTulosEnriched],
   processing: Boolean,
   formName: TranslatedName
 )

@@ -1,10 +1,16 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakutoiveenTulos, Ilmoittautumistila, JonokohtainenTulostieto}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksenTulos,
+  HakutoiveenTulos,
+  HakutoiveenTulosEnriched,
+  Ilmoittautumistila,
+  JonokohtainenTulostieto
+}
 
 object VTSMockData {
 
-  val hakutoive1Hyvaksytty = HakutoiveenTulos(
+  val hakutoive1Hyvaksytty = HakutoiveenTulosEnriched(
     hakukohdeOid = Some("hakukohde-oid-1"),
     hakukohdeNimi = Some("Liukumäen lisensiaatti"),
     tarjoajaOid = Some("organisaatio-oid-1"),
@@ -27,10 +33,7 @@ object VTSMockData {
     varasijanumero = None,
     julkaistavissa = Some(true),
     ehdollisestiHyvaksyttavissa = Some(false),
-    ehdollisenHyvaksymisenEhtoKoodi = None,
-    ehdollisenHyvaksymisenEhtoFI = None,
-    ehdollisenHyvaksymisenEhtoSV = None,
-    ehdollisenHyvaksymisenEhtoEN = None,
+    ehdollisenHyvaksymisenEhto = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = Some(false),
     ilmoittautumisenAikaleima = None,
@@ -55,7 +58,7 @@ object VTSMockData {
     None
   )
 
-  val hakutoive2Kesken = HakutoiveenTulos(
+  val hakutoive2Kesken = HakutoiveenTulosEnriched(
     hakukohdeOid = Some("hakukohde-oid-2"),
     hakukohdeNimi = Some("Hiekkalaatikon arkeologi"),
     tarjoajaOid = Some("organisaatio-oid-2"),
@@ -78,10 +81,7 @@ object VTSMockData {
     varasijanumero = None,
     julkaistavissa = Some(false),
     ehdollisestiHyvaksyttavissa = Some(false),
-    ehdollisenHyvaksymisenEhtoKoodi = None,
-    ehdollisenHyvaksymisenEhtoFI = None,
-    ehdollisenHyvaksymisenEhtoSV = None,
-    ehdollisenHyvaksymisenEhtoEN = None,
+    ehdollisenHyvaksymisenEhto = None,
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = None,
     ilmoittautumisenAikaleima = None,

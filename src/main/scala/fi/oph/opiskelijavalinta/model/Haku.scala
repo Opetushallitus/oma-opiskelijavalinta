@@ -1,7 +1,5 @@
 package fi.oph.opiskelijavalinta.model
 
-import java.util.Date
-
 case class Hakuaika(alkaa: String, paattyy: String)
 
 case class Koodi(koodiUri: Option[String])
