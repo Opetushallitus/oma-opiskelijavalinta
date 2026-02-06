@@ -9,7 +9,10 @@ import {
 } from '@tolgee/react';
 import { InfoBox } from '@/components/InfoBox';
 import type { Language } from '@/types/ui-types';
-import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
+import {
+  toFormattedDateTimeStringWithLocale,
+  translateName,
+} from '@/lib/localization/translation-utils';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useConfig } from '@/configuration';
 import { isNonNullish } from 'remeda';
@@ -27,6 +30,15 @@ import {
   getVarallaOlevatYlemmatToiveet,
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
+import { styled } from '@/lib/theme';
+
+const BulletList = styled('ul')(({ theme }) => ({
+  paddingTop: 0,
+  paddingBottom: 0,
+  paddingLeft: theme.spacing(3), // 24px default
+  margin: 0,
+  listStyleType: 'disc',
+}));
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -61,24 +73,35 @@ const getVarasijallaInfo = (
 };
 
 const getEhdollisuusInfo = (
-  valintatila: Valintatila,
+  tulos: HakutoiveenTulos,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
   const config = useConfig();
+  const ehdollisenHyvaksymisenEhto = tulos.ehdollisenHyvaksymisenEhto
+    ? translateName(tulos.ehdollisenHyvaksymisenEhto, lang)
+    : '';
   return (
     <>
       <OphTypography variant="h5">
         {t('tulos.info.ehdollinen-otsikko')}
       </OphTypography>
-      {valintatila === Valintatila.HYVAKSYTTY ? (
-        <OphTypography>{t('tulos.info.ehdollinen-hyvaksytty')}</OphTypography>
+      {tulos.valintatila === Valintatila.HYVAKSYTTY ? (
+        <OphTypography>
+          <Translation
+            keyName={'tulos.info.ehdollinen-hyvaksytty'}
+            params={{
+              strong: <strong></strong>,
+            }}
+          />
+        </OphTypography>
       ) : (
         <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
       )}
-      <List>
-        <ListItem>TODO tiketillä OPHYOS-32</ListItem>
-      </List>
+      <BulletList>
+        <li>{ehdollisenHyvaksymisenEhto}</li>
+      </BulletList>
+
       <OphTypography>
         {t('tulos.info.ehdollinen-lisatietoa')}{' '}
         <ExternalLink
@@ -231,8 +254,7 @@ const getInfoText = (
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
-      {tulos.ehdollisestiHyvaksyttavissa &&
-        getEhdollisuusInfo(tulos.valintatila, lang, t)}
+      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(tulos, lang, t)}
     </MultiInfoContainer>
   );
 };

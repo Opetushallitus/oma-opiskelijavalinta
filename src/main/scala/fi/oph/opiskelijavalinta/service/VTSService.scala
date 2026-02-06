@@ -50,7 +50,7 @@ class VTSService @Autowired (
           case Some(koodi) if koodi != MUU_KOODI =>
             koodistoService
               .getKooditForKoodisto("hyvaksynnanehdot")
-              .find(_.koodiarvo == koodi)
+              .find(_.koodiArvo == koodi)
               .map(_.toTranslatedName)
               .orElse(TranslationUtil.inlineHyvaksymisenEhto(tulos))
 

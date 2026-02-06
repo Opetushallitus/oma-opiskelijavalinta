@@ -28,7 +28,7 @@ class KoodistoService @Autowired (
       case Left(e) =>
         LOG.info(s"Failed to fetch koodisto for $koodisto: ${e.getMessage}")
         List.empty
-      case Right(o) => mapper.readValue(o, classOf[Seq[KoodistoKoodi]])
+      case Right(o) => mapper.readValue(o, classOf[Array[KoodistoKoodi]]).toSeq
     }
   }
 }
