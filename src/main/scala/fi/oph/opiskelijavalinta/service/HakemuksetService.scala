@@ -90,7 +90,11 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaIsOn.getOrElse(false),
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
-      haku.hakutapaKoodiUri
+      haku.hakutapaKoodiUri,
+      haku.metadata
+        .flatMap(metadata => metadata.koulutuksenAlkamiskausi)
+        .flatMap(kak => kak.koulutuksenAlkamiskausi)
+        .flatMap(k => k.koodiUri)
     )
   }
 

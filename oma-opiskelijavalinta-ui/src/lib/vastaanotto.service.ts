@@ -55,13 +55,14 @@ async function postIlmoittautuminen(
   hakemusOid: string,
   hakukohdeOid: string,
   hakuOid: string,
+  ilmoittautumisTila: 'LASNA_KEVAT' | 'LASNA_KOKO_LUKUVUOSI',
 ) {
   const config = await getConfiguration();
   return await client.post<string>(
     `${config.routes.ilmoittautuminen}/hakemus/${hakemusOid}/hakukohde/${hakukohdeOid}`,
     {
       hakuOid,
-      ilmoittautumisTila: 'LASNA_KOKO_LUKUVUOSI',
+      ilmoittautumisTila,
     },
   );
 }
@@ -70,11 +71,16 @@ export async function doIlmoittautuminen(
   hakemusOid: string,
   hakukohdeOid: string,
   hakuOid: string,
+  kevatIlmoittautuminen: boolean,
 ): Promise<string> {
+  const ilmoittautumisTila = kevatIlmoittautuminen
+    ? 'LASNA_KEVAT'
+    : 'LASNA_KOKO_LUKUVUOSI';
   const response = await postIlmoittautuminen(
     hakemusOid,
     hakukohdeOid,
     hakuOid,
+    ilmoittautumisTila,
   );
   return response.data;
 }

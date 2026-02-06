@@ -12,9 +12,7 @@ const HAUN_KOHDEJOUKKO_KORKEAKOULUTUS = 'haunkohdejoukko_12';
 export const isYhteishaku = (haku: Haku): boolean =>
   haku.hakutapaKoodiUri.startsWith(HAKUTAPA_YHTEISHAKU);
 
-export function isToisenAsteenYhteisHaku(
-  haku?: Haku | null,
-): boolean {
+export function isToisenAsteenYhteisHaku(haku?: Haku | null): boolean {
   return (
     isTruthy(haku) &&
     isYhteishaku(haku) &&
@@ -37,4 +35,8 @@ export function isJatkuvaTaiJoustavaHaku(haku?: Haku): boolean {
     (haku.hakutapaKoodiUri.startsWith(HAKUTAPA_JATKUVA) ||
       haku.hakutapaKoodiUri.startsWith(HAKUTAPA_JOUSTAVA))
   );
+}
+
+export function isKevatAlkamiskausi(haku?: Haku | null): boolean {
+  return isTruthy(haku) && haku.koulutuksenAlkamiskausi === 'kausi_k';
 }

@@ -7,7 +7,7 @@ import { IlmoittautumisCheckbox } from './IlmoittautumisCheckbox';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { isTruthy } from 'remeda';
 import { Ilmoittauduttu } from './Ilmoittauduttu';
-import { isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
+import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { styled } from '@/lib/theme';
 import { isOili } from './ilmoittautuminen-utils';
 import { ExternalLinkButton } from '../ExternalLink';
@@ -29,9 +29,11 @@ export function IlmoittautuminenContainer({
   const { t } = useTranslations();
 
   const toisenAsteenYhteisHaku = isToisenAsteenYhteisHaku(hakemus.haku);
+  const korkeakouluhaku =
+    !toisenAsteenYhteisHaku && isKorkeakouluHaku(hakemus.haku);
 
   if (
-    toisenAsteenYhteisHaku &&
+    !korkeakouluhaku &&
     hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa
   ) {
     return (
