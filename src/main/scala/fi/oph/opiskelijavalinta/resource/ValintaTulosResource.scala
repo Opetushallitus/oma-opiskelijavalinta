@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.model.HakutoiveenTulos
+import fi.oph.opiskelijavalinta.model.HakutoiveenTulosEnriched
 import fi.oph.opiskelijavalinta.resource.ApiConstants.VALINTATULOS_PATH
 import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
 import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService}
@@ -25,7 +25,7 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakemusOid: String,
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakuOid: String,
     request: HttpServletRequest
-  ): ResponseEntity[List[HakutoiveenTulos]] = {
+  ): ResponseEntity[List[HakutoiveenTulosEnriched]] = {
     LOG.info(s"Haetaan valintatuloksia hakemuksella $hakemusOid ja haulla $hakuOid")
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
