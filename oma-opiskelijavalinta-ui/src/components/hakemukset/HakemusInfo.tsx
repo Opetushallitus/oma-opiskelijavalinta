@@ -38,12 +38,12 @@ function JulkaistaanJaVarasijatList({
   return isEmpty(tuloksetJulkaistaan) && isEmpty(varasijatPaattyy) ? null : (
     <List sx={{ listStyleType: 'disc' }}>
       {!isEmpty(tuloksetJulkaistaan) && (
-        <BulletItem>
+        <BulletItem disablePadding>
           {t('hakemukset.info.julkaistaan', { tuloksetJulkaistaan })}
         </BulletItem>
       )}
       {!isEmpty(varasijatPaattyy) && (
-        <BulletItem>
+        <BulletItem disablePadding>
           {t('hakemukset.info.varasijat', { varasijatPaattyy })}
         </BulletItem>
       )}
