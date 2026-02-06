@@ -1,6 +1,12 @@
 package fi.oph.opiskelijavalinta.configuration
 
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
+import fi.oph.opiskelijavalinta.clients.{
+  AtaruClient,
+  KoodistoClient,
+  KoutaClient,
+  OhjausparametritClient,
+  ValintaTulosServiceClient
+}
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.context.annotation.{Bean, Configuration}
 import fi.vm.sade.javautils.nio.cas.CasClient
@@ -11,6 +17,11 @@ class ClientConfiguration {
   @Bean
   def ataruClient(@Autowired @Qualifier("ataruCasClient") ataruCasClient: CasClient): AtaruClient = {
     new AtaruClient(ataruCasClient)
+  }
+
+  @Bean
+  def koodistoClient(): KoodistoClient = {
+    new KoodistoClient
   }
 
   @Bean
