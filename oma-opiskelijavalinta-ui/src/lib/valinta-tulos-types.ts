@@ -36,9 +36,7 @@ export type HakutoiveenTulosDto = {
   vastaanottoDeadline: string;
   vastaanottotila?: VastaanottoTila;
   ehdollisestiHyvaksyttavissa?: boolean | null;
-  ehdollisenHyvaksymisenEhtoFI: string | null;
-  ehdollisenHyvaksymisenEhtoSV: string | null;
-  ehdollisenHyvaksymisenEhtoEN: string | null;
+  ehdollisenHyvaksymisenEhto?: TranslatedName | null;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostietoDto>;
   ilmoittautumistila: Ilmoittautuminen;

@@ -6,7 +6,7 @@ case class KoodistoMetadata(
 )
 
 case class KoodistoKoodi(
-  koodiarvo: String,
+  koodiArvo: String,
   metadata: Seq[KoodistoMetadata]
 ) {
 

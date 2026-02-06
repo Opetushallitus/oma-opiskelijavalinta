@@ -27,6 +27,7 @@ class CacheConfiguration {
   @Bean
   def cacheManager: CacheManager = {
     val cacheManager: CaffeineCacheManager = new CaffeineCacheManager(
+      CacheConstants.KOODISTO_CACHE_NAME,
       CacheConstants.KOUTA_HAKU_CACHE_NAME,
       CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME,
       CacheConstants.OHJAUSPARAMETRIT_CACHE_NAME,
