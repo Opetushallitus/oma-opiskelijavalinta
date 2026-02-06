@@ -1,3 +1,5 @@
+import type { TranslatedName } from './localization/localization-types';
+
 export enum Valintatila {
   HYVAKSYTTY = 'HYVAKSYTTY',
   HARKINNANVARAISESTI_HYVAKSYTTY = 'HARKINNANVARAISESTI_HYVAKSYTTY',
@@ -33,10 +35,10 @@ export type HakutoiveenTulosDto = {
   vastaanotettavuustila?: VastaanotettavuusTila;
   vastaanottoDeadline: string;
   vastaanottotila?: VastaanottoTila;
-  ehdollisestiHyvaksyttavissa?: boolean;
-  ehdollisenHyvaksymisenEhtoFI: string;
-  ehdollisenHyvaksymisenEhtoSV: string;
-  ehdollisenHyvaksymisenEhtoEN: string;
+  ehdollisestiHyvaksyttavissa?: boolean | null;
+  ehdollisenHyvaksymisenEhtoFI: string | null;
+  ehdollisenHyvaksymisenEhtoSV: string | null;
+  ehdollisenHyvaksymisenEhtoEN: string | null;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostietoDto>;
   ilmoittautumistila: Ilmoittautuminen;
@@ -67,7 +69,7 @@ export type JonokohtainenTulostieto = Omit<
 export type Ilmoittautuminen = {
   ilmoittautumistila?: string | null;
   ilmoittauduttavissa: boolean;
-  ilmoittautumistapa?: string | null;
+  ilmoittautumistapa?: { nimi: TranslatedName; url: string };
   ilmoittautumisenAikaleima?: string | null;
 };
 

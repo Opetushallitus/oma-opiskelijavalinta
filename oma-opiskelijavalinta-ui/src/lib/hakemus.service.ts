@@ -17,7 +17,7 @@ type Ohjausparametrit = {
   jarjestetytHakutoiveet?: boolean;
 };
 
-type HakemusResponse = {
+export type HakemusResponse = {
   oid: string;
   haku: Haku;
   hakukohteet: Array<Hakukohde>;

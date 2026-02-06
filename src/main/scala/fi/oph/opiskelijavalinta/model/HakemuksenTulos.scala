@@ -34,7 +34,8 @@ case class HakutoiveenTulos(
 )
 
 case class Ilmoittautumistapa(
-  nimi: Option[TranslatedName]
+  nimi: Option[TranslatedName],
+  url: Option[String]
 )
 
 case class Ilmoittautumistila(
