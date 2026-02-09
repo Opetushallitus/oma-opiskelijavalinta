@@ -361,7 +361,7 @@ const vastaanotettuHakemus = ({
           ilmoittautumistila: ilmoittauduttu
             ? kausi === 'kausi_s'
               ? 'LASNA_KOKO_LUKUVUOSI'
-              : 'LASNA_KEVAT'
+              : 'LASNA'
             : 'EI_TEHTY',
           ilmoittauduttavissa: !ilmoittauduttu,
         },

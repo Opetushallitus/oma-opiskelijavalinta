@@ -55,7 +55,7 @@ async function postIlmoittautuminen(
   hakemusOid: string,
   hakukohdeOid: string,
   hakuOid: string,
-  ilmoittautumisTila: 'LASNA_KEVAT' | 'LASNA_KOKO_LUKUVUOSI',
+  ilmoittautumisTila: 'LASNA' | 'LASNA_KOKO_LUKUVUOSI',
 ) {
   const config = await getConfiguration();
   return await client.post<string>(
@@ -74,7 +74,7 @@ export async function doIlmoittautuminen(
   kevatIlmoittautuminen: boolean,
 ): Promise<string> {
   const ilmoittautumisTila = kevatIlmoittautuminen
-    ? 'LASNA_KEVAT'
+    ? 'LASNA'
     : 'LASNA_KOKO_LUKUVUOSI';
   const response = await postIlmoittautuminen(
     hakemusOid,
