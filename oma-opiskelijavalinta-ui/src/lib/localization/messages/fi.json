@@ -112,7 +112,8 @@
     "onnistui": "Lukuvuosi-ilmoittautuminen onnistui",
     "virhe": "Lukuvuosi-ilmoittautuminen epäonnistui",
     "tila": {
-      "LASNA_KOKO_LUKUVUOSI": "Läsnä koko lukuvuoden"
+      "LASNA_KOKO_LUKUVUOSI": "Läsnä koko lukuvuoden",
+      "LASNA_KEVAT": "Läsnä kevään"
     }
   },
   "vastaanotto": {

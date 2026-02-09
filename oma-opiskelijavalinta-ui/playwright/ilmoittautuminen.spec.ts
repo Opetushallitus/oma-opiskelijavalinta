@@ -85,7 +85,9 @@ test('Lähettää ilmoittautumisen onnistuneesti', async ({ page }) => {
       await route.fulfill({
         status: 200,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(vastaanotettuHakemus(true).hakemuksenTulokset),
+        body: JSON.stringify(
+          vastaanotettuHakemus({ ilmoittauduttu: true }).hakemuksenTulokset,
+        ),
       });
     },
   );
@@ -278,9 +280,77 @@ test('Näyttää hakutoiveen jossa on ilmoittautuminen korkeakouluhaussa', async
   ).toBeVisible();
 });
 
-const vastaanotettuHakemus = (ilmoittauduttu?: boolean) => {
+test('Näyttää ja ilmoittautuu kevätkaudelle kun hakuun on sellainen määritelty', async ({
+  page,
+}) => {
+  await page.route(
+    '**/api/ilmoittautuminen/hakemus/hakemus-oid-3/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+      });
+    },
+  );
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-3/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          vastaanotettuHakemus({ ilmoittauduttu: true, kausi: 'kausi_k' })
+            .hakemuksenTulokset,
+        ),
+      });
+    },
+  );
+  await setup(page, 'kausi_k');
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-3')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
+  const ilmoittautuminen = page.getByTestId(
+    'ilmoittautuminen-hakemus-oid-3-hakukohde-oid-4',
+  );
+  await ilmoittautuminen
+    .getByRole('checkbox', { name: 'Läsnä kevään' })
+    .click();
+  const sendButton = ilmoittautuminen.getByRole('button', {
+    name: 'Lähetä ilmoittautuminen',
+  });
+  await sendButton.click();
+  await expect(page.getByText('Olet vahvistamassa lukuvuosi-')).toBeVisible();
+  await page.getByRole('button', { name: 'Lähetä ilmoittautuminen' }).click();
+  await expect(page.getByText('Olet vahvistamassa lukuvuosi-')).toBeHidden();
+  //ilmoitus näkyy ja suljetaan se
+  await expect(
+    page.getByText('Lukuvuosi-ilmoittautuminen onnistui'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Sulje' }).click();
+  await expect(
+    page.getByText('Lukuvuosi-ilmoittautuminen onnistui'),
+  ).toBeHidden();
+  await expect(
+    ilmoittautuminen.getByRole('button', { name: 'Lähetä ilmoittautuminen' }),
+  ).toBeHidden();
+  await expect(
+    ilmoittautuminen.getByText(
+      'Olet ilmoittautunut 2.2.2026 klo 15:00 vastauksella: Läsnä kevään',
+    ),
+  ).toBeVisible();
+});
+
+const vastaanotettuHakemus = ({
+  ilmoittauduttu = false,
+  kausi = 'kausi_s',
+}: {
+  ilmoittauduttu?: boolean;
+  kausi?: 'kausi_s' | 'kausi_k';
+}) => {
   return {
     ...hakemus3ToinenAste,
+    haku: { ...hakemus3ToinenAste.haku, koulutuksenAlkamiskausi: kausi },
     hakemuksenTulokset: [
       {
         ...hakemus3ToinenAste.hakemuksenTulokset[0],
@@ -289,7 +359,9 @@ const vastaanotettuHakemus = (ilmoittauduttu?: boolean) => {
         ilmoittautumistila: {
           ilmoittautumisaika: {},
           ilmoittautumistila: ilmoittauduttu
-            ? 'LASNA_KOKO_LUKUVUOSI'
+            ? kausi === 'kausi_s'
+              ? 'LASNA_KOKO_LUKUVUOSI'
+              : 'LASNA_KEVAT'
             : 'EI_TEHTY',
           ilmoittauduttavissa: !ilmoittauduttu,
         },
@@ -301,9 +373,9 @@ const vastaanotettuHakemus = (ilmoittauduttu?: boolean) => {
   };
 };
 
-async function setup(page: Page) {
+async function setup(page: Page, kausi: 'kausi_s' | 'kausi_k' = 'kausi_s') {
   await mockHakemuksetFetch(page, {
-    current: [vastaanotettuHakemus()],
+    current: [vastaanotettuHakemus({ kausi })],
     old: [],
   });
   await mockAuthenticatedUser(page);
