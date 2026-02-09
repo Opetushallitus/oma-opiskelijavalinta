@@ -51,7 +51,8 @@ object VTSMockData {
         varasijat = None,
         varasijasaannotKaytossa = Some(false)
       )
-    )
+    ),
+    None
   )
 
   val hakutoive2Kesken = HakutoiveenTulos(
@@ -84,7 +85,8 @@ object VTSMockData {
     tilanKuvaukset = Some(Map.empty),
     showMigriURL = None,
     ilmoittautumisenAikaleima = None,
-    jonokohtaisetTulostiedot = List.empty
+    jonokohtaisetTulostiedot = List.empty,
+    None
   )
 
   val mockVTSResponse = HakemuksenTulos(

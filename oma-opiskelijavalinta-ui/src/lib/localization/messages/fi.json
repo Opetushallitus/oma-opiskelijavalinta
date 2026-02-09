@@ -201,5 +201,9 @@
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       }
     }
+  },
+  "kela": {
+    "otsake": "Tee opintotukihakemus",
+    "linkki": "Siirry Kelan asiointipalveluun"
   }
 }

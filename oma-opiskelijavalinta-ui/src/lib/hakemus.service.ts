@@ -4,6 +4,7 @@ import type { TranslatedName } from './localization/localization-types';
 import type { Haku, Hakukohde } from './kouta-types';
 import { type HakutoiveenTulosDto, Valintatila } from './valinta-tulos-types';
 import type { Hakemus, Hakemukset } from './hakemus-types';
+import { isTruthy } from 'remeda';
 
 type Ohjausparametrit = {
   hakukierrosPaattyy?: number | null;
@@ -86,4 +87,12 @@ export async function getHakemukset(): Promise<Hakemukset> {
     .map((app) => convertToHakemus(app, muokkausUrl))
     .sort((a, b) => b.submitted - a.submitted);
   return { current, old };
+}
+
+export function getKelaUrl(hakemus: Hakemus): string | null | undefined {
+  return hakemus.hakemuksenTulokset.find((ht) => isTruthy(ht.kelaURL))?.kelaURL;
+}
+
+export function hasKelaUrl(hakemus: Hakemus): boolean {
+  return isTruthy(getKelaUrl(hakemus));
 }
