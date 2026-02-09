@@ -1,12 +1,10 @@
 import Hakemukset from '@/components/hakemukset/Hakemukset';
 import Info from '@/components/Info';
-import { getUser } from '@/lib/session-utils';
+import { QuerySuspenseBoundary } from '@/components/QuerySuspenseBoundary';
 import { useTranslations } from '@/hooks/useTranslations';
 import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import { useQuery } from '@tanstack/react-query';
-import type { User } from '@/lib/types';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -19,18 +17,15 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
-  const userData = useQuery({
-    queryKey: ['user'],
-    queryFn: getUser,
-  });
-  const user: User = userData.data || {};
   const { t } = useTranslations();
 
   return (
     <Box>
       <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>
       <StyledBox>
-        <Info user={user} />
+        <QuerySuspenseBoundary>
+          <Info />
+        </QuerySuspenseBoundary>
         <Hakemukset />
       </StyledBox>
     </Box>

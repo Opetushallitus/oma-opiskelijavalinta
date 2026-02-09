@@ -1,16 +1,22 @@
 import { useTranslations } from '@/hooks/useTranslations';
+import { getUser } from '@/lib/session-utils';
 import { styled } from '@/lib/theme';
 import { Box, List, ListItem } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import type { User } from '@/lib/types';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
   marginLeft: theme.spacing(2.5),
 }));
 
-export default function Info({ user }: { user: User }) {
+export default function Info() {
   const { t } = useTranslations();
+
+  const { data: user } = useSuspenseQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+  });
 
   return (
     <Box>
