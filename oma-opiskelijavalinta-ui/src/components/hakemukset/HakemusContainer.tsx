@@ -14,6 +14,8 @@ import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { hasKelaUrl } from '@/lib/hakemus.service';
+import { KelaContainer } from './KelaContainer';
 
 function TilaInfo({
   hakemus,
@@ -135,6 +137,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
             application={hakemus}
             hakemuksenTulokset={tulokset}
           />
+          {hasKelaUrl(hakemus) && <KelaContainer hakemus={hakemus} />}
           {onkoVastaanottoTehty(tulokset) && (
             <HakukohteetAccordion application={hakemus} tulokset={tulokset} />
           )}

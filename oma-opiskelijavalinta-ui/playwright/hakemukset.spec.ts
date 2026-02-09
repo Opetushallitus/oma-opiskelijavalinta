@@ -7,7 +7,9 @@ import {
 import {
   hakemuksenTulosHyvaksytty,
   hakemuksenTulosVarasijalla,
+  hakemuksenTulosVastaanotettu,
   hakemus1,
+  hakemus2,
   hakemus5JatkuvaHaku,
 } from './mocks';
 
@@ -264,6 +266,29 @@ test('Näyttää jatkuvan haun hakemuksen jonka tulokset ovat valmiit', async ({
   await expect(
     hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
   ).toHaveCount(0);
+});
+
+test('Näyttää kelalinkin kun sellainen löytyy', async ({ page }) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      hakemus1,
+      {
+        ...hakemus2,
+        hakemuksenTulokset: [
+          { ...hakemuksenTulosVastaanotettu, kelaURL: 'kela.fi' },
+        ],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Siirry Kelan asiointipalveluun' }),
+  ).toHaveCount(1);
 });
 
 test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({

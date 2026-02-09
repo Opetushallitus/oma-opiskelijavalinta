@@ -30,7 +30,8 @@ case class HakutoiveenTulos(
   tilanKuvaukset: Option[Map[String, String]],
   showMigriURL: Option[Boolean],
   ilmoittautumisenAikaleima: Option[String],
-  jonokohtaisetTulostiedot: List[JonokohtainenTulostieto] // empty list if missing
+  jonokohtaisetTulostiedot: List[JonokohtainenTulostieto], // empty list if missing
+  kelaURL: Option[String]
 )
 
 case class Ilmoittautumistapa(

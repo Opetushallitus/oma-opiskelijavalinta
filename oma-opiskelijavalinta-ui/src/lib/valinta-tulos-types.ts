@@ -43,6 +43,7 @@ export type HakutoiveenTulosDto = {
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostietoDto>;
   ilmoittautumistila: Ilmoittautuminen;
   ilmoittautumisenAikaleima: string | null;
+  kelaURL: string | null;
 };
 
 export type JonokohtainenTulostietoDto = {
