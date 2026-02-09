@@ -19,6 +19,7 @@ import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { getAlemmatVastaanotot } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
+import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
 
 const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -133,6 +134,8 @@ const getInfoText = (
             href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
           />
         )}
+        {tulos.ehdollisestiHyvaksyttavissa &&
+          getEhdollisuusInfo(tulos, lang, t)}
       </MultiInfoContainer>
     );
   }

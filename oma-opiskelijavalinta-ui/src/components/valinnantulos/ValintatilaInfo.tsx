@@ -72,7 +72,7 @@ const getVarasijallaInfo = (
   );
 };
 
-const getEhdollisuusInfo = (
+export const getEhdollisuusInfo = (
   tulos: HakutoiveenTulos,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,

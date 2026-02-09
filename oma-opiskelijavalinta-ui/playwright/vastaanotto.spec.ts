@@ -54,7 +54,9 @@ test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async (
     vastaanotot.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
   await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
-  await expect(vastaanotot.getByText('Ehdollinen')).toBeVisible();
+  await expect(
+    vastaanotot.locator('.MuiChip-root').getByText('Ehdollinen'),
+  ).toBeVisible();
   await expect(
     vastaanotot.getByText('Otan tämän opiskelupaikan'),
   ).toBeVisible();
@@ -67,6 +69,11 @@ test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async (
   await expect(
     vastaanotot.getByText('Sinulle tarjotaan opiskelupaikkaa hakutoiveesta'),
   ).toBeHidden();
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen.',
+    ),
+  ).toBeVisible();
 });
 
 test('Näyttää monesko hakutoive on vastaanotettavissa priorisoidussa haussa', async ({
