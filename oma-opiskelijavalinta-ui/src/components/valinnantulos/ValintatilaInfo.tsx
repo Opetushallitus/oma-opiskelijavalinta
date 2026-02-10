@@ -32,12 +32,10 @@ import {
 } from '@/components/vastaanotto/vastaanotto-utils';
 import { styled } from '@/lib/theme';
 
-const BulletList = styled('ul')(({ theme }) => ({
-  paddingTop: 0,
-  paddingBottom: 0,
-  paddingLeft: theme.spacing(3), // 24px default
-  margin: 0,
-  listStyleType: 'disc',
+const BulletItem = styled(ListItem)(({ theme }) => ({
+  display: 'list-item',
+  marginLeft: theme.spacing(2.5),
+  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
 }));
 
 const getVarasijallaInfo = (
@@ -98,9 +96,9 @@ export const getEhdollisuusInfo = (
       ) : (
         <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
       )}
-      <BulletList>
-        <li>{ehdollisenHyvaksymisenEhto}</li>
-      </BulletList>
+      <List sx={{ listStyleType: 'disc', padding: 0 }}>
+        <BulletItem disablePadding>{ehdollisenHyvaksymisenEhto}</BulletItem>
+      </List>
 
       <OphTypography>
         {t('tulos.info.ehdollinen-lisatietoa')}{' '}
@@ -122,9 +120,23 @@ const getOdottaaYlempaaInfo = (
       <OphTypography>
         {t('tulos.info.hyvaksytty-odottaa-ylempaa')}
       </OphTypography>
-      <List>
-        <ListItem>{t('tulos.info.hyvaksytty-odottaa-ehto1')}</ListItem>
-        <ListItem>{t('tulos.info.hyvaksytty-odottaa-ehto2')}</ListItem>
+      <List
+        component="ol"
+        sx={{
+          padding: 0,
+          margin: 0,
+          listStyleType: 'decimal',
+          '& > li:not(:last-of-type)': {
+            marginBottom: 1,
+          },
+        }}
+      >
+        <BulletItem disablePadding>
+          {t('tulos.info.hyvaksytty-odottaa-ehto1')}
+        </BulletItem>
+        <BulletItem disablePadding>
+          {t('tulos.info.hyvaksytty-odottaa-ehto2')}
+        </BulletItem>
       </List>
       <OphTypography>
         {t('tulos.info.hyvaksytty-odottaa-peruuntuu')}
