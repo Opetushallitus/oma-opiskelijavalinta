@@ -43,7 +43,8 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
       case Left(e) =>
         LOG.warn(s"Failed to fetch haku data for $hakukohdeOid: ${e.getMessage}")
         Option.empty
-      case Right(o) => Option.apply(mapper.readValue(o, classOf[Hakukohde]))
+      case Right(o) =>
+        Option.apply(mapper.readValue(o, classOf[Hakukohde]))
     }
   }
 

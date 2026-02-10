@@ -102,6 +102,7 @@
     "kk-info": "Saadaksesi opiskeluoikeuden vastaanottamassasi opiskelupaikassa sinun tulee tehdä lukuvuosi-ilmoittautuminen.",
     "laheta": "Lähetä ilmoittautuminen",
     "lasna": "Läsnä koko lukuvuoden",
+    "lasna-kevat": "Läsnä kevään",
     "modaali": {
       "otsikko": "Vahvista lukuvuosi-ilmoittautuminen",
       "vahvista": "Lähetä ilmoittautuminen",
@@ -111,7 +112,14 @@
     "onnistui": "Lukuvuosi-ilmoittautuminen onnistui",
     "virhe": "Lukuvuosi-ilmoittautuminen epäonnistui",
     "tila": {
-      "LASNA_KOKO_LUKUVUOSI": "Läsnä koko lukuvuoden"
+      "LASNA_KOKO_LUKUVUOSI": "Läsnä koko lukuvuoden",
+      "LASNA": "Läsnä kevään",
+      "EI_TEHTY": "Ei tehty",
+      "POISSA_KOKO_LUKUVUOSI": "Poissa (koko lukuvuosi)",
+      "EI_ILMOITTAUTUNUT": "Ei ilmoittautunut",
+      "LASNA_SYKSY": "Läsnä syksy, poissa kevät",
+      "POISSA_SYKSY": "Poissa syksy, läsnä kevät",
+      "POISSA": "Poissa, keväällä alkava koulutus"
     }
   },
   "vastaanotto": {

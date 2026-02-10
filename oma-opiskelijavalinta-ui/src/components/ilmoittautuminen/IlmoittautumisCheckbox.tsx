@@ -15,6 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import { IlmoittautuminenModalContent } from './IlmoittautuminenModalContent';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { doIlmoittautuminen } from '@/lib/vastaanotto.service';
+import { isKevatAlkamiskausi } from '@/lib/kouta-utils';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -46,6 +47,8 @@ export function IlmoittautumisCheckbox({
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
 
+  const kevatIlmoittautuminen = isKevatAlkamiskausi(application.haku);
+
   const mutation = useMutation({
     mutationFn: async () => {
       if (!application.haku) {
@@ -56,6 +59,7 @@ export function IlmoittautumisCheckbox({
         application.oid,
         hakutoive.oid,
         application.haku?.oid,
+        kevatIlmoittautuminen,
       );
       hideConfirmation();
     },
@@ -111,7 +115,11 @@ export function IlmoittautumisCheckbox({
         required={true}
         renderInput={() => (
           <OphCheckbox
-            label={t('ilmoittautuminen.lasna')}
+            label={t(
+              kevatIlmoittautuminen
+                ? 'ilmoittautuminen.lasna-kevat'
+                : 'ilmoittautuminen.lasna',
+            )}
             error={showSelectionError}
             onChange={setIlmoittautuminenChecked}
             checked={checked}
