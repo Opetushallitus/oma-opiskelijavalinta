@@ -336,7 +336,13 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   const hyvaksyttyApplication = {
     ...hakemus2,
     hakemuksenTulokset: [
-      { ...hakemuksenTulosHyvaksytty, ehdollisestiHyvaksyttavissa: true },
+      {
+        ...hakemuksenTulosHyvaksytty,
+        ehdollisestiHyvaksyttavissa: true,
+        ehdollisenHyvaksymisenEhto: {
+          fi: 'Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä',
+        },
+      },
     ],
   };
   await fetchMockData(page, hyvaksyttyApplication);
@@ -353,6 +359,11 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   ).toBeVisible();
   await expect(
     hakutoive.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText(
+      'Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä',
+    ),
   ).toBeVisible();
   await expect(
     hakutoive.getByText('Huomioithan, että opiskelijavalintasi on ehdollinen.'),

@@ -21,6 +21,7 @@ import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import {
   getVarallaOlevatMuutToiveet,
   hasAlempiHyvaksytty,
+  isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
   isHyvaksytty,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ExternalLinkParagraph } from '@/components/ExternalLink';
@@ -31,6 +32,7 @@ import {
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
 import { styled } from '@/lib/theme';
+import { EhdollisuusAlert } from '@/components/valinnantulos/EhdollisuusAlert';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
@@ -74,6 +76,7 @@ export const getEhdollisuusInfo = (
   tulos: HakutoiveenTulos,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
+  naytaOtsikko = true,
 ) => {
   const config = useConfig();
   const ehdollisenHyvaksymisenEhto = tulos.ehdollisenHyvaksymisenEhto
@@ -81,9 +84,11 @@ export const getEhdollisuusInfo = (
     : '';
   return (
     <>
-      <OphTypography variant="h5">
-        {t('tulos.info.ehdollinen-otsikko')}
-      </OphTypography>
+      {naytaOtsikko && (
+        <OphTypography variant="h5">
+          {t('tulos.info.ehdollinen-otsikko')}
+        </OphTypography>
+      )}
       {tulos.valintatila === Valintatila.HYVAKSYTTY ? (
         <OphTypography>
           <Translation
@@ -284,6 +289,9 @@ export function ValintatilaInfo({
 }) {
   const { getLanguage, t } = useTranslations();
 
+  if (isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos)) {
+    return <EhdollisuusAlert tulos={tulos} />;
+  }
   const info = getInfoText(
     t,
     getLanguage(),

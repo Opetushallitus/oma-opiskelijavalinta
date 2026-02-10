@@ -12,6 +12,8 @@ import { VastaanottoInfo } from './VastaanottoInfo';
 import { IlmoittautuminenContainer } from '../ilmoittautuminen/Ilmoittautuminen';
 import { HakutoiveenTilaBadge } from '@/components/valinnantulos/HakutoiveenTilaBadge';
 import { styled } from '@/lib/theme';
+import { isEhdollisestiHyvaksyttyVastaanottanutSitovasti } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { EhdollisuusAlert } from '@/components/valinnantulos/EhdollisuusAlert';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   ':not(:first-of-type)': {
@@ -41,6 +43,9 @@ function VastaanottoBox({
       <OphTypography variant="body1">
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
+      {isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos) && (
+        <EhdollisuusAlert tulos={tulos} />
+      )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
         <VastaanottoInfo tulos={tulos} application={application} />
       )}

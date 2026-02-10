@@ -167,6 +167,16 @@ export const isHyvaksyttyTaiVaralla = (t: Valintatila) =>
 
 export const isHyvaksytty = (t: Valintatila) => HYVAKSYTTY_TILAT.has(t);
 
+export const isEhdollisestiHyvaksyttyVastaanottanutSitovasti = (
+  tulos: HakutoiveenTulos,
+) => {
+  return (
+    tulos.ehdollisestiHyvaksyttavissa &&
+    tulos.valintatila === Valintatila.HYVAKSYTTY &&
+    tulos.vastaanottotila === 'VASTAANOTTANUT_SITOVASTI'
+  );
+};
+
 export const isJulkaistuHakutoiveenTulos = (
   tulokset: Array<HakutoiveenTulos>,
 ): boolean => {
