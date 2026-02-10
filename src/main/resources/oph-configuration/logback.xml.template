@@ -46,4 +46,9 @@
     <logger name="org.springframework.boot.autoconfigure.security.AuthenticationManagerConfiguration" level="info" />
     <logger name="fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter" level="error" />
 
+    <!-- Auditlog  -->
+    <logger name="fi.oph.opiskelijavalinta.security.AuditLog" level="INFO" additivity="false">
+        <appender-ref ref="AUDIT" />
+    </logger>
+
 </configuration>
