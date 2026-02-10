@@ -23,7 +23,7 @@ import {
   hasAlempiHyvaksytty,
   isHyvaksytty,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { ExternalLink } from '@/components/ExternalLink';
+import { ExternalLinkParagraph } from '@/components/ExternalLink';
 import { List, ListItem } from '@mui/material';
 import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
 import {
@@ -104,9 +104,10 @@ export const getEhdollisuusInfo = (
 
       <OphTypography>
         {t('tulos.info.ehdollinen-lisatietoa')}{' '}
-        <ExternalLink
+        <ExternalLinkParagraph
           name={t('tulos.info.hakijapalvelut')}
           href={`${config.routes.yleiset.konfo}/${lang}/sivu/korkeakoulujen-hakijapalvelut`}
+          underline={'always'}
         />
       </OphTypography>
     </>
@@ -171,9 +172,10 @@ const getKkVastaanottoInfo = (
           {t('vastaanotto.info.jonotus')}
         </OphTypography>
       )}
-      <ExternalLink
+      <ExternalLinkParagraph
         name={t('vastaanotto.info.ohje-kk')}
         href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
+        underline={'always'}
       />
     </>
   );

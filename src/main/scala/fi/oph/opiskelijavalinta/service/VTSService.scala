@@ -79,7 +79,8 @@ class VTSService @Autowired (
       tilanKuvaukset = tulos.tilanKuvaukset,
       showMigriURL = tulos.showMigriURL,
       ilmoittautumisenAikaleima = tulos.ilmoittautumisenAikaleima,
-      jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot
+      jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot,
+      None
     )
   }
 
