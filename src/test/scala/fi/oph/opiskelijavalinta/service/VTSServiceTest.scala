@@ -13,11 +13,11 @@ class VTSServiceTest {
 
   val vtsClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
 
-  val HAKU_OID = "HAKU-OID-1"
+  val HAKU_OID    = "HAKU-OID-1"
   val HAKEMUS_OID = "HAKEMUS-OID-1"
 
   val mockKoodistoService = Mockito.mock(classOf[KoodistoService])
-  val vtsService = VTSService(vtsClient, mockKoodistoService)
+  val vtsService          = VTSService(vtsClient, mockKoodistoService)
 
   @Test
   def returnsEhdollisuudenSyyFromKoodisto(): Unit = {
@@ -33,11 +33,16 @@ class VTSServiceTest {
     Mockito
       .when(mockKoodistoService.getKooditForKoodisto("hyvaksynnanehdot"))
       .thenReturn(
-        Seq(KoodistoKoodi("ltt", List(KoodistoMetadata("Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä","FI"),
-            KoodistoMetadata("Villkor: lämna in ditt slutliga examensbetyg inom utsatt tid", "SV"), KoodistoMetadata("Condition: Submit your final qualification certificate by the deadline","EN")
+        Seq(
+          KoodistoKoodi(
+            "ltt",
+            List(
+              KoodistoMetadata("Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä", "FI"),
+              KoodistoMetadata("Villkor: lämna in ditt slutliga examensbetyg inom utsatt tid", "SV"),
+              KoodistoMetadata("Condition: Submit your final qualification certificate by the deadline", "EN")
+            )
+          )
         )
-        )
-      )
       )
     val tulos = vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID)
     Assertions.assertFalse(tulos.isEmpty)
@@ -45,7 +50,10 @@ class VTSServiceTest {
     val hakutoiveenTulosEnriched = tulos.get.hakutoiveet.head
     Assertions.assertEquals(true, hakutoiveenTulosEnriched.ehdollisestiHyvaksyttavissa.getOrElse(false))
     Assertions.assertFalse(hakutoiveenTulosEnriched.ehdollisenHyvaksymisenEhto.isEmpty)
-    Assertions.assertEquals("Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä", hakutoiveenTulosEnriched.ehdollisenHyvaksymisenEhto.get.fi)
+    Assertions.assertEquals(
+      "Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä",
+      hakutoiveenTulosEnriched.ehdollisenHyvaksymisenEhto.get.fi
+    )
   }
 
   @Test
@@ -56,13 +64,15 @@ class VTSServiceTest {
         Right(
           objectMapper.writeValueAsString(
             ehdollinenTulos.copy(
-                hakutoiveet = List(hakutoiveEhdollisestiHyvaksytty.copy(
-                    ehdollisenHyvaksymisenEhtoKoodi = Some("muu"),
-                    ehdollisenHyvaksymisenEhtoFI = Some("Muu syy"),
-                    ehdollisenHyvaksymisenEhtoSV = Some("Muu syy SV"),
-                    ehdollisenHyvaksymisenEhtoEN = Some("Muu syy EN")
+              hakutoiveet = List(
+                hakutoiveEhdollisestiHyvaksytty.copy(
+                  ehdollisenHyvaksymisenEhtoKoodi = Some("muu"),
+                  ehdollisenHyvaksymisenEhtoFI = Some("Muu syy"),
+                  ehdollisenHyvaksymisenEhtoSV = Some("Muu syy SV"),
+                  ehdollisenHyvaksymisenEhtoEN = Some("Muu syy EN")
                 )
-            ))
+              )
+            )
           )
         )
       )
@@ -77,4 +87,3 @@ class VTSServiceTest {
   }
 
 }
-
