@@ -1,14 +1,66 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{
-  HakemuksenTulos,
-  HakutoiveenTulos,
-  HakutoiveenTulosEnriched,
-  Ilmoittautumistila,
-  JonokohtainenTulostieto
-}
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched, Ilmoittautumistila, JonokohtainenTulostieto}
 
 object VTSMockData {
+
+  val hakutoiveEhdollisestiHyvaksytty = HakutoiveenTulos(
+    hakukohdeOid = Some("hakukohde-oid-1"),
+    hakukohdeNimi = Some("Liukumäen lisensiaatti"),
+    tarjoajaOid = Some("organisaatio-oid-1"),
+    tarjoajaNimi = Some("Leikkipuisto, Liukumäki"),
+    valintatapajonoOid = Some("12246562200000000000000007599136"),
+    valintatila = Some("HYVAKSYTTY"),
+    vastaanottotila = Some("KESKEN"),
+    ilmoittautumistila = Some(
+      Ilmoittautumistila(
+        ilmoittautumisaika = Some(Map("loppu" -> "2026-01-16T21:59:59Z")),
+        ilmoittautumistila = Some("EI_TEHTY"),
+        ilmoittauduttavissa = Some(false),
+        None
+      )
+    ),
+    vastaanotettavuustila = Some("VASTAANOTETTAVISSA_SITOVASTI"),
+    vastaanottoDeadline = Some("2025-12-12T13:00:00Z"),
+    viimeisinHakemuksenTilanMuutos = Some("2025-11-17T08:25:19Z"),
+    hyvaksyttyJaJulkaistuDate = Some("2025-11-17T08:25:23Z"),
+    varasijanumero = None,
+    julkaistavissa = Some(true),
+    ehdollisestiHyvaksyttavissa = Some(true),
+    ehdollisenHyvaksymisenEhtoKoodi = Some("ltt"),
+    ehdollisenHyvaksymisenEhtoFI = None,
+    ehdollisenHyvaksymisenEhtoSV = None,
+    ehdollisenHyvaksymisenEhtoEN = None,
+    tilanKuvaukset = Some(Map.empty),
+    showMigriURL = Some(false),
+    ilmoittautumisenAikaleima = None,
+    jonokohtaisetTulostiedot = List(
+      JonokohtainenTulostieto(
+        oid = Some("12246562200000000000000007599136"),
+        nimi = Some("todistusvalinta"),
+        pisteet = None,
+        alinHyvaksyttyPistemaara = None,
+        valintatila = Some("HYVAKSYTTY"),
+        julkaistavissa = Some(true),
+        valintatapajonoPrioriteetti = Some(1),
+        tilanKuvaukset = Some(Map.empty),
+        ehdollisestiHyvaksyttavissa = Some(false),
+        ehdollisenHyvaksymisenEhto = Some(Map.empty),
+        eiVarasijatayttoa = Some(false),
+        varasijanumero = None,
+        varasijat = None,
+        varasijasaannotKaytossa = Some(false)
+      )
+    ),
+    None
+  )
+
+  val ehdollinenTulos = HakemuksenTulosRaw(
+    hakuOid = Some("HAKU-OID-1"),
+    hakemusOid = Some("HAKEMUS-OID-1"),
+    hakijaOid = Some("HAKIJA-OID-1"),
+    hakutoiveet = List(hakutoiveEhdollisestiHyvaksytty)
+  )
 
   val hakutoive1Hyvaksytty = HakutoiveenTulosEnriched(
     hakukohdeOid = Some("hakukohde-oid-1"),

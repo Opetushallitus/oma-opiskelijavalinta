@@ -41,7 +41,6 @@ class VTSService @Autowired (
   private def enrichHakutoiveenTulos(
     tulos: HakutoiveenTulos
   ): HakutoiveenTulosEnriched = {
-
     val hyvaksymisenEhto =
       if (!tulos.ehdollisestiHyvaksyttavissa.contains(true)) {
         None
