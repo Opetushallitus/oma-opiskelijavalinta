@@ -27,6 +27,11 @@ export enum VastaanottoTila {
   EHDOLLISESTI_VASTAANOTTANUT = 'EHDOLLISESTI_VASTAANOTTANUT',
 }
 
+export const VASTAANOTETTU_TILAT = [
+  VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT,
+  VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
+];
+
 export type HakutoiveenTulosDto = {
   hakukohdeOid: string;
   julkaistavissa: boolean;

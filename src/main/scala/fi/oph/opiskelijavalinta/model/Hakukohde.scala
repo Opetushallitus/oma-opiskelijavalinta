@@ -6,5 +6,6 @@ case class Hakukohde(
   oid: String,
   nimi: TranslatedName,
   jarjestyspaikkaHierarkiaNimi: TranslatedName,
+  uudenOpiskelijanUrl: Option[TranslatedName],
   yhdenPaikanSaanto: YhdenPaikanSaanto = YhdenPaikanSaanto(false)
 )

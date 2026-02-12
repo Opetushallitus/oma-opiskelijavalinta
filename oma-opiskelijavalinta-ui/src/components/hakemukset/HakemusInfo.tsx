@@ -14,17 +14,10 @@ import {
   isKorkeakouluHaku,
   isToisenAsteenYhteisHaku,
 } from '@/lib/kouta-utils';
-import { styled } from '@/lib/theme';
-import { List, ListItem } from '@mui/material';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
-
-const BulletItem = styled(ListItem)(({ theme }) => ({
-  display: 'list-item',
-  marginLeft: theme.spacing(2.5),
-  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
-}));
+import { BulletedList, BulletItem } from '../BulletedList';
 
 function JulkaistaanJaVarasijatList({
   tuloksetJulkaistaan,
@@ -36,18 +29,18 @@ function JulkaistaanJaVarasijatList({
   const { t } = useTranslations();
 
   return isEmpty(tuloksetJulkaistaan) && isEmpty(varasijatPaattyy) ? null : (
-    <List sx={{ listStyleType: 'disc' }}>
+    <BulletedList>
       {!isEmpty(tuloksetJulkaistaan) && (
-        <BulletItem disablePadding>
+        <BulletItem>
           {t('hakemukset.info.julkaistaan', { tuloksetJulkaistaan })}
         </BulletItem>
       )}
       {!isEmpty(varasijatPaattyy) && (
-        <BulletItem disablePadding>
+        <BulletItem>
           {t('hakemukset.info.varasijat', { varasijatPaattyy })}
         </BulletItem>
       )}
-    </List>
+    </BulletedList>
   );
 }
 

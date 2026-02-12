@@ -1,14 +1,8 @@
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { styled } from '@/lib/theme';
-import { Box, List, ListItem } from '@mui/material';
+import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-
-const BulletItem = styled(ListItem)(({ theme }) => ({
-  display: 'list-item',
-  marginLeft: theme.spacing(2.5),
-  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
-}));
+import { BulletedList, BulletItem } from '../BulletedList';
 
 export function HakutoiveName({ hakutoive }: { hakutoive: Hakukohde }) {
   const { translateEntity } = useTranslations();
@@ -27,12 +21,12 @@ export function HakutoiveName({ hakutoive }: { hakutoive: Hakukohde }) {
 
 export function HakutoiveList({ toiveet }: { toiveet: Array<Hakukohde> }) {
   return (
-    <List sx={{ listStyleType: 'disc' }}>
+    <BulletedList>
       {toiveet.map((toive) => (
-        <BulletItem disablePadding key={`hakutoive-${toive.oid}`}>
+        <BulletItem key={`hakutoive-${toive.oid}`}>
           <HakutoiveName hakutoive={toive} />
         </BulletItem>
       ))}
-    </List>
+    </BulletedList>
   );
 }

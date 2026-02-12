@@ -1,14 +1,9 @@
 import { useTranslations } from '@/hooks/useTranslations';
 import { getUser } from '@/lib/session-utils';
-import { styled } from '@/lib/theme';
-import { Box, List, ListItem } from '@mui/material';
+import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useSuspenseQuery } from '@tanstack/react-query';
-
-const BulletItem = styled(ListItem)(({ theme }) => ({
-  display: 'list-item',
-  marginLeft: theme.spacing(2.5),
-}));
+import { BulletedList, BulletItem } from './BulletedList';
 
 export default function Info() {
   const { t } = useTranslations();
@@ -25,12 +20,13 @@ export default function Info() {
         {user?.oppijanumero}
       </OphTypography>
       <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>
-      <List sx={{ listStyleType: 'disc' }}>
-        <BulletItem disablePadding>{t('info.hakemukset')}</BulletItem>
-        <BulletItem disablePadding>{t('info.liitteet')}</BulletItem>
-        <BulletItem disablePadding>{t('info.tulokset')}</BulletItem>
-        <BulletItem disablePadding>{t('info.vastaanotto')}</BulletItem>
-      </List>
+      <BulletedList>
+        <BulletItem>{t('info.hakemukset')}</BulletItem>
+        <BulletItem>{t('info.liitteet')}</BulletItem>
+        <BulletItem>{t('info.tulokset')}</BulletItem>
+        <BulletItem>{t('info.vastaanotto')}</BulletItem>
+        <BulletItem>{t('info.ilmoittautua')}</BulletItem>
+      </BulletedList>
     </Box>
   );
 }

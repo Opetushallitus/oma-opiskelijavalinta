@@ -291,6 +291,26 @@ test('Näyttää kelalinkin kun sellainen löytyy', async ({ page }) => {
   ).toHaveCount(1);
 });
 
+test('Näyttää tutustu opiskelupaikkaan linkin', async ({ page }) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      { ...hakemus1, hakemuksenTulokset: [hakemuksenTulosVastaanotettu] },
+      hakemus2,
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+
+  await expect(
+    hakemukset.getByRole('link', {
+      name: 'Tietoa opiskelupaikasta uudelle opiskelijalle',
+    }),
+  ).toHaveAttribute('href', 'linkkioppilaitokseen.fi');
+});
+
 test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({
   page,
 }) => {
