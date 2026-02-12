@@ -13,7 +13,7 @@ import { IlmoittautuminenContainer } from '../ilmoittautuminen/Ilmoittautuminen'
 import { HakutoiveenTilaBadge } from '@/components/valinnantulos/HakutoiveenTilaBadge';
 import { styled } from '@/lib/theme';
 import { isEhdollisestiHyvaksyttyVastaanottanutSitovasti } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { EhdollisuusAlert } from '@/components/valinnantulos/EhdollisuusAlert';
+import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   ':not(:first-of-type)': {
@@ -44,7 +44,7 @@ function VastaanottoBox({
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
       {isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos) && (
-        <EhdollisuusAlert tulos={tulos} />
+        <EhdollisuusWarning tulos={tulos} />
       )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
         <VastaanottoInfo tulos={tulos} application={application} />

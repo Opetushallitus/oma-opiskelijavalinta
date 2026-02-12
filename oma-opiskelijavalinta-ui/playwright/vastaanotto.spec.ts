@@ -473,9 +473,9 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
   await expect(
     vastaanotot.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
   ).toBeVisible();
-  const alertBox = vastaanotot.getByTestId('alert-box');
-  await expect(alertBox).toBeVisible();
-  await expect(alertBox).toHaveCSS(
+  const warningBox = vastaanotot.getByTestId('warning-box');
+  await expect(warningBox).toBeVisible();
+  await expect(warningBox).toHaveCSS(
     'background-color',
     'rgba(255, 204, 51, 0.1)',
   );

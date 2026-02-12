@@ -4,7 +4,7 @@ import { ophColors } from '@opetushallitus/oph-design-system';
 import WarningIcon from '@mui/icons-material/Warning';
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: '#FFCC331A',
+  backgroundColor: `rgb(from ${ophColors.yellow1} r g b / 0.1)`,
   display: 'flex',
   flexDirection: 'row',
   columnGap: theme.spacing(2),
@@ -17,7 +17,7 @@ const StyledWarning = styled(WarningIcon)(() => ({
   color: ophColors.yellow1,
 }));
 
-export const AlertBox = ({
+export const WarningBox = ({
   children,
   sx,
 }: {
@@ -25,7 +25,7 @@ export const AlertBox = ({
   sx?: SxProps<Theme>;
 }) => {
   return (
-    <StyledBox sx={sx} data-test-id="alert-box">
+    <StyledBox sx={sx} data-test-id="warning-box">
       <StyledWarning />
       <Box>{children}</Box>
     </StyledBox>

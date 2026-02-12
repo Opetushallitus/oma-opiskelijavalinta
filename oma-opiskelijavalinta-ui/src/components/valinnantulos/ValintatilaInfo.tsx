@@ -32,7 +32,7 @@ import {
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
 import { styled } from '@/lib/theme';
-import { EhdollisuusAlert } from '@/components/valinnantulos/EhdollisuusAlert';
+import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
 
 const BulletItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
@@ -290,7 +290,7 @@ export function ValintatilaInfo({
   const { getLanguage, t } = useTranslations();
 
   if (isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos)) {
-    return <EhdollisuusAlert tulos={tulos} />;
+    return <EhdollisuusWarning tulos={tulos} />;
   }
   const info = getInfoText(
     t,
