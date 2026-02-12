@@ -477,7 +477,7 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
   await expect(warningBox).toBeVisible();
   await expect(warningBox).toHaveCSS(
     'background-color',
-    'rgba(255, 204, 51, 0.1)',
+    'color(srgb 1 0.8 0.2 / 0.1)',
   );
   const vastaanototWarning = vastaanotot.getByTestId(
     'ehdollisuusinfo-hakukohde-oid-1',
