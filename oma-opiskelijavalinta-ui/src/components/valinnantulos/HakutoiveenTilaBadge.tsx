@@ -8,6 +8,7 @@ import { isNullish } from 'remeda';
 import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import {
   getHakutoiveenTilaLabel,
+  isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
   valintatilaColors,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { VastaanottoTilaChip } from '@/components/vastaanotto/VastaanottoTilaChip';
@@ -41,11 +42,7 @@ export function HakutoiveenTilaBadge({
     hakutoiveenTulos?.valintatila || Valintatila.KESKEN;
   const statusLabel = getHakutoiveenTilaLabel(hakutoiveenTulos, odottaaYlempaa);
   // jos ehdollisesti hyväksytty ja vastaanottanut, näytetään kaikki badget
-  if (
-    vastaanottotila === VastaanottoTila.VASTAANOTTANUT_SITOVASTI &&
-    hakutoiveenTulos?.valintatila === Valintatila.HYVAKSYTTY &&
-    hakutoiveenTulos.ehdollisestiHyvaksyttavissa
-  ) {
+  if (isEhdollisestiHyvaksyttyVastaanottanutSitovasti(hakutoiveenTulos)) {
     return (
       <>
         <StatusBadgeChip
@@ -55,7 +52,7 @@ export function HakutoiveenTilaBadge({
           }}
         />
         <StatusBadgeChip
-          sx={{ ml: 1 }}
+          sx={{ ml: 1, mr: 1 }}
           badgeProps={{
             label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
             color: BadgeColorKey.Yellow,

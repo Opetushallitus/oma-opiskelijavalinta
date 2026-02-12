@@ -15,10 +15,11 @@ import {
 import type { Language } from '@/types/ui-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
-import { ExternalLink } from '../ExternalLink';
+import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { getAlemmatVastaanotot } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
+import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
 
 const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -128,11 +129,14 @@ const getInfoText = (
           </OphTypography>
         )}
         {kkHaku && (
-          <ExternalLink
+          <ExternalLinkParagraph
             name={t('vastaanotto.info.ohje-kk')}
             href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
+            underline={'always'}
           />
         )}
+        {tulos.ehdollisestiHyvaksyttavissa &&
+          getEhdollisuusInfo(tulos, lang, t)}
       </MultiInfoContainer>
     );
   }

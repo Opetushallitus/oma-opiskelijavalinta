@@ -1,16 +1,12 @@
 package fi.oph.opiskelijavalinta.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.model.{Haku, Hakuaika, TranslatedName}
-import fi.oph.opiskelijavalinta.util.TimeUtils.{KOUTA_DATETIME_FORMATTER, ZONE_FINLAND}
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
-
-import java.time.ZonedDateTime
 
 @TestInstance(Lifecycle.PER_CLASS)
 class KoutaServiceTest {

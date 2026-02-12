@@ -9,7 +9,10 @@ import {
 } from '@tolgee/react';
 import { InfoBox } from '@/components/InfoBox';
 import type { Language } from '@/types/ui-types';
-import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
+import {
+  toFormattedDateTimeStringWithLocale,
+  translateName,
+} from '@/lib/localization/translation-utils';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useConfig } from '@/configuration';
 import { isNonNullish } from 'remeda';
@@ -18,15 +21,24 @@ import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import {
   getVarallaOlevatMuutToiveet,
   hasAlempiHyvaksytty,
+  isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
   isHyvaksytty,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { ExternalLink } from '@/components/ExternalLink';
+import { ExternalLinkParagraph } from '@/components/ExternalLink';
 import { List, ListItem } from '@mui/material';
 import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
 import {
   getVarallaOlevatYlemmatToiveet,
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
+import { styled } from '@/lib/theme';
+import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
+
+const BulletItem = styled(ListItem)(({ theme }) => ({
+  display: 'list-item',
+  marginLeft: theme.spacing(2.5),
+  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
+}));
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -60,30 +72,45 @@ const getVarasijallaInfo = (
   );
 };
 
-const getEhdollisuusInfo = (
-  valintatila: Valintatila,
+export const getEhdollisuusInfo = (
+  tulos: HakutoiveenTulos,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
+  naytaOtsikko = true,
 ) => {
   const config = useConfig();
+  const ehdollisenHyvaksymisenEhto = tulos.ehdollisenHyvaksymisenEhto
+    ? translateName(tulos.ehdollisenHyvaksymisenEhto, lang)
+    : '';
   return (
     <>
-      <OphTypography variant="h5">
-        {t('tulos.info.ehdollinen-otsikko')}
-      </OphTypography>
-      {valintatila === Valintatila.HYVAKSYTTY ? (
-        <OphTypography>{t('tulos.info.ehdollinen-hyvaksytty')}</OphTypography>
+      {naytaOtsikko && (
+        <OphTypography variant="h5">
+          {t('tulos.info.ehdollinen-otsikko')}
+        </OphTypography>
+      )}
+      {tulos.valintatila === Valintatila.HYVAKSYTTY ? (
+        <OphTypography>
+          <Translation
+            keyName={'tulos.info.ehdollinen-hyvaksytty'}
+            params={{
+              strong: <strong></strong>,
+            }}
+          />
+        </OphTypography>
       ) : (
         <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
       )}
-      <List>
-        <ListItem>TODO tiketillä OPHYOS-32</ListItem>
+      <List sx={{ listStyleType: 'disc', padding: 0 }}>
+        <BulletItem disablePadding>{ehdollisenHyvaksymisenEhto}</BulletItem>
       </List>
+
       <OphTypography>
         {t('tulos.info.ehdollinen-lisatietoa')}{' '}
-        <ExternalLink
+        <ExternalLinkParagraph
           name={t('tulos.info.hakijapalvelut')}
           href={`${config.routes.yleiset.konfo}/${lang}/sivu/korkeakoulujen-hakijapalvelut`}
+          underline={'always'}
         />
       </OphTypography>
     </>
@@ -98,9 +125,23 @@ const getOdottaaYlempaaInfo = (
       <OphTypography>
         {t('tulos.info.hyvaksytty-odottaa-ylempaa')}
       </OphTypography>
-      <List>
-        <ListItem>{t('tulos.info.hyvaksytty-odottaa-ehto1')}</ListItem>
-        <ListItem>{t('tulos.info.hyvaksytty-odottaa-ehto2')}</ListItem>
+      <List
+        component="ol"
+        sx={{
+          padding: 0,
+          margin: 0,
+          listStyleType: 'decimal',
+          '& > li:not(:last-of-type)': {
+            marginBottom: 1,
+          },
+        }}
+      >
+        <BulletItem disablePadding>
+          {t('tulos.info.hyvaksytty-odottaa-ehto1')}
+        </BulletItem>
+        <BulletItem disablePadding>
+          {t('tulos.info.hyvaksytty-odottaa-ehto2')}
+        </BulletItem>
       </List>
       <OphTypography>
         {t('tulos.info.hyvaksytty-odottaa-peruuntuu')}
@@ -148,9 +189,10 @@ const getKkVastaanottoInfo = (
           {t('vastaanotto.info.jonotus')}
         </OphTypography>
       )}
-      <ExternalLink
+      <ExternalLinkParagraph
         name={t('vastaanotto.info.ohje-kk')}
         href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
+        underline={'always'}
       />
     </>
   );
@@ -231,8 +273,7 @@ const getInfoText = (
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
-      {tulos.ehdollisestiHyvaksyttavissa &&
-        getEhdollisuusInfo(tulos.valintatila, lang, t)}
+      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(tulos, lang, t)}
     </MultiInfoContainer>
   );
 };
@@ -248,6 +289,9 @@ export function ValintatilaInfo({
 }) {
   const { getLanguage, t } = useTranslations();
 
+  if (isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos)) {
+    return <EhdollisuusWarning tulos={tulos} />;
+  }
   const info = getInfoText(
     t,
     getLanguage(),

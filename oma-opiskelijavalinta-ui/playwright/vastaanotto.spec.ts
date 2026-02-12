@@ -54,7 +54,9 @@ test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async (
     vastaanotot.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
   ).toBeVisible();
   await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
-  await expect(vastaanotot.getByText('Ehdollinen')).toBeVisible();
+  await expect(
+    vastaanotot.locator('.MuiChip-root').getByText('Ehdollinen'),
+  ).toBeVisible();
   await expect(
     vastaanotot.getByText('Otan tämän opiskelupaikan'),
   ).toBeVisible();
@@ -67,6 +69,11 @@ test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async (
   await expect(
     vastaanotot.getByText('Sinulle tarjotaan opiskelupaikkaa hakutoiveesta'),
   ).toBeHidden();
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen.',
+    ),
+  ).toBeVisible();
 });
 
 test('Näyttää monesko hakutoive on vastaanotettavissa priorisoidussa haussa', async ({
@@ -447,7 +454,7 @@ test('Valintatulokset on haitarin alla piilossa jos vastaanotto on tehty', async
   await expect(page.getByText('Valinnan tulos')).toBeVisible();
 });
 
-test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila että vastaanottotila', async ({
+test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila että vastaanottotila ja keltainen infoteksti', async ({
   page,
 }) => {
   await setup(page, {
@@ -466,6 +473,20 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
   await expect(
     vastaanotot.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
   ).toBeVisible();
+  const warningBox = vastaanotot.getByTestId('warning-box');
+  await expect(warningBox).toBeVisible();
+  await expect(warningBox).toHaveCSS(
+    'background-color',
+    'color(srgb 1 0.8 0.2 / 0.1)',
+  );
+  const vastaanototWarning = vastaanotot.getByTestId(
+    'ehdollisuusinfo-hakukohde-oid-1',
+  );
+  await expect(
+    vastaanototWarning.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen.',
+    ),
+  ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Opiskelijavalintojen tulokset' }),
   ).toBeVisible();
@@ -483,6 +504,15 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
   await expect(
     tulos.getByText('Opiskelupaikka vastaanotettu', { exact: true }),
   ).toBeVisible();
+  const tulosWarning = tulos.getByTestId('ehdollisuusinfo-hakukohde-oid-1');
+  await expect(
+    tulosWarning.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    tulosWarning.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeHidden();
 });
 
 test('Vastaanotto on saavutettava', async ({ page }) => {

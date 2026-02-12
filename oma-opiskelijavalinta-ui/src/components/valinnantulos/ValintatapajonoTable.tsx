@@ -132,6 +132,7 @@ export function ValintatapajonoTable({
                       label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
                       color: BadgeColorKey.Yellow,
                     }}
+                    sx={{ ml: 0.5 }}
                   />
                 )}
               </TableCell>

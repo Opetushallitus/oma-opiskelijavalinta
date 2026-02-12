@@ -1,10 +1,41 @@
 package fi.oph.opiskelijavalinta.model
 
+case class HakemuksenTulosRaw(
+  hakuOid: Option[String],
+  hakemusOid: Option[String],
+  hakijaOid: Option[String],
+  hakutoiveet: List[HakutoiveenTulos]
+)
+
 case class HakemuksenTulos(
   hakuOid: Option[String],
   hakemusOid: Option[String],
   hakijaOid: Option[String],
-  hakutoiveet: List[HakutoiveenTulos] // empty list if missing
+  hakutoiveet: List[HakutoiveenTulosEnriched]
+)
+
+case class HakutoiveenTulosEnriched(
+  hakukohdeOid: Option[String],
+  hakukohdeNimi: Option[String],
+  tarjoajaOid: Option[String],
+  tarjoajaNimi: Option[String],
+  valintatapajonoOid: Option[String],
+  valintatila: Option[String],
+  vastaanottotila: Option[String],
+  ilmoittautumistila: Option[Ilmoittautumistila],
+  vastaanotettavuustila: Option[String],
+  vastaanottoDeadline: Option[String],
+  viimeisinHakemuksenTilanMuutos: Option[String],
+  hyvaksyttyJaJulkaistuDate: Option[String],
+  varasijanumero: Option[Int],
+  julkaistavissa: Option[Boolean],
+  ehdollisestiHyvaksyttavissa: Option[Boolean],
+  ehdollisenHyvaksymisenEhto: Option[TranslatedName],
+  tilanKuvaukset: Option[Map[String, String]],
+  showMigriURL: Option[Boolean],
+  ilmoittautumisenAikaleima: Option[String],
+  jonokohtaisetTulostiedot: List[JonokohtainenTulostieto],
+  kelaURL: Option[String]
 )
 
 case class HakutoiveenTulos(
@@ -30,7 +61,7 @@ case class HakutoiveenTulos(
   tilanKuvaukset: Option[Map[String, String]],
   showMigriURL: Option[Boolean],
   ilmoittautumisenAikaleima: Option[String],
-  jonokohtaisetTulostiedot: List[JonokohtainenTulostieto], // empty list if missing
+  jonokohtaisetTulostiedot: List[JonokohtainenTulostieto],
   kelaURL: Option[String]
 )
 
