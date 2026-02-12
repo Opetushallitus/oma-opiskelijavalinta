@@ -14,5 +14,6 @@ export type Hakukohde = {
   oid: string;
   nimi: TranslatedName;
   jarjestyspaikkaHierarkiaNimi: TranslatedName;
+  uudenOpiskelijanUrl: TranslatedName | null;
   yhdenPaikanSaanto: { voimassa: boolean };
 };

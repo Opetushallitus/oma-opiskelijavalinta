@@ -30,11 +30,13 @@ object KoutaMockData {
   val hakukohde1 = Hakukohde(
     HAKUKOHDE_OID,
     TranslatedName("Liukumäen lisensiaatti", "", ""),
-    TranslatedName("Leikkipuisto, Liukumäki", "", "")
+    TranslatedName("Leikkipuisto, Liukumäki", "", ""),
+    None
   )
   val hakukohde2 = Hakukohde(
     HAKUKOHDE_OID_2,
     TranslatedName("Hiekkalaatikon arkeologi", "", ""),
-    TranslatedName("Leikkipuisto, Hiekkalaatikko", "", "")
+    TranslatedName("Leikkipuisto, Hiekkalaatikko", "", ""),
+    None
   )
 }

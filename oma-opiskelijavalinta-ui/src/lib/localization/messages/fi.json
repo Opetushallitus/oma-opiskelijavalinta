@@ -23,6 +23,8 @@
     "valintatilanne": "Valintatilanteesi",
     "muokkaa": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
+    "tutustu": "Tutustu uuteen opiskelupaikkaasi",
+    "tutustu-linkki": "Tietoa opiskelupaikasta uudelle opiskelijalle",
     "info": {
       "lahettanyt": "Olet täyttänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen.",
