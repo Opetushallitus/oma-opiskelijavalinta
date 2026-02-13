@@ -10,10 +10,9 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
   extends AuthenticationProvider {
 
   override def authenticate(authentication: Authentication): Authentication = {
-    val authToken = authentication.asInstanceOf[LinkAuthenticationToken]
-    val token = authToken.token
+    val token = authentication.asInstanceOf[LinkAuthenticationToken].token
 
-    // TODO OPHYOS-77, toistaiseksi fake-toteutus
+    // Verify the token
     val verification = linkVerificationService.verify(token)
 
     if (!verification.exists || !verification.valid) {
@@ -21,32 +20,31 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     }
 
     val meta = verification.metadata.getOrElse(
-      throw new BadCredentialsException("No Oppija metadata found in token")
+      throw new BadCredentialsException("Token valid but metadata missing")
     )
     
     val personOid = meta.personOid.getOrElse(
-      throw new BadCredentialsException("No personOid on token metadata")
+      throw new BadCredentialsException("Missing personOid in token metadata")
     )
-
     val hakemusOid = meta.hakemusOid
-    if (hakemusOid.isEmpty)
-      throw new BadCredentialsException("No hakemusOid on token metadata")
-    
+
     val attrs = Map(
       "personOid" -> personOid,
-      "hakemusOid" -> meta.hakemusOid,
+      "hakemusOid" -> hakemusOid,
       "hakuOid" -> meta.hakuOid.getOrElse("")
-    ).filter(_._2.nonEmpty)
-
-    val principal = new OppijaUser(
-      attributes = attrs,
-      username = personOid,
-      authorities = List(new SimpleGrantedAuthority("ROLE_LINK_USER")).asJava
     )
     
+    val principal = new OppijaUser(
+      attributes = attrs,
+      username = personOid
+    )
+
+    // tällä voi rajata myöhemmin apeissa
+    val authorities = List(new SimpleGrantedAuthority("ROLE_LINK_USER")).asJava
+    
+    val authToken = new LinkAuthenticationToken(token, authorities)
     authToken.setPrincipal(principal)
     authToken.setAuthenticated(true)
-    authToken.setAuthorities(principal.getAuthorities)
 
     authToken
   }
