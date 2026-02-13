@@ -148,6 +148,11 @@ class SecurityConfiguration {
             "/oma-opiskelijavalinta/"
           )
           .permitAll()
+          .requestMatchers(
+            HttpMethod.POST,
+            "/api/link-login"
+          )
+          .permitAll()
           .anyRequest
           .fullyAuthenticated
       )
@@ -209,6 +214,12 @@ class SecurityConfiguration {
     casAuthenticationProvider
 
   @Bean
+  def linkAuthenticationProvider(
+                                  linkVerificationService: LinkVerificationService
+                                ): LinkAuthenticationProvider =
+    new LinkAuthenticationProvider(linkVerificationService)
+  
+  @Bean
   def ticketValidator(environment: Environment): TicketValidator =
     val ticketValidator = new Cas20ProxyTicketValidator(environment.getRequiredProperty("web.url.cas"))
     ticketValidator.setAcceptAnyProxy(true)
@@ -245,11 +256,13 @@ class SecurityConfiguration {
   @Bean
   def authenticationManager(
     http: HttpSecurity,
-    casAuthenticationProvider: CasAuthenticationProvider
+    casAuthenticationProvider: CasAuthenticationProvider,
+    linkAuthenticationProvider: LinkAuthenticationProvider
   ): AuthenticationManager =
     http
       .getSharedObject(classOf[AuthenticationManagerBuilder])
       .authenticationProvider(casAuthenticationProvider)
+      .authenticationProvider(linkAuthenticationProvider)
       .build()
 
   // api joka ohjaa tarvittaessa kirjautumattoman käyttäjän cas loginiin
