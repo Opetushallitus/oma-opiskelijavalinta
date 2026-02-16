@@ -47,29 +47,9 @@ export function HakukohteetAccordion({
         {t('hakutoiveet.haitari')}
       </AccordionSummary>
       <AccordionDetails>
-        <HakukohteetContainer
-          application={hakemus}
-          hakemuksenTulokset={tulokset}
-        />
+        <HakukohteetContainer hakemus={hakemus} hakemuksenTulokset={tulokset} />
       </AccordionDetails>
     </StyledAccordion>
-  );
-}
-
-function MenneetAccordionDetails({
-  hakemus,
-  tulokset,
-}: {
-  hakemus: Hakemus;
-  tulokset: Array<HakutoiveenTulos>;
-}) {
-  return (
-    <AccordionDetails>
-      <HakukohteetContainer
-        application={hakemus}
-        hakemuksenTulokset={tulokset}
-      />
-    </AccordionDetails>
   );
 }
 
@@ -105,7 +85,13 @@ export function MenneetHakukohteetAccordion({
       </AccordionSummary>
       {isRefetching && <FullSpinner />}
       {!isRefetching && (
-        <MenneetAccordionDetails hakemus={hakemus} tulokset={tulokset} />
+        <AccordionDetails>
+          <HakukohteetContainer
+            hakemus={hakemus}
+            hakemuksenTulokset={tulokset}
+            mennytHakemus={true}
+          />
+        </AccordionDetails>
       )}
     </StyledAccordion>
   );
