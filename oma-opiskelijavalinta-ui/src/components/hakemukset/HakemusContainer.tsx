@@ -145,7 +145,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
               <TutustuContainer hakemus={hakemus} />
             )}
           {onkoVastaanottoTehty(tulokset) && (
-            <HakukohteetAccordion application={hakemus} tulokset={tulokset} />
+            <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}
           {!onkoVastaanottoTehty(tulokset) && (
             <HakukohteetContainer

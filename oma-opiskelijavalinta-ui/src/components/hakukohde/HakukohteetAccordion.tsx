@@ -6,6 +6,10 @@ import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import { styled } from '@/lib/theme';
+import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import type { Haku } from '@/lib/kouta-types';
+import { FullSpinner } from '../FullSpinner';
+import { useState } from 'react';
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   '&:before': {
@@ -29,10 +33,10 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
 }));
 
 export function HakukohteetAccordion({
-  application,
+  hakemus,
   tulokset,
 }: {
-  application: Hakemus;
+  hakemus: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
 }) {
   const { t } = useTranslations();
@@ -44,10 +48,65 @@ export function HakukohteetAccordion({
       </AccordionSummary>
       <AccordionDetails>
         <HakukohteetContainer
-          application={application}
+          application={hakemus}
           hakemuksenTulokset={tulokset}
         />
       </AccordionDetails>
+    </StyledAccordion>
+  );
+}
+
+function MenneetAccordionDetails({
+  hakemus,
+  tulokset,
+}: {
+  hakemus: Hakemus;
+  tulokset: Array<HakutoiveenTulos>;
+}) {
+  return (
+    <AccordionDetails>
+      <HakukohteetContainer
+        application={hakemus}
+        hakemuksenTulokset={tulokset}
+      />
+    </AccordionDetails>
+  );
+}
+
+export function MenneetHakukohteetAccordion({
+  hakemus,
+  haku,
+}: {
+  hakemus: Hakemus;
+  haku: Haku;
+}) {
+  const { t } = useTranslations();
+
+  const {
+    hakemuksenTulokset: tulokset,
+    isRefetching,
+    refetchTulokset,
+  } = useHakemuksenTulokset(hakemus, haku);
+
+  const [tuloksetFetched, setTuloksetFetched] = useState(false);
+
+  function fetchTulokset() {
+    if (tuloksetFetched) {
+      return;
+    }
+    setTuloksetFetched(true);
+    refetchTulokset();
+  }
+
+  return (
+    <StyledAccordion>
+      <AccordionSummary onClick={fetchTulokset} expandIcon={<ExpandMore />}>
+        {t('hakutoiveet.haitari')}
+      </AccordionSummary>
+      {isRefetching && <FullSpinner />}
+      {!isRefetching && (
+        <MenneetAccordionDetails hakemus={hakemus} tulokset={tulokset} />
+      )}
     </StyledAccordion>
   );
 }
