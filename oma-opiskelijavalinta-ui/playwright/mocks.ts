@@ -19,6 +19,10 @@ export const hakemus1 = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
       },
+      uudenOpiskelijanUrl: {
+        fi: 'linkkioppilaitokseen.fi',
+        en: 'linktostudyplace.fi',
+      },
     },
     {
       oid: 'hakukohde-oid-2',

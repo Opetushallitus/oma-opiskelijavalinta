@@ -25,20 +25,14 @@ import {
   isHyvaksytty,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ExternalLinkParagraph } from '@/components/ExternalLink';
-import { List, ListItem } from '@mui/material';
+import { List } from '@mui/material';
 import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
 import {
   getVarallaOlevatYlemmatToiveet,
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
-import { styled } from '@/lib/theme';
 import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
-
-const BulletItem = styled(ListItem)(({ theme }) => ({
-  display: 'list-item',
-  marginLeft: theme.spacing(2.5),
-  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
-}));
+import { BulletItem } from '../BulletedList';
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -102,7 +96,7 @@ export const getEhdollisuusInfo = (
         <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
       )}
       <List sx={{ listStyleType: 'disc', padding: 0 }}>
-        <BulletItem disablePadding>{ehdollisenHyvaksymisenEhto}</BulletItem>
+        <BulletItem>{ehdollisenHyvaksymisenEhto}</BulletItem>
       </List>
 
       <OphTypography>
@@ -136,12 +130,8 @@ const getOdottaaYlempaaInfo = (
           },
         }}
       >
-        <BulletItem disablePadding>
-          {t('tulos.info.hyvaksytty-odottaa-ehto1')}
-        </BulletItem>
-        <BulletItem disablePadding>
-          {t('tulos.info.hyvaksytty-odottaa-ehto2')}
-        </BulletItem>
+        <BulletItem>{t('tulos.info.hyvaksytty-odottaa-ehto1')}</BulletItem>
+        <BulletItem>{t('tulos.info.hyvaksytty-odottaa-ehto2')}</BulletItem>
       </List>
       <OphTypography>
         {t('tulos.info.hyvaksytty-odottaa-peruuntuu')}

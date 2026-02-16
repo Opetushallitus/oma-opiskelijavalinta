@@ -12,7 +12,8 @@
     "hakemukset": "tarkastella hakemuksiasi ja muokata niitä hakuaikana",
     "liitteet": "lisätä liitteitä hakemuksellesi määräaikaan mennessä",
     "tulokset": "nähdä opiskelijavalinnan tulokset",
-    "vastaanotto": "ottaa opiskelupaikan vastaan"
+    "vastaanotto": "ottaa opiskelupaikan vastaan",
+    "ilmoittautua": "ilmoittautua opiskelemaan"
   },
   "hakemukset": {
     "ajankohtaiset": "Ajankohtaiset hakemukset",
@@ -23,6 +24,8 @@
     "valintatilanne": "Valintatilanteesi",
     "muokkaa": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
+    "tutustu": "Tutustu uuteen opiskelupaikkaasi",
+    "tutustu-linkki": "Tietoa opiskelupaikasta uudelle opiskelijalle",
     "info": {
       "lahettanyt": "Olet täyttänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen.",

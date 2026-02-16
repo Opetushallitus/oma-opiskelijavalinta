@@ -25,9 +25,9 @@ class HakemuksetResource @Autowired (hakemuksetService: HakemuksetService, autho
     LOG.info(s"Haetaan hakemukset oppijalle: $personOid")
     val hakemukset = hakemuksetService.getHakemukset(personOid.get)
     AuditLog.log(request, Map.empty, AuditOperation.HaeHakemukset, None)
-    LOG.info(s"Haettu hakemukset valinnan tila tiedoilla: ${(hakemukset.current ++ hakemukset.old).map(h =>
-        LogHakemus(h.oid, h.hakemuksenTulokset.map(LogUtil.toValintaTulos))
-      )}")
+    LOG.info(
+      s"Haettu hakemukset valinnan tila tiedoilla: ${(hakemukset.current ++ hakemukset.old).map(h => LogHakemus(h.oid, h.hakemuksenTulokset.map(LogUtil.toValintaTulos)).toString).foldLeft("")((a, b) => String.join("\n", a, b))}"
+    )
     ResponseEntity.ok(hakemukset)
   }
 }

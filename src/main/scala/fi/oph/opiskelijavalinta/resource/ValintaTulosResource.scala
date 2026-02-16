@@ -41,7 +41,8 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
         None
       )
       LOG.info(s"Hakemukselle $hakemusOid löytyi seuraavat tulokset: ${result
-          .map(ht => ht.hakutoiveet.map(LogUtil.toValintaTulos))}")
+          .map(ht => ht.hakutoiveet.map(LogUtil.toValintaTulos).toString)
+          .foldLeft("")((a, b) => String.join("\n", a, b))}")
       ResponseEntity.ok(result.get.hakutoiveet)
     }
   }
