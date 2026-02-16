@@ -10,6 +10,7 @@ import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 import type { Haku } from '@/lib/kouta-types';
 import { FullSpinner } from '../FullSpinner';
 import { useState } from 'react';
+import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   '&:before': {
@@ -85,7 +86,14 @@ export function MenneetHakukohteetAccordion({
       </AccordionSummary>
       {isRefetching && <FullSpinner />}
       {!isRefetching && (
-        <AccordionDetails>
+        <AccordionDetails
+          sx={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}
+        >
+          <VastaanottoContainer
+            application={hakemus}
+            hakemuksenTulokset={tulokset}
+            mennytVastaanotto={true}
+          />
           <HakukohteetContainer
             hakemus={hakemus}
             hakemuksenTulokset={tulokset}

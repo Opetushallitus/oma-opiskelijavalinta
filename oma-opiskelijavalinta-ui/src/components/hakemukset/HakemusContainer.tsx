@@ -149,7 +149,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
           )}
           {!onkoVastaanottoTehty(tulokset) && (
             <HakukohteetContainer
-              application={hakemus}
+              hakemus={hakemus}
               hakemuksenTulokset={tulokset}
             />
           )}
