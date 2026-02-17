@@ -12,13 +12,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 class LinkLoginIntegrationTest extends BaseIntegrationTest {
-  
+
   @MockitoBean(reset = MockReset.NONE)
   val verificationService: LinkVerificationService = Mockito.mock(classOf[LinkVerificationService])
-  
+
   @Test
   def returnsForbiddenForInvalidToken(): Unit = {
-    Mockito.when(verificationService.verify("invalid-token"))
+    Mockito
+      .when(verificationService.verify("invalid-token"))
       .thenReturn(
         OppijanTunnistusVerification(
           exists = false,
@@ -27,8 +28,10 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
         )
       )
 
-    mvc.perform(
-        MockMvcRequestBuilders.post("/api/link-login")
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post("/api/link-login")
           .param("token", "invalid-token")
       )
       .andExpect(status().isForbidden)
@@ -37,7 +40,8 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsOkForValidToken(): Unit = {
-    Mockito.when(verificationService.verify("valid-token"))
+    Mockito
+      .when(verificationService.verify("valid-token"))
       .thenReturn(
         OppijanTunnistusVerification(
           exists = true,
@@ -52,12 +56,13 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
         )
       )
 
-    mvc.perform(
-        MockMvcRequestBuilders.post("/api/link-login")
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post("/api/link-login")
           .param("token", "valid-token")
       )
       .andExpect(status().isOk)
       .andExpect(jsonPath("$.status").value("ok"))
   }
 }
-
