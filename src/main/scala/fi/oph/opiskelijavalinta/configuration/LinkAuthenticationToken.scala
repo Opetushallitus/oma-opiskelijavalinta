@@ -4,12 +4,12 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
 class LinkAuthenticationToken(
-                               val token: String,
-                               authorities: java.util.Collection[_ <: GrantedAuthority]
-                             ) extends AbstractAuthenticationToken(authorities) {
+  val token: String,
+  authorities: java.util.Collection[_ <: GrantedAuthority]
+) extends AbstractAuthenticationToken(authorities) {
 
   private var principal: AnyRef = _
-  
+
   def this(token: String) =
     this(token, java.util.Collections.emptyList())
 

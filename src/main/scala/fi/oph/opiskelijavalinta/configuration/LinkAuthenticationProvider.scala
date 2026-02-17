@@ -1,25 +1,26 @@
 package fi.oph.opiskelijavalinta.configuration
 
 import org.slf4j.LoggerFactory
-import org.springframework.security.authentication.{AuthenticationProvider, BadCredentialsException}
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.{Authentication, AuthenticationException}
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 import scala.jdk.CollectionConverters.*
 
 class LinkAuthenticationException(message: String, cause: Throwable = null)
-  extends AuthenticationException(message, cause) {
+    extends AuthenticationException(message, cause) {
 
   def this(message: String) = this(message, null)
 }
 
 class LinkAuthenticationProvider(linkVerificationService: LinkVerificationService)
-  extends org.springframework.security.authentication.AuthenticationProvider {
+    extends org.springframework.security.authentication.AuthenticationProvider {
 
   private val LOG = org.slf4j.LoggerFactory.getLogger(classOf[LinkAuthenticationProvider])
 
-  override def authenticate(authentication: org.springframework.security.core.Authentication)
-  : org.springframework.security.core.Authentication = {
+  override def authenticate(
+    authentication: org.springframework.security.core.Authentication
+  ): org.springframework.security.core.Authentication = {
 
     val token = authentication.asInstanceOf[LinkAuthenticationToken].token
     LOG.info(s"Authenticating link token: $token")
@@ -33,16 +34,16 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     val meta = verification.metadata.getOrElse(
       throw new LinkAuthenticationException("Token valid but metadata missing")
     )
-    
+
     val personOid = meta.personOid.getOrElse(
       throw new LinkAuthenticationException("Missing personOid in token metadata")
     )
     val hakemusOid = meta.hakemusOid
 
     val attrs = Map(
-      "personOid" -> personOid,
+      "personOid"  -> personOid,
       "hakemusOid" -> hakemusOid,
-      "hakuOid" -> meta.hakuOid.getOrElse("")
+      "hakuOid"    -> meta.hakuOid.getOrElse("")
     )
 
     val principal = new OppijaUser(

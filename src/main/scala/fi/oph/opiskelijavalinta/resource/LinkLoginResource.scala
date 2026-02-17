@@ -9,12 +9,18 @@ import org.springframework.security.authentication.{AuthenticationManager, BadCr
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.{SecurityContext, SecurityContextHolder}
 import org.springframework.security.web.context.SecurityContextRepository
-import org.springframework.web.bind.annotation.{ExceptionHandler, PostMapping, RequestMapping, RequestParam, RestController}
+import org.springframework.web.bind.annotation.{
+  ExceptionHandler,
+  PostMapping,
+  RequestMapping,
+  RequestParam,
+  RestController
+}
 
 @RestController
 @RequestMapping(path = Array("/api"))
 class LinkLoginResource(
-                         @Qualifier("linkAuthenticationManager") linkAuthenticationManager: AuthenticationManager,
+  @Qualifier("linkAuthenticationManager") linkAuthenticationManager: AuthenticationManager,
   securityContextRepository: SecurityContextRepository
 ) {
 
