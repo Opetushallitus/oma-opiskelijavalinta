@@ -40,14 +40,22 @@ export function HakukohteetAccordion({
   hakemus: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
 }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
+
+  const accordionSummaryId = `past-hakutoiveet-accordion-${hakemus.oid}`;
 
   return (
     <StyledAccordion>
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary
+        id={accordionSummaryId}
+        expandIcon={<ExpandMore />}
+        aria-label={t('hakutoiveet.haitari-nimi', {
+          haku: translateEntity(hakemus.haku?.nimi),
+        })}
+      >
         {t('hakutoiveet.haitari')}
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails aria-labelledby={accordionSummaryId}>
         <HakukohteetContainer hakemus={hakemus} hakemuksenTulokset={tulokset} />
       </AccordionDetails>
     </StyledAccordion>
@@ -61,7 +69,7 @@ export function MenneetHakukohteetAccordion({
   hakemus: Hakemus;
   haku: Haku;
 }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
 
   const {
     hakemuksenTulokset: tulokset,
@@ -79,15 +87,25 @@ export function MenneetHakukohteetAccordion({
     refetchTulokset();
   }
 
+  const accordionSummaryId = `past-hakutoiveet-accordion-${hakemus.oid}`;
+
   return (
     <StyledAccordion>
-      <AccordionSummary onClick={fetchTulokset} expandIcon={<ExpandMore />}>
+      <AccordionSummary
+        id={accordionSummaryId}
+        onClick={fetchTulokset}
+        expandIcon={<ExpandMore />}
+        aria-label={t('hakutoiveet.haitari-nimi', {
+          haku: translateEntity(haku.nimi),
+        })}
+      >
         {t('hakutoiveet.haitari')}
       </AccordionSummary>
       {isRefetching && <FullSpinner />}
       {!isRefetching && (
         <AccordionDetails
           sx={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}
+          aria-labelledBy={accordionSummaryId}
         >
           <VastaanottoContainer
             application={hakemus}

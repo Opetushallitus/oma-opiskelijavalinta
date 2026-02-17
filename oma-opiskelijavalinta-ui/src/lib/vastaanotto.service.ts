@@ -20,7 +20,7 @@ async function postVastaanotto(
 
 export function naytettavatVastaanottoTiedot(
   hakemuksenTulokset: Array<HakutoiveenTulos>,
-) {
+): Array<HakutoiveenTulos> {
   return hakemuksenTulokset.filter(
     (ht) =>
       (ht.vastaanottotila &&

@@ -47,7 +47,8 @@
   },
   "hakutoiveet": {
     "valintaperusteet": "Näytä valintaperusteet",
-    "haitari": "Opiskelijavalintojen tulokset"
+    "haitari": "Opiskelijavalintojen tulokset",
+    "haitari-nimi": "Opiskelijavalintojen tulokset haulle {haku}'"
   },
   "hakutoive": {
     "tila": {
