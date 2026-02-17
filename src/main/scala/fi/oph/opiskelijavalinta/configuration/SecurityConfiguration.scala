@@ -146,7 +146,7 @@ class SecurityConfiguration {
             "/js/**",
             "/oma-opiskelijavalinta",
             "/oma-opiskelijavalinta/",
-            "/oma-opiskelijavalinta/token/**"
+            "/token/**"
           )
           .permitAll()
           .requestMatchers(
