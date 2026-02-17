@@ -1,4 +1,8 @@
-import { type HakutoiveenTulos, Valintatila } from '@/lib/valinta-tulos-types';
+import {
+  type HakutoiveenTulos,
+  Valintatila,
+  VastaanottoTila,
+} from '@/lib/valinta-tulos-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useTranslations } from '@/hooks/useTranslations';
 import {
@@ -282,6 +286,11 @@ export function ValintatilaInfo({
   if (isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos)) {
     return <EhdollisuusWarning tulos={tulos} />;
   }
+
+  if (tulos.vastaanottotila === VastaanottoTila.VASTAANOTTANUT_SITOVASTI) {
+    return null;
+  }
+
   const info = getInfoText(
     t,
     getLanguage(),
