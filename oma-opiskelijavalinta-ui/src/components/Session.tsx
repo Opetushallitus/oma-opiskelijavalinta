@@ -2,13 +2,16 @@ import { createContext, useMemo, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getSession } from '@/lib/session-utils';
 
-export const SessionContext = createContext<
-  | {
-      isSessionActive: boolean;
-      setIsSessionActive: React.Dispatch<React.SetStateAction<boolean>>;
-    }
-  | undefined
->(undefined);
+export type SessionContextType = {
+  isSessionActive: boolean;
+  setIsSessionActive: React.Dispatch<React.SetStateAction<boolean>>;
+  isLinkLogin: boolean;
+  setIsLinkLogin: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const SessionContext = createContext<SessionContextType | undefined>(
+  undefined,
+);
 
 export const SessionProvider = ({
   children,
@@ -19,20 +22,24 @@ export const SessionProvider = ({
     queryKey: ['session'],
     queryFn: getSession,
     refetchInterval: 60000, // Pollataan session voimassaoloa 60 sekunnin välein
-    staleTime: 0, // Ei cachea
+    staleTime: 0,
   });
 
   const [isSessionActive, setIsSessionActive] = useState(
     session.status === 'success',
   );
 
-  const sessionActiveState = useMemo(
+  const [isLinkLogin, setIsLinkLogin] = useState(false);
+
+  const authContextValue = useMemo(
     () => ({
-      isSessionActive: isSessionActive,
-      setIsSessionActive: setIsSessionActive,
+      isSessionActive,
+      setIsSessionActive,
+      isLinkLogin,
+      setIsLinkLogin,
     }),
-    [isSessionActive, setIsSessionActive],
+    [isSessionActive, isLinkLogin],
   );
 
-  return <SessionContext value={sessionActiveState}>{children}</SessionContext>;
+  return <SessionContext value={authContextValue}>{children}</SessionContext>;
 };

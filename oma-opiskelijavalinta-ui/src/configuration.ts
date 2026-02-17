@@ -26,6 +26,7 @@ export const getConfiguration = async () => {
     routes: {
       yleiset: {
         loginApiUrl: `/oma-opiskelijavalinta/api/login`,
+        linkLoginApiUrl: `/oma-opiskelijavalinta/api/link-login`,
         sessionApiUrl: '/oma-opiskelijavalinta/api/session',
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
         userUrl: `/oma-opiskelijavalinta/api/user`,

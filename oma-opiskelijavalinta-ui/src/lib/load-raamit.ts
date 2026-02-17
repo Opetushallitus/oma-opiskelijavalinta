@@ -1,5 +1,10 @@
+let raamitInjected = false;
+
 export function loadRaamit() {
+  if (raamitInjected) return; // skip if already done
+  raamitInjected = true;
   // Wait until window.Service exists, then inject raamit scripts dynamically
+  console.log('Loading raamit');
   const tryLoad = () => {
     if (typeof window.Service !== 'undefined') {
       console.debug('window.Service available, loading Raamit scripts...');

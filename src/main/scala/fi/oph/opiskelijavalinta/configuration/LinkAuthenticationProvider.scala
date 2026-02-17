@@ -1,30 +1,41 @@
 package fi.oph.opiskelijavalinta.configuration
 
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.{AuthenticationProvider, BadCredentialsException}
-import org.springframework.security.core.Authentication
+import org.springframework.security.core.{Authentication, AuthenticationException}
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 import scala.jdk.CollectionConverters.*
 
+class LinkAuthenticationException(message: String, cause: Throwable = null)
+  extends AuthenticationException(message, cause) {
+
+  def this(message: String) = this(message, null)
+}
+
 class LinkAuthenticationProvider(linkVerificationService: LinkVerificationService)
-  extends AuthenticationProvider {
+  extends org.springframework.security.authentication.AuthenticationProvider {
 
-  override def authenticate(authentication: Authentication): Authentication = {
+  private val LOG = org.slf4j.LoggerFactory.getLogger(classOf[LinkAuthenticationProvider])
+
+  override def authenticate(authentication: org.springframework.security.core.Authentication)
+  : org.springframework.security.core.Authentication = {
+
     val token = authentication.asInstanceOf[LinkAuthenticationToken].token
+    LOG.info(s"Authenticating link token: $token")
 
-    // Verify the token
     val verification = linkVerificationService.verify(token)
 
     if (!verification.exists || !verification.valid) {
-      throw new BadCredentialsException("Invalid or expired token")
+      throw new LinkAuthenticationException("Invalid or expired token")
     }
 
     val meta = verification.metadata.getOrElse(
-      throw new BadCredentialsException("Token valid but metadata missing")
+      throw new LinkAuthenticationException("Token valid but metadata missing")
     )
     
     val personOid = meta.personOid.getOrElse(
-      throw new BadCredentialsException("Missing personOid in token metadata")
+      throw new LinkAuthenticationException("Missing personOid in token metadata")
     )
     val hakemusOid = meta.hakemusOid
 
@@ -33,7 +44,7 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
       "hakemusOid" -> hakemusOid,
       "hakuOid" -> meta.hakuOid.getOrElse("")
     )
-    
+
     val principal = new OppijaUser(
       attributes = attrs,
       username = personOid
@@ -41,7 +52,7 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
 
     // tällä voi rajata myöhemmin apeissa
     val authorities = List(new SimpleGrantedAuthority("ROLE_LINK_USER")).asJava
-    
+
     val authToken = new LinkAuthenticationToken(token, authorities)
     authToken.setPrincipal(principal)
     authToken.setAuthenticated(true)

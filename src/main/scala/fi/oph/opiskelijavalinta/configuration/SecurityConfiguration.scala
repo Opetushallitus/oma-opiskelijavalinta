@@ -3,11 +3,12 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
+import jakarta.servlet.http.HttpServletResponse
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.context.annotation.{Bean, Configuration, Primary}
 import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
 import org.springframework.http.{HttpMethod, HttpStatus}
@@ -20,8 +21,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
-import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.{AuthenticationEntryPoint, SecurityFilterChain}
+import org.springframework.security.web.authentication.{HttpStatusEntryPoint, UsernamePasswordAuthenticationFilter}
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
@@ -145,14 +147,14 @@ class SecurityConfiguration {
             "/assets/**",
             "/js/**",
             "/oma-opiskelijavalinta",
-            "/oma-opiskelijavalinta/"
+            "/oma-opiskelijavalinta/",
+            "/oma-opiskelijavalinta/token/**"
           )
           .permitAll()
           .requestMatchers(
             HttpMethod.POST,
             "/api/link-login"
-          )
-          .permitAll()
+          ).permitAll()
           .anyRequest
           .fullyAuthenticated
       )
@@ -218,7 +220,7 @@ class SecurityConfiguration {
                                   linkVerificationService: LinkVerificationService
                                 ): LinkAuthenticationProvider =
     new LinkAuthenticationProvider(linkVerificationService)
-  
+
   @Bean
   def ticketValidator(environment: Environment): TicketValidator =
     val ticketValidator = new Cas20ProxyTicketValidator(environment.getRequiredProperty("web.url.cas"))
@@ -254,16 +256,21 @@ class SecurityConfiguration {
     casAuthenticationEntryPoint
 
   @Bean
+  @Primary
   def authenticationManager(
     http: HttpSecurity,
     casAuthenticationProvider: CasAuthenticationProvider,
-    linkAuthenticationProvider: LinkAuthenticationProvider
   ): AuthenticationManager =
     http
       .getSharedObject(classOf[AuthenticationManagerBuilder])
       .authenticationProvider(casAuthenticationProvider)
-      .authenticationProvider(linkAuthenticationProvider)
       .build()
+
+  @Bean(Array("linkAuthenticationManager"))
+  def linkAuthenticationManager(linkAuthenticationProvider: LinkAuthenticationProvider): AuthenticationManager =
+    new org.springframework.security.authentication.ProviderManager(
+      java.util.List.of(linkAuthenticationProvider)
+    )
 
   // api joka ohjaa tarvittaessa kirjautumattoman käyttäjän cas loginiin
   @Bean
