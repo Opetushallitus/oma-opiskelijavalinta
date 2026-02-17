@@ -3,13 +3,14 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.configuration.OppijaUser
+import fi.oph.opiskelijavalinta.resource.ApiConstants.USER_PATH
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
-@RequestMapping(path = Array("/api/user"))
+@RequestMapping(path = Array(USER_PATH))
 @RestController
 class UserResource @Autowired (private val onrClient: OnrClient) {
 

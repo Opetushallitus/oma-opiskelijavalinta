@@ -1,6 +1,7 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.configuration.{LinkAuthenticationException, LinkAuthenticationToken}
+import fi.oph.opiskelijavalinta.resource.ApiConstants.LINK_LOGIN_PATH
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Qualifier
@@ -9,16 +10,10 @@ import org.springframework.security.authentication.{AuthenticationManager, BadCr
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.{SecurityContext, SecurityContextHolder}
 import org.springframework.security.web.context.SecurityContextRepository
-import org.springframework.web.bind.annotation.{
-  ExceptionHandler,
-  PostMapping,
-  RequestMapping,
-  RequestParam,
-  RestController
-}
+import org.springframework.web.bind.annotation.{ExceptionHandler, PostMapping, RequestMapping, RequestParam, RestController}
 
 @RestController
-@RequestMapping(path = Array("/api"))
+@RequestMapping(path = Array(LINK_LOGIN_PATH))
 class LinkLoginResource(
   @Qualifier("linkAuthenticationManager") linkAuthenticationManager: AuthenticationManager,
   securityContextRepository: SecurityContextRepository
@@ -26,7 +21,7 @@ class LinkLoginResource(
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[LinkLoginResource]);
 
-  @PostMapping(path = Array("/link-login"))
+  @PostMapping(path = Array(""))
   def linkLogin(
     @RequestParam token: String,
     request: HttpServletRequest,

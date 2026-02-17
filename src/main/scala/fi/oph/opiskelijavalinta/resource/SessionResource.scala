@@ -1,10 +1,11 @@
 package fi.oph.opiskelijavalinta.resource
 
+import fi.oph.opiskelijavalinta.resource.ApiConstants.SESSION_PATH
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
-@RequestMapping(path = Array("/api/session"))
+@RequestMapping(path = Array(SESSION_PATH))
 @RestController
 class SessionResource {
 
