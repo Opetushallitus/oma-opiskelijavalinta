@@ -139,7 +139,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
             application={hakemus}
             hakemuksenTulokset={tulokset}
           />
-          {hasKelaUrl(hakemus) && <KelaContainer hakemus={hakemus} />}
+          {hasKelaUrl(tulokset) && <KelaContainer tulokset={tulokset} />}
           {onkoVastaanottoTehty(tulokset) &&
             isKorkeakouluHaku(hakemus.haku) && (
               <TutustuContainer hakemus={hakemus} />

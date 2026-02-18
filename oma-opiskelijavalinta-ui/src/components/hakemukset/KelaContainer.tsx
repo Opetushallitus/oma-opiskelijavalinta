@@ -2,10 +2,10 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
-import type { Hakemus } from '@/lib/hakemus-types';
 import { getKelaUrl } from '@/lib/hakemus.service';
 import { Box } from '@mui/material';
 import { styled } from '@/lib/theme';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
@@ -14,10 +14,14 @@ const StyledBox = styled(Box)(({ theme }) => ({
   rowGap: theme.spacing(1.5),
 }));
 
-export function KelaContainer({ hakemus }: { hakemus: Hakemus }) {
+export function KelaContainer({
+  tulokset,
+}: {
+  tulokset: Array<HakutoiveenTulos>;
+}) {
   const { t } = useTranslations();
 
-  const kelaUrl = getKelaUrl(hakemus);
+  const kelaUrl = getKelaUrl(tulokset);
 
   return isTruthy(kelaUrl) ? (
     <StyledBox>
@@ -26,7 +30,7 @@ export function KelaContainer({ hakemus }: { hakemus: Hakemus }) {
       </OphTypography>
       <ExternalLinkButton
         variant="outlined"
-        href={getKelaUrl(hakemus) ?? ''}
+        href={getKelaUrl(tulokset) ?? ''}
         name={t('kela.linkki')}
       />
     </StyledBox>
