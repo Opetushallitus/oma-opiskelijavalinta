@@ -21,6 +21,7 @@ cas-service:
 logging:
   level:
     root: INFO
+    org.springframework.security: DEBUG
 
 server:
   servlet:
