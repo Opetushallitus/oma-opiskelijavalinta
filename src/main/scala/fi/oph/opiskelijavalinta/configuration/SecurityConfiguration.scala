@@ -144,9 +144,6 @@ class SecurityConfiguration {
             "/index.html",
             "/assets/**",
             "/js/**",
-            "/oma-opiskelijavalinta",
-            "/oma-opiskelijavalinta/",
-            "/oma-opiskelijavalinta/token/**",
             "/token/**"
           )
           .permitAll()
