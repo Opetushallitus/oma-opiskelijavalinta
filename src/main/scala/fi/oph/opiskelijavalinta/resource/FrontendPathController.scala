@@ -11,7 +11,7 @@ class FrontendPathController {
   def forward(request: HttpServletRequest): String = {
     val path = request.getRequestURI
     if (path.startsWith("/api") || path.startsWith("/assets") || path.startsWith("/js") || path == "/index.html")
-      path // Let Spring handle normally 
+      path // Let Spring handle normally
     else
       "forward:/index.html"
   }
