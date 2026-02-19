@@ -16,7 +16,7 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { hasKelaUrl } from '@/lib/hakemus.service';
 import { KelaContainer } from './KelaContainer';
-import { isKorkeakouluHaku } from '@/lib/kouta-utils';
+import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
 import { TutustuContainer } from './TutustuContainer';
 
 function TilaInfo({
@@ -98,7 +98,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   );
 
   const hakemustaVoiMuokata =
-    !hakemus.processing &&
+    (!hakemus.processing || !isJatkuvaTaiJoustavaHaku(hakemus.haku)) &&
     (isNullish(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
         (isEmpty(tulokset) ||
