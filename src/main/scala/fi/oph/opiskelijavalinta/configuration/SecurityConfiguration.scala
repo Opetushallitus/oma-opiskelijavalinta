@@ -3,6 +3,8 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
+import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
 import org.slf4j.{Logger, LoggerFactory}
@@ -21,6 +23,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
@@ -106,6 +109,32 @@ class SecurityConfiguration {
     )
   }
 
+  private def isFrontEndRoute: String => Boolean = path =>
+    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/assets") || path.startsWith("/js")
+
+  def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
+    val req = request.asInstanceOf[HttpServletRequest]
+    val res = response.asInstanceOf[HttpServletResponse]
+    val contextPath = req.getContextPath
+    val path = req.getRequestURI.stripPrefix(contextPath)
+    val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
+    val isForwarded = request.getAttribute("custom.forwarded") != null
+    val fullPathWithQuery = contextPath + path + queryString
+    val strippedPathWithQuery = contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
+
+    // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
+    if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
+      res.sendRedirect(strippedPathWithQuery)
+    } else if (!isForwarded && isFrontEndRoute(path)) {
+      // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
+      request.setAttribute("custom.forwarded", true)
+      // Forwardoidaan frontend-pyyntö html-tiedostoon
+      request.getRequestDispatcher("/index.html").forward(request, response)
+    } else {
+      chain.doFilter(request, response)
+    }
+  }
+
   @Bean
   @Order(2)
   def appSecurityFilterChain(
@@ -144,7 +173,7 @@ class SecurityConfiguration {
             "/index.html",
             "/assets/**",
             "/js/**",
-            "/pizza/**"
+            "/token/**"
           )
           .permitAll()
           .requestMatchers(
@@ -161,6 +190,12 @@ class SecurityConfiguration {
       .addFilterBefore(singleLogoutFilter(sessionMappingStorage), classOf[CasAuthenticationFilter])
       .addFilterBefore(sessionTimeoutFilter, classOf[CasAuthenticationFilter])
       .addFilter(authenticationFilter)
+      /* Tehdään ohjaukset käyttöliittymään vasta koko CAS-autentikaation (ja mahdollisen login-uudellenohjauksen) jälkeen.
+       * Huom! classOf[CasAuthenticationFilter] ei toimi integraatiotesteissä, koska silloin frontendResourceFilter
+       * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
+       * filter chainin läpi.
+      */
+      .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .securityContext(securityContext =>
         securityContext
           .requireExplicitSave(true)
