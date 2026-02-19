@@ -144,7 +144,7 @@ class SecurityConfiguration {
             "/index.html",
             "/assets/**",
             "/js/**",
-            "/token/**"
+            "/pizza/**"
           )
           .permitAll()
           .requestMatchers(
