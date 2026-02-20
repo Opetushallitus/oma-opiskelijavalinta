@@ -82,9 +82,6 @@ function MennytVastaanottoBox({ hakukohde, tulos }: VastaanottoBoxParams) {
       <OphTypography variant="body1">
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
-      {isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos) && (
-        <EhdollisuusWarning tulos={tulos} />
-      )}
     </StyledBox>
   );
 }
