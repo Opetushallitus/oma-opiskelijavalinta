@@ -110,8 +110,7 @@ class SecurityConfiguration {
   }
 
   private def isFrontEndRoute: String => Boolean = path =>
-    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/assets") || path
-      .startsWith("/js") || path.startsWith("/redirect")
+    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/redirect")
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
