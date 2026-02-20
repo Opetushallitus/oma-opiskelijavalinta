@@ -1,16 +1,10 @@
 import '@/lib/service-global';
 import { Outlet, Scripts, ScrollRestoration } from 'react-router';
-import { Providers } from '@/components/Providers';
 import { UntranslatedFullSpinner } from '@/components/FullSpinner';
 import { ErrorView } from '@/components/ErrorView';
-import { loadRaamit } from '@/lib/load-raamit';
 import React from 'react';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  React.useEffect(() => {
-    loadRaamit(); // load raamit scripts after Service is defined
-  }, []);
-
   return (
     <html lang="fi">
       <head>
@@ -32,11 +26,7 @@ export function HydrateFallback() {
 }
 
 export default function App() {
-  return (
-    <Providers>
-      <Outlet />
-    </Providers>
-  );
+  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {

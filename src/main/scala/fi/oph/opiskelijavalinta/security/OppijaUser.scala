@@ -1,9 +1,10 @@
-package fi.oph.opiskelijavalinta.configuration
+package fi.oph.opiskelijavalinta.security
 
-import java.util.Collection
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import scala.jdk.CollectionConverters._
+
+import java.util.Collection
+import scala.jdk.CollectionConverters.*
 
 type OppijaAttributes = Map[String, String]
 

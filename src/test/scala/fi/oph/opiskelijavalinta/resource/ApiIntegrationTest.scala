@@ -1,8 +1,8 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.resource.ApiConstants
+import fi.oph.opiskelijavalinta.security.OppijaUser
 import org.junit.jupiter.api.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.test.context.support.{WithAnonymousUser, WithMockUser}

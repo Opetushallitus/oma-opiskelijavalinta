@@ -3,11 +3,14 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
+import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, LinkVerificationService, OppijaUserDetails}
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
+import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.context.annotation.{Bean, Configuration, Primary}
 import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
 import org.springframework.http.{HttpMethod, HttpStatus}
@@ -21,6 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
@@ -106,6 +110,39 @@ class SecurityConfiguration {
     )
   }
 
+  private def isFrontEndRoute: String => Boolean = path =>
+    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/redirect")
+
+  @Bean
+  def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
+    LOG.debug(
+      s"FrontendResourceFilter: ${request.getRemoteAddr} ${request.asInstanceOf[HttpServletRequest].getRequestURI}"
+    )
+    val req                   = request.asInstanceOf[HttpServletRequest]
+    val res                   = response.asInstanceOf[HttpServletResponse]
+    val contextPath           = req.getContextPath
+    val path                  = req.getRequestURI.stripPrefix(contextPath)
+    val queryString           = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
+    val isForwarded           = request.getAttribute("custom.forwarded") != null
+    val fullPathWithQuery     = contextPath + path + queryString
+    val strippedPathWithQuery =
+      contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
+    // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
+    if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
+      LOG.debug(s"Redirecting to stripped path: $strippedPathWithQuery")
+      res.sendRedirect(strippedPathWithQuery)
+    } else if (!isForwarded && isFrontEndRoute(path)) {
+      LOG.debug(s"Forwarding to index.html")
+      // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
+      request.setAttribute("custom.forwarded", true)
+      // Forwardoidaan frontend-pyyntö html-tiedostoon
+      request.getRequestDispatcher("/index.html").forward(request, response)
+    } else {
+      LOG.debug(s"continue filter chain for path: $path")
+      chain.doFilter(request, response)
+    }
+  }
+
   @Bean
   @Order(2)
   def appSecurityFilterChain(
@@ -144,8 +181,12 @@ class SecurityConfiguration {
             "/index.html",
             "/assets/**",
             "/js/**",
-            "/oma-opiskelijavalinta",
-            "/oma-opiskelijavalinta/"
+            "/token/**"
+          )
+          .permitAll()
+          .requestMatchers(
+            HttpMethod.POST,
+            "/api/link-login"
           )
           .permitAll()
           .anyRequest
@@ -157,6 +198,12 @@ class SecurityConfiguration {
       .addFilterBefore(singleLogoutFilter(sessionMappingStorage), classOf[CasAuthenticationFilter])
       .addFilterBefore(sessionTimeoutFilter, classOf[CasAuthenticationFilter])
       .addFilter(authenticationFilter)
+      /* Tehdään ohjaukset käyttöliittymään vasta koko CAS-autentikaation (ja mahdollisen login-uudellenohjauksen) jälkeen.
+       * Huom! classOf[CasAuthenticationFilter] ei toimi integraatiotesteissä, koska silloin frontendResourceFilter
+       * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
+       * filter chainin läpi.
+       */
+      .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .securityContext(securityContext =>
         securityContext
           .requireExplicitSave(true)
@@ -209,6 +256,12 @@ class SecurityConfiguration {
     casAuthenticationProvider
 
   @Bean
+  def linkAuthenticationProvider(
+    linkVerificationService: LinkVerificationService
+  ): LinkAuthenticationProvider =
+    new LinkAuthenticationProvider(linkVerificationService)
+
+  @Bean
   def ticketValidator(environment: Environment): TicketValidator =
     val ticketValidator = new Cas20ProxyTicketValidator(environment.getRequiredProperty("web.url.cas"))
     ticketValidator.setAcceptAnyProxy(true)
@@ -243,6 +296,7 @@ class SecurityConfiguration {
     casAuthenticationEntryPoint
 
   @Bean
+  @Primary
   def authenticationManager(
     http: HttpSecurity,
     casAuthenticationProvider: CasAuthenticationProvider
@@ -251,6 +305,12 @@ class SecurityConfiguration {
       .getSharedObject(classOf[AuthenticationManagerBuilder])
       .authenticationProvider(casAuthenticationProvider)
       .build()
+
+  @Bean(Array("linkAuthenticationManager"))
+  def linkAuthenticationManager(linkAuthenticationProvider: LinkAuthenticationProvider): AuthenticationManager =
+    new org.springframework.security.authentication.ProviderManager(
+      java.util.List.of(linkAuthenticationProvider)
+    )
 
   // api joka ohjaa tarvittaessa kirjautumattoman käyttäjän cas loginiin
   @Bean

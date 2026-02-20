@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.configuration.OppijaUser
+import fi.oph.opiskelijavalinta.security.OppijaUser
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import java.util
 

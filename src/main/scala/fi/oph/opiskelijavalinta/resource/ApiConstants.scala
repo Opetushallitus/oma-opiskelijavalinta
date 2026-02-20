@@ -8,6 +8,8 @@ object ApiConstants {
   final val API_PREFIX = "/api"
 
   final val LOGIN_PATH                 = API_PREFIX + "/login"
+  final val LINK_LOGIN_PATH            = API_PREFIX + "/link-login"
+  final val USER_PATH                  = API_PREFIX + "/user"
   final val CAS_TICKET_VALIDATION_PATH = LOGIN_PATH + "/j_spring_cas_security_check"
   final val HEALTHCHECK_PATH           = API_PREFIX + "/healthcheck"
   final val SESSION_PATH               = API_PREFIX + "/session"
