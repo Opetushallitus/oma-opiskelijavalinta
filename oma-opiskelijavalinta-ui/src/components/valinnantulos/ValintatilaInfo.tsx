@@ -57,15 +57,21 @@ const getVarasijallaInfo = (
         </OphTypography>
       )}
       <OphTypography>{t('tulos.info.varasijalla')}</OphTypography>
-      <OphTypography>
-        <Translation
-          keyName={'tulos.info.varasijalta-hyvaksyminen'}
-          params={{
-            varasijatayttoPaattyy,
-            b: <b></b>,
-          }}
-        />
-      </OphTypography>
+      {varasijatayttoPaattyy.length > 0 ? (
+        <OphTypography>
+          <Translation
+            keyName={'tulos.info.varasija-ilmoitus-paattyy'}
+            params={{
+              varasijatayttoPaattyy,
+              b: <b></b>,
+            }}
+          />
+        </OphTypography>
+      ) : (
+        <OphTypography>
+          {t('tulos.info.varasijalta-hyvaksyminen')}
+        </OphTypography>
+      )}
     </>
   );
 };

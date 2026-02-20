@@ -76,7 +76,8 @@
     "ei-sijoittelua": "Valinnan tulos",
     "info": {
       "varasijalla": "Varasijalta hyväksytään opiskelijoita, jos aloituspaikkoja vapautuu. Tiedot päivittyvät Opintopolkuun sitä mukaa kun vapautuvia paikkoja täytetään.",
-      "varasijalta-hyvaksyminen": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen. Voit tulla hyväksytyksi varasijalta {varasijatayttoPaattyy} asti.",
+      "varasijalta-hyvaksyminen": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen.",
+      "varasija-ilmoitus-paattyy": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen. Voit tulla hyväksytyksi varasijalta {varasijatayttoPaattyy} asti.",
       "varalla-ylempaan-alempi-hyvaksytty": "Kun otat toisen opiskelupaikan vastaan, olet edelleen varasijalla tähän hakukohteeseen.",
       "ehdollinen-otsikko": "Ehdollinen opiskelijavalinta",
       "ehdollinen-varalla": "Huomioithan, että valintatietosi on ehdollinen. Mikäli sinulle tarjotaan tätä opiskelupaikkaa, sinun on toimittava alla olevan ehdon mukaisesti:",

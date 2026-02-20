@@ -52,9 +52,47 @@ test('Näyttää varasijanumeron', async ({ page }) => {
   ).toBeVisible();
   await expect(
     app1.getByText(
+      'Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app1.getByText(
       'Voit tulla hyväksytyksi varasijalta 11.1.2026 klo 17:00 asti.',
     ),
   ).toBeVisible();
+});
+
+test('Ei näytä varasijatäytön päättymistekstiä jos päättymispäivä puuttuu', async ({
+  page,
+}) => {
+  const varasijaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      varasijatayttoPaattyy: null,
+    },
+    hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+  };
+  await fetchMockData(page, varasijaApplication);
+
+  const app1 = page.getByTestId('application-hakemus-oid-1');
+  await expect(
+    app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(app1.getByText('Olet 2. varasijalla')).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Varasijalta hyväksytään opiskelijoita, jos aloituspaikkoja vapautuu.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app1.getByText('Voit tulla hyväksytyksi varasijalta'),
+  ).toBeHidden();
 });
 
 test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
@@ -138,8 +176,13 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
     ],
   };
   await fetchMockData(page, varallaApplication);
-
-  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-1');
+  const vastaanottoinfo = page.getByTestId('vastaanottoinfo-hakukohde-oid-2');
+  await expect(
+    vastaanottoinfo.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeVisible();
+  const tulokset = page.getByTestId('valintatilainfo-hakukohde-oid-2');
   await expect(
     tulokset.getByText(
       'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',

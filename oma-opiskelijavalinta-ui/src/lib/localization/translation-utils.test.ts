@@ -38,6 +38,10 @@ test('returns empty string if formatting date fails', () => {
   expect(toFormattedDateTimeString('älämölö')).toBe('');
 });
 
+test('returns empty string if there is no date', () => {
+  expect(toFormattedDateTimeString(undefined)).toBe('');
+});
+
 test('formats timestamp with finnish locale', () => {
   const date = 1719384408989;
   expect(toFormattedDateTimeStringWithLocale(date, 'fi')).toBe(
