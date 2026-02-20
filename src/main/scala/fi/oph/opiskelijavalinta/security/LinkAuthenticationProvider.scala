@@ -52,7 +52,6 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
       username = personOid
     )
 
-    // tällä voi rajata myöhemmin apeissa
     val authorities = List(new SimpleGrantedAuthority(Authorities.ROLE_LINK_USER)).asJava
 
     val authToken = new LinkAuthenticationToken(token, authorities)
