@@ -115,15 +115,18 @@ class SecurityConfiguration {
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
-    LOG.info(s"FrontendResourceFilter: ${request.getRemoteAddr} ${request.asInstanceOf[HttpServletRequest].getRequestURI}")
-    val req         = request.asInstanceOf[HttpServletRequest]
-    val res         = response.asInstanceOf[HttpServletResponse]
-    val contextPath = req.getContextPath
-    val path        = req.getRequestURI.stripPrefix(contextPath)
-    val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
-    val isForwarded = request.getAttribute("custom.forwarded") != null
-    val fullPathWithQuery = contextPath + path + queryString
-    val strippedPathWithQuery = contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
+    LOG.info(
+      s"FrontendResourceFilter: ${request.getRemoteAddr} ${request.asInstanceOf[HttpServletRequest].getRequestURI}"
+    )
+    val req                   = request.asInstanceOf[HttpServletRequest]
+    val res                   = response.asInstanceOf[HttpServletResponse]
+    val contextPath           = req.getContextPath
+    val path                  = req.getRequestURI.stripPrefix(contextPath)
+    val queryString           = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
+    val isForwarded           = request.getAttribute("custom.forwarded") != null
+    val fullPathWithQuery     = contextPath + path + queryString
+    val strippedPathWithQuery =
+      contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
     // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
     if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
       LOG.info(s"Redirecting to stripped path: $strippedPathWithQuery")
