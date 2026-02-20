@@ -16,7 +16,7 @@ export function ValintatilaChip({
   odottaaYlempaa?: boolean;
   naytaKeskenTulos?: boolean;
 }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
   if (isNullish(hakutoiveenTulos) && !naytaKeskenTulos) return null;
   if (
     (isNullish(hakutoiveenTulos) && naytaKeskenTulos) ||
@@ -32,7 +32,12 @@ export function ValintatilaChip({
     );
   const valintatila: Valintatila =
     hakutoiveenTulos?.valintatila || Valintatila.KESKEN;
-  const statusLabel = getHakutoiveenTilaLabel(hakutoiveenTulos, odottaaYlempaa);
+  const statusLabel = getHakutoiveenTilaLabel(
+    hakutoiveenTulos,
+    odottaaYlempaa,
+    t,
+    translateEntity,
+  );
   return (
     <StatusBadgeChip
       badgeProps={{

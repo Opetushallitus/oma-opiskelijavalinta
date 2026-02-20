@@ -22,7 +22,7 @@ export function HakutoiveenTilaBadge({
   odottaaYlempaa?: boolean;
   naytaKeskenTulos?: boolean;
 }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
   if (isNullish(hakutoiveenTulos) && !naytaKeskenTulos) return null;
   if (
     (isNullish(hakutoiveenTulos) && naytaKeskenTulos) ||
@@ -40,7 +40,12 @@ export function HakutoiveenTilaBadge({
     hakutoiveenTulos?.vastaanottotila || VastaanottoTila.KESKEN;
   const valintatila: Valintatila =
     hakutoiveenTulos?.valintatila || Valintatila.KESKEN;
-  const statusLabel = getHakutoiveenTilaLabel(hakutoiveenTulos, odottaaYlempaa);
+  const statusLabel = getHakutoiveenTilaLabel(
+    hakutoiveenTulos,
+    odottaaYlempaa,
+    t,
+    translateEntity,
+  );
   // jos ehdollisesti hyväksytty ja vastaanottanut, näytetään kaikki badget
   if (isEhdollisestiHyvaksyttyVastaanottanutSitovasti(hakutoiveenTulos)) {
     return (

@@ -6,6 +6,11 @@ import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import { styled } from '@/lib/theme';
+import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import type { Haku } from '@/lib/kouta-types';
+import { FullSpinner } from '../FullSpinner';
+import { useState } from 'react';
+import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   '&:before': {
@@ -29,25 +34,91 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
 }));
 
 export function HakukohteetAccordion({
-  application,
+  hakemus,
   tulokset,
 }: {
-  application: Hakemus;
+  hakemus: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
 }) {
-  const { t } = useTranslations();
+  const { t, translateEntity } = useTranslations();
+
+  const accordionSummaryId = `past-hakutoiveet-accordion-${hakemus.oid}`;
 
   return (
     <StyledAccordion>
-      <AccordionSummary expandIcon={<ExpandMore />}>
+      <AccordionSummary
+        id={accordionSummaryId}
+        expandIcon={<ExpandMore />}
+        aria-label={t('hakutoiveet.haitari-nimi', {
+          haku: translateEntity(hakemus.haku?.nimi),
+        })}
+      >
         {t('hakutoiveet.haitari')}
       </AccordionSummary>
-      <AccordionDetails>
-        <HakukohteetContainer
-          application={application}
-          hakemuksenTulokset={tulokset}
-        />
+      <AccordionDetails aria-labelledby={accordionSummaryId}>
+        <HakukohteetContainer hakemus={hakemus} hakemuksenTulokset={tulokset} />
       </AccordionDetails>
+    </StyledAccordion>
+  );
+}
+
+export function MenneetHakukohteetAccordion({
+  hakemus,
+  haku,
+}: {
+  hakemus: Hakemus;
+  haku: Haku;
+}) {
+  const { t, translateEntity } = useTranslations();
+
+  const {
+    hakemuksenTulokset: tulokset,
+    isRefetching,
+    refetchTulokset,
+  } = useHakemuksenTulokset(hakemus, haku);
+
+  const [tuloksetFetched, setTuloksetFetched] = useState(false);
+
+  function fetchTulokset() {
+    if (tuloksetFetched) {
+      return;
+    }
+    setTuloksetFetched(true);
+    refetchTulokset();
+  }
+
+  const accordionSummaryId = `past-hakutoiveet-accordion-${hakemus.oid}`;
+
+  return (
+    <StyledAccordion>
+      <AccordionSummary
+        id={accordionSummaryId}
+        onClick={fetchTulokset}
+        expandIcon={<ExpandMore />}
+        aria-label={t('hakutoiveet.haitari-nimi', {
+          haku: translateEntity(haku.nimi),
+        })}
+      >
+        {t('hakutoiveet.haitari')}
+      </AccordionSummary>
+      {isRefetching && <FullSpinner />}
+      {!isRefetching && (
+        <AccordionDetails
+          sx={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}
+          aria-labelledBy={accordionSummaryId}
+        >
+          <VastaanottoContainer
+            application={hakemus}
+            hakemuksenTulokset={tulokset}
+            mennytVastaanotto={true}
+          />
+          <HakukohteetContainer
+            hakemus={hakemus}
+            hakemuksenTulokset={tulokset}
+            mennytHakemus={true}
+          />
+        </AccordionDetails>
+      )}
     </StyledAccordion>
   );
 }

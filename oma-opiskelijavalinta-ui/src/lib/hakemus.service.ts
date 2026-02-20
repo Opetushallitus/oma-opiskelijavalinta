@@ -2,7 +2,11 @@ import { client } from '@/http-client';
 import { getConfiguration } from '@/configuration';
 import type { TranslatedName } from './localization/localization-types';
 import type { Haku, Hakukohde } from './kouta-types';
-import { type HakutoiveenTulosDto, Valintatila } from './valinta-tulos-types';
+import {
+  type HakutoiveenTulos,
+  type HakutoiveenTulosDto,
+  Valintatila,
+} from './valinta-tulos-types';
 import type { Hakemus, Hakemukset } from './hakemus-types';
 import { isTruthy } from 'remeda';
 
@@ -89,10 +93,12 @@ export async function getHakemukset(): Promise<Hakemukset> {
   return { current, old };
 }
 
-export function getKelaUrl(hakemus: Hakemus): string | null | undefined {
-  return hakemus.hakemuksenTulokset.find((ht) => isTruthy(ht.kelaURL))?.kelaURL;
+export function getKelaUrl(
+  tulokset: Array<HakutoiveenTulos>,
+): string | null | undefined {
+  return tulokset.find((ht) => isTruthy(ht.kelaURL))?.kelaURL;
 }
 
-export function hasKelaUrl(hakemus: Hakemus): boolean {
-  return isTruthy(getKelaUrl(hakemus));
+export function hasKelaUrl(tulokset: Array<HakutoiveenTulos>): boolean {
+  return isTruthy(getKelaUrl(tulokset));
 }

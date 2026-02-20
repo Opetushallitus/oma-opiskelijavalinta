@@ -51,7 +51,7 @@ export function Hakutoive({
   hakemus,
   hakukohde,
   prioriteetti,
-  pastApplication = false,
+  mennytHakemus = false,
   sijoitteluKaytossa = false,
   naytaKeskenTulos = false,
   tulos,
@@ -59,7 +59,7 @@ export function Hakutoive({
   hakemus: Hakemus;
   hakukohde: Hakukohde;
   prioriteetti?: number;
-  pastApplication?: boolean;
+  mennytHakemus?: boolean;
   sijoitteluKaytossa?: boolean;
   naytaKeskenTulos?: boolean;
   tulos?: HakutoiveenTulos;
@@ -74,8 +74,8 @@ export function Hakutoive({
 
   const odottaaYlempaa = Boolean(
     tulos &&
-      hakemus.priorisoidutHakutoiveet &&
-      isHyvaksyttyOdottaaYlempaa(hakemus, tulos),
+    hakemus.priorisoidutHakutoiveet &&
+    isHyvaksyttyOdottaaYlempaa(hakemus, tulos),
   );
   return (
     <HakutoiveContainer>
@@ -110,20 +110,22 @@ export function Hakutoive({
         <OphTypography variant="body1">
           {translateEntity(hakukohde.nimi)}
         </OphTypography>
-        {tulos && isHyvaksyttyTaiVaralla(tulos.valintatila) && (
-          <ValintatilaInfo
-            tulos={tulos}
-            application={hakemus}
-            odottaaYlempaa={odottaaYlempaa}
-          />
-        )}
+        {!mennytHakemus &&
+          tulos &&
+          isHyvaksyttyTaiVaralla(tulos.valintatila) && (
+            <ValintatilaInfo
+              tulos={tulos}
+              application={hakemus}
+              odottaaYlempaa={odottaaYlempaa}
+            />
+          )}
         {tulos && (
           <HakutoiveenTulosInfo
             hakutoiveenTulos={tulos}
             sijoitteluKaytossa={sijoitteluKaytossa}
           />
         )}
-        {!pastApplication && (
+        {!mennytHakemus && (
           <ValintaperusteetLinkContainer>
             <ExternalLink
               name={t('hakutoiveet.valintaperusteet')}

@@ -23,15 +23,16 @@ const StyledBox = styled(Box)(({ theme }) => ({
   },
 }));
 
+type VastaanottoBoxParams = {
+  hakukohde: Hakukohde;
+  tulos: HakutoiveenTulos;
+};
+
 function VastaanottoBox({
   hakukohde,
   tulos,
   application,
-}: {
-  hakukohde: Hakukohde;
-  tulos: HakutoiveenTulos;
-  application: Hakemus;
-}) {
+}: VastaanottoBoxParams & { application: Hakemus }) {
   const { translateEntity } = useTranslations();
 
   return (
@@ -69,12 +70,30 @@ function VastaanottoBox({
   );
 }
 
+function MennytVastaanottoBox({ hakukohde, tulos }: VastaanottoBoxParams) {
+  const { translateEntity } = useTranslations();
+
+  return (
+    <StyledBox>
+      <HakutoiveenTilaBadge hakutoiveenTulos={tulos} />
+      <OphTypography variant="h5" component="div">
+        {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
+      </OphTypography>
+      <OphTypography variant="body1">
+        {translateEntity(hakukohde.nimi)}
+      </OphTypography>
+    </StyledBox>
+  );
+}
+
 export function VastaanottoContainer({
   application,
   hakemuksenTulokset,
+  mennytVastaanotto = false,
 }: {
   application: Hakemus;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
+  mennytVastaanotto?: boolean;
 }) {
   const vastaanotettavat = naytettavatVastaanottoTiedot(hakemuksenTulokset);
 
@@ -85,12 +104,18 @@ export function VastaanottoContainer({
           (hk) => tulos.hakukohdeOid === hk.oid,
         );
 
-        return isDefined(hakukohde) ? (
+        return isDefined(hakukohde) && !mennytVastaanotto ? (
           <VastaanottoBox
             hakukohde={hakukohde}
             tulos={tulos}
             application={application}
             key={`hakutoive-vastaanotto-${hakukohde.oid}`}
+          />
+        ) : isDefined(hakukohde) ? (
+          <MennytVastaanottoBox
+            hakukohde={hakukohde}
+            tulos={tulos}
+            key={`hakutoive-mennyt-vastaanotto-${hakukohde.oid}`}
           />
         ) : null;
       })}

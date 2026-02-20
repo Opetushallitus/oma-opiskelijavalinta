@@ -76,7 +76,6 @@ export const TOISEN_ASTEEN_YHTEISHAKU = {
   viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
   hakutapaKoodiUri: 'hakutapa_01',
   kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
-  koulutuksenAlkamiskausi: 'kausi_s',
 };
 
 export const JATKUVA_HAKU = {

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 enum AllowedIlmoittautumisTila:
-  case LASNA_KOKO_LUKUVUOSI, LASNA_KEVAT
+  case LASNA_KOKO_LUKUVUOSI, LASNA
 
 case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokkaaja: String, selite: String)
 
@@ -79,7 +79,7 @@ class VTSService @Autowired (
       showMigriURL = tulos.showMigriURL,
       ilmoittautumisenAikaleima = tulos.ilmoittautumisenAikaleima,
       jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot,
-      None
+      kelaURL = tulos.kelaURL
     )
   }
 

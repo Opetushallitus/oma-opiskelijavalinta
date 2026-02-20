@@ -16,7 +16,7 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { hasKelaUrl } from '@/lib/hakemus.service';
 import { KelaContainer } from './KelaContainer';
-import { isKorkeakouluHaku } from '@/lib/kouta-utils';
+import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
 import { TutustuContainer } from './TutustuContainer';
 
 function TilaInfo({
@@ -98,7 +98,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   );
 
   const hakemustaVoiMuokata =
-    !hakemus.processing &&
+    (!hakemus.processing || !isJatkuvaTaiJoustavaHaku(hakemus.haku)) &&
     (isNullish(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
         (isEmpty(tulokset) ||
@@ -139,17 +139,17 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
             application={hakemus}
             hakemuksenTulokset={tulokset}
           />
-          {hasKelaUrl(hakemus) && <KelaContainer hakemus={hakemus} />}
+          {hasKelaUrl(tulokset) && <KelaContainer tulokset={tulokset} />}
           {onkoVastaanottoTehty(tulokset) &&
             isKorkeakouluHaku(hakemus.haku) && (
               <TutustuContainer hakemus={hakemus} />
             )}
           {onkoVastaanottoTehty(tulokset) && (
-            <HakukohteetAccordion application={hakemus} tulokset={tulokset} />
+            <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}
           {!onkoVastaanottoTehty(tulokset) && (
             <HakukohteetContainer
-              application={hakemus}
+              hakemus={hakemus}
               hakemuksenTulokset={tulokset}
             />
           )}

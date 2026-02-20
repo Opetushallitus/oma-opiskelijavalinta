@@ -8,6 +8,8 @@ import { isDefined, isNonNullish, mapKeys, mapValues } from 'remeda';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
+import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
+import type { TranslatedName } from '@/lib/localization/localization-types';
 
 export type ValintatilaLabel = {
   hakutoiveLabel: string;
@@ -93,8 +95,9 @@ export const ValintatapajononTilaLabels = mapValues(
 export function getHakutoiveenTilaLabel(
   hakutoiveenTulos: HakutoiveenTulos,
   odottaaYlempaa: boolean,
+  t: TFnType<DefaultParamType, string, TranslationKey>,
+  translateEntity: (translateable?: TranslatedName | undefined) => string,
 ): string {
-  const { t, translateEntity } = useTranslations();
   const hakutoiveenTilaLabel = t(
     hakutoiveenTilaLabels[hakutoiveenTulos.valintatila],
   );

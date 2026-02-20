@@ -4,10 +4,15 @@ import { getValintaTulokset } from './valinta-tulos-service';
 import type { Haku } from './kouta-types';
 
 export function useHakemuksenTulokset(hakemus: Hakemus, haku: Haku) {
-  const { refetch, data, isPending } = useQuery({
+  const { refetch, data, isPending, isRefetching } = useQuery({
     queryKey: ['hakemuksen-tulokset', hakemus.oid],
     initialData: hakemus.hakemuksenTulokset,
     queryFn: () => getValintaTulokset(hakemus.oid, haku.oid),
   });
-  return { refetchTulokset: refetch, hakemuksenTulokset: data, isPending };
+  return {
+    refetchTulokset: refetch,
+    hakemuksenTulokset: data,
+    isPending,
+    isRefetching,
+  };
 }

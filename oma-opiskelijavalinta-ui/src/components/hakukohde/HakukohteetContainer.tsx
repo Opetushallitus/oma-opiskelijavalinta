@@ -7,18 +7,20 @@ import { Hakutoive } from './Hakutoive';
 import { isJulkaistuHakutoiveenTulos } from '@/components/valinnantulos/valinnan-tulos-utils';
 
 export function HakukohteetContainer({
-  application,
+  hakemus,
   hakemuksenTulokset,
+  mennytHakemus = false,
 }: {
-  application: Hakemus;
+  hakemus: Hakemus;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
+  mennytHakemus?: boolean;
 }) {
   const { t } = useTranslations();
 
   const isJulkaistuTulosHakemuksella =
     isJulkaistuHakutoiveenTulos(hakemuksenTulokset);
 
-  const hakuaikaKaynnissa = application.haku?.hakuaikaKaynnissa;
+  const hakuaikaKaynnissa = hakemus.haku?.hakuaikaKaynnissa;
 
   return (
     <>
@@ -29,23 +31,24 @@ export function HakukohteetContainer({
       </OphTypography>
       <Box
         sx={{ width: '100%' }}
-        data-test-id={`application-hakutoiveet-${application.oid}`}
+        data-test-id={`application-hakutoiveet-${hakemus.oid}`}
       >
-        {(application.hakukohteet ?? []).map((hk, idx) => {
+        {(hakemus.hakukohteet ?? []).map((hk, idx) => {
           const tulos = hakemuksenTulokset.find(
             (ht) => ht.hakukohdeOid === hk.oid,
           );
           return (
             <Hakutoive
-              hakemus={application}
+              hakemus={hakemus}
               key={hk.oid}
               hakukohde={hk}
               prioriteetti={idx + 1}
-              sijoitteluKaytossa={application.sijoitteluKaytossa}
+              sijoitteluKaytossa={hakemus.sijoitteluKaytossa}
               naytaKeskenTulos={
                 isJulkaistuTulosHakemuksella || !hakuaikaKaynnissa
               }
               tulos={tulos}
+              mennytHakemus={mennytHakemus}
             />
           );
         })}
