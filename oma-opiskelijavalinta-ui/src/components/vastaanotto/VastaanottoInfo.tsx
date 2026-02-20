@@ -20,6 +20,7 @@ import { useConfig } from '@/configuration';
 import { getAlemmatVastaanotot } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
+import { getVarallaOlevatMuutToiveet } from '@/components/valinnantulos/valinnan-tulos-utils';
 
 const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -95,11 +96,16 @@ const getInfoText = (
     application.hakukohteet?.findIndex((hk) => hk.oid === tulos.hakukohdeOid) ??
     0;
 
+  const muitaHakutoiveitaVaralla =
+    getVarallaOlevatMuutToiveet(application, tulos.hakukohdeOid).length > 0;
+
   if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
     return getEhdollisestiVastaanottanutInfo(application, lang);
   } else {
     return (
-      <MultiInfoContainer>
+      <MultiInfoContainer
+        data-test-id={`vastaanottoinfo-${tulos.hakukohdeOid}`}
+      >
         {application.priorisoidutHakutoiveet && (
           <OphTypography>
             {t('vastaanotto.info.priorisoitu', {
@@ -111,6 +117,11 @@ const getInfoText = (
         {kkHaku && YPS && (
           <OphTypography>
             {t('vastaanotto.info.yhden-paikan-saanto')}
+          </OphTypography>
+        )}
+        {!application.priorisoidutHakutoiveet && muitaHakutoiveitaVaralla && (
+          <OphTypography sx={{ fontWeight: 'bolder' }}>
+            {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
           </OphTypography>
         )}
         {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (

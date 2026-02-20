@@ -176,8 +176,13 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
     ],
   };
   await fetchMockData(page, varallaApplication);
-
-  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-1');
+  const vastaanottoinfo = page.getByTestId('vastaanottoinfo-hakukohde-oid-2');
+  await expect(
+    vastaanottoinfo.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeVisible();
+  const tulokset = page.getByTestId('valintatilainfo-hakukohde-oid-2');
   await expect(
     tulokset.getByText(
       'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
