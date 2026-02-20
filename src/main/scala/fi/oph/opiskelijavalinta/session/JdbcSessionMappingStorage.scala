@@ -1,6 +1,5 @@
-package fi.oph.opiskelijavalinta.configuration
+package fi.oph.opiskelijavalinta.session
 
-import fi.oph.opiskelijavalinta.session.{HttpSessionAdapter, OphSessionMappingStorage}
 import jakarta.servlet.http.HttpSession
 import org.slf4j.LoggerFactory
 import org.springframework.session.{Session, SessionRepository}

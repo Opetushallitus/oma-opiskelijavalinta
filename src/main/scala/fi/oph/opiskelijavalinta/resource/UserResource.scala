@@ -2,8 +2,8 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.clients.model.Oppija
-import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.resource.ApiConstants.USER_PATH
+import fi.oph.opiskelijavalinta.security.OppijaUser
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

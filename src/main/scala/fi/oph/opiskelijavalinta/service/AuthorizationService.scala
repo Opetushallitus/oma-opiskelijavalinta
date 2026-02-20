@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.service
 
-import fi.oph.opiskelijavalinta.configuration.OppijaUser
+import fi.oph.opiskelijavalinta.security.OppijaUser
 import fi.oph.opiskelijavalinta.service.AuthorizationService.getPersonOid
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired

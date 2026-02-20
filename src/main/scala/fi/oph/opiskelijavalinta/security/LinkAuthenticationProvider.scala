@@ -1,9 +1,9 @@
-package fi.oph.opiskelijavalinta.configuration
+package fi.oph.opiskelijavalinta.security
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.core.{Authentication, AuthenticationException}
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.{Authentication, AuthenticationException}
 
 import scala.jdk.CollectionConverters.*
 

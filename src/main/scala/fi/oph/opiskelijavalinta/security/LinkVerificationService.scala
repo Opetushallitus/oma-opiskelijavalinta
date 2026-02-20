@@ -1,4 +1,4 @@
-package fi.oph.opiskelijavalinta.configuration
+package fi.oph.opiskelijavalinta.security
 
 import fi.oph.opiskelijavalinta.model.{OppijanTunnistusVerification, OppijantunnistusMetadata}
 import org.springframework.stereotype.Service

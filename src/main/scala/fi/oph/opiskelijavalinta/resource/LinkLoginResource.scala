@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.configuration.{LinkAuthenticationException, LinkAuthenticationToken}
 import fi.oph.opiskelijavalinta.resource.ApiConstants.LINK_LOGIN_PATH
+import fi.oph.opiskelijavalinta.security.{LinkAuthenticationException, LinkAuthenticationToken}
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Qualifier

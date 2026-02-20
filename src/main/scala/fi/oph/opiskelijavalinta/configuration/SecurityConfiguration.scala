@@ -3,6 +3,7 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
+import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, LinkVerificationService, OppijaUserDetails}
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}

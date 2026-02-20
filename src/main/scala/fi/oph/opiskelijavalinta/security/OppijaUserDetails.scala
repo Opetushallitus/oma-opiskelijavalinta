@@ -1,8 +1,9 @@
-package fi.oph.opiskelijavalinta.configuration
+package fi.oph.opiskelijavalinta.security
 
 import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken
 import org.springframework.security.core.userdetails.{AuthenticationUserDetailsService, UserDetails}
-import scala.jdk.CollectionConverters._
+
+import scala.jdk.CollectionConverters.*
 
 class OppijaUserDetails extends AuthenticationUserDetailsService[CasAssertionAuthenticationToken] {
 

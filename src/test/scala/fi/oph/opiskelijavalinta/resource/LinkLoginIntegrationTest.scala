@@ -2,8 +2,8 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.clients.AtaruClient
-import fi.oph.opiskelijavalinta.configuration.{LinkAuthenticationProvider, LinkVerificationService}
 import fi.oph.opiskelijavalinta.model.{OppijanTunnistusVerification, OppijantunnistusMetadata}
+import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, LinkVerificationService}
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired

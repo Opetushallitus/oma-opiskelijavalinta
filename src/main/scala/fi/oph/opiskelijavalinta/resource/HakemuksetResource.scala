@@ -1,9 +1,8 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants.HAKEMUKSET_PATH
-import fi.oph.opiskelijavalinta.configuration.OppijaUser
 import fi.oph.opiskelijavalinta.model.HakemuksetEnriched
-import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
+import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, OppijaUser}
 import fi.oph.opiskelijavalinta.service.{AuthorizationService, HakemuksetService}
 import fi.oph.opiskelijavalinta.util.{LogHakemus, LogUtil}
 import jakarta.servlet.http.HttpServletRequest
