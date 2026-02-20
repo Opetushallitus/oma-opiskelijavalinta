@@ -110,14 +110,15 @@ class SecurityConfiguration {
   }
 
   private def isFrontEndRoute: String => Boolean = path =>
-    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/assets") || path.startsWith("/js")
+    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/assets") || path
+      .startsWith("/js")
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
-    val req = request.asInstanceOf[HttpServletRequest]
-    val res = response.asInstanceOf[HttpServletResponse]
+    val req         = request.asInstanceOf[HttpServletRequest]
+    val res         = response.asInstanceOf[HttpServletResponse]
     val contextPath = req.getContextPath
-    val path = req.getRequestURI.stripPrefix(contextPath)
+    val path        = req.getRequestURI.stripPrefix(contextPath)
     val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
     val isForwarded = request.getAttribute("custom.forwarded") != null
     if (!isForwarded && isFrontEndRoute(path)) {
@@ -189,7 +190,7 @@ class SecurityConfiguration {
        * Huom! classOf[CasAuthenticationFilter] ei toimi integraatiotesteissä, koska silloin frontendResourceFilter
        * ajetaan ennen kuin koko CAS-autentikaatiota on tehty, ja koska MockMvc ei aja forwardointeja
        * filter chainin läpi.
-      */
+       */
       .addFilterAfter(frontendResourceFilter, classOf[AuthorizationFilter])
       .securityContext(securityContext =>
         securityContext
