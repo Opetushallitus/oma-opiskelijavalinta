@@ -112,6 +112,7 @@ class SecurityConfiguration {
   private def isFrontEndRoute: String => Boolean = path =>
     path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/assets") || path.startsWith("/js")
 
+  @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
     val req = request.asInstanceOf[HttpServletRequest]
     val res = response.asInstanceOf[HttpServletResponse]
@@ -119,13 +120,7 @@ class SecurityConfiguration {
     val path = req.getRequestURI.stripPrefix(contextPath)
     val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
     val isForwarded = request.getAttribute("custom.forwarded") != null
-    val fullPathWithQuery = contextPath + path + queryString
-    val strippedPathWithQuery = contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
-
-    // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
-    if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
-      res.sendRedirect(strippedPathWithQuery)
-    } else if (!isForwarded && isFrontEndRoute(path)) {
+    if (!isForwarded && isFrontEndRoute(path)) {
       // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
       request.setAttribute("custom.forwarded", true)
       // Forwardoidaan frontend-pyyntö html-tiedostoon
