@@ -1,9 +1,11 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.security.OppijaUser
+import fi.oph.opiskelijavalinta.security.Authorities
 import fi.oph.opiskelijavalinta.service.AuthorizationService.getPersonOid
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
@@ -30,5 +32,15 @@ class AuthorizationService @Autowired (hakemuksetService: HakemuksetService) {
         LOG.warn(s"Autorisoimaton pyyntö hakemukselle $hakemusOid käyttäjältä $oppijanumero")
         false
       }(_ => true)
+  }
+
+  def hasLinkUserRole: Boolean = {
+    SecurityContextHolder.getContext.getAuthentication.getAuthorities.stream
+      .anyMatch(a => a.getAuthority.equals(Authorities.ROLE_LINK_USER))
+  }
+
+  def getHakemusOidFromLinkUser: Option[String] = {
+    val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
+    principal.attributes.get("hakemusOid")
   }
 }

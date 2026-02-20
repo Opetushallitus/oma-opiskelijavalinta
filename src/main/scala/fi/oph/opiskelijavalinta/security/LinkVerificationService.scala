@@ -15,8 +15,8 @@ class LinkVerificationService {
         valid = true,
         metadata = Some(
           OppijantunnistusMetadata(
-            hakemusOid = "1.2.246.562.11.00000000001",
-            personOid = Some("1.2.246.562.24.12345678901"),
+            hakemusOid = "1.2.246.562.11.00000000000002121541",
+            personOid = Some("1.2.246.562.24.83491118298"),
             hakuOid = Some("1.2.246.562.29.00000000001")
           )
         )

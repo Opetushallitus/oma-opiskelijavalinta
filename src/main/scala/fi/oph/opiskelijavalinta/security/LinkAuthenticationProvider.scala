@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.security
 
+import fi.oph.opiskelijavalinta.security.Authorities
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -52,7 +53,7 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     )
 
     // tällä voi rajata myöhemmin apeissa
-    val authorities = List(new SimpleGrantedAuthority("ROLE_LINK_USER")).asJava
+    val authorities = List(new SimpleGrantedAuthority(Authorities.ROLE_LINK_USER)).asJava
 
     val authToken = new LinkAuthenticationToken(token, authorities)
     authToken.setPrincipal(principal)

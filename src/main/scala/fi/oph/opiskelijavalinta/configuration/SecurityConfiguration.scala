@@ -118,20 +118,13 @@ class SecurityConfiguration {
     LOG.debug(
       s"FrontendResourceFilter: ${request.getRemoteAddr} ${request.asInstanceOf[HttpServletRequest].getRequestURI}"
     )
-    val req                   = request.asInstanceOf[HttpServletRequest]
-    val res                   = response.asInstanceOf[HttpServletResponse]
-    val contextPath           = req.getContextPath
-    val path                  = req.getRequestURI.stripPrefix(contextPath)
-    val queryString           = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
-    val isForwarded           = request.getAttribute("custom.forwarded") != null
-    val fullPathWithQuery     = contextPath + path + queryString
-    val strippedPathWithQuery =
-      contextPath + path.stripSuffix("index.html") + queryString.replaceAll("[?&]continue", "")
-    // Karsitaan URL:sta pois tarpeettomat osat ennen forwardia
-    if (!isForwarded && isFrontEndRoute(path) && !fullPathWithQuery.equals(strippedPathWithQuery)) {
-      LOG.debug(s"Redirecting to stripped path: $strippedPathWithQuery")
-      res.sendRedirect(strippedPathWithQuery)
-    } else if (!isForwarded && isFrontEndRoute(path)) {
+    val req         = request.asInstanceOf[HttpServletRequest]
+    val res         = response.asInstanceOf[HttpServletResponse]
+    val contextPath = req.getContextPath
+    val path        = req.getRequestURI.stripPrefix(contextPath)
+    val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
+    val isForwarded = request.getAttribute("custom.forwarded") != null
+    if (!isForwarded && isFrontEndRoute(path)) {
       LOG.debug(s"Forwarding to index.html")
       // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
       request.setAttribute("custom.forwarded", true)

@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.security.OppijaUser
+import fi.oph.opiskelijavalinta.security.{Authorities, OppijaUser}
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+
 import java.util
 
 object TestUtils {
@@ -34,4 +35,10 @@ object TestUtils {
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     new OppijaUser(attributes, "testuser", authorities)
+
+  val linkUser: OppijaUser =
+    val attributes  = Map("personOid" -> PERSON_OID, "hakemusOid" -> HAKEMUS_OID)
+    val authorities = util.ArrayList[SimpleGrantedAuthority]
+    authorities.add(new SimpleGrantedAuthority(Authorities.ROLE_LINK_USER))
+    new OppijaUser(attributes, "linkuser", authorities)
 }
