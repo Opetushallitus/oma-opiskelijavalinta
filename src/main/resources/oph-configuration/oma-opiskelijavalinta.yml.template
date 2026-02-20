@@ -21,8 +21,6 @@ cas-service:
 logging:
   level:
     root: INFO
-    org.springframework.security: DEBUG
-    org.springframework.security.web.FilterChainProxy: TRACE
 
 server:
   servlet:
