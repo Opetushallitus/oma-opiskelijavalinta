@@ -30,24 +30,5 @@ class LinkVerificationService @Autowired (
         Option
           .apply(mapper.readValue(o, classOf[OppijanTunnistusVerification]))
     }
-    /*    if (token == "valid-token") {
-      OppijanTunnistusVerification(
-        exists = true,
-        valid = true,
-        metadata = Some(
-          OppijantunnistusMetadata(
-            hakemusOid = "1.2.246.562.11.00000000000002121541",
-            personOid = Some("1.2.246.562.24.83491118298"),
-            hakuOid = Some("1.2.246.562.29.00000000001")
-          )
-        )
-      )
-    } else {
-      OppijanTunnistusVerification(
-        exists = false,
-        valid = false,
-        metadata = None
-      )
-    }*/
   }
 }
