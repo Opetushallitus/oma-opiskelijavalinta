@@ -5,6 +5,7 @@ import fi.oph.opiskelijavalinta.clients.{
   KoodistoClient,
   KoutaClient,
   OhjausparametritClient,
+  OppijanTunnistusClient,
   ValintaTulosServiceClient
 }
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
@@ -32,6 +33,13 @@ class ClientConfiguration {
   @Bean
   def ohjausparametritClient(): OhjausparametritClient = {
     new OhjausparametritClient
+  }
+
+  @Bean
+  def oppijanTunnistusClient(
+    @Autowired @Qualifier("oppijanTunnistusCasClient") oppijanTunnistusCasClient: CasClient
+  ): OppijanTunnistusClient = {
+    new OppijanTunnistusClient(oppijanTunnistusCasClient)
   }
 
   @Bean

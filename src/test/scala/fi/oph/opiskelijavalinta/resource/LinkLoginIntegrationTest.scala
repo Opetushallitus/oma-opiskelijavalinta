@@ -3,7 +3,8 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{OppijanTunnistusVerification, OppijantunnistusMetadata}
-import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, LinkVerificationService}
+import fi.oph.opiskelijavalinta.security.LinkAuthenticationProvider
+import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,12 +22,30 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("invalid-token"))
       .thenReturn(
-        OppijanTunnistusVerification(
-          exists = false,
-          valid = false,
-          metadata = None
+        Some(
+          OppijanTunnistusVerification(
+            exists = false,
+            valid = false,
+            metadata = None
+          )
         )
       )
+
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post("/api/link-login")
+          .param("token", "invalid-token")
+      )
+      .andExpect(status().isForbidden)
+      .andExpect(jsonPath("$.error").value("invalid_or_expired_token"))
+  }
+
+  @Test
+  def returnsForbiddenForFailedVerification(): Unit = {
+    Mockito
+      .when(verificationService.verify("invalid-token"))
+      .thenReturn(None)
 
     mvc
       .perform(
@@ -43,14 +62,16 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("valid-token"))
       .thenReturn(
-        OppijanTunnistusVerification(
-          exists = true,
-          valid = true,
-          metadata = Some(
-            OppijantunnistusMetadata(
-              hakemusOid = "1.2.246.562.11.00000000001",
-              personOid = Some("1.2.246.562.24.12345678901"),
-              hakuOid = Some("1.2.246.562.29.00000000001")
+        Some(
+          OppijanTunnistusVerification(
+            exists = true,
+            valid = true,
+            metadata = Some(
+              OppijantunnistusMetadata(
+                hakemusOid = "1.2.246.562.11.00000000001",
+                personOid = Some("1.2.246.562.24.12345678901"),
+                hakuOid = Some("1.2.246.562.29.00000000001")
+              )
             )
           )
         )

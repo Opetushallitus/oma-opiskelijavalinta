@@ -3,7 +3,8 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, LinkVerificationService, OppijaUserDetails}
+import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, OppijaUserDetails}
+import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
@@ -86,6 +87,25 @@ class SecurityConfiguration {
           "/auth/login"
         )
         .setJsessionName("session")
+        .setNumberOfRetries(2)
+        .build()
+    )
+  }
+
+  @Bean(Array("oppijanTunnistusCasClient"))
+  def createOppijanTunnistusCasClient(): CasClient = {
+    CasClientBuilder.build(
+      CasConfig
+        .CasConfigBuilder(
+          cas_username,
+          cas_password,
+          s"https://$opintopolku_virkailija_domain/cas",
+          s"https://$opintopolku_virkailija_domain/oppijan-tunnistus",
+          Constants.CALLER_ID,
+          Constants.CALLER_ID,
+          "/auth/cas"
+        )
+        .setJsessionName("ring-session")
         .setNumberOfRetries(2)
         .build()
     )
