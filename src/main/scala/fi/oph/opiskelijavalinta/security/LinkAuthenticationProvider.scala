@@ -1,6 +1,7 @@
 package fi.oph.opiskelijavalinta.security
 
 import fi.oph.opiskelijavalinta.security.Authorities
+import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -26,7 +27,11 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     val token = authentication.asInstanceOf[LinkAuthenticationToken].token
     LOG.info(s"Authenticating link token: $token")
 
-    val verification = linkVerificationService.verify(token)
+    val verification = linkVerificationService
+      .verify(token)
+      .getOrElse(
+        throw new LinkAuthenticationException("Token valid but metadata missing")
+      )
 
     if (!verification.exists || !verification.valid) {
       throw new LinkAuthenticationException("Invalid or expired token")
