@@ -5,11 +5,12 @@ import fi.oph.opiskelijavalinta.security.Authorities
 import fi.oph.opiskelijavalinta.service.AuthorizationService.getPersonOid
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 object AuthorizationService {
+
   def getPersonOid: Option[String] = {
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     principal.attributes.get("personOid")
@@ -24,14 +25,32 @@ class AuthorizationService @Autowired (hakemuksetService: HakemuksetService) {
   export AuthorizationService.getPersonOid
 
   def hasAuthAccessToHakemus(hakemusOid: String): Boolean = {
+    if (!hasBeenAuthenticated) {
+      return false
+    }
     val oppijanumero = getPersonOid
-    val hakemukset   = hakemuksetService.getHakemusOids(oppijanumero.get)
-    hakemukset
-      .find(oid => oid.equals(hakemusOid))
-      .fold {
-        LOG.warn(s"Autorisoimaton pyyntö hakemukselle $hakemusOid käyttäjältä $oppijanumero")
-        false
-      }(_ => true)
+    if (hasLinkUserRole) {
+      hasBeenAuthenticated && getHakemusOidFromLinkUser
+        .filter(hakemusOid.equals(_))
+        .fold {
+          LOG.warn(
+            s"Autorisoimaton pyyntö hakemukselle $hakemusOid linkillä tunnistautuneella käyttäjältä $oppijanumero"
+          )
+          false
+        }(_ => true)
+    } else {
+      val hakemukset = hakemuksetService.getHakemusOids(oppijanumero.get)
+      hasBeenAuthenticated && hakemukset
+        .find(oid => oid.equals(hakemusOid))
+        .fold {
+          LOG.warn(s"Autorisoimaton pyyntö hakemukselle $hakemusOid käyttäjältä $oppijanumero")
+          false
+        }(_ => true)
+    }
+  }
+
+  def hasBeenAuthenticated: Boolean = {
+    SecurityContextHolder.getContext.getAuthentication.isAuthenticated
   }
 
   def hasLinkUserRole: Boolean = {
