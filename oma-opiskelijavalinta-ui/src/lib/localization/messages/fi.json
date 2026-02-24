@@ -13,7 +13,8 @@
     "liitteet": "lisätä liitteitä hakemuksellesi määräaikaan mennessä",
     "tulokset": "nähdä opiskelijavalinnan tulokset",
     "vastaanotto": "ottaa opiskelupaikan vastaan",
-    "ilmoittautua": "ilmoittautua opiskelemaan"
+    "ilmoittautua": "ilmoittautua opiskelemaan",
+    "oppijanumero": "Oppijanumero: {oppijanumero}"
   },
   "hakemukset": {
     "ajankohtaiset": "Ajankohtaiset hakemukset",

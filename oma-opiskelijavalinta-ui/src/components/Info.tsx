@@ -4,6 +4,14 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { BulletedList, BulletItem } from './BulletedList';
+import { isTruthy } from 'remeda';
+import { styled } from '@/lib/theme';
+
+const PersonInfoContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  marginBottom: theme.spacing(2.5),
+}));
 
 export default function Info() {
   const { t } = useTranslations();
@@ -15,10 +23,16 @@ export default function Info() {
 
   return (
     <Box>
-      <OphTypography variant="body1">
-        {`${user?.kutsumanimi} ${user?.sukunimi}`} oppijanumero:{' '}
-        {user?.oppijanumero}
-      </OphTypography>
+      <PersonInfoContainer>
+        <OphTypography variant="body1" sx={{ fontWeight: 700 }}>
+          {`${user?.kutsumanimi} ${user?.sukunimi}`}
+        </OphTypography>
+        {isTruthy(user?.oppijanumero) && (
+          <OphTypography variant="body1">
+            {t('info.oppijanumero', { oppijanumero: user?.oppijanumero })}
+          </OphTypography>
+        )}
+      </PersonInfoContainer>
       <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>
       <BulletedList>
         <BulletItem>{t('info.hakemukset')}</BulletItem>
