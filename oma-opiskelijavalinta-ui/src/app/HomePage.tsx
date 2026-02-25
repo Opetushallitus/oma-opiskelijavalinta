@@ -4,6 +4,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
+import { LinkLogoutButton } from '@/components/LinkLogoutButton';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -17,11 +18,14 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 
 export default function HomePage() {
   const { t } = useTranslations();
-
+  const isLinkLogin =
+    typeof window !== 'undefined' &&
+    sessionStorage.getItem('isLinkLogin') === 'true';
   return (
     <Box>
       <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>
       <StyledBox>
+        {isLinkLogin && <LinkLogoutButton />}
         <Info />
         <Hakemukset />
       </StyledBox>

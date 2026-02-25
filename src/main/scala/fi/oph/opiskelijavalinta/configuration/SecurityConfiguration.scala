@@ -3,7 +3,8 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, OppijaUserDetails}
+import fi.oph.opiskelijavalinta.resource.ApiConstants.{LINK_LOGIN_PATH, LINK_LOGOUT_PATH}
+import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, LinkAuthenticationProvider, OppijaUserDetails}
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
@@ -24,9 +25,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
+import org.springframework.security.core.Authentication
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.web.authentication.logout.{LogoutHandler, LogoutSuccessHandler}
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
@@ -194,12 +197,13 @@ class SecurityConfiguration {
             "/index.html",
             "/assets/**",
             "/js/**",
-            "/token/**"
+            "/token/**",
+            "/logged-out"
           )
           .permitAll()
           .requestMatchers(
             HttpMethod.POST,
-            "/api/link-login"
+            LINK_LOGIN_PATH,
           )
           .permitAll()
           .anyRequest
@@ -224,11 +228,17 @@ class SecurityConfiguration {
       )
       .requestCache(cache =>
         cache.disable()
-      ) // Don't save original request after login redirect, redirect to the default entry point
+      )
       .logout(logout =>
         logout
-          .logoutUrl("/logout")
+          .logoutUrl(LINK_LOGOUT_PATH)
+          .addLogoutHandler(linkLogoutHandler())
+          .invalidateHttpSession(true)
+          .clearAuthentication(true)
           .deleteCookies("JSESSIONID")
+          .logoutSuccessHandler((request, response, authentication) =>
+            response.setStatus(HttpServletResponse.SC_OK)
+          )
       )
       .build()
 
@@ -324,6 +334,17 @@ class SecurityConfiguration {
     new org.springframework.security.authentication.ProviderManager(
       java.util.List.of(linkAuthenticationProvider)
     )
+
+  @Bean
+  def linkLogoutHandler(): LogoutHandler =
+    (request: HttpServletRequest,
+     response: HttpServletResponse,
+     authentication: Authentication) => {
+
+      if (authentication != null) {
+        AuditLog.log(request, Map.empty, AuditOperation.LinkLogout, None)
+      }
+    }
 
   // api joka ohjaa tarvittaessa kirjautumattoman käyttäjän cas loginiin
   @Bean

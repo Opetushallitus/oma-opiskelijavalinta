@@ -27,6 +27,7 @@ export const getConfiguration = async () => {
       yleiset: {
         loginApiUrl: `/oma-opiskelijavalinta/api/login`,
         linkLoginApiUrl: `/oma-opiskelijavalinta/api/link-login`,
+        linkLogoutApiUrl: `/oma-opiskelijavalinta/api/link-logout`,
         sessionApiUrl: '/oma-opiskelijavalinta/api/session',
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
         userUrl: `/oma-opiskelijavalinta/api/user`,
