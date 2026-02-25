@@ -8,11 +8,11 @@ object AuditOperation {
   case object Login extends AuditOperation("KIRJAUTUMINEN")
 
   case object Logout extends AuditOperation("ULOSKIRJAUTUMINEN")
-  
+
   case object LinkLogin extends AuditOperation("LINKKIKIRJAUTUMINEN")
 
   case object LinkLogout extends AuditOperation("LINKKIULOSKIRJAUTUMINEN")
-  
+
   case object HaeHakemukset extends AuditOperation("HAE HAKEMUKSET")
 
   case object HaeValintaTulokset extends AuditOperation("HAE VALINTATULOKSET")
