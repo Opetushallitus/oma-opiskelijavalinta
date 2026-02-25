@@ -29,6 +29,7 @@ export const getConfiguration = async () => {
       yleiset: {
         loginApiUrl: `${BACKEND_API}/login`,
         linkLoginApiUrl: `${BACKEND_API}/link-login`,
+        linkLogoutApiUrl: `${BACKEND_API}/link-logout`,
         sessionApiUrl: `${BACKEND_API}/session`,
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
         userUrl: `${BACKEND_API}/user`,
