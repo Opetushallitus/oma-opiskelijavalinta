@@ -1,12 +1,12 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
   mockAuthenticatedUser,
+  mockHakemuksetFetch,
 } from './lib/playwrightUtils';
 
 test('Näyttää etusivun infoineen', async ({ page }) => {
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await setup(page);
   await expect(page).toHaveTitle('Oma Opiskelijavalinta');
   await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
   await expect(page.getByText('Ruhtinas Nukettaja')).toBeVisible();
@@ -27,8 +27,13 @@ test('Näyttää etusivun infoineen', async ({ page }) => {
 });
 
 test('Etusivun saavutettavuus', async ({ page }) => {
-  await mockAuthenticatedUser(page);
-  await page.goto('');
+  await setup(page);
   await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
   await expectPageAccessibilityOk(page);
 });
+
+async function setup(page: Page) {
+  await mockAuthenticatedUser(page);
+  await mockHakemuksetFetch(page, { current: [], old: [] });
+  await page.goto('');
+}

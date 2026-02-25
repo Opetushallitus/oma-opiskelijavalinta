@@ -36,15 +36,22 @@ export function GenericErrorPage({ error }: { error: Error }) {
   const { t } = useTranslations();
 
   return (
-    <ErrorContainer>
-      <StyledError>
-        <ErrorOutline sx={{ fontSize: '2rem' }} />
-      </StyledError>
-      <OphTypography variant="h1">{t('virhe.palvelin.otsikko')}</OphTypography>
-      <OphTypography variant="body1">
-        {t('virhe.palvelin.kuvaus')}
-      </OphTypography>
-      <OphButton variant="contained">{t('virhe.palvelin.lataa')}</OphButton>
-    </ErrorContainer>
+    <>
+      <title>Oma Opiskelijavalinta</title>
+      <ErrorContainer role="main">
+        <StyledError>
+          <ErrorOutline sx={{ fontSize: '2rem' }} />
+        </StyledError>
+        <OphTypography variant="h1">
+          {t('virhe.palvelin.otsikko')}
+        </OphTypography>
+        <OphTypography variant="body1">
+          {t('virhe.palvelin.kuvaus')}
+        </OphTypography>
+        <OphButton variant="contained" onClick={() => window.location.reload()}>
+          {t('virhe.palvelin.lataa')}
+        </OphButton>
+      </ErrorContainer>
+    </>
   );
 }
