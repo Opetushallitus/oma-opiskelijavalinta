@@ -1,8 +1,9 @@
 import '@/lib/service-global';
 import { Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { UntranslatedFullSpinner } from '@/components/FullSpinner';
-import { ErrorView } from '@/components/ErrorView';
+import { GenericErrorPage } from '@/components/GenericErrorPage';
 import React from 'react';
+import { LocalizationProvider } from '@/components/LocalizationProvider';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,5 +31,9 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  return <ErrorView error={error} />;
+  return (
+    <LocalizationProvider>
+      <GenericErrorPage error={error} />
+    </LocalizationProvider>
+  );
 }
