@@ -1,7 +1,12 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants.LINK_LOGIN_PATH
-import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, LinkAuthenticationException, LinkAuthenticationToken}
+import fi.oph.opiskelijavalinta.security.{
+  AuditLog,
+  AuditOperation,
+  LinkAuthenticationException,
+  LinkAuthenticationToken
+}
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Qualifier
@@ -10,7 +15,13 @@ import org.springframework.security.authentication.{AuthenticationManager, BadCr
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.{SecurityContext, SecurityContextHolder}
 import org.springframework.security.web.context.SecurityContextRepository
-import org.springframework.web.bind.annotation.{ExceptionHandler, PostMapping, RequestMapping, RequestParam, RestController}
+import org.springframework.web.bind.annotation.{
+  ExceptionHandler,
+  PostMapping,
+  RequestMapping,
+  RequestParam,
+  RestController
+}
 
 @RestController
 @RequestMapping(path = Array(LINK_LOGIN_PATH))

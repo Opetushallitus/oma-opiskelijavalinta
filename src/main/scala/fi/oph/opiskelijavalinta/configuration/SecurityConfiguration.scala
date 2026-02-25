@@ -203,7 +203,7 @@ class SecurityConfiguration {
           .permitAll()
           .requestMatchers(
             HttpMethod.POST,
-            LINK_LOGIN_PATH,
+            LINK_LOGIN_PATH
           )
           .permitAll()
           .anyRequest
@@ -226,9 +226,7 @@ class SecurityConfiguration {
           .requireExplicitSave(true)
           .securityContextRepository(securityContextRepository)
       )
-      .requestCache(cache =>
-        cache.disable()
-      )
+      .requestCache(cache => cache.disable())
       .logout(logout =>
         logout
           .logoutUrl(LINK_LOGOUT_PATH)
@@ -236,9 +234,7 @@ class SecurityConfiguration {
           .invalidateHttpSession(true)
           .clearAuthentication(true)
           .deleteCookies("JSESSIONID")
-          .logoutSuccessHandler((request, response, authentication) =>
-            response.setStatus(HttpServletResponse.SC_OK)
-          )
+          .logoutSuccessHandler((request, response, authentication) => response.setStatus(HttpServletResponse.SC_OK))
       )
       .build()
 
@@ -337,9 +333,7 @@ class SecurityConfiguration {
 
   @Bean
   def linkLogoutHandler(): LogoutHandler =
-    (request: HttpServletRequest,
-     response: HttpServletResponse,
-     authentication: Authentication) => {
+    (request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication) => {
 
       if (authentication != null) {
         AuditLog.log(request, Map.empty, AuditOperation.LinkLogout, None)
