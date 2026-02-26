@@ -5,7 +5,12 @@
   },
   "virhe": {
     "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto.",
-    "pakollinen": "Pakollinen tieto."
+    "pakollinen": "Pakollinen tieto.",
+    "palvelin": {
+      "otsikko": "Nyt meni jokin pieleen",
+      "kuvaus": "Tapahtui palvelinvirhe. Lataa sivu uudestaan. Jos ongelma toistuu, yritä myöhemmin uudestaan.",
+      "lataa": "Lataa sivu uudestaan"
+    }
   },
   "info": {
     "kuvaus": "Muokkaa hakemustasi ja seuraa valinnan etenemistä. Hakemussivulla voit",
@@ -13,7 +18,8 @@
     "liitteet": "lisätä liitteitä hakemuksellesi määräaikaan mennessä",
     "tulokset": "nähdä opiskelijavalinnan tulokset",
     "vastaanotto": "ottaa opiskelupaikan vastaan",
-    "ilmoittautua": "ilmoittautua opiskelemaan"
+    "ilmoittautua": "ilmoittautua opiskelemaan",
+    "oppijanumero": "Oppijanumero: {oppijanumero}"
   },
   "hakemukset": {
     "ajankohtaiset": "Ajankohtaiset hakemukset",
