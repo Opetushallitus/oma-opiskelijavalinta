@@ -1,6 +1,7 @@
 import { client } from '@/http-client';
 import { getConfiguration, isDev } from '@/configuration';
 import type { User } from '@/lib/types';
+import { queryClient } from '@/components/Providers';
 
 export async function getSession() {
   const config = await getConfiguration();
@@ -33,6 +34,7 @@ export async function login() {
 }
 
 export async function logout() {
+  queryClient.clear();
   const url = await createLogoutUrl();
   window.location.replace(url);
 }

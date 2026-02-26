@@ -4,7 +4,13 @@ import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import fi.oph.opiskelijavalinta.resource.ApiConstants.{LINK_LOGIN_PATH, LINK_LOGOUT_PATH}
-import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, LinkAuthenticationProvider, OppijaUserDetails}
+import fi.oph.opiskelijavalinta.security.{
+  AuditLog,
+  AuditOperation,
+  AuditedSingleSignOutFilter,
+  LinkAuthenticationProvider,
+  OppijaUserDetails
+}
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
@@ -31,12 +37,13 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.logout.{LogoutHandler, LogoutSuccessHandler}
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
+import org.springframework.session.FlushMode
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
 
 @Configuration
 @EnableWebSecurity
-@EnableJdbcHttpSession(tableName = "SPRING_SESSION")
+@EnableJdbcHttpSession(tableName = "SPRING_SESSION", flushMode = FlushMode.IMMEDIATE)
 class SecurityConfiguration {
 
   val LOG: Logger                                  = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
@@ -364,11 +371,11 @@ class SecurityConfiguration {
   // Käsitellään CASilta tuleva SLO-pyyntö
   //
   @Bean
-  def singleLogoutFilter(sessionMappingStorage: SessionMappingStorage): SingleSignOutFilter = {
+  def singleLogoutFilter(sessionMappingStorage: SessionMappingStorage): Filter = {
     SingleSignOutFilter.setSessionMappingStorage(sessionMappingStorage)
-    val singleSignOutFilter: SingleSignOutFilter = new SingleSignOutFilter();
-    singleSignOutFilter.setIgnoreInitConfiguration(true);
-    singleSignOutFilter
+    val singleSignOutFilter: SingleSignOutFilter = new SingleSignOutFilter()
+    singleSignOutFilter.setIgnoreInitConfiguration(true)
+    new AuditedSingleSignOutFilter(singleSignOutFilter)
   }
 
 }
