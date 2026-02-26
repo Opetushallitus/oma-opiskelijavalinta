@@ -141,7 +141,9 @@ class SecurityConfiguration {
   }
 
   private def isFrontEndRoute: String => Boolean = path =>
-    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/redirect")
+    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith(
+      "/logged-out"
+    ) || path.startsWith("/redirect")
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
@@ -197,7 +199,7 @@ class SecurityConfiguration {
           .permitAll()
           .requestMatchers(SWAGGER_WHITELIST*)
           .permitAll()
-          // Allow frontend entry point + assets
+          // Allow frontend entry point + assets and link login
           .requestMatchers(
             HttpMethod.GET,
             "/",
