@@ -46,7 +46,7 @@ describe('isEhdollisestiHyvaksyttySitovastiVastaanottanut', () => {
     const result = isEhdollisestiHyvaksyttyVastaanottanutSitovasti(
       mockTulos('HYVAKSYTTY', true, 'EHDOLLISESTI_VASTAANOTTANUT'),
     );
-    expect(result).toBe(true);
+    expect(result).toBe(false);
   });
 });
 
