@@ -9,7 +9,7 @@ import { LocalizationProvider } from './LocalizationProvider';
 import { ConfirmationModalProvider } from './ConfirmationModal';
 import { NotificationProvider } from './NotificationProvider';
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
