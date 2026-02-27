@@ -22,7 +22,7 @@ function InnerHomeLayout() {
 
   // Load raamit for everyone except link login
   useEffect(() => {
-    if (state.status !== 'authenticated' || state.method === 'cas') {
+    if (state.status === 'authenticated' && state.method === 'cas') {
       loadRaamit();
     }
   }, [state]);
