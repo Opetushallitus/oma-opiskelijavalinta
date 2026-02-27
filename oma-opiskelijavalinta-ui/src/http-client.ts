@@ -1,5 +1,5 @@
 import { isPlainObject } from 'remeda';
-import { getConfiguration } from '@/configuration';
+import { notifyUnauthorized } from '@/components/authentication/auth-events';
 
 export function getCookies() {
   return document.cookie.split('; ').reduce(
@@ -145,12 +145,9 @@ const makeRequest = async <Result>(request: Request) => {
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      const conf = await getConfiguration();
-      window.location.href = conf.routes.yleiset.loginApiUrl;
-      // Return a never-resolving promise to stop further processing
-      return new Promise<never>(() => {
-        /* no-op */
-      });
+      console.log('Unauthenticated');
+      notifyUnauthorized();
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }

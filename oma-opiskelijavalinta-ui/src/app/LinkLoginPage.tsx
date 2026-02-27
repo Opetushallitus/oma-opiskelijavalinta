@@ -4,11 +4,14 @@ import { FullSpinner } from '@/components/FullSpinner';
 import { useConfig } from '@/configuration';
 import { FetchError } from '@/http-client';
 import { ErrorView } from '@/components/ErrorView';
+import { useAuth } from '@/components/authentication/AuthProvider';
+import type { AuthMethod } from '@/components/authentication/auth-types';
 
 export default function LinkLoginPage() {
   const conf = useConfig();
   const { token } = useParams();
   const navigate = useNavigate();
+  const { dispatch } = useAuth();
   const [error, setError] = React.useState<Error | null>(null);
 
   React.useEffect(() => {
@@ -28,8 +31,10 @@ export default function LinkLoginPage() {
           throw new FetchError(response);
         }
 
-        sessionStorage.setItem('isLinkLogin', 'true');
+        // Update auth state
+        dispatch({ type: 'SESSION_OK', method: 'link' as AuthMethod });
 
+        // Navigate to main app
         navigate('/', { replace: true });
       } catch (e) {
         console.error('Link login failed', e);
@@ -38,7 +43,7 @@ export default function LinkLoginPage() {
     }
 
     login();
-  }, [token, conf, navigate]);
+  }, [token, conf, navigate, dispatch]);
 
   if (error) {
     return <ErrorView error={error} reset={() => setError(null)} />;
