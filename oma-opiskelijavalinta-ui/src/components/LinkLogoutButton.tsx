@@ -3,14 +3,17 @@ import { useNavigate } from 'react-router';
 import { useConfig } from '@/configuration';
 import { useTranslations } from '@/hooks/useTranslations';
 import { OphButton } from '@opetushallitus/oph-design-system';
+import { useAuth } from '@/components/authentication/AuthProvider';
 
 function useLinkLogout() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const conf = useConfig();
+  const { dispatch } = useAuth();
 
   return useMutation({
     mutationFn: async () => {
+      console.log('Logging out from link login');
       const response = await fetch(conf.routes.yleiset.linkLogoutApiUrl, {
         method: 'POST',
         credentials: 'include',
@@ -21,7 +24,9 @@ function useLinkLogout() {
     },
     onSuccess: () => {
       queryClient.clear();
-      sessionStorage.removeItem('isLinkLogin');
+      // Update auth state
+      dispatch({ type: 'LOGOUT' });
+      // Navigate to logged-out page
       navigate('/logged-out', { replace: true });
     },
   });
@@ -35,7 +40,7 @@ export function LinkLogoutButton() {
     <OphButton
       variant="outlined"
       onClick={() => logoutMutation.mutate()}
-      loading={logoutMutation.isPending} // show spinner while logout
+      loading={logoutMutation.isPending}
     >
       {t('yleinen.logout')}
     </OphButton>

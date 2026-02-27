@@ -44,10 +44,23 @@ export const mockAuthenticatedUser = async (page: Page) => {
   });
 };
 
+export const mockSession = async (page: Page) => {
+  await page.route('**/api/session', async (route) => {
+    await route.fulfill({
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        authMethod: 'link',
+      }),
+    });
+  });
+};
+
 test('Link login + logout flow', async ({ page }) => {
   const testToken = 'test-link-token';
   await mockLinkAuth(page, testToken);
   await mockAuthenticatedUser(page);
+  await mockSession(page);
 
   await page.goto(`oma-opiskelijavalinta/token/${testToken}`);
 

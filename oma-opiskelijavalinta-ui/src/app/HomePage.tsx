@@ -5,6 +5,7 @@ import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { LinkLogoutButton } from '@/components/LinkLogoutButton';
+import { useAuth } from '@/components/authentication/AuthProvider';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -17,10 +18,13 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
+  console.log('Rendering HomePage');
   const { t } = useTranslations();
+  const { state } = useAuth();
+
   const isLinkLogin =
-    typeof window !== 'undefined' &&
-    sessionStorage.getItem('isLinkLogin') === 'true';
+    state.status === 'authenticated' && state.method === 'link';
+
   return (
     <Box>
       <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>

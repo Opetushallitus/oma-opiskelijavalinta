@@ -2,11 +2,16 @@ import { client } from '@/http-client';
 import { getConfiguration, isDev } from '@/configuration';
 import type { User } from '@/lib/types';
 import { queryClient } from '@/components/Providers';
+import type { SessionResponse } from '@/components/authentication/auth-types';
 
-export async function getSession() {
+export async function getSession(): Promise<SessionResponse> {
+  console.log('session polling');
   const config = await getConfiguration();
-  // http-client will redirect to login on 401
-  const response = await client.get(config.routes.yleiset.sessionApiUrl);
+
+  const response = await client.get<SessionResponse>(
+    config.routes.yleiset.sessionApiUrl,
+  );
+
   return response.data;
 }
 
