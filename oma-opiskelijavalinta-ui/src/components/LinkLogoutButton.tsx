@@ -13,7 +13,6 @@ function useLinkLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      console.log('Logging out from link login');
       const response = await fetch(conf.routes.yleiset.linkLogoutApiUrl, {
         method: 'POST',
         credentials: 'include',

@@ -18,7 +18,6 @@ const StyledHeader = styled(OphTypography)(({ theme }) => ({
 }));
 
 export default function HomePage() {
-  console.log('Rendering HomePage');
   const { t } = useTranslations();
   const { state } = useAuth();
 

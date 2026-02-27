@@ -14,7 +14,6 @@ const PersonInfoContainer = styled(Box)(({ theme }) => ({
 }));
 
 export default function Info() {
-  console.log('Rendering Info component including user query');
   const { t } = useTranslations();
 
   const { data: user } = useSuspenseQuery({
