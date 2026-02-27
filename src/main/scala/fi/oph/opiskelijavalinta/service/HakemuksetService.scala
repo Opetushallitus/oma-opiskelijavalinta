@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
-import fi.vm.sade.javautils.nio.cas.CasClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
   Hakemus,
@@ -13,23 +12,14 @@ import fi.oph.opiskelijavalinta.model.{
   Haku,
   HakuEnriched,
   Hakukohde,
-  HakutoiveenTulos,
   HakutoiveenTulosEnriched,
   Ohjausparametrit
 }
-import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.{Autowired, Value}
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
-import java.text.DateFormat
-import scala.concurrent.ExecutionContext.Implicits.global
-import java.time.Duration as JavaDuration
 import java.util.Date
-import scala.jdk.javaapi.FutureConverters.asScala
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-import java.util.concurrent.TimeUnit
 
 @Service
 class HakemuksetService @Autowired (
@@ -37,6 +27,7 @@ class HakemuksetService @Autowired (
   koutaService: KoutaService,
   ohjausparametritService: OhjausparametritService,
   VTSService: VTSService,
+  tuloskirjeService: TuloskirjeService,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
 
@@ -105,7 +96,9 @@ class HakemuksetService @Autowired (
     var hakukohteet: List[Option[Hakukohde]]                  = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulosEnriched] = List.empty
+    var tuloskirjeModified: Option[Long]                      = Option.empty
     if (hakemus.haku != null) {
+      tuloskirjeModified = tuloskirjeService.getLastModifiedTuloskirje(hakemus.haku, hakemus.oid)
       haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
       hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
       ohjausparametrit = ohjausparametritService
@@ -141,7 +134,8 @@ class HakemuksetService @Autowired (
       hakemus.submitted,
       hakutoiveidenTulokset,
       hakemus.processing,
-      hakemus.formName
+      hakemus.formName,
+      tuloskirjeModified
     )
   }
 }

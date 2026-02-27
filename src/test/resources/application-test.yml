@@ -5,6 +5,9 @@ oma-opiskelijavalinta:
   cas:
     username: dummy
     password: dummy
+  s3:
+    region: dummy
+    bucket: dummy
 
 logging:
   level:
