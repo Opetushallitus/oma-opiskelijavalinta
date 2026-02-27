@@ -25,7 +25,10 @@ function authReducer(state: AuthState, event: AuthEvent): AuthState {
       if (state.status === 'authenticated') {
         return { status: 'loggedOut' }; // session expired
       }
-      return { status: 'unauthenticated' }; // first load 401
+      if (state.status === 'unknown') {
+        return { status: 'unauthenticated' }; // first entry unauthenticated
+      }
+      return state; // already loggedOut or unauthenticated
 
     case 'LOGOUT':
       return { status: 'loggedOut' };
@@ -114,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);
 
-  // Only block rendering if state is unknown (spinner)
+  // Block rendering if state is unknown
   const shouldBlockRender = state.status === 'unknown';
 
   const value = useMemo(() => ({ state, dispatch }), [state]);
