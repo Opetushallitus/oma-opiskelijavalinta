@@ -14,6 +14,7 @@ import {
 } from '@/components/authentication/auth-events';
 import { useConfig } from '@/configuration';
 import { FullSpinner } from '@/components/FullSpinner';
+import { FetchError } from '@/http-client';
 
 function authReducer(state: AuthState, event: AuthEvent): AuthState {
   switch (event.type) {
@@ -67,6 +68,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refetchInterval: 60000,
     staleTime: 0,
     retry: false,
+    throwOnError: (error: unknown) => {
+      if (error instanceof FetchError && error.response.status === 401) {
+        return false; // handled by auth reducer
+      }
+      return true; // goes to error boundary
+    },
   });
 
   useEffect(() => {
