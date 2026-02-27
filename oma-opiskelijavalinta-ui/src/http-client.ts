@@ -145,7 +145,7 @@ const makeRequest = async <Result>(request: Request) => {
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      console.log('Unauthenticated');
+      console.debug('Unauthenticated response');
       notifyUnauthorized();
       return Promise.reject(error);
     }

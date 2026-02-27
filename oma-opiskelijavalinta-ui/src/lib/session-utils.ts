@@ -5,7 +5,6 @@ import { queryClient } from '@/components/Providers';
 import type { SessionResponse } from '@/components/authentication/auth-types';
 
 export async function getSession(): Promise<SessionResponse> {
-  console.log('session polling');
   const config = await getConfiguration();
 
   const response = await client.get<SessionResponse>(

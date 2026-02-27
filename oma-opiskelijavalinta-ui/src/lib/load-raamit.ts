@@ -1,13 +1,12 @@
 let raamitInjected = false;
 
 export function loadRaamit() {
-  console.log('loadRaamit called');
   if (raamitInjected) return; // skip if already done
   raamitInjected = true;
   // Wait until window.Service exists, then inject raamit scripts dynamically
   const tryLoad = () => {
     if (typeof window.Service !== 'undefined') {
-      console.log('window.Service available, loading Raamit scripts...');
+      console.debug('window.Service available, loading Raamit scripts...');
       const raamitScript = document.createElement('script');
       raamitScript.src = '/oppija-raamit/js/apply-raamit.js';
       raamitScript.defer = true;
@@ -18,7 +17,7 @@ export function loadRaamit() {
       cookieModalScript.defer = true;
       document.body.appendChild(cookieModalScript);
     } else {
-      console.log('waiting for window.Service...');
+      console.debug('waiting for window.Service...');
       setTimeout(tryLoad, 100); // check again in 100ms
     }
   };
