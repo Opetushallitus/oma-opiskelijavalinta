@@ -16,7 +16,7 @@ function InnerHomeLayout() {
   const { state } = useAuth();
   console.log('state status:', state.status);
 
-  if (state.status === 'unknown' || state.status === 'unauthenticated') {
+  if (state.status !== 'authenticated') {
     return <FullSpinner />;
   }
 

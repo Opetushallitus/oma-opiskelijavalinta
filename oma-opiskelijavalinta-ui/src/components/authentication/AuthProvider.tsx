@@ -20,13 +20,16 @@ function authReducer(state: AuthState, event: AuthEvent): AuthState {
   switch (event.type) {
     case 'SESSION_OK':
       return { status: 'authenticated', method: event.method };
+
     case 'SESSION_401':
-      return {
-        status: 'unauthenticated',
-        hasEverAuthenticated: state.status === 'authenticated',
-      };
+      if (state.status === 'authenticated') {
+        return { status: 'loggedOut' }; // session expired
+      }
+      return { status: 'unauthenticated' }; // first load 401
+
     case 'LOGOUT':
-      return { status: 'unauthenticated', hasEverAuthenticated: true };
+      return { status: 'loggedOut' };
+
     default:
       return state;
   }
@@ -68,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refetchInterval: 60000,
     staleTime: 0,
     retry: false,
+    enabled: state.status !== 'loggedOut',
     throwOnError: (error: unknown) => {
       if (error instanceof FetchError && error.response.status === 401) {
         return false; // handled by auth reducer
@@ -101,22 +105,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       location.pathname.startsWith('/token/') ||
       location.pathname === '/logged-out';
 
-    if (
-      state.status === 'unauthenticated' &&
-      !state.hasEverAuthenticated &&
-      !isPublicRoute
-    ) {
-      // First-time → redirect to CAS login
+    if (state.status === 'unauthenticated' && !isPublicRoute) {
       window.location.href = conf.routes.yleiset.loginApiUrl;
-      return;
     }
 
-    if (
-      state.status === 'unauthenticated' &&
-      state.hasEverAuthenticated &&
-      !isPublicRoute
-    ) {
-      // After logout/session expiry → go to logged-out page
+    if (state.status === 'loggedOut' && !isPublicRoute) {
       navigate('/logged-out', { replace: true });
     }
   }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);

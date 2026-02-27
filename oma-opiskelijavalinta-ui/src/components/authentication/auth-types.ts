@@ -2,8 +2,9 @@ export type AuthMethod = 'cas' | 'link';
 
 export type AuthState =
   | { status: 'unknown' }
-  | { status: 'unauthenticated'; hasEverAuthenticated: boolean }
-  | { status: 'authenticated'; method: AuthMethod };
+  | { status: 'unauthenticated' }
+  | { status: 'authenticated'; method: AuthMethod }
+  | { status: 'loggedOut' };
 
 export type AuthEvent =
   | { type: 'SESSION_OK'; method: AuthMethod }
