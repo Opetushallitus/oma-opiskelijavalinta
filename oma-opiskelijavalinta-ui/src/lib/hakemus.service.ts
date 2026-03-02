@@ -32,6 +32,7 @@ export type HakemusResponse = {
   processing: boolean;
   formName: TranslatedName;
   hakemuksenTulokset: Array<HakutoiveenTulosDto>;
+  tuloskirjeModified: number | null;
 };
 
 type HakemuksetResponse = {

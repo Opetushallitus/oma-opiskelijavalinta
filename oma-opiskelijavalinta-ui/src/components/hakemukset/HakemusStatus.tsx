@@ -1,0 +1,103 @@
+import { useTranslations } from '@/hooks/useTranslations';
+import type { Hakemus } from '@/lib/hakemus-types';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { isEmptyish, isTruthy } from 'remeda';
+import { onkoJulkaisemattomiaValinnantiloja } from '../valinnantulos/valinnan-tulos-utils';
+import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
+import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
+import { ExternalLink } from '../ExternalLink';
+import { KirjeLink } from './KirjeLink';
+import { Divider } from '@mui/material';
+import { RowFlexBox } from '../FlexBox';
+
+function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
+  const { t, getLanguage } = useTranslations();
+
+  const lang = getLanguage();
+
+  return (
+    <OphTypography>
+      {t('hakemukset.tilankuvaukset.hakuaika-kesken', {
+        hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+          hakemus.haku?.viimeisinPaattynytHakuAika,
+          lang,
+        ),
+      })}
+    </OphTypography>
+  );
+}
+
+function TuloksetJulkaistu({ hakemus }: { hakemus: Hakemus }) {
+  const { t } = useTranslations();
+
+  return (
+    <RowFlexBox>
+      <OphTypography>
+        {t('hakemukset.tilankuvaukset.kaikki-julkaistu')}
+      </OphTypography>
+      {hakemus.modifyLink && (
+        <ExternalLink
+          href={hakemus.modifyLink ?? ''}
+          name={` ${t('hakemukset.nayta')}`}
+        />
+      )}
+      {hakemus.modifyLink && hakemus.tuloskirjeModified && (
+        <Divider
+          sx={{ borderColor: ophColors.black }}
+          orientation="vertical"
+          flexItem
+        />
+      )}
+      {hakemus.tuloskirjeModified && <KirjeLink hakemus={hakemus} />}
+    </RowFlexBox>
+  );
+}
+
+function ValinnatKesken({ hakemus }: { hakemus: Hakemus }) {
+  const { t, getLanguage } = useTranslations();
+
+  const lang = getLanguage();
+
+  return (
+    <OphTypography>
+      {t('hakemukset.tilankuvaukset.valinnat-kesken', {
+        hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+          hakemus.haku?.viimeisinPaattynytHakuAika,
+          lang,
+        ),
+      })}
+    </OphTypography>
+  );
+}
+
+export function HakemusStatus({
+  hakemus,
+  tulokset,
+}: {
+  hakemus: Hakemus;
+  tulokset: Array<HakutoiveenTulos>;
+}) {
+  let tila = null;
+
+  if (isTruthy(hakemus.haku)) {
+    const tuloksetJulkaistu =
+      tulokset.length > 0 &&
+      !onkoJulkaisemattomiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []);
+    if (
+      hakemus.haku.hakuaikaKaynnissa &&
+      !tuloksetJulkaistu &&
+      !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
+    ) {
+      tila = <HakuKaynnissa hakemus={hakemus} />;
+    } else if (tuloksetJulkaistu) {
+      tila = <TuloksetJulkaistu hakemus={hakemus} />;
+    } else if (
+      !hakemus.haku.hakuaikaKaynnissa &&
+      !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
+    ) {
+      tila = <ValinnatKesken hakemus={hakemus} />;
+    }
+  }
+
+  return tila;
+}

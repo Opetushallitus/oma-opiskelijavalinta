@@ -17,6 +17,7 @@ export type Hakemus = {
   sijoitteluKaytossa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
   processing: boolean;
+  tuloskirjeModified?: number | null;
 };
 
 export type Hakemukset = {
