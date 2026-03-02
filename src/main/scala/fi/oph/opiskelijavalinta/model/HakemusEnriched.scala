@@ -9,7 +9,8 @@ case class HakemusEnriched(
   submitted: String,
   hakemuksenTulokset: List[HakutoiveenTulosEnriched],
   processing: Boolean,
-  formName: TranslatedName
+  formName: TranslatedName,
+  tuloskirjeModified: Option[Long]
 )
 
 case class HakemuksetEnriched(current: Seq[HakemusEnriched], old: Seq[HakemusEnriched])
