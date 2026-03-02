@@ -11,11 +11,13 @@ import {
   hakemus1,
   hakemus2,
   hakemus5JatkuvaHaku,
+  mockSession,
 } from './mocks';
 
 test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
   await mockHakemuksetFetch(page);
   await mockAuthenticatedUser(page);
+  await mockSession(page);
   await page.goto('');
   const activehakemukset = page.getByTestId('active-hakemukset');
 

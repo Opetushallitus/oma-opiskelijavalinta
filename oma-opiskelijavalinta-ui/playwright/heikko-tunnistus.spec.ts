@@ -44,7 +44,7 @@ export const mockAuthenticatedUser = async (page: Page) => {
   });
 };
 
-export const mockSession = async (page: Page) => {
+export const mockLinkSession = async (page: Page) => {
   await page.route('**/api/session', async (route) => {
     await route.fulfill({
       status: 200,
@@ -60,7 +60,7 @@ test('Link login + logout flow', async ({ page }) => {
   const testToken = 'test-link-token';
   await mockLinkAuth(page, testToken);
   await mockAuthenticatedUser(page);
-  await mockSession(page);
+  await mockLinkSession(page);
 
   await page.goto(`oma-opiskelijavalinta/token/${testToken}`);
 

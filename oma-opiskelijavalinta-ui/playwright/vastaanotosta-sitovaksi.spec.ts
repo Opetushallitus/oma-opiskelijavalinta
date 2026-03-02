@@ -7,6 +7,7 @@ import {
 import {
   hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty,
   hakemus1,
+  mockSession,
 } from './mocks';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
 
@@ -79,6 +80,15 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa',
 });
 
 test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
+  await setup(page);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await vastaanotot
+    .getByRole('checkbox', { name: 'Luovun jonotuksesta ja muutan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
   await page.route(
     '**/api/vastaanotto/hakemus/hakemus-oid-1/**',
     async (route) => {
@@ -102,15 +112,6 @@ test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
       });
     },
   );
-  await setup(page);
-  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
-  await vastaanotot
-    .getByRole('checkbox', { name: 'Luovun jonotuksesta ja muutan' })
-    .click();
-  const sendButton = vastaanotot.getByRole('button', {
-    name: 'Lähetä vastaus',
-  });
-  await sendButton.click();
   await page.getByRole('button', { name: 'Luovu jonotuksesta' }).click();
   //ilmoitus näkyy ja suljetaan se
   await expect(page.getByText('Varasijan jonotuksesta luovutt')).toBeVisible();
@@ -199,5 +200,6 @@ async function setup(page: Page) {
     old: [],
   });
   await mockAuthenticatedUser(page);
+  await mockSession(page);
   await page.goto('');
 }

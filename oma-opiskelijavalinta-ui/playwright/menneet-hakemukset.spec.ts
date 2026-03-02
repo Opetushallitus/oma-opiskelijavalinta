@@ -4,7 +4,11 @@ import {
   mockAuthenticatedUser,
   mockHakemuksetFetch,
 } from './lib/playwrightUtils';
-import { hakemuksenTulosHylatty, hakemuksenTulosHyvaksytty } from './mocks';
+import {
+  hakemuksenTulosHylatty,
+  hakemuksenTulosHyvaksytty,
+  mockSession,
+} from './mocks';
 
 test('Näyttää menneitä hakemuksia', async ({ page }) => {
   await setup(page);
@@ -162,6 +166,7 @@ async function setup(page: Page) {
     old: [application1, application2],
   });
   await mockAuthenticatedUser(page);
+  await mockSession(page);
   await page.route(
     '**/api/valintatulos/hakemus/hakemus-oid-3/**',
     async (route) => {

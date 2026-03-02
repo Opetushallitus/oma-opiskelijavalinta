@@ -14,6 +14,7 @@ import {
   hakemus2,
   hakemus3ToinenAste,
   hakemus4ToinenAsteAlempiaHyvaksyttyja,
+  mockSession,
 } from './mocks';
 import { clone } from 'remeda';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
@@ -170,6 +171,15 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa k
 });
 
 test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
+  await setup(page);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
   await page.route(
     '**/api/vastaanotto/hakemus/hakemus-oid-2/**',
     async (route) => {
@@ -190,15 +200,6 @@ test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
       });
     },
   );
-  await setup(page);
-  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
-  await vastaanotot
-    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
-    .click();
-  const sendButton = vastaanotot.getByRole('button', {
-    name: 'Lähetä vastaus',
-  });
-  await sendButton.click();
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
     .click();
@@ -246,6 +247,15 @@ test('Lähettää vastaanoton epäonnistuneesti', async ({ page }) => {
 });
 
 test('Peruu vastaanoton onnistuneesti', async ({ page }) => {
+  await setup(page);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await vastaanotot
+    .getByRole('radio', { name: 'En ota tätä opiskelupaikkaa' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
   await page.route(
     '**/api/vastaanotto/hakemus/hakemus-oid-2/**',
     async (route) => {
@@ -264,15 +274,6 @@ test('Peruu vastaanoton onnistuneesti', async ({ page }) => {
       });
     },
   );
-  await setup(page);
-  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
-  await vastaanotot
-    .getByRole('radio', { name: 'En ota tätä opiskelupaikkaa' })
-    .click();
-  const sendButton = vastaanotot.getByRole('button', {
-    name: 'Lähetä vastaus',
-  });
-  await sendButton.click();
   await page
     .getByRole('button', { name: 'En ota opiskelupaikkaa vastaan' })
     .click();
@@ -288,6 +289,21 @@ test('Peruu vastaanoton onnistuneesti', async ({ page }) => {
 });
 
 test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset:
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
+    })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
   await page.route(
     '**/api/vastaanotto/hakemus/hakemus-oid-1/**',
     async (route) => {
@@ -306,21 +322,6 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
       });
     },
   );
-  await setup(page, {
-    ...hakemus1,
-    hakemuksenTulokset:
-      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
-  });
-  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
-  await vastaanotot
-    .getByRole('radio', {
-      name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
-    })
-    .click();
-  const sendButton = vastaanotot.getByRole('button', {
-    name: 'Lähetä vastaus',
-  });
-  await sendButton.click();
   await expect(page.getByText('Jäät jonottamaan ylempiä')).toBeVisible();
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
@@ -347,26 +348,6 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
 test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async ({
   page,
 }) => {
-  await page.route(
-    '**/api/vastaanotto/hakemus/hakemus-oid-4/**',
-    async (route) => {
-      await route.fulfill({
-        status: 200,
-      });
-    },
-  );
-  await page.route(
-    '**/api/valintatulos/hakemus/hakemus-oid-4/**',
-    async (route) => {
-      await route.fulfill({
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-          hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet,
-        ),
-      });
-    },
-  );
   await setup(page, {
     ...hakemus4ToinenAsteAlempiaHyvaksyttyja,
   });
@@ -411,6 +392,26 @@ test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async (
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
     .click();
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-4/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+      });
+    },
+  );
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-4/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet,
+        ),
+      });
+    },
+  );
   await expect(
     page.getByText('Vahvista opiskelupaikan vastaanotto'),
   ).toBeHidden();
@@ -577,5 +578,6 @@ async function setup(
     old: [],
   });
   await mockAuthenticatedUser(page);
+  await mockSession(page);
   await page.goto('');
 }

@@ -7,8 +7,6 @@ import { LocalizationProvider } from '@/components/LocalizationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/components/authentication/AuthProvider';
 
-const queryClient = new QueryClient();
-
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fi">
@@ -31,6 +29,8 @@ export function HydrateFallback() {
 }
 
 export default function App() {
+  const queryClient = React.useMemo(() => new QueryClient(), []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
