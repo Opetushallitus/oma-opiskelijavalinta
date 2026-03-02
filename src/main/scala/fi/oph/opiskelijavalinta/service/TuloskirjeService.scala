@@ -8,7 +8,8 @@ import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.{
   GetObjectAttributesRequest,
   GetObjectAttributesResponse,
-  NoSuchKeyException
+  NoSuchKeyException,
+  ObjectAttributes
 }
 
 import scala.util.{Failure, Success, Try}
@@ -35,7 +36,12 @@ class TuloskirjeService(
   private def getObjectMetadata(hakuOid: String, hakemusOid: String): Option[GetObjectAttributesResponse] = {
     val filename                            = s"$hakuOid/$hakemusOid.html"
     val request: GetObjectAttributesRequest =
-      GetObjectAttributesRequest.builder().key(filename).bucket(bucketName).build()
+      GetObjectAttributesRequest
+        .builder()
+        .key(filename)
+        .bucket(bucketName)
+        .objectAttributes(ObjectAttributes.OBJECT_PARTS)
+        .build()
     Try(s3client.getObjectAttributes(request)) match {
       case Success(metadata) =>
         Some(metadata)
