@@ -17,7 +17,8 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
 
   const app = page.getByTestId('past-application-hakemus-oid-3');
   await expect(app.getByText('Haahuilijoiden Hyväksytyt Haut')).toBeVisible();
-  await expect(app.getByText('Samoojakoulutus')).toBeHidden();
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-3');
+  await expect(tulokset.getByText('Samoojakoulutus')).toBeHidden();
   const app2 = page.getByTestId('past-application-hakemus-oid-4');
   await expect(app2.getByText('Haamuilijoiden Hylätyt Haut')).toBeVisible();
   await expect(app2.getByText('Walkoisten lakanoiden pesijät')).toBeHidden();
