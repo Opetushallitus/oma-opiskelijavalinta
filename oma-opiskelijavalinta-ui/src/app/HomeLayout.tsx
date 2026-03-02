@@ -1,34 +1,46 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack } from '@mui/material';
 import { Outlet } from 'react-router';
-import { NavigationSpinner } from './NavigationSpinner';
 import { PageLayout } from '@/components/PageLayout';
 import { Providers } from '@/components/Providers';
 import { loadRaamit } from '@/lib/load-raamit';
+import { NavigationSpinner } from './NavigationSpinner';
+import { useAuth } from '@/components/authentication/AuthProvider';
+import { FullSpinner } from '@/components/FullSpinner';
 
-export default function HomeLayout() {
-  React.useEffect(() => {
-    const isLinkLogin =
-      typeof window !== 'undefined' &&
-      sessionStorage.getItem('isLinkLogin') === 'true';
+function InnerHomeLayout() {
+  const { state } = useAuth();
 
-    if (!isLinkLogin) {
+  console.log('InnerHomeLayout render, authentication status:', state.status);
+  if (state.status !== 'authenticated') {
+    return <FullSpinner />;
+  }
+
+  // Load raamit for everyone except link login
+  useEffect(() => {
+    if (state.status === 'authenticated' && state.method === 'cas') {
       loadRaamit();
     }
-  }, []);
+  }, [state]);
 
   return (
+    <PageLayout>
+      <title>Oma Opiskelijavalinta</title>
+      <Stack direction="row">
+        <main style={{ flexGrow: 1 }}>
+          <NavigationSpinner>
+            <Outlet />
+          </NavigationSpinner>
+        </main>
+      </Stack>
+    </PageLayout>
+  );
+}
+
+export default function HomeLayout() {
+  return (
     <Providers>
-      <PageLayout>
-        <title>Oma Opiskelijavalinta</title>
-        <Stack direction="row">
-          <main style={{ flexGrow: 1 }}>
-            <NavigationSpinner>
-              <Outlet />
-            </NavigationSpinner>
-          </main>
-        </Stack>
-      </PageLayout>
+      <InnerHomeLayout />
     </Providers>
   );
 }

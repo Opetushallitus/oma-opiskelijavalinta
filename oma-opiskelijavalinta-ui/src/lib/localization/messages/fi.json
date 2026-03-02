@@ -1,7 +1,12 @@
 {
   "otsikko": "Oma Opiskelijavalinta",
   "yleinen": {
-    "peruuta": "Peruuta"
+    "peruuta": "Peruuta",
+    "logout": "Kirjaudu ulos"
+  },
+  "logout": {
+    "otsikko": "Olet kirjautunut ulos",
+    "opintopolun-etusivulle": "Siirry Opintopolun etusivulle"
   },
   "virhe": {
     "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto.",

@@ -1,11 +1,16 @@
 import { client } from '@/http-client';
 import { getConfiguration, isDev } from '@/configuration';
 import type { User } from '@/lib/types';
+import { queryClient } from '@/components/Providers';
+import type { SessionResponse } from '@/components/authentication/auth-types';
 
-export async function getSession() {
+export async function getSession(): Promise<SessionResponse> {
   const config = await getConfiguration();
-  // http-client will redirect to login on 401
-  const response = await client.get(config.routes.yleiset.sessionApiUrl);
+
+  const response = await client.get<SessionResponse>(
+    config.routes.yleiset.sessionApiUrl,
+  );
+
   return response.data;
 }
 
@@ -33,6 +38,7 @@ export async function login() {
 }
 
 export async function logout() {
+  queryClient.clear();
   const url = await createLogoutUrl();
   window.location.replace(url);
 }

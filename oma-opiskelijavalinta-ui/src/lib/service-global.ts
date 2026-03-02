@@ -2,6 +2,7 @@ import { getUser, login, logout } from '@/lib/session-utils';
 
 // make sure this runs as soon as the module is imported
 if (typeof window !== 'undefined') {
+  console.debug('Setting up global Service object');
   const w = window as typeof window & {
     Service: {
       getUser: typeof getUser;

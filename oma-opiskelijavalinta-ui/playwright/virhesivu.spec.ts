@@ -17,7 +17,9 @@ test('Lataa sivun uudelleen onnistuneesti', async ({ page }) => {
   await page.route('**/api/session', async (route) => {
     await route.fulfill({
       status: 200,
-      body: '',
+      body: JSON.stringify({
+        authMethod: 'link',
+      }),
     });
   });
   await mockAuthenticatedUser(page);
