@@ -5,15 +5,13 @@ import { PageLayout } from '@/components/PageLayout';
 import { Providers } from '@/components/Providers';
 import { loadRaamit } from '@/lib/load-raamit';
 import { NavigationSpinner } from './NavigationSpinner';
-import {
-  AuthProvider,
-  useAuth,
-} from '@/components/authentication/AuthProvider';
+import { useAuth } from '@/components/authentication/AuthProvider';
 import { FullSpinner } from '@/components/FullSpinner';
 
 function InnerHomeLayout() {
   const { state } = useAuth();
 
+  console.log('InnerHomeLayout render, authentication status:', state.status);
   if (state.status !== 'authenticated') {
     return <FullSpinner />;
   }
@@ -42,9 +40,7 @@ function InnerHomeLayout() {
 export default function HomeLayout() {
   return (
     <Providers>
-      <AuthProvider>
-        <InnerHomeLayout />
-      </AuthProvider>
+      <InnerHomeLayout />
     </Providers>
   );
 }
