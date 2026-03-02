@@ -71,10 +71,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const sessionQuery = useQuery<SessionResponse, unknown>({
     queryKey: ['session'],
     queryFn: getSession,
-    refetchInterval: 60000,
+    refetchInterval: state.status === 'authenticated' ? 60000 : false,
     staleTime: 0,
     retry: false,
-    enabled: state.status !== 'loggedOut',
+    enabled: true,
     throwOnError: (error: unknown) => {
       if (error instanceof FetchError && error.response.status === 401) {
         console.log('fetch error 401');
