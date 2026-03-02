@@ -4,6 +4,10 @@ import { UntranslatedFullSpinner } from '@/components/FullSpinner';
 import { GenericErrorPage } from '@/components/GenericErrorPage';
 import React from 'react';
 import { LocalizationProvider } from '@/components/LocalizationProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@/components/authentication/AuthProvider';
+
+const queryClient = new QueryClient();
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -27,7 +31,13 @@ export function HydrateFallback() {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
+    </QueryClientProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
