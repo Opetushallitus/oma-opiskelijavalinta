@@ -24,7 +24,7 @@ import fi.oph.opiskelijavalinta.model.{
   OhjausparametritRaw,
   TranslatedName
 }
-import fi.oph.opiskelijavalinta.service.OhjausparametritService
+import fi.oph.opiskelijavalinta.service.{OhjausparametritService, TuloskirjeService}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -134,6 +134,9 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.BEFORE)
   val ohjausparametritService: OhjausparametritService = Mockito.mock(classOf[OhjausparametritService])
+
+  @MockitoBean(reset = MockReset.BEFORE)
+  val tulosKirjeService: TuloskirjeService = Mockito.mock(classOf[TuloskirjeService])
 
   @MockitoBean(reset = MockReset.NONE)
   val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
