@@ -3,13 +3,16 @@ package fi.oph.opiskelijavalinta.service
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import software.amazon.awssdk.core.sync.ResponseTransformer
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.{
   GetObjectAttributesRequest,
   GetObjectAttributesResponse,
+  GetObjectRequest,
   NoSuchKeyException,
-  ObjectAttributes
+  ObjectAttributes,
+  S3Object
 }
 
 import scala.util.{Failure, Success, Try}
@@ -33,6 +36,20 @@ class TuloskirjeService(
     }
   }
 
+  def getTuloskirje(hakuOid: String, hakemusOid: String): Option[Array[Byte]] = {
+    val filename                  = s"$hakuOid/$hakemusOid.html"
+    val request: GetObjectRequest = GetObjectRequest.builder().key(filename).bucket(bucketName).build()
+    Try(s3client.getObject(request, ResponseTransformer.toBytes)) match {
+      case Success(letter) =>
+        Some(letter.asByteArray)
+      case Failure(e: NoSuchKeyException) =>
+        None
+      case Failure(e) =>
+        LOGGER.error(s"Error while trying to get file data $filename", e)
+        None
+    }
+  }
+
   private def getObjectMetadata(hakuOid: String, hakemusOid: String): Option[GetObjectAttributesResponse] = {
     val filename                            = s"$hakuOid/$hakemusOid.html"
     val request: GetObjectAttributesRequest =
@@ -48,7 +65,7 @@ class TuloskirjeService(
       case Failure(e: NoSuchKeyException) =>
         None
       case Failure(e) =>
-        LOGGER.error(s"Error while trying to get file $filename", e)
+        LOGGER.error(s"Error while trying to get file metadata $filename", e)
         None
     }
   }
