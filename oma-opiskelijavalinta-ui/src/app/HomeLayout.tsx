@@ -11,7 +11,6 @@ import { FullSpinner } from '@/components/FullSpinner';
 function InnerHomeLayout() {
   const { state } = useAuth();
 
-  console.log('InnerHomeLayout render, authentication status:', state.status);
   if (state.status !== 'authenticated') {
     return <FullSpinner />;
   }

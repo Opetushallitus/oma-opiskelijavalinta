@@ -134,7 +134,7 @@ const makeRequest = async <Result>(request: Request) => {
       isRedirected(response) &&
       responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
-      console.debug('Redirected to CAS login, let browser handle it');
+      console.debug('Redirected to CAS login');
       // let the browser handle redirect
       window.location.href = response.url;
       // Return a never-resolving promise to stop further processing
@@ -145,7 +145,6 @@ const makeRequest = async <Result>(request: Request) => {
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      console.debug('Unauthenticated response');
       notifyUnauthorized();
       return Promise.reject(error);
     }

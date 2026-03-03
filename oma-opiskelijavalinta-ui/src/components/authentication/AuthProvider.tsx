@@ -77,7 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     enabled: true,
     throwOnError: (error: unknown) => {
       if (error instanceof FetchError && error.response.status === 401) {
-        console.log('fetch error 401');
         return false; // handled by auth reducer
       }
       return true; // goes to error boundary
@@ -91,7 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         method: sessionQuery.data.authMethod as AuthMethod,
       });
     } else if (sessionQuery.error) {
-      console.log('session query error: ', sessionQuery.error);
       const err = sessionQuery.error;
 
       if (err && typeof err === 'object' && 'response' in err) {
@@ -102,12 +100,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       }
     }
-    console.log('no data or error in session query');
   }, [sessionQuery.data, sessionQuery.error]);
 
   // Redirect logic
   useEffect(() => {
-    console.log('state: ', state);
     const isPublicRoute =
       location.pathname.startsWith('/token/') ||
       location.pathname === '/logged-out';

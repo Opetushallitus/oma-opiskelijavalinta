@@ -21,7 +21,6 @@ async function fetchUser() {
 
 // oppija-raamit calls this to get user info
 export async function getUser() {
-  console.debug('Fetching user info');
   const response = await fetchUser();
   const user = response.data as User;
   // Return with raamit-compatible name field

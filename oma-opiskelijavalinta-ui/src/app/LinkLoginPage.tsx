@@ -37,7 +37,7 @@ export default function LinkLoginPage() {
         // Navigate to main app
         navigate('/', { replace: true });
       } catch (e) {
-        console.error('Link login failed', e);
+        console.error('Link login failed');
         setError(e as Error);
       }
     }
