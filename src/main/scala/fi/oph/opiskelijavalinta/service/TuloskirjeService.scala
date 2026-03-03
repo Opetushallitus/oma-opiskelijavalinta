@@ -31,7 +31,7 @@ class TuloskirjeService(
 
   def getLastModifiedTuloskirje(hakuOid: String, hakemusOid: String): Option[Long] = {
     getObjectMetadata(hakuOid, hakemusOid) match {
-      case Some(metadata) => Some(metadata.lastModified.getEpochSecond)
+      case Some(metadata) => Some(metadata.lastModified.toEpochMilli)
       case None           => None
     }
   }
