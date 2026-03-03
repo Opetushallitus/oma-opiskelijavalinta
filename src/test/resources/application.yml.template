@@ -5,6 +5,9 @@ oma-opiskelijavalinta:
   cas:
     username: PLACEHOLDER
     password: PLACEHOLDER
+  s3:
+    region: PLACEHOLDER
+    bucket: PLACEHOLDER
 
 logging:
   level:

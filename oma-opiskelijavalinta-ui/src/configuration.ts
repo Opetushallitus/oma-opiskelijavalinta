@@ -7,6 +7,8 @@ export const isDev = import.meta.env.DEV;
 export const localTranslations =
   import.meta.env.VITE_LOCAL_TRANSLATIONS === 'true';
 
+const BACKEND_API = '/oma-opiskelijavalinta/api';
+
 export const getConfiguration = async () => {
   let HAKIJA_DOMAIN = '';
   let VIRKAILIJA_DOMAIN = '';
@@ -25,20 +27,21 @@ export const getConfiguration = async () => {
   return {
     routes: {
       yleiset: {
-        loginApiUrl: `/oma-opiskelijavalinta/api/login`,
-        linkLoginApiUrl: `/oma-opiskelijavalinta/api/link-login`,
-        sessionApiUrl: '/oma-opiskelijavalinta/api/session',
+        loginApiUrl: `${BACKEND_API}/login`,
+        linkLoginApiUrl: `${BACKEND_API}/link-login`,
+        sessionApiUrl: `${BACKEND_API}/session`,
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
-        userUrl: `/oma-opiskelijavalinta/api/user`,
+        userUrl: `${BACKEND_API}/user`,
         konfo: `${HAKIJA_DOMAIN}/konfo`,
       },
       hakemukset: {
-        hakemuksetUrl: `/oma-opiskelijavalinta/api/hakemukset`,
+        hakemuksetUrl: `${BACKEND_API}/hakemukset`,
         muokkausUrl: `${HAKIJA_DOMAIN}/hakemus?modify`,
       },
-      ilmoittautuminen: '/oma-opiskelijavalinta/api/ilmoittautuminen',
-      vastaanotto: '/oma-opiskelijavalinta/api/vastaanotto',
-      valintatulos: '/oma-opiskelijavalinta/api/valintatulos',
+      ilmoittautuminen: `${BACKEND_API}/ilmoittautuminen`,
+      vastaanotto: `${BACKEND_API}/vastaanotto`,
+      valintatulos: `${BACKEND_API}/valintatulos`,
+      tuloskirje: `${BACKEND_API}/tuloskirje/haku`,
     },
   };
 };

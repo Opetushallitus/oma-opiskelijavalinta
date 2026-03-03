@@ -224,5 +224,6 @@
   "kela": {
     "otsake": "Tee opintotukihakemus",
     "linkki": "Siirry Kelan asiointipalveluun"
-  }
+  },
+  "tuloskirje": "Tuloskirje {pvm}"
 }

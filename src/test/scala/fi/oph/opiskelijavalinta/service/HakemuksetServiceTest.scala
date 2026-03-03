@@ -14,8 +14,10 @@ class HakemuksetServiceTest {
   val ataruClient: AtaruClient                         = Mockito.mock(classOf[AtaruClient])
   val ohjausparametritService: OhjausparametritService = Mockito.mock(classOf[OhjausparametritService])
   val vtsService: VTSService                           = Mockito.mock(classOf[VTSService])
+  val tuloskirjeService: TuloskirjeService             = Mockito.mock(classOf[TuloskirjeService])
 
-  val service: HakemuksetService = HakemuksetService(ataruClient, koutaService, ohjausparametritService, vtsService)
+  val service: HakemuksetService =
+    HakemuksetService(ataruClient, koutaService, ohjausparametritService, vtsService, tuloskirjeService)
 
   val OPPIJA_NUMERO = "numero-1"
 
