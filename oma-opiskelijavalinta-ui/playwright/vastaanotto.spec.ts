@@ -351,6 +351,26 @@ test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async (
   await setup(page, {
     ...hakemus4ToinenAsteAlempiaHyvaksyttyja,
   });
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-4/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+      });
+    },
+  );
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-4/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet,
+        ),
+      });
+    },
+  );
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-4');
   await expect(
     vastaanotot.getByText('Kun otat tämän opiskelupaikan'),
@@ -392,26 +412,6 @@ test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async (
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
     .click();
-  await page.route(
-    '**/api/vastaanotto/hakemus/hakemus-oid-4/**',
-    async (route) => {
-      await route.fulfill({
-        status: 200,
-      });
-    },
-  );
-  await page.route(
-    '**/api/valintatulos/hakemus/hakemus-oid-4/**',
-    async (route) => {
-      await route.fulfill({
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-          hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet,
-        ),
-      });
-    },
-  );
   await expect(
     page.getByText('Vahvista opiskelupaikan vastaanotto'),
   ).toBeHidden();
