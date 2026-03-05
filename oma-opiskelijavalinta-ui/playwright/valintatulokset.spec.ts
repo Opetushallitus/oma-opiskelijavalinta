@@ -421,6 +421,53 @@ test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
   ).toBeHidden();
 });
 
+test('Näyttää ehdollisesti hyväksytyn tekstin varasijalta hyväksytylle', async ({
+  page,
+}) => {
+  const varasijaltaHyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        valintatila: 'VARASIJALTA_HYVAKSYTTY',
+        ehdollisestiHyvaksyttavissa: true,
+        ehdollisenHyvaksymisenEhto: {
+          fi: 'Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä',
+        },
+      },
+    ],
+  };
+  await fetchMockData(page, varasijaltaHyvaksyttyApplication);
+
+  const hakutoive = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
+  await expect(
+    hakutoive.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.locator('.MuiChip-root').getByText('Ehdollinen'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText(
+      'Ehdollinen: lopullinen tutkintotodistus toimitettava määräaikaan mennessä',
+    ),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText('Huomioithan, että opiskelijavalintasi on ehdollinen.'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText('muuten menetät sinulle tarjotun opiskelupaikan'),
+  ).toBeVisible();
+  await expect(
+    hakutoive.getByText('Mikäli sinulle tarjotaan tätä opiskelupaikkaa'),
+  ).toBeHidden();
+});
+
 test('Näyttää ehdollisuuden varasijalla', async ({ page }) => {
   const varasijaApplication = {
     ...hakemus1,
