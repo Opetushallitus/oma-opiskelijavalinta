@@ -142,7 +142,6 @@ const makeRequest = async <Result>(request: Request) => {
       isRedirected(response) &&
       responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
-      console.debug('Redirected to CAS login');
       // let the browser handle redirect
       window.location.href = response.url;
       // Return a never-resolving promise to stop further processing

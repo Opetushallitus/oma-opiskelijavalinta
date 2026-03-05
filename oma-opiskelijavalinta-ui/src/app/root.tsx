@@ -29,7 +29,20 @@ export function HydrateFallback() {
 }
 
 export default function App() {
-  const queryClient = React.useMemo(() => new QueryClient(), []);
+  const queryClient = React.useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            refetchOnMount: false,
+          },
+        },
+      }),
+    [],
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

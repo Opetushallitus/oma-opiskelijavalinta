@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { OphButton, OphTypography } from '@opetushallitus/oph-design-system';
 import { FetchError, LoginForbiddenError } from '@/http-client';
 import { useTranslations } from '@/hooks/useTranslations';
-import { ErrorOutline } from '@mui/icons-material';
-import { StyledError } from '@/components/GenericErrorPage';
 import { Link } from 'react-router';
 import { CenteredElementsContainer } from '@/components/CenteredElementsContainer';
+import { ErrorPageIcon } from '@/components/ErrorPageIcon';
 
 const ErrorComponent = ({
   heading = 'virhe.palvelin.otsikko',
@@ -22,9 +21,7 @@ const ErrorComponent = ({
     <>
       <title>t('otsikko')</title>
       <CenteredElementsContainer role="main">
-        <StyledError>
-          <ErrorOutline sx={{ fontSize: '2rem' }} />
-        </StyledError>
+        <ErrorPageIcon />
         <OphTypography variant="h1">{t(heading)}</OphTypography>
         <OphTypography variant="body1">{t(message)}</OphTypography>
         {retry ? (

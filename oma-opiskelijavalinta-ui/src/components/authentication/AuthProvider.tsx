@@ -15,6 +15,7 @@ import {
 import { useConfig } from '@/configuration';
 import { FullSpinner } from '@/components/FullSpinner';
 import { FetchError } from '@/http-client';
+import { isTruthy } from 'remeda';
 
 function authReducer(state: AuthState, event: AuthEvent): AuthState {
   switch (event.type) {
@@ -84,12 +85,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   useEffect(() => {
-    if (sessionQuery.data) {
+    if (isTruthy(sessionQuery.data)) {
       dispatch({
         type: 'SESSION_OK',
         method: sessionQuery.data.authMethod as AuthMethod,
       });
-    } else if (sessionQuery.error) {
+    } else if (isTruthy(sessionQuery.error)) {
       const err = sessionQuery.error;
 
       if (err && typeof err === 'object' && 'response' in err) {

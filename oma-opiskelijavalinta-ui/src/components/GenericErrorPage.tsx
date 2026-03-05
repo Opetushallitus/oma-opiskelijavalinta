@@ -1,23 +1,8 @@
-import { styled } from '@/lib/theme';
-import { Box } from '@mui/material';
-import {
-  OphButton,
-  ophColors,
-  OphTypography,
-} from '@opetushallitus/oph-design-system';
+import { OphButton, OphTypography } from '@opetushallitus/oph-design-system';
 import { useEffect } from 'react';
-import { ErrorOutline } from '@mui/icons-material';
 import { useTranslations } from '@/hooks/useTranslations';
 import { CenteredElementsContainer } from '@/components/CenteredElementsContainer';
-
-export const StyledError = styled(Box)(({ theme }) => ({
-  color: ophColors.white,
-  fontSize: '2rem',
-  backgroundColor: ophColors.orange3,
-  padding: theme.spacing(1.5),
-  borderRadius: '45px',
-  width: 'fit-content',
-}));
+import { ErrorPageIcon } from '@/components/ErrorPageIcon';
 
 export function GenericErrorPage({ error }: { error: Error }) {
   useEffect(() => {
@@ -28,9 +13,7 @@ export function GenericErrorPage({ error }: { error: Error }) {
     <>
       <title>Oma Opiskelijavalinta</title>
       <CenteredElementsContainer role="main">
-        <StyledError>
-          <ErrorOutline sx={{ fontSize: '2rem' }} />
-        </StyledError>
+        <ErrorPageIcon />
         <OphTypography variant="h1">
           {t('virhe.palvelin.otsikko')}
         </OphTypography>
