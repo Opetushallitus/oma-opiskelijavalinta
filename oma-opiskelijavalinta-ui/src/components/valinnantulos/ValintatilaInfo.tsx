@@ -103,7 +103,14 @@ export const getEhdollisuusInfo = (
           />
         </OphTypography>
       ) : (
-        <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
+        <OphTypography>
+          <Translation
+            keyName={'tulos.info.ehdollinen-varalla'}
+            params={{
+              strong: <strong style={{ fontWeight: 600 }}></strong>,
+            }}
+          />
+        </OphTypography>
       )}
       <List sx={{ listStyleType: 'disc', padding: 0 }}>
         <SemiBoldBulletItem>{ehdollisenHyvaksymisenEhto}</SemiBoldBulletItem>
