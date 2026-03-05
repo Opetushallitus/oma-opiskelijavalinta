@@ -17,7 +17,7 @@ test.describe('Lokalisointi', () => {
     ]);
     await mockAuthenticatedUser(page);
     await page.goto('');
-    await expect(page).toHaveTitle(/Oma Opiskelijavalinta/);
+    await expect(page).toHaveTitle(/My Studyinfo/);
     await expect(page.getByText('Ajankohtaiset hakemukset')).toBeHidden();
     await expect(page.getByText('hakemukset.ajankohtaiset')).toBeHidden();
     await expect(
@@ -32,7 +32,7 @@ test.describe('Lokalisointi', () => {
     ]);
     await mockAuthenticatedUser(page);
     await page.goto('');
-    await expect(page).toHaveTitle(/Oma Opiskelijavalinta/);
+    await expect(page).toHaveTitle(/Mitt Studieinfo/);
     await expect(page.getByText('Ajankohtaiset hakemukset')).toBeHidden();
     await expect(page.getByText('hakemukset.ajankohtaiset')).toBeVisible();
     await expect(page.getByText('info.kuvaus')).toBeVisible();
