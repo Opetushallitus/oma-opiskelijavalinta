@@ -20,12 +20,14 @@ describe('isEhdollisestiHyvaksyttySitovastiVastaanottanut', () => {
       ehdollisestiHyvaksyttavissa,
       vastaanottotila,
     }) as HakutoiveenTulos;
+
   it('returns true when valintatila is HYVAKSYTTY and vastaanotettavuustila is VASTAANOTTANUT_SITOVASTI', () => {
     const result = isEhdollisestiHyvaksyttyVastaanottanutSitovasti(
       mockTulos('HYVAKSYTTY', true, 'VASTAANOTTANUT_SITOVASTI'),
     );
     expect(result).toBe(true);
   });
+
   it('returns true when valintatila is HARKINNANVARAISESTI_HYVAKSYTTY and vastaanotettavuustila is VASTAANOTTANUT_SITOVASTI', () => {
     const result = isEhdollisestiHyvaksyttyVastaanottanutSitovasti(
       mockTulos(
@@ -36,12 +38,14 @@ describe('isEhdollisestiHyvaksyttySitovastiVastaanottanut', () => {
     );
     expect(result).toBe(true);
   });
+
   it('returns true when valintatila is VARASIJALTA_HYVAKSYTTY and vastaanotettavuustila is VASTAANOTTANUT_SITOVASTI', () => {
     const result = isEhdollisestiHyvaksyttyVastaanottanutSitovasti(
       mockTulos('VARASIJALTA_HYVAKSYTTY', true, 'VASTAANOTTANUT_SITOVASTI'),
     );
     expect(result).toBe(true);
   });
+
   it('returns false when valintatila is HYVAKSYTTY and vastaanotettavuustila is EHDOLLISESTI_VASTAANOTTANUT', () => {
     const result = isEhdollisestiHyvaksyttyVastaanottanutSitovasti(
       mockTulos('HYVAKSYTTY', true, 'EHDOLLISESTI_VASTAANOTTANUT'),

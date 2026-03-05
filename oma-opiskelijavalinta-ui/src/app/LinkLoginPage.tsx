@@ -2,10 +2,11 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { FullSpinner } from '@/components/FullSpinner';
 import { useConfig } from '@/configuration';
-import { FetchError } from '@/http-client';
+import { FetchError, LoginForbiddenError } from '@/http-client';
 import { ErrorView } from '@/components/ErrorView';
 import { useAuth } from '@/components/authentication/AuthProvider';
 import type { AuthMethod } from '@/components/authentication/auth-types';
+import { LocalizationProvider } from '@/components/LocalizationProvider';
 
 export default function LinkLoginPage() {
   const conf = useConfig();
@@ -28,7 +29,11 @@ export default function LinkLoginPage() {
         );
 
         if (!response.ok) {
-          throw new FetchError(response);
+          if (response.status === 403) {
+            throw new LoginForbiddenError(response);
+          } else {
+            throw new FetchError(response);
+          }
         }
 
         // Update auth state
@@ -46,7 +51,11 @@ export default function LinkLoginPage() {
   }, [token, conf, navigate, dispatch]);
 
   if (error) {
-    return <ErrorView error={error} reset={() => setError(null)} />;
+    return (
+      <LocalizationProvider>
+        <ErrorView error={error} reset={() => setError(null)} />;
+      </LocalizationProvider>
+    );
   }
 
   return <FullSpinner />;

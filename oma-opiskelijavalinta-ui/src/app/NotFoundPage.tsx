@@ -2,17 +2,34 @@ import { OphButton, OphTypography } from '@opetushallitus/oph-design-system';
 import React from 'react';
 import { Link } from 'react-router';
 import { useTranslations } from '@/hooks/useTranslations';
+import { ErrorOutline } from '@mui/icons-material';
+import { StyledError } from '@/components/GenericErrorPage';
+import { CenteredElementsContainer } from '@/components/CenteredElementsContainer';
 
 const NotFoundPage = () => {
   const { t } = useTranslations();
   return (
-    <div style={{ textAlign: 'center', marginTop: '10vh' }}>
-      <OphTypography variant="h1">{t('virhe.sivua-ei-löytynyt')}</OphTypography>
-      <OphTypography component="p">{t('virhe.tarkista-osoite')}</OphTypography>
-      <OphButton to="/" component={Link} variant="contained">
-        {t('mene-etusivulle')}
-      </OphButton>
-    </div>
+    <>
+      <title>{t('otsikko')}</title>
+      <CenteredElementsContainer role="main">
+        <StyledError>
+          <ErrorOutline sx={{ fontSize: '2rem' }} />
+        </StyledError>
+        <OphTypography variant="h1">
+          {t('virhe.sivua-ei-loytynyt')}
+        </OphTypography>
+        <OphTypography variant="body1">
+          {t('virhe.tarkista-osoite')}
+        </OphTypography>
+        <OphButton
+          to="https://opintopolku.fi"
+          component={Link}
+          variant="contained"
+        >
+          {t('virhe.mene-etusivulle')}
+        </OphButton>
+      </CenteredElementsContainer>
+    </>
   );
 };
 

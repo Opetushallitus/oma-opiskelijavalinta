@@ -1,31 +1,47 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { OphButton, OphTypography } from '@opetushallitus/oph-design-system';
-import { Stack } from '@mui/material';
-import { FetchError } from '@/http-client';
+import { FetchError, LoginForbiddenError } from '@/http-client';
+import { useTranslations } from '@/hooks/useTranslations';
+import { ErrorOutline } from '@mui/icons-material';
+import { StyledError } from '@/components/GenericErrorPage';
+import { Link } from 'react-router';
+import { CenteredElementsContainer } from '@/components/CenteredElementsContainer';
 
 const ErrorComponent = ({
-  title,
-  message,
+  heading = 'virhe.palvelin.otsikko',
+  message = 'virhe.palvelin.kuvaus',
   retry,
+  t,
 }: {
-  title?: string;
-  message?: React.ReactNode;
+  heading?: string;
+  message?: string;
   retry?: () => void;
+  t: ReturnType<typeof useTranslations>['t'];
 }) => {
   return (
-    <Stack spacing={1} sx={{ margin: 2 }} alignItems="flex-start">
-      {title && (
-        <OphTypography variant="h1" component="div">
-          {title}
-        </OphTypography>
-      )}
-      {message && <OphTypography component="div">{message}</OphTypography>}
-      {retry && (
-        <OphButton variant="contained" onClick={retry}>
-          Yritä uudelleen
-        </OphButton>
-      )}
-    </Stack>
+    <>
+      <title>t('otsikko')</title>
+      <CenteredElementsContainer role="main">
+        <StyledError>
+          <ErrorOutline sx={{ fontSize: '2rem' }} />
+        </StyledError>
+        <OphTypography variant="h1">{t(heading)}</OphTypography>
+        <OphTypography variant="body1">{t(message)}</OphTypography>
+        {retry ? (
+          <OphButton variant="contained" onClick={retry}>
+            {t('virhe.palvelin.lataa')}
+          </OphButton>
+        ) : (
+          <OphButton
+            to="https://opintopolku.fi"
+            component={Link}
+            variant="contained"
+          >
+            {t('logout.opintopolun-etusivulle')}
+          </OphButton>
+        )}
+      </CenteredElementsContainer>
+    </>
   );
 };
 
@@ -33,31 +49,23 @@ export function ErrorView({
   error,
   reset,
 }: {
-  error: (Error & { digest?: string }) | FetchError;
+  error: (Error & { digest?: string }) | FetchError | LoginForbiddenError;
   reset?: () => void;
 }) {
   useEffect(() => {
     console.error(error);
   });
+  const { t } = useTranslations();
 
-  if (error instanceof FetchError) {
+  if (error instanceof LoginForbiddenError) {
     return (
       <ErrorComponent
-        title="Palvelinvirhe"
-        message={
-          <Stack spacing={1}>
-            <OphTypography sx={{ overflowWrap: 'anywhere' }}>
-              URL: {error.response.url}
-            </OphTypography>
-            <OphTypography>
-              Virhekoodi {error.response.status}
-            </OphTypography>
-          </Stack>
-        }
-        retry={reset}
+        t={t}
+        heading={'virhe.link-login.otsikko'}
+        message={error.message}
       />
     );
   } else {
-    return <ErrorComponent title="Tuntematon virhe" />;
+    return <ErrorComponent t={t} retry={reset} />;
   }
 }

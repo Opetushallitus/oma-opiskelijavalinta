@@ -7,10 +7,11 @@ import { loadRaamit } from '@/lib/load-raamit';
 import { NavigationSpinner } from './NavigationSpinner';
 import { useAuth } from '@/components/authentication/AuthProvider';
 import { FullSpinner } from '@/components/FullSpinner';
+import { useTranslations } from '@/hooks/useTranslations';
 
 function InnerHomeLayout() {
   const { state } = useAuth();
-
+  const { t } = useTranslations();
   if (state.status !== 'authenticated') {
     return <FullSpinner />;
   }
@@ -24,7 +25,7 @@ function InnerHomeLayout() {
 
   return (
     <PageLayout>
-      <title>Oma Opiskelijavalinta</title>
+      <title>{t('otsikko')}</title>
       <Stack direction="row">
         <main style={{ flexGrow: 1 }}>
           <NavigationSpinner>

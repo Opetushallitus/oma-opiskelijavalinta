@@ -8,5 +8,5 @@ export default [
   layout('./LoggedOutLayout.tsx', [
     route('/logged-out', './LoggedOutPage.tsx'),
   ]),
-  route('*', './NotFoundPage.tsx'),
+  layout('./NotFoundLayout.tsx', [route('*', './NotFoundPage.tsx')]),
 ] satisfies RouteConfig;

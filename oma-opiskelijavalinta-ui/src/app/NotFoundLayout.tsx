@@ -1,9 +1,9 @@
-import React from 'react';
 import { LocalizationProvider } from '@/components/LocalizationProvider';
 import { PageLayout } from '@/components/PageLayout';
 import { Outlet } from 'react-router';
+import React from 'react';
 
-export default function LoggedOutLayout() {
+export default function NotFoundLayout() {
   return (
     <LocalizationProvider>
       <PageLayout>

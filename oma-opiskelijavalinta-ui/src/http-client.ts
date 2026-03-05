@@ -24,7 +24,15 @@ class OphCustomError extends Error {
 
 export class FetchError extends OphCustomError {
   response: Response;
-  constructor(response: Response, message = 'Fetch error') {
+  constructor(response: Response, message = 'virhe.palvelin.kuvaus') {
+    super(message);
+    this.response = response;
+  }
+}
+
+export class LoginForbiddenError extends OphCustomError {
+  response: Response;
+  constructor(response: Response, message = 'virhe.link-login.kielletty') {
     super(message);
     this.response = response;
   }

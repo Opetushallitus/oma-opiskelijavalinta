@@ -8,8 +8,9 @@ import {
 import { useEffect } from 'react';
 import { ErrorOutline } from '@mui/icons-material';
 import { useTranslations } from '@/hooks/useTranslations';
+import { CenteredElementsContainer } from '@/components/CenteredElementsContainer';
 
-const StyledError = styled(Box)(({ theme }) => ({
+export const StyledError = styled(Box)(({ theme }) => ({
   color: ophColors.white,
   fontSize: '2rem',
   backgroundColor: ophColors.orange3,
@@ -18,27 +19,15 @@ const StyledError = styled(Box)(({ theme }) => ({
   width: 'fit-content',
 }));
 
-const ErrorContainer = styled(Box)(({ theme }) => ({
-  margin: '0 auto',
-  display: 'flex',
-  flexDirection: 'column',
-  rowGap: theme.spacing(3),
-  width: 'fit-content',
-  alignItems: 'center',
-  marginTop: theme.spacing(8),
-}));
-
 export function GenericErrorPage({ error }: { error: Error }) {
   useEffect(() => {
     console.error(error);
   });
-
   const { t } = useTranslations();
-
   return (
     <>
       <title>Oma Opiskelijavalinta</title>
-      <ErrorContainer role="main">
+      <CenteredElementsContainer role="main">
         <StyledError>
           <ErrorOutline sx={{ fontSize: '2rem' }} />
         </StyledError>
@@ -51,7 +40,7 @@ export function GenericErrorPage({ error }: { error: Error }) {
         <OphButton variant="contained" onClick={() => window.location.reload()}>
           {t('virhe.palvelin.lataa')}
         </OphButton>
-      </ErrorContainer>
+      </CenteredElementsContainer>
     </>
   );
 }
