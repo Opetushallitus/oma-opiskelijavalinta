@@ -1,7 +1,13 @@
 {
   "otsikko": "Oma Opiskelijavalinta",
   "yleinen": {
-    "peruuta": "Peruuta"
+    "peruuta": "Peruuta",
+    "logout": "Kirjaudu ulos"
+  },
+  "logout": {
+    "otsikko": "Olet kirjautunut ulos",
+    "info": "Sinut on kirjattu ulos palvelusta.",
+    "opintopolun-etusivulle": "Opintopolun etusivulle"
   },
   "virhe": {
     "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto.",
@@ -10,6 +16,13 @@
       "otsikko": "Nyt meni jokin pieleen",
       "kuvaus": "Tapahtui palvelinvirhe. Lataa sivu uudestaan. Jos ongelma toistuu, yritä myöhemmin uudestaan.",
       "lataa": "Lataa sivu uudestaan"
+    },
+    "sivua-ei-loytynyt": "Sivua ei löytynyt",
+    "tarkista-osoite": "Tarkista sivun osoite ja yritä uudelleen.",
+    "mene-etusivulle": "Oma Opintopolun etusivulle",
+    "link-login": {
+      "otsikko": "Kirjautumislinkki ei toimi",
+      "kielletty": "Käyttämäsi kirjautumislinkki ei toimi. Ota yhteyttä oppilaitokseen johon olet hakenut."
     }
   },
   "info": {

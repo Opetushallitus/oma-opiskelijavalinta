@@ -1,4 +1,17 @@
 import { clone } from 'remeda';
+import type { Page } from '@playwright/test';
+
+export const mockSession = async (page: Page) => {
+  await page.route('**/api/session', async (route) => {
+    await route.fulfill({
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        authMethod: 'cas',
+      }),
+    });
+  });
+};
 
 export const hakemus1 = {
   oid: 'hakemus-oid-1',

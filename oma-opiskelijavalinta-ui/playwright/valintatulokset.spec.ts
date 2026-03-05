@@ -17,6 +17,7 @@ import {
   jonokohtaisetTulostiedot,
   jonokohtaisetTulostiedotEhdollinen,
   jonokohtaisetTulostiedotPeruuntunut,
+  mockSession,
 } from './mocks';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -26,6 +27,7 @@ async function fetchMockData(page: Page, application: any) {
     old: [],
   });
   await mockAuthenticatedUser(page);
+  await mockSession(page);
   await page.goto('');
 }
 

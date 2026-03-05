@@ -4,7 +4,11 @@ import {
   mockAuthenticatedUser,
   mockHakemuksetFetch,
 } from './lib/playwrightUtils';
-import { hakemuksenTulosHylatty, hakemuksenTulosHyvaksytty } from './mocks';
+import {
+  hakemuksenTulosHylatty,
+  hakemuksenTulosHyvaksytty,
+  mockSession,
+} from './mocks';
 
 test('Näyttää menneitä hakemuksia', async ({ page }) => {
   await setup(page);
@@ -13,7 +17,8 @@ test('Näyttää menneitä hakemuksia', async ({ page }) => {
 
   const app = page.getByTestId('past-application-hakemus-oid-3');
   await expect(app.getByText('Haahuilijoiden Hyväksytyt Haut')).toBeVisible();
-  await expect(app.getByText('Samoojakoulutus')).toBeHidden();
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-3');
+  await expect(tulokset.getByText('Samoojakoulutus')).toBeHidden();
   const app2 = page.getByTestId('past-application-hakemus-oid-4');
   await expect(app2.getByText('Haamuilijoiden Hylätyt Haut')).toBeVisible();
   await expect(app2.getByText('Walkoisten lakanoiden pesijät')).toBeHidden();
@@ -162,6 +167,7 @@ async function setup(page: Page) {
     old: [application1, application2],
   });
   await mockAuthenticatedUser(page);
+  await mockSession(page);
   await page.route(
     '**/api/valintatulos/hakemus/hakemus-oid-3/**',
     async (route) => {

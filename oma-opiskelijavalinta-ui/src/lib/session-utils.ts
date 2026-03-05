@@ -1,11 +1,15 @@
 import { client } from '@/http-client';
 import { getConfiguration, isDev } from '@/configuration';
 import type { User } from '@/lib/types';
+import type { SessionResponse } from '@/components/authentication/auth-types';
 
-export async function getSession() {
+export async function getSession(): Promise<SessionResponse> {
   const config = await getConfiguration();
-  // http-client will redirect to login on 401
-  const response = await client.get(config.routes.yleiset.sessionApiUrl);
+
+  const response = await client.get<SessionResponse>(
+    config.routes.yleiset.sessionApiUrl,
+  );
+
   return response.data;
 }
 
@@ -16,7 +20,6 @@ async function fetchUser() {
 
 // oppija-raamit calls this to get user info
 export async function getUser() {
-  console.debug('Fetching user info');
   const response = await fetchUser();
   const user = response.data as User;
   // Return with raamit-compatible name field

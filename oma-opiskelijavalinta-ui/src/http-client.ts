@@ -1,5 +1,5 @@
 import { isPlainObject } from 'remeda';
-import { getConfiguration } from '@/configuration';
+import { notifyUnauthorized } from '@/components/authentication/auth-events';
 
 export function getCookies() {
   return document.cookie.split('; ').reduce(
@@ -24,7 +24,15 @@ class OphCustomError extends Error {
 
 export class FetchError extends OphCustomError {
   response: Response;
-  constructor(response: Response, message = 'Fetch error') {
+  constructor(response: Response, message = 'virhe.palvelin.kuvaus') {
+    super(message);
+    this.response = response;
+  }
+}
+
+export class LoginForbiddenError extends OphCustomError {
+  response: Response;
+  constructor(response: Response, message = 'virhe.link-login.kielletty') {
     super(message);
     this.response = response;
   }
@@ -134,7 +142,6 @@ const makeRequest = async <Result>(request: Request) => {
       isRedirected(response) &&
       responseUrl.pathname.startsWith('/cas-oppija/login')
     ) {
-      console.debug('Redirected to CAS login, let browser handle it');
       // let the browser handle redirect
       window.location.href = response.url;
       // Return a never-resolving promise to stop further processing
@@ -145,12 +152,8 @@ const makeRequest = async <Result>(request: Request) => {
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
-      const conf = await getConfiguration();
-      window.location.href = conf.routes.yleiset.loginApiUrl;
-      // Return a never-resolving promise to stop further processing
-      return new Promise<never>(() => {
-        /* no-op */
-      });
+      notifyUnauthorized();
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }

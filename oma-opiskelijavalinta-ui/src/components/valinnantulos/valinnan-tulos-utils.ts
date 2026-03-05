@@ -175,7 +175,7 @@ export const isEhdollisestiHyvaksyttyVastaanottanutSitovasti = (
 ) => {
   return (
     tulos.ehdollisestiHyvaksyttavissa &&
-    tulos.valintatila === Valintatila.HYVAKSYTTY &&
+    isHyvaksytty(tulos.valintatila) &&
     tulos.vastaanottotila === 'VASTAANOTTANUT_SITOVASTI'
   );
 };

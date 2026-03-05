@@ -3,7 +3,14 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, OppijaUserDetails}
+import fi.oph.opiskelijavalinta.resource.ApiConstants.{LINK_LOGIN_PATH, LINK_LOGOUT_PATH}
+import fi.oph.opiskelijavalinta.security.{
+  AuditLog,
+  AuditOperation,
+  AuditedSingleSignOutFilter,
+  LinkAuthenticationProvider,
+  OppijaUserDetails
+}
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
@@ -24,16 +31,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
+import org.springframework.security.core.Authentication
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.web.authentication.logout.{LogoutHandler, LogoutSuccessHandler}
 import org.springframework.security.web.context.{HttpSessionSecurityContextRepository, SecurityContextRepository}
+import org.springframework.session.FlushMode
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession
 import org.springframework.session.web.http.{CookieSerializer, DefaultCookieSerializer}
 
 @Configuration
 @EnableWebSecurity
-@EnableJdbcHttpSession(tableName = "SPRING_SESSION")
+@EnableJdbcHttpSession(tableName = "SPRING_SESSION", flushMode = FlushMode.IMMEDIATE)
 class SecurityConfiguration {
 
   val LOG: Logger                                  = LoggerFactory.getLogger(classOf[SecurityConfiguration]);
@@ -131,7 +141,9 @@ class SecurityConfiguration {
   }
 
   private def isFrontEndRoute: String => Boolean = path =>
-    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith("/redirect")
+    path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith(
+      "/logged-out"
+    ) || path.startsWith("/redirect")
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
@@ -187,19 +199,20 @@ class SecurityConfiguration {
           .permitAll()
           .requestMatchers(SWAGGER_WHITELIST*)
           .permitAll()
-          // Allow frontend entry point + assets
+          // Allow frontend entry point + assets and link login
           .requestMatchers(
             HttpMethod.GET,
             "/",
             "/index.html",
             "/assets/**",
             "/js/**",
-            "/token/**"
+            "/token/**",
+            "/logged-out"
           )
           .permitAll()
           .requestMatchers(
             HttpMethod.POST,
-            "/api/link-login"
+            LINK_LOGIN_PATH
           )
           .permitAll()
           .anyRequest
@@ -222,13 +235,15 @@ class SecurityConfiguration {
           .requireExplicitSave(true)
           .securityContextRepository(securityContextRepository)
       )
-      .requestCache(cache =>
-        cache.disable()
-      ) // Don't save original request after login redirect, redirect to the default entry point
+      .requestCache(cache => cache.disable())
       .logout(logout =>
         logout
-          .logoutUrl("/logout")
+          .logoutUrl(LINK_LOGOUT_PATH)
+          .addLogoutHandler(linkLogoutHandler())
+          .invalidateHttpSession(true)
+          .clearAuthentication(true)
           .deleteCookies("JSESSIONID")
+          .logoutSuccessHandler((request, response, authentication) => response.setStatus(HttpServletResponse.SC_OK))
       )
       .build()
 
@@ -325,6 +340,15 @@ class SecurityConfiguration {
       java.util.List.of(linkAuthenticationProvider)
     )
 
+  @Bean
+  def linkLogoutHandler(): LogoutHandler =
+    (request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication) => {
+
+      if (authentication != null) {
+        AuditLog.log(request, Map.empty, AuditOperation.LinkLogout, None)
+      }
+    }
+
   // api joka ohjaa tarvittaessa kirjautumattoman käyttäjän cas loginiin
   @Bean
   @Order(1)
@@ -349,11 +373,11 @@ class SecurityConfiguration {
   // Käsitellään CASilta tuleva SLO-pyyntö
   //
   @Bean
-  def singleLogoutFilter(sessionMappingStorage: SessionMappingStorage): SingleSignOutFilter = {
+  def singleLogoutFilter(sessionMappingStorage: SessionMappingStorage): Filter = {
     SingleSignOutFilter.setSessionMappingStorage(sessionMappingStorage)
-    val singleSignOutFilter: SingleSignOutFilter = new SingleSignOutFilter();
-    singleSignOutFilter.setIgnoreInitConfiguration(true);
-    singleSignOutFilter
+    val singleSignOutFilter: SingleSignOutFilter = new SingleSignOutFilter()
+    singleSignOutFilter.setIgnoreInitConfiguration(true)
+    new AuditedSingleSignOutFilter(singleSignOutFilter)
   }
 
 }
