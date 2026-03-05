@@ -8,8 +8,25 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
 }));
 
+const SemiBoldStyledListItem = styled(ListItem)(({ theme }) => ({
+  display: 'list-item',
+  marginLeft: theme.spacing(2.5),
+  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
+  fontWeight: '600',
+}));
+
 export function BulletItem({ children }: { children: React.ReactNode }) {
   return <StyledListItem disablePadding>{children}</StyledListItem>;
+}
+
+export function SemiBoldBulletItem({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <SemiBoldStyledListItem disablePadding>{children}</SemiBoldStyledListItem>
+  );
 }
 
 export function BulletedList({ children }: { children: React.ReactNode }) {

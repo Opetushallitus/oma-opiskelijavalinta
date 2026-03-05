@@ -10,6 +10,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   columnGap: theme.spacing(2),
   borderRadius: '4px',
   padding: `${theme.spacing(2)} ${theme.spacing(2)}`,
+  marginTop: theme.spacing(2),
 }));
 
 const StyledInfo = styled(InfoIcon)(() => ({

@@ -36,7 +36,7 @@ import {
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
 import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
-import { BulletItem } from '../BulletedList';
+import { BulletItem, SemiBoldBulletItem } from '../BulletedList';
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -93,12 +93,12 @@ export const getEhdollisuusInfo = (
           {t('tulos.info.ehdollinen-otsikko')}
         </OphTypography>
       )}
-      {tulos.valintatila === Valintatila.HYVAKSYTTY ? (
+      {isHyvaksytty(tulos.valintatila) ? (
         <OphTypography>
           <Translation
             keyName={'tulos.info.ehdollinen-hyvaksytty'}
             params={{
-              strong: <strong></strong>,
+              strong: <strong style={{ fontWeight: 600 }}></strong>,
             }}
           />
         </OphTypography>
@@ -106,7 +106,7 @@ export const getEhdollisuusInfo = (
         <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
       )}
       <List sx={{ listStyleType: 'disc', padding: 0 }}>
-        <BulletItem>{ehdollisenHyvaksymisenEhto}</BulletItem>
+        <SemiBoldBulletItem>{ehdollisenHyvaksymisenEhto}</SemiBoldBulletItem>
       </List>
 
       <OphTypography>
