@@ -34,7 +34,7 @@ class VTSService @Autowired (
     .configOverride(classOf[List[_]])
     .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[VTSService]);
 
   private val MUU_KOODI = "muu"
 

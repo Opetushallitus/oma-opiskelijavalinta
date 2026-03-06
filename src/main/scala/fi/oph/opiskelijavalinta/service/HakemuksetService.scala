@@ -44,7 +44,7 @@ class HakemuksetService @Autowired (
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
         LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-        throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+        throw RuntimeException("Failed to fetch applications")
       case Right(o) =>
         val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
         val enriched = apps.map(a => enrichHakemus(a))
@@ -59,9 +59,22 @@ class HakemuksetService @Autowired (
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
         LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-        throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+        throw RuntimeException("Failed to fetch applicationoids")
       case Right(o) =>
         mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
+    }
+  }
+
+  def getHakemusEmail(oppijanumero: String, hakemusOid: String): Option[String] = {
+    ataruClient.getHakemukset(oppijanumero) match {
+      case Left(e) =>
+        LOG.error(s"Failed to fetch email for personOid $oppijanumero and hakemus $hakemusOid: ${e.getMessage}")
+        throw RuntimeException(s"Failed to fetch email")
+      case Right(o) =>
+        mapper
+          .readValue(o, classOf[Array[Hakemus]])
+          .find(h => h.oid == hakemusOid)
+          .flatMap(h => h.email)
     }
   }
 
