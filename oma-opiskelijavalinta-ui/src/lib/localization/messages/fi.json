@@ -7,7 +7,10 @@
   "logout": {
     "otsikko": "Olet kirjautunut ulos",
     "info": "Sinut on kirjattu ulos palvelusta.",
-    "opintopolun-etusivulle": "Opintopolun etusivulle"
+    "opintopolun-etusivulle": "Opintopolun etusivulle",
+    "istunto-vanhentunut": "Istunto on vanhentunut",
+    "istunto-vanhentunut-info": "Istunto vanhentui ja sinut on kirjattu ulos palvelusta.",
+    "kirjaudu-ulos": "Kirjaudu ulos"
   },
   "virhe": {
     "pakollinen-yksi": "Pakollinen tieto. Valitse yksi vaihtoehto.",
