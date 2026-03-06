@@ -163,7 +163,8 @@ class BaseIntegrationTest {
                 false,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 Option.empty,
-                Option.empty
+                Option.empty,
+                None
               )
             )
           )
