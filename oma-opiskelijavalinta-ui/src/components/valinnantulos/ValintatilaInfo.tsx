@@ -36,7 +36,7 @@ import {
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
 import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
-import { BulletItem, SemiBoldBulletItem } from '../BulletedList';
+import { BulletItem } from '../BulletedList';
 
 const getVarasijallaInfo = (
   application: Hakemus,
@@ -113,7 +113,9 @@ export const getEhdollisuusInfo = (
         </OphTypography>
       )}
       <List sx={{ listStyleType: 'disc', padding: 0 }}>
-        <SemiBoldBulletItem>{ehdollisenHyvaksymisenEhto}</SemiBoldBulletItem>
+        <BulletItem sx={{ fontWeight: 600 }}>
+          {ehdollisenHyvaksymisenEhto}
+        </BulletItem>
       </List>
 
       <OphTypography>

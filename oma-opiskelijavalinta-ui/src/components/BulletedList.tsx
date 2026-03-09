@@ -1,6 +1,7 @@
 import { styled } from '@/lib/theme';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import type { SxProps, Theme } from '@mui/material';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
@@ -8,24 +9,16 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
 }));
 
-const SemiBoldStyledListItem = styled(ListItem)(({ theme }) => ({
-  display: 'list-item',
-  marginLeft: theme.spacing(2.5),
-  maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
-  fontWeight: '600',
-}));
-
-export function BulletItem({ children }: { children: React.ReactNode }) {
-  return <StyledListItem disablePadding>{children}</StyledListItem>;
-}
-
-export function SemiBoldBulletItem({
-  children,
-}: {
+type BulletItemProps = {
   children: React.ReactNode;
-}) {
+  sx?: SxProps<Theme>;
+};
+
+export function BulletItem({ children, sx }: BulletItemProps) {
   return (
-    <SemiBoldStyledListItem disablePadding>{children}</SemiBoldStyledListItem>
+    <StyledListItem disablePadding sx={sx}>
+      {children}
+    </StyledListItem>
   );
 }
 
