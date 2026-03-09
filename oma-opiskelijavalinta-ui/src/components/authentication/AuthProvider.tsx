@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refetchInterval: state.status === 'authenticated' ? 60000 : false,
     staleTime: 0,
     retry: false,
-    enabled: true,
+    enabled: state.status === 'unknown' || state.status === 'authenticated',
     throwOnError: (error: unknown) => {
       if (error instanceof FetchError && error.response.status === 401) {
         return false; // handled by auth reducer
@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       navigate('/logged-out', { replace: true });
     }
     if (state.status === 'expired' && !isPublicRoute) {
-      navigate('/session-expired', { replace: true });
+      window.location.href = '/session-expired'; // full reload so that raamit won't stick in the dom
     }
   }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);
 
