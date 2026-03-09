@@ -9,16 +9,28 @@ import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import fi.oph.opiskelijavalinta.model.KoodistoKoodi
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
+import fi.oph.opiskelijavalinta.util.SupportedLanguage.{en, fi, sv}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, ZoneId, ZonedDateTime}
 
 @Service
 class LokalisointiService @Autowired (
   lokalisointiClient: LokalisointiClient,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
+
+  val zone: ZoneId                                = ZoneId.of("Europe/Helsinki")
+  val DEFAULT_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'klo' HH:mm").withZone(zone)
+  val SWEDISH_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'kl.' HH:mm").withZone(zone)
+  val ENGLISH_DATE_TIME_FORMAT: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("MMM. d, yyyy 'at' HH:mm a z").withZone(zone)
+  val LANGUAGE_FORMATTER_MAP: Map[SupportedLanguage, DateTimeFormatter] =
+    Map(fi -> DEFAULT_DATE_TIME_FORMAT, sv -> SWEDISH_DATE_TIME_FORMAT, en -> ENGLISH_DATE_TIME_FORMAT)
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiService])
   mapper.registerModule(DefaultScalaModule)
@@ -38,16 +50,29 @@ class LokalisointiService @Autowired (
   }
 
   def getTranslation(lang: SupportedLanguage, key: String): String = {
-    getTranslations(lang).fold {
-      LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
-      key
-    }(json => getTranslationFromJson(json, key.split("\\.")))
+    try {
+      getTranslations(lang).fold {
+        LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
+        key
+      }(json => getTranslationFromJson(json, key.split("\\.")))
+    } catch {
+      case e: Throwable =>
+        LOG.warn(s"Käännösavaimelle $key ei löytynyt käännöstä kielelle $lang. Palautetaan käännösavain")
+        key
+    }
   }
 
   def getTranslationWithParams(lang: SupportedLanguage, key: String, params: Map[String, Object]): String = {
     var translation = getTranslation(lang, key)
-    params.foreach((key, value) => translation = translation.replaceAll(s"\\{$key}", value.toString))
+    params.foreach((key, value) => translation = translation.replaceAll(s"\\{$key}", translateObject(value, lang)))
     translation
+  }
+
+  def translateObject(obj: Object, lang: SupportedLanguage): String = {
+    obj match
+      case ld: LocalDate      => ld.format(LANGUAGE_FORMATTER_MAP(lang))
+      case ldt: LocalDateTime => ldt.format(LANGUAGE_FORMATTER_MAP(lang))
+      case o                  => o.toString
   }
 
   private def getTranslationFromJson(data: JsonObject, path: Array[String]): String = {
