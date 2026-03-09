@@ -4,6 +4,7 @@ import fi.oph.opiskelijavalinta.clients.{
   AtaruClient,
   KoodistoClient,
   KoutaClient,
+  LokalisointiClient,
   OhjausparametritClient,
   OppijanTunnistusClient,
   ValintaTulosServiceClient
@@ -28,6 +29,11 @@ class ClientConfiguration {
   @Bean
   def koutaClient(@Autowired @Qualifier("koutaCasClient") koutaCasClient: CasClient): KoutaClient = {
     new KoutaClient(koutaCasClient)
+  }
+
+  @Bean
+  def lokalisointiClient(): LokalisointiClient = {
+    new LokalisointiClient
   }
 
   @Bean
