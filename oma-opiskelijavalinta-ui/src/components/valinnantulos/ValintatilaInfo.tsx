@@ -93,20 +93,29 @@ export const getEhdollisuusInfo = (
           {t('tulos.info.ehdollinen-otsikko')}
         </OphTypography>
       )}
-      {tulos.valintatila === Valintatila.HYVAKSYTTY ? (
+      {isHyvaksytty(tulos.valintatila) ? (
         <OphTypography>
           <Translation
             keyName={'tulos.info.ehdollinen-hyvaksytty'}
             params={{
-              strong: <strong></strong>,
+              strong: <strong style={{ fontWeight: 600 }}></strong>,
             }}
           />
         </OphTypography>
       ) : (
-        <OphTypography>{t('tulos.info.ehdollinen-varalla')}</OphTypography>
+        <OphTypography>
+          <Translation
+            keyName={'tulos.info.ehdollinen-varalla'}
+            params={{
+              strong: <strong style={{ fontWeight: 600 }}></strong>,
+            }}
+          />
+        </OphTypography>
       )}
       <List sx={{ listStyleType: 'disc', padding: 0 }}>
-        <BulletItem>{ehdollisenHyvaksymisenEhto}</BulletItem>
+        <BulletItem sx={{ fontWeight: 600 }}>
+          {ehdollisenHyvaksymisenEhto}
+        </BulletItem>
       </List>
 
       <OphTypography>
