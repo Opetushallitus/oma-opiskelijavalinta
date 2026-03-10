@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       navigate('/logged-out', { replace: true });
     }
     if (state.status === 'expired' && !isPublicRoute) {
-      window.location.href = '/session-expired'; // full reload so that raamit won't stick in the dom
+      navigate('/session-expired', { replace: true });
     }
   }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);
 

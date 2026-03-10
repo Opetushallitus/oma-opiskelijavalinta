@@ -142,8 +142,7 @@ class SecurityConfiguration {
 
   private def isFrontEndRoute: String => Boolean = path =>
     path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith(
-      "/logged-out"
-    ) || path.startsWith("/redirect")
+      "/logged-out") || path.startsWith("/session-expired") || path.startsWith("/redirect")
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
