@@ -24,7 +24,7 @@ function authReducer(state: AuthState, event: AuthEvent): AuthState {
 
     case 'SESSION_401':
       if (state.status === 'authenticated') {
-        return { status: 'loggedOut' }; // session expired
+        return { status: 'expired' }; // session expired
       }
       if (state.status === 'unknown') {
         return { status: 'unauthenticated' }; // first entry unauthenticated
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refetchInterval: state.status === 'authenticated' ? 60000 : false,
     staleTime: 0,
     retry: false,
-    enabled: true,
+    enabled: state.status === 'unknown' || state.status === 'authenticated',
     throwOnError: (error: unknown) => {
       if (error instanceof FetchError && error.response.status === 401) {
         return false; // handled by auth reducer
@@ -107,14 +107,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const isPublicRoute =
       location.pathname.startsWith('/token/') ||
-      location.pathname === '/logged-out';
+      location.pathname === '/logged-out' ||
+      location.pathname === '/session-expired';
 
     if (state.status === 'unauthenticated' && !isPublicRoute) {
       window.location.href = conf.routes.yleiset.loginApiUrl;
     }
-
     if (state.status === 'loggedOut' && !isPublicRoute) {
       navigate('/logged-out', { replace: true });
+    }
+    if (state.status === 'expired' && !isPublicRoute) {
+      navigate('/session-expired', { replace: true });
     }
   }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);
 

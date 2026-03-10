@@ -8,5 +8,8 @@ export default [
   layout('./LoggedOutLayout.tsx', [
     route('/logged-out', './LoggedOutPage.tsx'),
   ]),
+  layout('./SessionExpiredLayout.tsx', [
+    route('/session-expired', './SessionExpiredPage.tsx'),
+  ]),
   layout('./NotFoundLayout.tsx', [route('*', './NotFoundPage.tsx')]),
 ] satisfies RouteConfig;

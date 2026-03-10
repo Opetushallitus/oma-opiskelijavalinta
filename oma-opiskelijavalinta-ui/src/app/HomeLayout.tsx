@@ -12,16 +12,18 @@ import { useTranslations } from '@/hooks/useTranslations';
 function InnerHomeLayout() {
   const { state } = useAuth();
   const { t } = useTranslations();
+
+  const method = state.status === 'authenticated' ? state.method : undefined;
+
+  useEffect(() => {
+    if (method === 'cas') {
+      loadRaamit();
+    }
+  }, [method]);
+
   if (state.status !== 'authenticated') {
     return <FullSpinner />;
   }
-
-  // Load raamit for everyone except link login
-  useEffect(() => {
-    if (state.status === 'authenticated' && state.method === 'cas') {
-      loadRaamit();
-    }
-  }, [state]);
 
   return (
     <PageLayout>
