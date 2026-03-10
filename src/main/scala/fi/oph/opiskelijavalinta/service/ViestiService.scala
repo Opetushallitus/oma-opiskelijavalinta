@@ -19,10 +19,13 @@ class ViestiService @Autowired (hakemuksetService: HakemuksetService, koutaServi
   def lahetaVastaanottoViesti(
     oppijanumero: String,
     hakukohdeOid: String,
+    hakuOid: String,
     hakemusOid: String,
+    vastaanotto: String,
     lang: SupportedLanguage
   ): Unit = {
     val hakutoive = koutaService.getHakukohde(hakukohdeOid)
+    val haku      = koutaService.getHaku(hakuOid)
     val email     = hakemuksetService.getHakemusEmail(oppijanumero, hakemusOid)
   }
 
