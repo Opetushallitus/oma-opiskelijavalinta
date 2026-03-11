@@ -80,6 +80,7 @@
       "varalla": "Olet varasijalla",
       "varalla-varasija": "Olet {varasijanumero}. varasijalla",
       "ehdollisesti-hyvaksytty": "Ehdollinen",
+      "harkinnanvaraisesti-hyvaksytty": "Harkinnanvaraisesti hyväksytty",
       "peruuntunut": "Peruuntunut",
       "odottaa-ylempaa-hakutoivetta": "(odottaa ylempien hakukohteiden tuloksia)"
     }
@@ -91,6 +92,7 @@
     "varalla": "Varasijalla",
     "varalla-varasija": "Varasijalla: {varasijanumero}",
     "ehdollisesti-hyvaksytty": "Ehdollinen",
+    "harkinnanvaraisesti-hyvaksytty": "Harkinnanvaraisesti hyväksytty",
     "peruuntunut": "Peruuntunut",
     "valintatapajono": {
       "hylatty": "Ei hyväksytty tällä valintatavalla"
