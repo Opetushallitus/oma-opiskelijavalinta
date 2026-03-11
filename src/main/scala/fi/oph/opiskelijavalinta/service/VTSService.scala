@@ -111,7 +111,8 @@ class VTSService @Autowired (
       case Left(e) =>
         LOG.error(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
         throw RuntimeException(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
-      case Right(o) => Option.apply(o)
+      case Right(o) =>
+        Option.apply(o)
     }
   }
 

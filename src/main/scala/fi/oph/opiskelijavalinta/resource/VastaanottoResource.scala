@@ -2,7 +2,7 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants.VASTAANOTTO_PATH
 import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
-import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService}
+import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService, ViestiService}
 import jakarta.validation.constraints.{NotBlank, Pattern}
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.{PathVariable, PostMapping, Reque
 @RequestMapping(path = Array(VASTAANOTTO_PATH))
 @Validated
 @RestController
-class VastaanottoResource @Autowired (vtsService: VTSService, authorizationService: AuthorizationService) {
+class VastaanottoResource @Autowired (
+  vtsService: VTSService,
+  authorizationService: AuthorizationService,
+  viestiService: ViestiService
+) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[VastaanottoResource]);
 
@@ -39,6 +43,7 @@ class VastaanottoResource @Autowired (vtsService: VTSService, authorizationServi
         AuditOperation.TallennaVastaanotto,
         Some(vastaanotto)
       )
+      viestiService.lahetaVastaanottoViesti(hakukohdeOid, hakemusOid, vastaanotto)
       ResponseEntity.ok(result.get)
     }
   }
