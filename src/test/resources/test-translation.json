@@ -1,0 +1,7 @@
+{
+  "vastaanottoviesti.otsikko": "Opintopolku: Vastauksesi on vastaanotettu",
+  "vastaanottoviesti.viesti.olemme-vastaanottaneet": "Olemme vastaanottaneet {aikaleima} vastauksesi:",
+  "vastaanottoviesti.viesti.vastaanottanut": "{vastaus} - {paikka} - {hakutoive}",
+  "vastaanottoviesti.viesti.haku": "({haku})",
+  "vastaanottoviesti.viesti.ala-vastaa": "Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti."
+}
