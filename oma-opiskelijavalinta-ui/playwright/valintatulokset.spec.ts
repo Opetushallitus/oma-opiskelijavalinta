@@ -16,6 +16,7 @@ import {
   hakemus4ToinenAsteAlempiaHyvaksyttyja,
   jonokohtaisetTulostiedot,
   jonokohtaisetTulostiedotEhdollinen,
+  jonokohtaisetTulostiedotHarkinnanvarainen,
   jonokohtaisetTulostiedotPeruuntunut,
   mockSession,
 } from './mocks';
@@ -111,6 +112,36 @@ test('Näyttää hyväksytyn tuloksen', async ({ page }) => {
   ).toBeVisible();
   await expect(
     tulokset.locator('.MuiChip-root').first().getByText('Hyväksytty'),
+  ).toBeVisible();
+  await expect(app.getByText('Hakutoiveesi')).toBeHidden();
+  await expect(app.getByText('Valintatilanteesi')).toBeVisible();
+  await expect(
+    page.getByTestId('valintatilainfo-hakukohde-oid-3'),
+  ).toBeVisible();
+});
+
+test('Näyttää harkinnanvaraisesti hyväksytyn tuloksen', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        valintatila: 'HARKINNANVARAISESTI_HYVAKSYTTY',
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const app = page.getByTestId('application-hakemus-oid-2');
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
+  await expect(
+    tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    tulokset
+      .locator('.MuiChip-root')
+      .first()
+      .getByText('Harkinnanvaraisesti hyväksytty'),
   ).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
@@ -692,6 +723,29 @@ test('Näyttää valintatapajonojen tiedoissa ehdollisen hyväksymisen', async (
   );
   await expect(paasykoevalintaRow.getByText('Hyväksytty')).toBeVisible();
   await expect(paasykoevalintaRow.getByText('Ehdollinen')).toBeVisible();
+});
+
+test('Näyttää valintatapajonojen tiedoissa harkinnanvaraisen hyväksymisen', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot: jonokohtaisetTulostiedotHarkinnanvarainen,
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const paasykoevalintaRow = page.getByTestId(
+    'valintatapajono-paasykoevalinta',
+  );
+  await expect(
+    paasykoevalintaRow.getByText('Harkinnanvaraisesti hyväksytty'),
+  ).toBeVisible();
 });
 
 test('Näyttää peruuntuneelle valintatapajonolle selitteen', async ({

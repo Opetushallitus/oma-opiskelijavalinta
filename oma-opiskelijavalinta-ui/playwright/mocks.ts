@@ -722,6 +722,22 @@ export const jonokohtaisetTulostiedotEhdollinen = [
   },
 ];
 
+export const jonokohtaisetTulostiedotHarkinnanvarainen = [
+  {
+    oid: '2345',
+    nimi: 'paasykoevalinta',
+    valintatila: 'HARKINNANVARAISESTI_HYVAKSYTTY',
+    julkaistavissa: true,
+    tilanKuvaukset: {},
+    pisteet: 50,
+    alinHyvaksyttyPistemaara: 45,
+    ehdollisestiHyvaksyttavissa: false,
+    ehdollisenHyvaksymisenEhto: {},
+    eiVarasijatayttoa: false,
+    varasijasaannotKaytossa: false,
+  },
+];
+
 export const jonokohtaisetTulostiedotPeruuntunut = [
   {
     oid: '2345',

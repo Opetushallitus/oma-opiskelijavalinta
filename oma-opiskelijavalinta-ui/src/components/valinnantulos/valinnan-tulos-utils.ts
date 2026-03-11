@@ -24,9 +24,9 @@ const ValintatilaLabels: Record<Valintatila, ValintatilaLabel> = {
     valintatapajonoLabel: 'tulos.hyvaksytty',
   },
   [Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY]: {
-    hakutoiveLabel: 'hakutoive.tila.hyvaksytty',
-    ilmanJonoaLabel: 'tulos.hyvaksytty',
-    valintatapajonoLabel: 'tulos.hyvaksytty',
+    hakutoiveLabel: 'hakutoive.tila.harkinnanvaraisesti-hyvaksytty',
+    ilmanJonoaLabel: 'tulos.harkinnanvaraisesti-hyvaksytty',
+    valintatapajonoLabel: 'tulos.harkinnanvaraisesti-hyvaksytty',
   },
   [Valintatila.VARASIJALTA_HYVAKSYTTY]: {
     hakutoiveLabel: 'hakutoive.tila.hyvaksytty',
@@ -113,10 +113,7 @@ export function getHakutoiveenTilaLabel(
       ? mapKeys(hakutoiveenTulos.tilanKuvaukset, (key) => key.toLowerCase())
       : undefined;
     return `${hakutoiveenTilaLabel} - ${translateEntity(tilanKuvaukset)}`;
-  } else if (
-    hakutoiveenTulos.valintatila === Valintatila.HYVAKSYTTY &&
-    odottaaYlempaa
-  ) {
+  } else if (isHyvaksytty(hakutoiveenTulos.valintatila) && odottaaYlempaa) {
     return `${hakutoiveenTilaLabel} ${t('hakutoive.tila.odottaa-ylempaa-hakutoivetta')}`;
   }
   return hakutoiveenTilaLabel;
