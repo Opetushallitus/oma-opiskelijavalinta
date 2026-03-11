@@ -22,6 +22,7 @@ import {
   hasAlemmatVastaanotot,
   VastaanottoModalParams,
   VastaanottoOption,
+  VastaanottoOptionToKaannosAvain,
   VastaanottoOptionToToiminto,
 } from './vastaanotto-utils';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
@@ -166,6 +167,10 @@ export function VastaanottoRadio({
         application.oid,
         hakutoive.oid,
         VastaanottoOptionToToiminto[selectedVastaanotto as VastaanottoOption],
+        application.haku?.oid ?? '',
+        VastaanottoOptionToKaannosAvain[
+          selectedVastaanotto as VastaanottoOption
+        ],
       );
       hideConfirmation();
     },
