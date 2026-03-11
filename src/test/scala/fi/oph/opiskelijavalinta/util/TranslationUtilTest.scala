@@ -9,7 +9,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 
 @TestInstance(Lifecycle.PER_CLASS)
 class TranslationUtilTest {
-  W
+
   @Test
   def translatesNameToFinnish(): Unit = {
     assertEquals("Pähkinä", translateName(TranslatedName("Pähkinä", "Nöt", "Nut"), fi))

@@ -5,28 +5,95 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
 import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched}
 import fi.oph.opiskelijavalinta.util.{SupportedLanguage, TranslationUtil}
+import fi.oph.viestinvalitys.ViestinvalitysClient
+import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.stereotype.Service
 
-@Service
-class ViestiService @Autowired (hakemuksetService: HakemuksetService, koutaService: KoutaService) {
+import java.time.LocalDateTime
+import java.util.Optional
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[ViestiService]);
+@Service
+class ViestiService @Autowired (
+  hakemuksetService: HakemuksetService,
+  koutaService: KoutaService,
+  lokalisointiService: LokalisointiService,
+  authorizationService: AuthorizationService,
+  @Autowired @Qualifier("viestinValitysClient") viestinvalitysClient: ViestinvalitysClient
+) {
+
+  private val OPH_PAAKAYTTAJA      = "APP_VIESTINVALITYS_OPH_PAAKAYTTAJA"
+  private val VIESTIN_SAILYTYSAIKA = 365
+
+  private val LOGGER: Logger = LoggerFactory.getLogger(classOf[ViestiService]);
 
   def lahetaVastaanottoViesti(
-    oppijanumero: String,
     hakukohdeOid: String,
-    hakuOid: String,
     hakemusOid: String,
-    vastaanotto: String,
-    lang: SupportedLanguage
+    vastaanotto: String
   ): Unit = {
-    val hakutoive = koutaService.getHakukohde(hakukohdeOid)
-    val haku      = koutaService.getHaku(hakuOid)
-    val email     = hakemuksetService.getHakemusEmail(oppijanumero, hakemusOid)
+    val lang         = SupportedLanguage.fi // TEMP for testing
+    val oppijanumero = authorizationService.getPersonOid.get
+    val email        = hakemuksetService.getHakemusEmail(oppijanumero, hakemusOid)
+    LOGGER.info(
+      s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanotto"
+    )
+    try {
+      // val haku = koutaService.getHaku(hakuOid)
+      val hakutoive       = koutaService.getHakukohde(hakukohdeOid)
+      val otsikko         = lokalisointiService.getTranslation(lang, "vastaanottoviesti.otsikko")
+      val vastaanottaneet = lokalisointiService.getTranslationWithParams(
+        lang,
+        "vastaanottoviesti.viesti.olemme-vastaanottaneet",
+        Map("aikaleima" -> LocalDateTime.now)
+      )
+      val vastaus = lokalisointiService.getTranslationWithParams(
+        lang,
+        "vastaanottoviesti.viesti.vastaanottanut",
+        Map(
+          "vastaus"   -> vastaanotto,
+          "paikka"    -> hakutoive.get.jarjestyspaikkaHierarkiaNimi,
+          "hakutoive" -> hakutoive.get.nimi
+        )
+      )
+      val haunNimi =
+        "haku nimi" // lokalisointiService.getTranslationWithParams(lang, "vastaanottoviesti.viesti.haku", Map("haku" -> haku.get.nimi))
+      val alaVastaa = lokalisointiService.getTranslation(lang, "vastaanottoviesti.viesti.ala-vastaa")
+      val sisalto   =
+        Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => b.concat("<br />").concat(b))
+
+      viestinvalitysClient.luoViesti(
+        ViestinvalitysBuilder
+          .viestiBuilder()
+          .withOtsikko(otsikko)
+          .withHtmlSisalto("body")
+          .withKielet(lang.toString)
+          .withVastaanottajat(
+            ViestinvalitysBuilder
+              .vastaanottajatBuilder()
+              .withVastaanottaja(Optional.empty, email.get)
+              .build()
+          )
+          .withKayttooikeusRajoitukset(
+            ViestinvalitysBuilder
+              .kayttooikeusrajoituksetBuilder()
+              .withKayttooikeus(OPH_PAAKAYTTAJA, OPH_ORGANISAATIO_OID)
+              .build()
+          )
+          .withLahettavaPalvelu("oma-opiskelijavalinta")
+          .withNormaaliPrioriteetti()
+          .withLahettaja(Optional.empty(), "noreply@opintopolku.fi")
+          .withSailytysAika(VIESTIN_SAILYTYSAIKA)
+          .build()
+      )
+    } catch {
+      case e: Exception =>
+        LOGGER.error(s"Vastaanottosähköpostin lähetys epäonnistui: hakukohdeOid: $hakukohdeOid, email $email", e)
+    }
   }
 
 }

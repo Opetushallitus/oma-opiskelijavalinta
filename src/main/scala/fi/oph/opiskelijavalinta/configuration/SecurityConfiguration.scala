@@ -5,6 +5,7 @@ import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
 import fi.oph.opiskelijavalinta.security.{LinkAuthenticationProvider, OppijaUserDetails}
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
+import fi.oph.viestinvalitys.{ClientBuilder, ViestinvalitysClient}
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
@@ -128,6 +129,20 @@ class SecurityConfiguration {
         .setNumberOfRetries(2)
         .build()
     )
+  }
+
+  @Bean(Array("viestinValitysClient"))
+  def viestinvalitysClient(
+    @Value("${viestinvalityspalvelu.url}") viestinValitysUrl: String = null
+  ): ViestinvalitysClient = {
+    ClientBuilder
+      .viestinvalitysClientBuilder()
+      .withEndpoint(viestinValitysUrl)
+      .withUsername(cas_username)
+      .withPassword(cas_password)
+      .withCasEndpoint(s"https://$opintopolku_virkailija_domain/cas")
+      .withCallerId(Constants.CALLER_ID)
+      .build()
   }
 
   private def isFrontEndRoute: String => Boolean = path =>
