@@ -64,13 +64,13 @@ class ViestiService @Autowired (
         "haku nimi" // lokalisointiService.getTranslationWithParams(lang, "vastaanottoviesti.viesti.haku", Map("haku" -> haku.get.nimi))
       val alaVastaa = lokalisointiService.getTranslation(lang, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =
-        Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => b.concat("<br />").concat(b))
+        Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => a.concat("<br />").concat(b))
 
       viestinvalitysClient.luoViesti(
         ViestinvalitysBuilder
           .viestiBuilder()
           .withOtsikko(otsikko)
-          .withHtmlSisalto("body")
+          .withHtmlSisalto(sisalto)
           .withKielet(lang.toString)
           .withVastaanottajat(
             ViestinvalitysBuilder
