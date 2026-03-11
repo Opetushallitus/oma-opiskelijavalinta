@@ -1,13 +1,7 @@
 package fi.oph.opiskelijavalinta.service
 
-import com.fasterxml.jackson.annotation.{JsonSetter, Nulls}
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched}
-import fi.oph.opiskelijavalinta.util.{SupportedLanguage, TranslationUtil}
+import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -34,16 +28,17 @@ class ViestiService @Autowired (
   def lahetaVastaanottoViesti(
     hakukohdeOid: String,
     hakemusOid: String,
-    vastaanotto: String
+    hakuOid: String,
+    vastaanottoKaannosAvain: String
   ): Unit = {
     val lang         = SupportedLanguage.fi // TEMP for testing
     val oppijanumero = authorizationService.getPersonOid.get
     val email        = hakemuksetService.getHakemusEmail(oppijanumero, hakemusOid)
     LOGGER.info(
-      s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanotto"
+      s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
     )
     try {
-      // val haku = koutaService.getHaku(hakuOid)
+      val haku = koutaService.getHaku(hakuOid)
       val hakutoive       = koutaService.getHakukohde(hakukohdeOid)
       val otsikko         = lokalisointiService.getTranslation(lang, "vastaanottoviesti.otsikko")
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
@@ -51,6 +46,7 @@ class ViestiService @Autowired (
         "vastaanottoviesti.viesti.olemme-vastaanottaneet",
         Map("aikaleima" -> LocalDateTime.now)
       )
+      val vastaanotto = lokalisointiService.getTranslation(lang, vastaanottoKaannosAvain)
       val vastaus = lokalisointiService.getTranslationWithParams(
         lang,
         "vastaanottoviesti.viesti.vastaanottanut",
@@ -60,8 +56,7 @@ class ViestiService @Autowired (
           "hakutoive" -> hakutoive.get.nimi
         )
       )
-      val haunNimi =
-        "haku nimi" // lokalisointiService.getTranslationWithParams(lang, "vastaanottoviesti.viesti.haku", Map("haku" -> haku.get.nimi))
+      val haunNimi = lokalisointiService.getTranslationWithParams(lang, "vastaanottoviesti.viesti.haku", Map("haku" -> haku.get.nimi))
       val alaVastaa = lokalisointiService.getTranslation(lang, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =
         Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => a.concat("<br />").concat(b))

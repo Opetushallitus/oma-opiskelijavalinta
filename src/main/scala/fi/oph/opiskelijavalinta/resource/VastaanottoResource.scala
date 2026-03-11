@@ -26,14 +26,14 @@ class VastaanottoResource @Autowired (
   def doVastaanotto(
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakemusOid: String,
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakukohdeOid: String,
-    @NotBlank @RequestBody(required = true) vastaanotto: String,
+    @RequestBody(required = true) vastaanottoDto: VastaanottoDTO,
     request: HttpServletRequest
   ): ResponseEntity[String] = {
-    LOG.info(s"Tehdään vastaanottoa $vastaanotto hakemukselle $hakemusOid ja hakutoiveelle $hakukohdeOid")
+    LOG.info(s"Tehdään vastaanottoa ${vastaanottoDto.vastaanotto} hakemukselle $hakemusOid ja hakutoiveelle $hakukohdeOid")
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
-      val result = vtsService.doVastaanotto(hakemusOid, hakukohdeOid, vastaanotto)
+      val result = vtsService.doVastaanotto(hakemusOid, hakukohdeOid, vastaanottoDto.vastaanotto)
       AuditLog.log(
         request,
         Map(
@@ -41,9 +41,9 @@ class VastaanottoResource @Autowired (
           "hakukohdeOid" -> hakukohdeOid
         ),
         AuditOperation.TallennaVastaanotto,
-        Some(vastaanotto)
+        Some(vastaanottoDto.vastaanotto)
       )
-      viestiService.lahetaVastaanottoViesti(hakukohdeOid, hakemusOid, vastaanotto)
+      viestiService.lahetaVastaanottoViesti(hakukohdeOid, hakemusOid, vastaanottoDto.hakuOid, vastaanottoDto.vastaanottoKaannosAvain)
       ResponseEntity.ok(result.get)
     }
   }
