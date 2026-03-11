@@ -7,7 +7,8 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.google.gson.{JsonObject, JsonParser}
 import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
-import fi.oph.opiskelijavalinta.model.KoodistoKoodi
+import fi.oph.opiskelijavalinta.model.TranslatedName
+import fi.oph.opiskelijavalinta.util.TranslationUtil.translateName
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.opiskelijavalinta.util.SupportedLanguage.{en, fi, sv}
 import org.slf4j.{Logger, LoggerFactory}
@@ -54,7 +55,7 @@ class LokalisointiService @Autowired (
       getTranslations(lang).fold {
         LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
         key
-      }(json => getTranslationFromJson(json, key.split("\\.")))
+      }(json => json.get(key).getAsString)
     } catch {
       case e: Throwable =>
         LOG.warn(s"Käännösavaimelle $key ei löytynyt käännöstä kielelle $lang. Palautetaan käännösavain")
@@ -70,18 +71,9 @@ class LokalisointiService @Autowired (
 
   def translateObject(obj: Object, lang: SupportedLanguage): String = {
     obj match
-      case ld: LocalDate      => ld.format(LANGUAGE_FORMATTER_MAP(lang))
-      case ldt: LocalDateTime => ldt.format(LANGUAGE_FORMATTER_MAP(lang))
-      case o                  => o.toString
-  }
-
-  private def getTranslationFromJson(data: JsonObject, path: Array[String]): String = {
-    path.zipWithIndex
-      .foldLeft(data) { case (json, (pathElem, idx)) =>
-        if (idx + 1 >= path.length) json
-        else json.getAsJsonObject(pathElem)
-      }
-      .get(path.last)
-      .getAsString
+      case ld: LocalDate                  => ld.format(LANGUAGE_FORMATTER_MAP(lang))
+      case ldt: LocalDateTime             => ldt.format(LANGUAGE_FORMATTER_MAP(lang))
+      case translatedName: TranslatedName => translateName(translatedName, lang)
+      case o                              => o.toString
   }
 }

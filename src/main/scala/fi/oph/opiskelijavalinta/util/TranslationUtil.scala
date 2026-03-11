@@ -30,9 +30,9 @@ object TranslationUtil {
   }
 
   def translateName(translateable: TranslatedName, lang: SupportedLanguage): String = {
-    val translationFi = Some(translateable.fi.trim).filter(s => s.nonEmpty)
-    val translationSv = Some(translateable.sv.trim).filter(s => s.nonEmpty)
-    val translationEn = Some(translateable.en.trim).filter(s => s.nonEmpty)
+    val translationFi = Some(translateable.fi).filter(s => s != null && s.nonEmpty).map(s => s.trim)
+    val translationSv = Some(translateable.sv).filter(s => s != null && s.nonEmpty).map(s => s.trim)
+    val translationEn = Some(translateable.en).filter(s => s != null && s.nonEmpty).map(s => s.trim)
     lang match {
       case SupportedLanguage.fi => getClosestMatchingLanguage(translationFi, translationEn, translationSv)
       case SupportedLanguage.sv => getClosestMatchingLanguage(translationSv, translationFi, translationEn)

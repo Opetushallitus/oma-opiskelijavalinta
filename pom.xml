@@ -164,6 +164,18 @@
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.testcontainers</groupId>
+                        <artifactId>testcontainers</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.testcontainers</groupId>
+                        <artifactId>localstack</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.testcontainers</groupId>
+                        <artifactId>postgresql</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 

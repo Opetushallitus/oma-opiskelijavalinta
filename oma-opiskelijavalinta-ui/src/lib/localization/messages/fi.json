@@ -225,5 +225,14 @@
     "otsake": "Tee opintotukihakemus",
     "linkki": "Siirry Kelan asiointipalveluun"
   },
-  "tuloskirje": "Tuloskirje {pvm}"
+  "tuloskirje": "Tuloskirje {pvm}",
+  "vastaanottoviesti": {
+    "otsikko": "Opintopolku: Vastauksesi on vastaanotettu",
+    "viesti": {
+      "olemme-vastaanottaneet": "Olemme vastaanottaneet {aikaleima} vastauksesi:",
+      "vastaanottanut": "{vastaus} - {paikka} - {hakutoive}",
+      "haku": "({haku})",
+      "ala-vastaa": "Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti."
+    }
+  }
 }
