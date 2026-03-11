@@ -12,16 +12,13 @@ export function ValintatilaChip({
   odottaaYlempaa = false,
   naytaKeskenTulos = false,
 }: {
-  hakutoiveenTulos?: HakutoiveenTulos;
+  hakutoiveenTulos: HakutoiveenTulos;
   odottaaYlempaa?: boolean;
   naytaKeskenTulos?: boolean;
 }) {
   const { t, translateEntity } = useTranslations();
   if (isNullish(hakutoiveenTulos) && !naytaKeskenTulos) return null;
-  if (
-    (isNullish(hakutoiveenTulos) && naytaKeskenTulos) ||
-    !hakutoiveenTulos?.julkaistavissa
-  )
+  if (isNullish(hakutoiveenTulos) && naytaKeskenTulos)
     return (
       <StatusBadgeChip
         badgeProps={{

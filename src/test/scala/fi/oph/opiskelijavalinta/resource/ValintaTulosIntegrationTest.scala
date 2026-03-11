@@ -52,12 +52,12 @@ class ValintaTulosIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
     val tulokset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[Array[HakutoiveenTulos]]).toSeq
-    Assertions.assertEquals(1, tulokset.length)
+    Assertions.assertEquals(2, tulokset.length)
     Assertions.assertEquals("hakukohde-oid-1", tulokset(0).hakukohdeOid.get)
   }
 
   @Test
-  def returnsNoResultsWhenNoneArePublished(): Unit = {
+  def returnsKeskenResultsEvenWhenTheyAreNotPublished(): Unit = {
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
@@ -70,6 +70,6 @@ class ValintaTulosIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andReturn()
     val tulokset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[Array[HakutoiveenTulos]]).toSeq
-    Assertions.assertTrue(tulokset.isEmpty)
+    Assertions.assertEquals(2, tulokset.size)
   }
 }
