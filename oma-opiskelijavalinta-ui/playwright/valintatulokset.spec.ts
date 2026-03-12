@@ -393,7 +393,7 @@ test('Näyttää kesken-tuloksen jos toisella hakutoiveella on julkaistu tulos',
   ).toBeHidden();
 });
 
-test('Näyttää kesken-tuloksen jos hakuaika on päättynyt ja tulosta ei ole julkaistu', async ({
+test('Näyttää kesken-tilan jos hakuaika on päättynyt ja tulosta ei ole julkaistu', async ({
   page,
 }) => {
   await fetchMockData(page, hakemus2);
@@ -406,6 +406,25 @@ test('Näyttää kesken-tuloksen jos hakuaika on päättynyt ja tulosta ei ole j
   await expect(tulokset.getByText('Kesken')).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
+});
+
+test('Näyttää tuloksen vaikka julkaistavissa on false', async ({ page }) => {
+  const hyvaksyttyJaPeruuntunutApplication = {
+    ...hakemus1,
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosHyvaksytty, hakukohdeOid: 'hakukohde-oid-1' },
+      {
+        ...hakemuksenTulosPeruuntunut,
+        hakukohdeOid: 'hakukohde-oid-2',
+        julkaistavissa: false,
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyJaPeruuntunutApplication);
+  const tulos1 = page.getByTestId('application-tulos-hakukohde-oid-1');
+  await expect(tulos1.getByText('Hyväksytty')).toBeVisible();
+  const tulos2 = page.getByTestId('application-tulos-hakukohde-oid-2');
+  await expect(tulos2.getByText('Peruuntunut')).toBeVisible();
 });
 
 test('Näyttää ehdollisesti hyväksytyn tuloksen', async ({ page }) => {
