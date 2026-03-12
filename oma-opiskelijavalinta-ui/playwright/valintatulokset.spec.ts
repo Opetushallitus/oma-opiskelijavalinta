@@ -569,6 +569,20 @@ test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) =>
   ).toBeVisible();
 });
 
+test('Näyttää peruuntuneelle pelkän tilan jos kuvausta ei ole', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [{ ...hakemuksenTulosPeruuntunut, tilankuvaukset: {} }],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const app = page.getByTestId('application-hakemus-oid-2');
+  await expect(app.getByText('Peruuntunut')).toBeVisible();
+  await expect(app.getByText('Peruuntunut -')).toBeHidden();
+});
+
 test('Näyttää ensisijaisesti vastaanottotilan jos vastaanottotila ja valintatila ei ole synkassa', async ({
   page,
 }) => {

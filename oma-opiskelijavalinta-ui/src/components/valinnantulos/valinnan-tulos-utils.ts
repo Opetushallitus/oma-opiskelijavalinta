@@ -112,7 +112,9 @@ export function getHakutoiveenTilaLabel(
     const tilanKuvaukset = hakutoiveenTulos?.tilanKuvaukset
       ? mapKeys(hakutoiveenTulos.tilanKuvaukset, (key) => key.toLowerCase())
       : undefined;
-    return `${hakutoiveenTilaLabel} - ${translateEntity(tilanKuvaukset)}`;
+    return tilanKuvaukset
+      ? `${hakutoiveenTilaLabel} - ${translateEntity(tilanKuvaukset)}`
+      : hakutoiveenTilaLabel;
   } else if (isHyvaksytty(hakutoiveenTulos.valintatila) && odottaaYlempaa) {
     return `${hakutoiveenTilaLabel} ${t('hakutoive.tila.odottaa-ylempaa-hakutoivetta')}`;
   }
