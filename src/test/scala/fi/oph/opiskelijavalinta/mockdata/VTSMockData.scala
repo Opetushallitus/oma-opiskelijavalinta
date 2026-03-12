@@ -162,7 +162,7 @@ object VTSMockData {
     hakutoiveet = List(
       hakutoive1Hyvaksytty.copy(
         julkaistavissa = Some(false),
-        valintatila = Some("KESKEN"),
+        valintatila = Some("PERUUNTUNUT"),
         vastaanotettavuustila = Some("EI_VASTAANOTETTAVISSA"),
         vastaanottoDeadline = None
       ),

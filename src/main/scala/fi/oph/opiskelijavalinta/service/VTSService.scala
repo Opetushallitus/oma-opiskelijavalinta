@@ -94,7 +94,6 @@ class VTSService @Autowired (
         val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
         val enrichedHakutoiveenTulokset =
           raw.hakutoiveet
-            .filter(_.julkaistavissa.getOrElse(false))
             .map(enrichHakutoiveenTulos)
         Some(
           HakemuksenTulos(

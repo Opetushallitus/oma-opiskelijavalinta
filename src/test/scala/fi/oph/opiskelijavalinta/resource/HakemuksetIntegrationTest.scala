@@ -179,11 +179,12 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("2025-12-12T13:00:00Z", hakutoive1.vastaanottoDeadline.get)
     val hakutoive2 = app.hakemuksenTulokset
       .find(_.hakukohdeOid.contains("hakukohde-oid-2"))
-    Assertions.assertEquals(None, hakutoive2)
+    Assertions.assertTrue(hakutoive2.isDefined)
+    Assertions.assertEquals("KESKEN", hakutoive2.get.valintatila.get)
   }
 
   @Test
-  def doesNotReturnUnpublishedVTSResults(): Unit = {
+  def returnsUnpublishedKeskenVTSResults(): Unit = {
     Mockito
       .when(koutaClient.getHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
@@ -214,7 +215,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     val app = hakemukset.current.head
     assertHakemus(app)
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
-    Assertions.assertEquals(List.empty, app.hakemuksenTulokset)
+    Assertions.assertEquals(2, app.hakemuksenTulokset.size)
   }
 
   @Test
@@ -240,7 +241,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     val app = hakemukset.current.head
     assertHakemus(app)
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
-    Assertions.assertEquals(List.empty, app.hakemuksenTulokset)
+    Assertions.assertEquals(2, app.hakemuksenTulokset.size)
   }
 
   private def assertHakemus(app: HakemusEnriched): Unit = {

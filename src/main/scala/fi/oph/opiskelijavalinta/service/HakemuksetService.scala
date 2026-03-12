@@ -118,7 +118,7 @@ class HakemuksetService @Autowired (
         })
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHakemus(ohjausparametrit)) {
-        // VTSService palauttaa vain julkaistavissa olevat hakutoiveen tulokset
+        // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
         hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
           case Some(v) => v.hakutoiveet
           case _       => List.empty

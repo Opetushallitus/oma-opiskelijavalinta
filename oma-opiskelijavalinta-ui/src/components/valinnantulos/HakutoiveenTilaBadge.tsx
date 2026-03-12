@@ -23,19 +23,18 @@ export function HakutoiveenTilaBadge({
   naytaKeskenTulos?: boolean;
 }) {
   const { t, translateEntity } = useTranslations();
-  if (isNullish(hakutoiveenTulos) && !naytaKeskenTulos) return null;
-  if (
-    (isNullish(hakutoiveenTulos) && naytaKeskenTulos) ||
-    !hakutoiveenTulos?.julkaistavissa
-  )
-    return (
-      <StatusBadgeChip
-        badgeProps={{
-          label: t('hakutoive.tila.kesken'),
-          color: BadgeColorKey.Yellow,
-        }}
-      />
-    );
+  if (isNullish(hakutoiveenTulos)) {
+    if (!naytaKeskenTulos) return null;
+    else
+      return (
+        <StatusBadgeChip
+          badgeProps={{
+            label: t('hakutoive.tila.kesken'),
+            color: BadgeColorKey.Yellow,
+          }}
+        />
+      );
+  }
   const vastaanottotila: VastaanottoTila =
     hakutoiveenTulos?.vastaanottotila || VastaanottoTila.KESKEN;
   const valintatila: Valintatila =
