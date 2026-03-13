@@ -12,7 +12,7 @@ import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { hasKelaUrl } from '@/lib/hakemus.service';
+import { hasKelaUrl } from '@/lib/hakemus-service';
 import { KelaContainer } from './KelaContainer';
 import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
 import { TutustuContainer } from './TutustuContainer';

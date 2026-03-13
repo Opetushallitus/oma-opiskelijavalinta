@@ -3,7 +3,7 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { QuerySuspenseBoundary } from '../QuerySuspenseBoundary';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getHakemukset } from '@/lib/hakemus.service';
+import { getHakemukset } from '@/lib/hakemus-service';
 import { isEmpty, isNonNullish } from 'remeda';
 import { HakemusContainer } from './HakemusContainer';
 import { InfoBox } from '../InfoBox';

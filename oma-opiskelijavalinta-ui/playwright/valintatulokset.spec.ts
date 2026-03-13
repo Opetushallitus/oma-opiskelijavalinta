@@ -9,6 +9,7 @@ import {
   hakemuksenTulosHyvaksytty,
   hakemuksenTulosHyvaksyttyVastaanottoPerunut,
   hakemuksenTulosPeruuntunut,
+  hakemuksenTulosPeruuntunutEiKuvausta,
   hakemuksenTulosVarasijalla,
   hakemus1,
   hakemus2,
@@ -557,16 +558,37 @@ test('Näyttää ehdollisuuden varasijalla', async ({ page }) => {
 });
 
 test('Näyttää peruuntuneelle tulokselle tilan kuvauksen', async ({ page }) => {
-  const hyvaksyttyApplication = {
+  const peruuntunutApplication = {
     ...hakemus2,
     hakemuksenTulokset: [{ ...hakemuksenTulosPeruuntunut }],
   };
-  await fetchMockData(page, hyvaksyttyApplication);
+  await fetchMockData(page, peruuntunutApplication);
 
   const app = page.getByTestId('application-hakemus-oid-2');
   await expect(
     app.getByText('Peruuntunut - Sait ylemmän hakutoiveen opiskelupaikan'),
   ).toBeVisible();
+});
+
+test('Näyttää peruuntuneelle pelkän tilan jos kuvausta ei ole', async ({
+  page,
+}) => {
+  const peruuntunutIlmanKuvaustaApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosPeruuntunutEiKuvausta],
+  };
+  await fetchMockData(page, peruuntunutIlmanKuvaustaApplication);
+
+  const app = page.getByTestId('application-hakemus-oid-2');
+  await expect(
+    app.locator('.MuiChip-root').first().getByText('Peruuntunut'),
+  ).toBeVisible();
+  await expect(
+    app.locator('.MuiChip-root').first().getByText('Peruuntunut -'),
+  ).toBeHidden();
+  const tulos = page.getByTestId('application-tulos-hakukohde-oid-3');
+  await expect(tulos.getByText('Peruuntunut')).toBeVisible();
+  await expect(tulos.getByText('Peruuntunut -')).toBeHidden();
 });
 
 test('Näyttää ensisijaisesti vastaanottotilan jos vastaanottotila ja valintatila ei ole synkassa', async ({
