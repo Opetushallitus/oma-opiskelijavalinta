@@ -4,7 +4,13 @@ import {
   Valintatila,
 } from '@/lib/valinta-tulos-types';
 import { type BadgeColor, BadgeColorKey } from '@/components/StatusBadgeChip';
-import { isDefined, isNonNullish, mapKeys, mapValues } from 'remeda';
+import {
+  isDefined,
+  isEmptyish,
+  isNonNullish,
+  mapKeys,
+  mapValues,
+} from 'remeda';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
@@ -112,7 +118,7 @@ export function getHakutoiveenTilaLabel(
     const tilanKuvaukset = hakutoiveenTulos?.tilanKuvaukset
       ? mapKeys(hakutoiveenTulos.tilanKuvaukset, (key) => key.toLowerCase())
       : undefined;
-    return tilanKuvaukset
+    return !isEmptyish(tilanKuvaukset)
       ? `${hakutoiveenTilaLabel} - ${translateEntity(tilanKuvaukset)}`
       : hakutoiveenTilaLabel;
   } else if (isHyvaksytty(hakutoiveenTulos.valintatila) && odottaaYlempaa) {
