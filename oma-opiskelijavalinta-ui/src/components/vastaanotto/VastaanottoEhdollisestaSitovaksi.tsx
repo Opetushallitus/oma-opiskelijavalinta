@@ -17,7 +17,11 @@ import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 import { VastaanottoMuutaSitovaksiModalContent } from './VastaanottoMuutaSitovaksiModalContent';
 import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
-import { getVarallaOlevatYlemmatToiveet } from './vastaanotto-utils';
+import {
+  getVarallaOlevatYlemmatToiveet,
+  VastaanottoOption,
+  VastaanottoOptionToKaannosAvain,
+} from './vastaanotto-utils';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -64,6 +68,8 @@ export function VastaanottoEhdollisestaSitovaksi({
         application.oid,
         hakutoive.oid,
         VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
+        application.haku?.oid ?? '',
+        VastaanottoOptionToKaannosAvain[VastaanottoOption.VASTAANOTA_SITOVASTI],
       );
       hideConfirmation();
     },
