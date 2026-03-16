@@ -31,24 +31,24 @@ class ViestiService @Autowired (
     hakuOid: String,
     vastaanottoKaannosAvain: String
   ): Unit = {
-    val lang         = SupportedLanguage.fi // TEMP for testing
-    val oppijanumero = authorizationService.getPersonOid.get
-    val email        = hakemuksetService.getHakemusEmail(oppijanumero, hakemusOid)
+    val oppijanumero  = authorizationService.getPersonOid.get
+    val (email, lang) = hakemuksetService.getHakemusEmailAndLang(oppijanumero, hakemusOid)
+    val asiointikieli = SupportedLanguage.valueOf(lang)
     LOGGER.info(
       s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
     )
     try {
       val haku            = koutaService.getHaku(hakuOid)
       val hakutoive       = koutaService.getHakukohde(hakukohdeOid)
-      val otsikko         = lokalisointiService.getTranslation(lang, "vastaanottoviesti.otsikko")
+      val otsikko         = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
-        lang,
+        asiointikieli,
         "vastaanottoviesti.viesti.olemme-vastaanottaneet",
         Map("aikaleima" -> LocalDateTime.now)
       )
-      val vastaanotto = lokalisointiService.getTranslation(lang, vastaanottoKaannosAvain)
+      val vastaanotto = lokalisointiService.getTranslation(asiointikieli, vastaanottoKaannosAvain)
       val vastaus     = lokalisointiService.getTranslationWithParams(
-        lang,
+        asiointikieli,
         "vastaanottoviesti.viesti.vastaanottanut",
         Map(
           "vastaus"   -> vastaanotto,
@@ -57,11 +57,11 @@ class ViestiService @Autowired (
         )
       )
       val haunNimi = lokalisointiService.getTranslationWithParams(
-        lang,
+        asiointikieli,
         "vastaanottoviesti.viesti.haku",
         Map("haku" -> haku.get.nimi)
       )
-      val alaVastaa = lokalisointiService.getTranslation(lang, "vastaanottoviesti.viesti.ala-vastaa")
+      val alaVastaa = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =
         Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => a.concat("<br />").concat(b))
 
@@ -74,7 +74,7 @@ class ViestiService @Autowired (
           .withVastaanottajat(
             ViestinvalitysBuilder
               .vastaanottajatBuilder()
-              .withVastaanottaja(Optional.empty, email.get)
+              .withVastaanottaja(Optional.empty, email)
               .build()
           )
           .withKayttooikeusRajoitukset(

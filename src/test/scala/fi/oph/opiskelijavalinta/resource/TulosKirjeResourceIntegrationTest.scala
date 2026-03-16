@@ -57,6 +57,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 None,
                 None,
+                None,
                 None
               )
             )
@@ -88,6 +89,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
                 "2025-11-19T09:32:01.886Z",
                 false,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                None,
                 None,
                 None,
                 None
@@ -124,6 +126,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
                 "2025-11-19T09:32:01.886Z",
                 false,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                None,
                 None,
                 None,
                 None

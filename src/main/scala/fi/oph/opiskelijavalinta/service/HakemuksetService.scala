@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
+  HakemuksenLahetysTiedot,
   HakemuksetEnriched,
   Hakemus,
   HakemusEnriched,
@@ -65,16 +66,22 @@ class HakemuksetService @Autowired (
     }
   }
 
-  def getHakemusEmail(oppijanumero: String, hakemusOid: String): Option[String] = {
+  def getHakemusEmailAndLang(oppijanumero: String, hakemusOid: String): (String, String) = {
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
-        LOG.error(s"Failed to fetch email for personOid $oppijanumero and hakemus $hakemusOid: ${e.getMessage}")
-        throw RuntimeException(s"Failed to fetch email")
+        LOG.error(s"Failed to fetch hakemus for personOid $oppijanumero and hakemus $hakemusOid: ${e.getMessage}")
+        throw RuntimeException("Failed to fetch hakemus data")
+
       case Right(o) =>
-        mapper
+        val hakemus = mapper
           .readValue(o, classOf[Array[Hakemus]])
-          .find(h => h.oid == hakemusOid)
-          .flatMap(h => h.email)
+          .find(_.oid == hakemusOid)
+          .getOrElse(throw RuntimeException(s"Hakemus $hakemusOid not found"))
+        val email = hakemus.email.getOrElse(
+          throw RuntimeException(s"Email missing for hakemus $hakemusOid")
+        )
+        val lang = hakemus.asiointikieli.getOrElse("fi")
+        (email, lang)
     }
   }
 

@@ -13,7 +13,8 @@ case class Hakemus(
   @JsonProperty("form-name") formName: TranslatedName,
   hakuaikaIsOn: Option[Boolean],
   hakuaikaEnds: Option[Long],
-  email: Option[String]
+  email: Option[String],
+  asiointikieli: Option[String]
 )
 
 case class HakemusVastaanottoViestille(
@@ -21,3 +22,5 @@ case class HakemusVastaanottoViestille(
   email: Option[String],
   hakutoive: Option[String]
 )
+
+case class HakemuksenLahetysTiedot(email: Option[String], asiointikieli: Option[String])

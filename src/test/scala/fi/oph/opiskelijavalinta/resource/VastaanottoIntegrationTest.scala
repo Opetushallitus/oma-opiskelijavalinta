@@ -7,6 +7,7 @@ import fi.oph.opiskelijavalinta.security.AuditOperation
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
+import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -26,6 +27,11 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def get403ResponseFromUnauthorizedUserWithoutHakemus(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "VastaanotaSitovasti",
+      "haku-oid-1",
+      "vastaanotto.vaihtoehdot.sitova"
+    )
     Mockito
       .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(Array.empty[Hakemus])))
@@ -33,7 +39,8 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
@@ -41,6 +48,11 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def get403ResponseFromUnauthorizedUserTryingToAccessWrongHakemus(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "VastaanotaSitovasti",
+      "haku-oid-1",
+      "vastaanotto.vaihtoehdot.sitova"
+    )
     Mockito
       .when(ataruClient.getHakemukset(PERSON_OID))
       .thenReturn(
@@ -57,6 +69,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 None,
                 None,
+                None,
                 None
               )
             )
@@ -67,7 +80,8 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
@@ -75,12 +89,18 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def doesVastaanotto(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "VastaanotaSitovasti",
+      "haku-oid-1",
+      "vastaanotto.vaihtoehdot.sitova"
+    )
     initProperVastaanotto()
     mvc
       .perform(
         MockMvcRequestBuilders
           .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
@@ -88,12 +108,18 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def auditLogsVastaanotto(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "VastaanotaSitovasti",
+      "haku-oid-1",
+      "vastaanotto.vaihtoehdot.sitova"
+    )
     initProperVastaanotto()
     mvc
       .perform(
         MockMvcRequestBuilders
           .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
-          .content("VastaanotaSitovasti")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
           .`with`(user(oppijaUser))
       )
     val auditLogEntry = getLatestAuditLogEntry
@@ -125,7 +151,8 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 None,
                 None,
-                None
+                Some("testi.kayttaja@example.org"),
+                Some("fi")
               )
             )
           )

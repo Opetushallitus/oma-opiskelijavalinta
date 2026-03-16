@@ -39,6 +39,7 @@ class HakemuksetServiceTest {
                 TranslatedName("Hajuton lomake", null, null),
                 None,
                 None,
+                None,
                 None
               )
             )
