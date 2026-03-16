@@ -38,7 +38,7 @@ class ViestiService @Autowired (
       s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
     )
     try {
-      val haku = koutaService.getHaku(hakuOid)
+      val haku            = koutaService.getHaku(hakuOid)
       val hakutoive       = koutaService.getHakukohde(hakukohdeOid)
       val otsikko         = lokalisointiService.getTranslation(lang, "vastaanottoviesti.otsikko")
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
@@ -47,7 +47,7 @@ class ViestiService @Autowired (
         Map("aikaleima" -> LocalDateTime.now)
       )
       val vastaanotto = lokalisointiService.getTranslation(lang, vastaanottoKaannosAvain)
-      val vastaus = lokalisointiService.getTranslationWithParams(
+      val vastaus     = lokalisointiService.getTranslationWithParams(
         lang,
         "vastaanottoviesti.viesti.vastaanottanut",
         Map(
@@ -56,7 +56,11 @@ class ViestiService @Autowired (
           "hakutoive" -> hakutoive.get.nimi
         )
       )
-      val haunNimi = lokalisointiService.getTranslationWithParams(lang, "vastaanottoviesti.viesti.haku", Map("haku" -> haku.get.nimi))
+      val haunNimi = lokalisointiService.getTranslationWithParams(
+        lang,
+        "vastaanottoviesti.viesti.haku",
+        Map("haku" -> haku.get.nimi)
+      )
       val alaVastaa = lokalisointiService.getTranslation(lang, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =
         Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => a.concat("<br />").concat(b))

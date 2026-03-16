@@ -29,7 +29,9 @@ class VastaanottoResource @Autowired (
     @RequestBody(required = true) vastaanottoDto: VastaanottoDTO,
     request: HttpServletRequest
   ): ResponseEntity[String] = {
-    LOG.info(s"Tehdään vastaanottoa ${vastaanottoDto.vastaanotto} hakemukselle $hakemusOid ja hakutoiveelle $hakukohdeOid")
+    LOG.info(
+      s"Tehdään vastaanottoa ${vastaanottoDto.vastaanotto} hakemukselle $hakemusOid ja hakutoiveelle $hakukohdeOid"
+    )
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
@@ -43,7 +45,12 @@ class VastaanottoResource @Autowired (
         AuditOperation.TallennaVastaanotto,
         Some(vastaanottoDto.vastaanotto)
       )
-      viestiService.lahetaVastaanottoViesti(hakukohdeOid, hakemusOid, vastaanottoDto.hakuOid, vastaanottoDto.vastaanottoKaannosAvain)
+      viestiService.lahetaVastaanottoViesti(
+        hakukohdeOid,
+        hakemusOid,
+        vastaanottoDto.hakuOid,
+        vastaanottoDto.vastaanottoKaannosAvain
+      )
       ResponseEntity.ok(result.get)
     }
   }
