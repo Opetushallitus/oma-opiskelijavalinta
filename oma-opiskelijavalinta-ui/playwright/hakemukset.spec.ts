@@ -6,6 +6,7 @@ import {
 } from './lib/playwrightUtils';
 import {
   hakemuksenTulosHyvaksytty,
+  hakemuksenTulosPeruuntunut,
   hakemuksenTulosVarasijalla,
   hakemuksenTulosVastaanotettu,
   hakemus1,
@@ -133,6 +134,36 @@ test('Näyttää käyttäjän hakemukset joiden tulokset ovat osittain valmiit',
   await expect(
     hakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
   ).toHaveCount(0);
+});
+
+test('Ei näytä infoa hakuajan päättymisestä jos ei ole keskeneräisiä tuloksia', async ({
+  page,
+}) => {
+  const hyvaksyttyJaPeruuntunutApplication = {
+    ...hakemus1,
+    haku: { ...hakemus1.haku, hakuaikaKaynnissa: false },
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosHyvaksytty, hakukohdeOid: 'hakukohde-oid-1' },
+      {
+        ...hakemuksenTulosPeruuntunut,
+        hakukohdeOid: 'hakukohde-oid-2',
+        julkaistavissa: false,
+      },
+    ],
+  };
+  await mockHakemuksetFetch(page, {
+    current: [hyvaksyttyJaPeruuntunutApplication],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+  const app1 = page.getByTestId('application-hakemus-oid-1');
+  await expect(
+    app1.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app1.getByText('Hakuaika on päättynyt. Tällä hetkellä'),
+  ).toBeHidden();
 });
 
 test('Näyttää jatkuvan haun hakemuksen joka ei ole käsittelyssä', async ({
