@@ -2,7 +2,7 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
-import { getKelaUrl } from '@/lib/hakemus.service';
+import { getKelaUrl } from '@/lib/hakemus-service';
 import { Box } from '@mui/material';
 import { styled } from '@/lib/theme';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
