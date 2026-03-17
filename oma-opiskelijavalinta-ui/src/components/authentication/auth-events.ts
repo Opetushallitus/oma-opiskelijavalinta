@@ -5,5 +5,6 @@ export function setUnauthorizedHandler(handler: () => void) {
 }
 
 export function notifyUnauthorized() {
+  console.log('notifyUnauthorized called');
   unauthorizedHandler?.();
 }

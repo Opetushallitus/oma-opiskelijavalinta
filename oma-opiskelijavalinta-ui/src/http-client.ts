@@ -152,6 +152,7 @@ const makeRequest = async <Result>(request: Request) => {
     return responseToData<Result>(response);
   } catch (error: unknown) {
     if (error instanceof FetchError && isUnauthenticated(error.response)) {
+      console.log('HTTP client detected 401 response, notifying auth provider');
       notifyUnauthorized();
       return Promise.reject(error);
     }
