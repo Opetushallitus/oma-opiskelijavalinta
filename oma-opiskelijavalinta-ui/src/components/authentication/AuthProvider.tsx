@@ -15,16 +15,11 @@ import { FetchError } from '@/http-client';
 
 // tilakone
 function authReducer(state: AuthState, event: AuthEvent): AuthState {
-  console.log('AuthReducer received event:', event);
   switch (event.type) {
     case 'SESSION_OK':
       return { status: 'authenticated', method: event.method };
 
     case 'SESSION_401':
-      console.log(
-        'AuthReducer handling SESSION_401 event, state before:',
-        state,
-      );
       if (state.status === 'authenticated') {
         return { status: 'expired' }; // session expired
       }
@@ -65,9 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // 401 handler
   useEffect(() => {
-    console.log('AuthProvider setting unauthorized handler');
     setUnauthorizedHandler(() => {
-      console.log('setUnauthorizedHandler, dispatching SESSION_401');
       dispatch({ type: 'SESSION_401' });
     });
   }, []);
@@ -91,10 +84,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (sessionQuery.data) {
-      console.log(
-        'Session query successful, dispatching SESSION_OK with method:',
-        sessionQuery.data.authMethod,
-      );
       dispatch({
         type: 'SESSION_OK',
         method: sessionQuery.data.authMethod as AuthMethod,
