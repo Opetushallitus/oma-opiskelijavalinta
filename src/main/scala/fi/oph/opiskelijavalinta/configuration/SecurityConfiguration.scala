@@ -207,7 +207,8 @@ class SecurityConfiguration {
             "/assets/**",
             "/js/**",
             "/token/**",
-            "/logged-out"
+            "/logged-out",
+            "/session-expired",
           )
           .permitAll()
           .requestMatchers(
