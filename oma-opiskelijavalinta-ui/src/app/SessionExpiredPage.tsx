@@ -4,9 +4,11 @@ import { Link } from 'react-router';
 import { useTranslations } from '@/hooks/useTranslations';
 import { CenteredElementsContainer } from '@/components/CenteredElementsContainer';
 import { ErrorPageIcon } from '@/components/ErrorPageIcon';
+import { loadRaamit } from '@/lib/load-raamit';
 
 const SessionExpiredPage = () => {
   const { t } = useTranslations();
+  loadRaamit();
   return (
     <>
       <title>{t('otsikko')}</title>
