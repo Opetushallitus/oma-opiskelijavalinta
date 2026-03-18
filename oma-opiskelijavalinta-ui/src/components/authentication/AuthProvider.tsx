@@ -12,6 +12,7 @@ import { setUnauthorizedHandler } from '@/components/authentication/auth-events'
 import { useConfig } from '@/configuration';
 import { FullSpinner } from '@/components/FullSpinner';
 import { FetchError } from '@/http-client';
+import { isTruthy } from 'remeda';
 
 // tilakone
 function authReducer(state: AuthState, event: AuthEvent): AuthState {
@@ -83,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   useEffect(() => {
-    if (sessionQuery.data) {
+    if (isTruthy(sessionQuery.data)) {
       dispatch({
         type: 'SESSION_OK',
         method: sessionQuery.data.authMethod as AuthMethod,
