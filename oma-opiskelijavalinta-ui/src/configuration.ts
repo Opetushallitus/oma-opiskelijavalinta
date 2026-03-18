@@ -31,6 +31,7 @@ export const getConfiguration = async () => {
         linkLoginApiUrl: `${BACKEND_API}/link-login`,
         linkLogoutApiUrl: `${BACKEND_API}/link-logout`,
         sessionApiUrl: `${BACKEND_API}/session`,
+        expiredUrl: `${HAKIJA_DOMAIN}/oma-opiskelijavalinta/session-expired`,
         lokalisointiUrl: `${VIRKAILIJA_DOMAIN}/lokalisointi/tolgee`,
         userUrl: `${BACKEND_API}/user`,
         konfo: `${HAKIJA_DOMAIN}/konfo`,

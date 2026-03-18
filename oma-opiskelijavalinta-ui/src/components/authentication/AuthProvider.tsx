@@ -105,9 +105,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       navigate('/logged-out', { replace: true });
     }
     if (state.status === 'expired' && !isPublicRoute) {
-      navigate('/session-expired', { replace: true });
+      window.location.replace(conf.routes.yleiset.expiredUrl);
     }
-  }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);
+  }, [
+    state,
+    location.pathname,
+    navigate,
+    conf.routes.yleiset.loginApiUrl,
+    conf.routes.yleiset.expiredUrl,
+  ]);
 
   // ei rendata sessiotonta tilaa
   const shouldBlockRender = state.status === 'unknown';
