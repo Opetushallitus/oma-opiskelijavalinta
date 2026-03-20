@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service
 enum AllowedIlmoittautumisTila:
   case LASNA_KOKO_LUKUVUOSI, LASNA
 
+enum AllowedVastaanottoTilaToiminto:
+  case Peru, VastaanotaSitovasti, VastaanotaSitovastiPeruAlemmat, VastaanotaEhdollisesti
+
 case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokkaaja: String, selite: String)
 
 @Service
@@ -106,8 +109,12 @@ class VTSService @Autowired (
     }
   }
 
-  def doVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String): Option[String] = {
-    vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto) match {
+  def doVastaanotto(
+    hakemusOid: String,
+    hakukohdeOid: String,
+    vastaanotto: AllowedVastaanottoTilaToiminto
+  ): Option[String] = {
+    vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto.toString) match {
       case Left(e) =>
         LOG.error(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
         throw RuntimeException(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")

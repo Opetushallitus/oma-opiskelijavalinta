@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
-  HakemuksenLahetysTiedot,
   HakemuksetEnriched,
   Hakemus,
   HakemusEnriched,

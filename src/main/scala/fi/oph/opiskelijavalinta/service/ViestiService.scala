@@ -70,7 +70,7 @@ class ViestiService @Autowired (
           .viestiBuilder()
           .withOtsikko(otsikko)
           .withHtmlSisalto(sisalto)
-          .withKielet(lang.toString)
+          .withKielet(lang)
           .withVastaanottajat(
             ViestinvalitysBuilder
               .vastaanottajatBuilder()
@@ -92,6 +92,7 @@ class ViestiService @Autowired (
     } catch {
       case e: Exception =>
         LOGGER.error(s"Vastaanottosähköpostin lähetys epäonnistui: hakukohdeOid: $hakukohdeOid, email $email", e)
+        throw RuntimeException("Vastaanottosähköpostin lähetys epäonnistui")
     }
   }
 

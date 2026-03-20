@@ -2,7 +2,12 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants.VASTAANOTTO_PATH
 import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
-import fi.oph.opiskelijavalinta.service.{AuthorizationService, VTSService, ViestiService}
+import fi.oph.opiskelijavalinta.service.{
+  AllowedVastaanottoTilaToiminto,
+  AuthorizationService,
+  VTSService,
+  ViestiService
+}
 import jakarta.validation.constraints.{NotBlank, Pattern}
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
@@ -35,7 +40,11 @@ class VastaanottoResource @Autowired (
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
-      val result = vtsService.doVastaanotto(hakemusOid, hakukohdeOid, vastaanottoDto.vastaanotto)
+      val result = vtsService.doVastaanotto(
+        hakemusOid,
+        hakukohdeOid,
+        AllowedVastaanottoTilaToiminto.valueOf(vastaanottoDto.vastaanotto)
+      )
       AuditLog.log(
         request,
         Map(
@@ -50,6 +59,15 @@ class VastaanottoResource @Autowired (
         hakemusOid,
         vastaanottoDto.hakuOid,
         vastaanottoDto.vastaanottoKaannosAvain
+      )
+      AuditLog.log(
+        request,
+        Map(
+          "hakemusOid"   -> hakemusOid,
+          "hakukohdeOid" -> hakukohdeOid
+        ),
+        AuditOperation.LahetaVastaanottoviesti,
+        None
       )
       ResponseEntity.ok(result.get)
     }

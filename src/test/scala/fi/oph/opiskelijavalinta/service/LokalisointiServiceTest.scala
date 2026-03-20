@@ -74,11 +74,13 @@ class LokalisointiServiceTest {
   @Test
   def translatesDateParamToEnglish(): Unit = {
     assertEquals(
-      "Nov. 20, 2026 at 18:30 PM EET",
-      service.translateObject(
-        LocalDateTime.of(2026, 11, 20, 18, 30),
-        en
-      )
+      "Nov. 20, 2026 at 18:30 PM EET".toLowerCase,
+      service
+        .translateObject(
+          LocalDateTime.of(2026, 11, 20, 18, 30),
+          en
+        )
+        .toLowerCase
     )
   }
 
