@@ -1,7 +1,15 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID, PERSON_OID, objectMapper, oppijaUser}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  objectMapper,
+  oppijaUser,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID,
+  PERSON_OID
+}
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, hakukohde2, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.security.AuditOperation
@@ -17,7 +25,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.UUID
 
 class VastaanottoIntegrationTest extends BaseIntegrationTest {
-
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
@@ -143,7 +150,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(AuditOperation.LahetaVastaanottoviesti.name, auditLogEntryEmail.operation)
     Assertions.assertEquals(
       Map(
-        "hakemusOid" -> HAKEMUS_OID,
+        "hakemusOid"   -> HAKEMUS_OID,
         "hakukohdeOid" -> HAKUKOHDE_OID
       ),
       auditLogEntryEmail.target
