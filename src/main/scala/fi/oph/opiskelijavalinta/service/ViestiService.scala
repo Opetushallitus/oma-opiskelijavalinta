@@ -92,7 +92,7 @@ class ViestiService @Autowired (
     } catch {
       case e: Exception =>
         LOGGER.error(s"Vastaanottosähköpostin lähetys epäonnistui: hakukohdeOid: $hakukohdeOid, email $email", e)
-        throw RuntimeException("Vastaanottosähköpostin lähetys epäonnistui")
+        throw RuntimeException("vastaanottoviesti.virhe")
     }
   }
 

@@ -184,12 +184,23 @@ export function VastaanottoRadio({
       });
       refetchTulokset();
     },
-    onError: () =>
-      showNotification({
-        message: t('vastaanotto.virhe'),
-        type: 'error',
-        duration: null,
-      }),
+    onError: (error) => {
+      console.error(error);
+      if (error.message === 'vastaanottoviesti.virhe') {
+        showNotification({
+          message: t(error.message),
+          type: 'error',
+          duration: null,
+        });
+        refetchTulokset();
+      } else {
+        showNotification({
+          message: t('vastaanotto.virhe'),
+          type: 'error',
+          duration: null,
+        });
+      }
+    },
   });
 
   const selectVastaanOtto = (event: ChangeEvent<HTMLInputElement>) => {

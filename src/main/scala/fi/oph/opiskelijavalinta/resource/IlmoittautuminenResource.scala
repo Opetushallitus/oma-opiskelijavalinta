@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.{PathVariable, PostMapping, Reque
 class IlmoittautuminenResource @Autowired (vtsService: VTSService, authorizationService: AuthorizationService) {
 
   @PostMapping(path = Array("/hakemus/{hakemusOid}/hakukohde/{hakukohdeOid}"))
-  def doVastaanotto(
+  def doIlmoittautuminen(
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakemusOid: String,
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakukohdeOid: String,
     @RequestBody(required = true) ilmoittautuminen: IlmoittautuminenDTO,

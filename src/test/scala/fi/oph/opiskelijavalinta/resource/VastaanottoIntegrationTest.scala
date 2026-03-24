@@ -1,18 +1,13 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{
-  objectMapper,
-  oppijaUser,
-  HAKEMUS_OID,
-  HAKUKOHDE_OID,
-  HAKUKOHDE_OID_2,
-  HAKU_OID,
-  PERSON_OID
-}
+import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID, PERSON_OID, objectMapper, oppijaUser}
+import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, hakukohde2, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.security.AuditOperation
+import fi.oph.opiskelijavalinta.service.LokalisointiService
+import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.vastaanotto.resource.LuoViestiSuccessResponseImpl
 import org.junit.jupiter.api.*
 import org.mockito.ArgumentMatchers.any
@@ -194,6 +189,13 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
       .thenReturn(Right("OK"))
+    val fileName: String = "/test-translation.json"
+    val text = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
+    Mockito
+      .when(lokalisointiClient.getLokalisaatiot(SupportedLanguage.fi))
+      .thenReturn(
+        Right(text)
+      )
     Mockito
       .when(viestinvalitysClient.luoViesti(any()))
       .thenReturn(
