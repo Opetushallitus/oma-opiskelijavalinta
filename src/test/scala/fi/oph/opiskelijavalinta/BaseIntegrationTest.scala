@@ -2,7 +2,14 @@ package fi.oph.opiskelijavalinta
 
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
-import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID, PERSON_OID, objectMapper}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  objectMapper,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID,
+  PERSON_OID
+}
 import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, LokalisointiClient, ValintaTulosServiceClient}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.service.{OhjausparametritService, TuloskirjeService}
@@ -128,7 +135,7 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
-  
+
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
