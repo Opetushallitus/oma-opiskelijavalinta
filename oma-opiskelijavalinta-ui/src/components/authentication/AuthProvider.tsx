@@ -8,15 +8,13 @@ import { createContext, use, useEffect, useMemo, useReducer } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getSession } from '@/lib/session-utils';
-import {
-  notifyUnauthorized,
-  setUnauthorizedHandler,
-} from '@/components/authentication/auth-events';
+import { setUnauthorizedHandler } from '@/components/authentication/auth-events';
 import { useConfig } from '@/configuration';
 import { FullSpinner } from '@/components/FullSpinner';
 import { FetchError } from '@/http-client';
 import { isTruthy } from 'remeda';
 
+// tilakone
 function authReducer(state: AuthState, event: AuthEvent): AuthState {
   switch (event.type) {
     case 'SESSION_OK':
@@ -61,26 +59,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [state, dispatch] = useReducer(authReducer, { status: 'unknown' });
 
-  // Register global 401 listener
+  // 401 handler
   useEffect(() => {
     setUnauthorizedHandler(() => {
       dispatch({ type: 'SESSION_401' });
     });
   }, []);
 
-  // session polling
+  // sessiopollaus
   const sessionQuery = useQuery<SessionResponse, unknown>({
     queryKey: ['session'],
     queryFn: getSession,
     refetchInterval: state.status === 'authenticated' ? 60000 : false,
+    refetchOnWindowFocus: true,
     staleTime: 0,
     retry: false,
     enabled: state.status === 'unknown' || state.status === 'authenticated',
     throwOnError: (error: unknown) => {
       if (error instanceof FetchError && error.response.status === 401) {
-        return false; // handled by auth reducer
+        return false; // auth reducer hoitaa 401-tilanteen
       }
-      return true; // goes to error boundary
+      return true; // error boundaryyn muut virhestatukset
     },
   });
 
@@ -90,20 +89,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         type: 'SESSION_OK',
         method: sessionQuery.data.authMethod as AuthMethod,
       });
-    } else if (isTruthy(sessionQuery.error)) {
-      const err = sessionQuery.error;
-
-      if (err && typeof err === 'object' && 'response' in err) {
-        const response = (err as { response?: Response }).response;
-        if (response?.status === 401) {
-          dispatch({ type: 'SESSION_401' });
-          notifyUnauthorized();
-        }
-      }
     }
-  }, [sessionQuery.data, sessionQuery.error]);
+  }, [sessionQuery.data]);
 
-  // Redirect logic
+  // Uudelleenohjaukset
   useEffect(() => {
     const isPublicRoute =
       location.pathname.startsWith('/token/') ||
@@ -117,11 +106,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       navigate('/logged-out', { replace: true });
     }
     if (state.status === 'expired' && !isPublicRoute) {
-      navigate('/session-expired', { replace: true });
+      window.location.replace(conf.routes.yleiset.expiredUrl);
     }
-  }, [state, location.pathname, navigate, conf.routes.yleiset.loginApiUrl]);
+  }, [
+    state,
+    location.pathname,
+    navigate,
+    conf.routes.yleiset.loginApiUrl,
+    conf.routes.yleiset.expiredUrl,
+  ]);
 
-  // Block rendering if state is unknown
+  // ei rendata sessiotonta tilaa
   const shouldBlockRender = state.status === 'unknown';
 
   const value = useMemo(() => ({ state, dispatch }), [state]);
