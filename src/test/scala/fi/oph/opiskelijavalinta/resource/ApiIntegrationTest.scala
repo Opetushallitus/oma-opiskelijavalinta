@@ -25,6 +25,7 @@ class ApiIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isOk)
       .andExpect(MockMvcResultMatchers.content().string("OK"));
 
+  @WithAnonymousUser
   @Test
   def get401ResponseFromAuthenticatedApi(): Unit = {
     mvc
