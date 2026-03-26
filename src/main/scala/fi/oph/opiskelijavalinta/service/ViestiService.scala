@@ -37,21 +37,25 @@ class ViestiService @Autowired (
     hakuOid: String,
     vastaanottoKaannosAvain: String
   ): Unit = {
-    val oppijanumero  = authorizationService.getPersonOid.get
-    val oppija        = onrClient.getPersonInfo(oppijanumero)
-    val (email, lang) = hakemuksetService.getHakemusEmailAndLang(oppijanumero, hakemusOid)
-    val asiointikieli = SupportedLanguage.valueOf(lang)
-    LOGGER.info(
-      s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
-    )
     try {
+      val oppijanumero = authorizationService.getPersonOid.get
+      val oppija       = onrClient.getPersonInfo(oppijanumero)
+      val nimi         = Seq(
+        Option(oppija.kutsumanimi).getOrElse(""),
+        Option(oppija.sukunimi).getOrElse("")
+      ).mkString(" ").trim
+      val (email, lang) = hakemuksetService.getHakemusEmailAndLang(oppijanumero, hakemusOid)
+      val asiointikieli = SupportedLanguage.valueOf(lang)
+      LOGGER.info(
+        s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
+      )
       val haku      = koutaService.getHaku(hakuOid)
       val hakutoive = koutaService.getHakukohde(hakukohdeOid)
       val otsikko   = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
       val tervehdys = lokalisointiService.getTranslationWithParams(
         asiointikieli,
         "vastaanottoviesti.tervehdys",
-        Map("nimi" -> s"${oppija.kutsumanimi.orElse("")} ${oppija.sukunimi.orElse("")}".trim)
+        Map("nimi" -> nimi)
       )
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
         asiointikieli,
@@ -105,7 +109,10 @@ class ViestiService @Autowired (
       )
     } catch {
       case e: Exception =>
-        LOGGER.error(s"Vastaanottosähköpostin lähetys epäonnistui: hakukohdeOid: $hakukohdeOid, email $email", e)
+        LOGGER.error(
+          s"Vastaanottosähköpostin lähetys epäonnistui: hakemusOid: $hakemusOid hakukohdeOid: $hakukohdeOid",
+          e
+        )
         throw ViestinvalitysException("vastaanottoviesti.virhe")
     }
   }
