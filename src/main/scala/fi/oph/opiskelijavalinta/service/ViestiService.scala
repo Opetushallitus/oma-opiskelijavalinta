@@ -1,6 +1,7 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
+import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
@@ -11,11 +12,16 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.Optional
 
+class ViestinvalitysException(message: String, cause: Throwable = null) extends RuntimeException(message, cause) {
+  def this(message: String) = this(message, null)
+}
+
 @Service
 class ViestiService @Autowired (
   hakemuksetService: HakemuksetService,
   koutaService: KoutaService,
   lokalisointiService: LokalisointiService,
+  onrClient: OnrClient,
   authorizationService: AuthorizationService,
   @Autowired @Qualifier("viestinValitysClient") viestinvalitysClient: ViestinvalitysClient
 ) {
@@ -32,15 +38,21 @@ class ViestiService @Autowired (
     vastaanottoKaannosAvain: String
   ): Unit = {
     val oppijanumero  = authorizationService.getPersonOid.get
+    val oppija        = onrClient.getPersonInfo(oppijanumero)
     val (email, lang) = hakemuksetService.getHakemusEmailAndLang(oppijanumero, hakemusOid)
     val asiointikieli = SupportedLanguage.valueOf(lang)
     LOGGER.info(
       s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
     )
     try {
-      val haku            = koutaService.getHaku(hakuOid)
-      val hakutoive       = koutaService.getHakukohde(hakukohdeOid)
-      val otsikko         = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
+      val haku      = koutaService.getHaku(hakuOid)
+      val hakutoive = koutaService.getHakukohde(hakukohdeOid)
+      val otsikko   = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
+      val tervehdys = lokalisointiService.getTranslationWithParams(
+        asiointikieli,
+        "vastaanottoviesti.tervehdys",
+        Map("nimi" -> s"${oppija.kutsumanimi.orElse("")} ${oppija.sukunimi.orElse("")}".trim)
+      )
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
         asiointikieli,
         "vastaanottoviesti.viesti.olemme-vastaanottaneet",
@@ -63,7 +75,9 @@ class ViestiService @Autowired (
       )
       val alaVastaa = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =
-        Array(vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) => a.concat("<br />").concat(b))
+        Array(tervehdys, vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) =>
+          a.concat("<br /><br />").concat(b)
+        )
 
       viestinvalitysClient.luoViesti(
         ViestinvalitysBuilder
@@ -92,7 +106,7 @@ class ViestiService @Autowired (
     } catch {
       case e: Exception =>
         LOGGER.error(s"Vastaanottosähköpostin lähetys epäonnistui: hakukohdeOid: $hakukohdeOid, email $email", e)
-        throw RuntimeException("vastaanottoviesti.virhe")
+        throw ViestinvalitysException("vastaanottoviesti.virhe")
     }
   }
 

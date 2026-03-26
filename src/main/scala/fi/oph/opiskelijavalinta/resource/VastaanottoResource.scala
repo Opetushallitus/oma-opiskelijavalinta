@@ -6,7 +6,8 @@ import fi.oph.opiskelijavalinta.service.{
   AllowedVastaanottoTilaToiminto,
   AuthorizationService,
   VTSService,
-  ViestiService
+  ViestiService,
+  ViestinvalitysException
 }
 import jakarta.validation.constraints.{NotBlank, Pattern}
 import jakarta.servlet.http.HttpServletRequest
@@ -39,37 +40,54 @@ class VastaanottoResource @Autowired (
     )
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
+    } else if (!AllowedVastaanottoTilaToiminto.values.exists(_.toString == vastaanottoDto.vastaanotto)) {
+      ResponseEntity
+        .badRequest()
+        .body("Virheellinen vastaanottotoiminto")
     } else {
-      val result = vtsService.doVastaanotto(
-        hakemusOid,
-        hakukohdeOid,
-        AllowedVastaanottoTilaToiminto.valueOf(vastaanottoDto.vastaanotto)
-      )
-      AuditLog.log(
-        request,
-        Map(
-          "hakemusOid"   -> hakemusOid,
-          "hakukohdeOid" -> hakukohdeOid
-        ),
-        AuditOperation.TallennaVastaanotto,
-        Some(vastaanottoDto.vastaanotto)
-      )
-      viestiService.lahetaVastaanottoViesti(
-        hakukohdeOid,
-        hakemusOid,
-        vastaanottoDto.hakuOid,
-        vastaanottoDto.vastaanottoKaannosAvain
-      )
-      AuditLog.log(
-        request,
-        Map(
-          "hakemusOid"   -> hakemusOid,
-          "hakukohdeOid" -> hakukohdeOid
-        ),
-        AuditOperation.LahetaVastaanottoviesti,
-        None
-      )
-      ResponseEntity.ok(result.get)
+      try {
+        val result = vtsService.doVastaanotto(
+          hakemusOid,
+          hakukohdeOid,
+          AllowedVastaanottoTilaToiminto.valueOf(vastaanottoDto.vastaanotto)
+        )
+        AuditLog.log(
+          request,
+          Map(
+            "hakemusOid"   -> hakemusOid,
+            "hakukohdeOid" -> hakukohdeOid
+          ),
+          AuditOperation.TallennaVastaanotto,
+          Some(vastaanottoDto.vastaanotto)
+        )
+        viestiService.lahetaVastaanottoViesti(
+          hakukohdeOid,
+          hakemusOid,
+          vastaanottoDto.hakuOid,
+          vastaanottoDto.vastaanottoKaannosAvain
+        )
+        AuditLog.log(
+          request,
+          Map(
+            "hakemusOid"   -> hakemusOid,
+            "hakukohdeOid" -> hakukohdeOid
+          ),
+          AuditOperation.LahetaVastaanottoviesti,
+          None
+        )
+        ResponseEntity.ok(result.get)
+      } catch {
+        case e: ViestinvalitysException =>
+          LOG.error("Vastaanottoviestin lähettäminen epäonnistui: {}", e.getMessage)
+          ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("vastaanottoviesti.virhe")
+        case _: Exception =>
+          LOG.error("Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}", hakemusOid, hakukohdeOid)
+          ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("vastaanotto.virhe")
+      }
     }
   }
 }

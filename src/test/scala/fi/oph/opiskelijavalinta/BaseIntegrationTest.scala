@@ -10,7 +10,13 @@ import fi.oph.opiskelijavalinta.TestUtils.{
   HAKU_OID,
   PERSON_OID
 }
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, LokalisointiClient, ValintaTulosServiceClient}
+import fi.oph.opiskelijavalinta.clients.{
+  AtaruClient,
+  KoutaClient,
+  LokalisointiClient,
+  OnrClient,
+  ValintaTulosServiceClient
+}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.service.{OhjausparametritService, TuloskirjeService}
 import fi.oph.viestinvalitys.ViestinvalitysClient
@@ -135,6 +141,9 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
+
+  @MockitoBean(reset = MockReset.NONE)
+  val onrClient: OnrClient = Mockito.mock(classOf[OnrClient])
 
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()

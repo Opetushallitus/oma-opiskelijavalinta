@@ -10,12 +10,12 @@ import fi.oph.opiskelijavalinta.TestUtils.{
   HAKU_OID,
   PERSON_OID
 }
-import fi.oph.opiskelijavalinta.clients.LokalisointiClient
+import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, hakukohde2, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.security.AuditOperation
-import fi.oph.opiskelijavalinta.service.LokalisointiService
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
+import fi.oph.viestinvalitys.ViestinvalitysClientException
 import fi.oph.viestinvalitys.vastaanotto.resource.LuoViestiSuccessResponseImpl
 import org.junit.jupiter.api.*
 import org.mockito.ArgumentMatchers.any
@@ -25,6 +25,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import scala.jdk.CollectionConverters.*
 import java.util.UUID
 
 class VastaanottoIntegrationTest extends BaseIntegrationTest {
@@ -100,6 +101,89 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isForbidden)
+  }
+
+  @Test
+  def get400ResponseFromInvalidVastaanottoTila(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "FooBar",
+      HAKU_OID,
+      "vastaanotto.vaihtoehdot.sitova"
+    )
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
+          .`with`(user(oppijaUser))
+      )
+      .andExpect(status().isBadRequest)
+  }
+
+  @Test
+  def get500ResponseWithMessageForFailedViestinvalitys(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "VastaanotaSitovasti",
+      HAKU_OID,
+      "vastaanotto.vaihtoehdot.sitova"
+    )
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                HAKEMUS_OID,
+                HAKU_OID,
+                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                None,
+                None,
+                Some("testi.kayttaja@example.org"),
+                Some("fi")
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(koutaClient.getHaku(HAKU_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    Mockito
+      .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
+      .thenReturn(Right("OK"))
+    val fileName: String = "/test-translation.json"
+    val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
+    Mockito
+      .when(lokalisointiClient.getLokalisaatiot(SupportedLanguage.fi))
+      .thenReturn(
+        Right(text)
+      )
+    Mockito
+      .when(viestinvalitysClient.luoViesti(any()))
+      .thenThrow(new ViestinvalitysClientException(Set.empty.asJava, 500))
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
+          .`with`(user(oppijaUser))
+      )
+      .andExpect(status().isInternalServerError)
+      .andReturn()
+    Assertions.assertTrue(result.getResponse.getContentAsString.contains("vastaanottoviesti.virhe"))
   }
 
   @Test
@@ -194,6 +278,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    Mockito.when(onrClient.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
     Mockito
       .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
       .thenReturn(Right("OK"))
