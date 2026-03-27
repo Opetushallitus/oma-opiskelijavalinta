@@ -45,12 +45,14 @@ class ViestiService @Autowired (
         Option(oppija.sukunimi).getOrElse("")
       ).mkString(" ").trim
       val (email, lang) = hakemuksetService.getHakemusEmailAndLang(oppijanumero, hakemusOid)
-      val asiointikieli = SupportedLanguage.valueOf(lang)
+      val asiointikieli = SupportedLanguage.values.find(_.toString == lang.toUpperCase).getOrElse(SupportedLanguage.fi)
       LOGGER.info(
         s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
       )
-      val haku      = koutaService.getHaku(hakuOid)
-      val hakutoive = koutaService.getHakukohde(hakukohdeOid)
+      val haku = koutaService.getHaku(hakuOid).getOrElse(throw new RuntimeException(s"Hakua ei löytynyt: $hakuOid"))
+      val hakutoive = koutaService
+        .getHakukohde(hakukohdeOid)
+        .getOrElse(throw new RuntimeException(s"Hakukohdetta ei löytynyt: $hakukohdeOid"))
       val otsikko   = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
       val tervehdys = lokalisointiService.getTranslationWithParams(
         asiointikieli,
@@ -68,14 +70,14 @@ class ViestiService @Autowired (
         "vastaanottoviesti.viesti.vastaanottanut",
         Map(
           "vastaus"   -> vastaanotto,
-          "paikka"    -> hakutoive.get.jarjestyspaikkaHierarkiaNimi,
-          "hakutoive" -> hakutoive.get.nimi
+          "paikka"    -> hakutoive.jarjestyspaikkaHierarkiaNimi,
+          "hakutoive" -> hakutoive.nimi
         )
       )
       val haunNimi = lokalisointiService.getTranslationWithParams(
         asiointikieli,
         "vastaanottoviesti.viesti.haku",
-        Map("haku" -> haku.get.nimi)
+        Map("haku" -> haku.nimi)
       )
       val alaVastaa = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =

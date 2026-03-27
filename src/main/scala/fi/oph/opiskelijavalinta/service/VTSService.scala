@@ -117,7 +117,9 @@ class VTSService @Autowired (
     vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto.toString) match {
       case Left(e) =>
         LOG.error(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}")
-        throw RuntimeException(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}")
+        throw RuntimeException(
+          s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}"
+        )
       case Right(o) =>
         Option.apply(o)
     }
@@ -136,7 +138,9 @@ class VTSService @Autowired (
     vtsClient.postIlmoittautuminen(hakemusOid, hakuOid, requestBody) match {
       case Left(e) =>
         LOG.error(s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}")
-        throw RuntimeException(s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}")
+        throw RuntimeException(
+          s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}"
+        )
       case Right(o) => Option.apply(o)
     }
   }

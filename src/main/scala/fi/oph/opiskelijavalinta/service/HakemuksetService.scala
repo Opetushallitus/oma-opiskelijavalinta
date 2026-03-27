@@ -68,7 +68,9 @@ class HakemuksetService @Autowired (
   def getHakemusEmailAndLang(oppijanumero: String, hakemusOid: String): (String, String) = {
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
-        LOG.error(s"Virhe hakemuksen haussa oppijanumerolla $oppijanumero ja hakemusnumerolla $hakemusOid: ${e.getMessage}")
+        LOG.error(
+          s"Virhe hakemuksen haussa oppijanumerolla $oppijanumero ja hakemusnumerolla $hakemusOid: ${e.getMessage}"
+        )
         throw RuntimeException("Virhe hakemustietojen haussa")
 
       case Right(o) =>

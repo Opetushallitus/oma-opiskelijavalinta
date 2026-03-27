@@ -42,7 +42,9 @@ class KoutaClient @Autowired (koutaCasClient: CasClient) {
           LOG.debug("Kouta-tiedot haettu onnistuneesti")
           Right(r.getResponseBody())
         case r =>
-          LOG.error(s"Virhe kouta-tietojen hakemisessa: ${r.getStatusCode} ${r.getStatusText} $url ${r.getResponseBody()}")
+          LOG.error(
+            s"Virhe kouta-tietojen hakemisessa: ${r.getStatusCode} ${r.getStatusText} $url ${r.getResponseBody()}"
+          )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
       Await.result(result, Duration(5, TimeUnit.SECONDS))

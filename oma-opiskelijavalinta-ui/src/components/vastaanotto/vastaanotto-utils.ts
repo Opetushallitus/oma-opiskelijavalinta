@@ -46,7 +46,7 @@ export const VastaanottoOptionToKaannosAvain: Record<
   [VastaanottoOption.VASTAANOTA_EHDOLLISESTI_KK]:
     'vastaanotto.vaihtoehdot.ehdollinen',
   [VastaanottoOption.VASTAANOTA_SITOVASTI_PERU_ALEMMAT]:
-    'vastaanotto.vaihtoehdot.vastaanota-peru-alemmat', //TODO: tämä ei ota huomioon yksikkömuotoa
+    'vastaanotto.vaihtoehdot.vastaanota-peru-alemmat', // OPHYOS-39 viilailuissa voi huomioida yksikkö vs monikko
 } as const;
 
 export const VastaanottoModalParams: Record<

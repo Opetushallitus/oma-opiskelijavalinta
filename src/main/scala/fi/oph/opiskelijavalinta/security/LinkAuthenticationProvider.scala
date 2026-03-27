@@ -34,7 +34,9 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
       )
 
     if (!verification.exists || !verification.valid) {
-      throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: virheellinen tai vanhentunut kirjautumistoken")
+      throw new LinkAuthenticationException(
+        "Virhe linkkikirjautumisessa: virheellinen tai vanhentunut kirjautumistoken"
+      )
     }
 
     val meta = verification.metadata.getOrElse(

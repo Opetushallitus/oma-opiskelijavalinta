@@ -35,6 +35,15 @@ class VastaanottoResource @Autowired (
     @RequestBody(required = true) vastaanottoDto: VastaanottoDTO,
     request: HttpServletRequest
   ): ResponseEntity[String] = {
+    val sallitutKaannosavaimet = Set(
+      "vastaanotto.vaihtoehdot.vastaanota",
+      "vastaanotto.vaihtoehdot.sitova",
+      "vastaanotto.vaihtoehdot.peru",
+      "vastaanotto.vaihtoehdot.sitova-ei-jonotusta",
+      "vastaanotto.vaihtoehdot.ehdollinen",
+      "vastaanotto.vaihtoehdot.vastaanota-peru-alemmat",
+      "vastaanotto.vaihtoehdot.vastaanota-peru-alempi"
+    )
     LOG.info(
       s"Tehdään vastaanottoa ${vastaanottoDto.vastaanotto} hakemukselle $hakemusOid ja hakutoiveelle $hakukohdeOid"
     )
@@ -44,6 +53,10 @@ class VastaanottoResource @Autowired (
       ResponseEntity
         .badRequest()
         .body("Virheellinen vastaanottotoiminto")
+    } else if (!sallitutKaannosavaimet.contains(vastaanottoDto.vastaanotto)) {
+      ResponseEntity
+        .badRequest()
+        .body("Virheellinen vastaanottotoiminnon käännösavain")
     } else {
       try {
         val result = vtsService.doVastaanotto(

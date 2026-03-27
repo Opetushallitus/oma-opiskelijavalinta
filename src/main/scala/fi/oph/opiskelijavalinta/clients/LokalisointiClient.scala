@@ -1,6 +1,5 @@
 package fi.oph.opiskelijavalinta.clients
 
-import com.fasterxml.jackson.annotation.JsonValue
 import fi.oph.opiskelijavalinta.Constants
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
