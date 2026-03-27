@@ -39,16 +39,18 @@ class KoutaClient @Autowired (koutaCasClient: CasClient) {
     try {
       val result = asScala(koutaCasClient.execute(req)).map {
         case r if r.getStatusCode == 200 =>
-          LOG.info("Succesfully fetched kouta info")
+          LOG.debug("Kouta-tiedot haettu onnistuneesti")
           Right(r.getResponseBody())
         case r =>
-          LOG.error(s"Error fetching kouta data: ${r.getStatusCode} ${r.getStatusText} $url ${r.getResponseBody()}")
+          LOG.error(
+            s"Virhe kouta-tietojen hakemisessa: ${r.getStatusCode} ${r.getStatusText} $url ${r.getResponseBody()}"
+          )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
       Await.result(result, Duration(5, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
-        LOG.error(s"Error fetching kouta data: ${e.getMessage}", e)
+        LOG.error(s"Virhe kouta-tietojen hakemisessa: ${e.getMessage}", e)
         Left(e)
     }
   }

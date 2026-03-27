@@ -22,6 +22,7 @@ import {
   hasAlemmatVastaanotot,
   VastaanottoModalParams,
   VastaanottoOption,
+  VastaanottoOptionToKaannosAvain,
   VastaanottoOptionToToiminto,
 } from './vastaanotto-utils';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
@@ -166,6 +167,10 @@ export function VastaanottoRadio({
         application.oid,
         hakutoive.oid,
         VastaanottoOptionToToiminto[selectedVastaanotto as VastaanottoOption],
+        application.haku?.oid ?? '',
+        VastaanottoOptionToKaannosAvain[
+          selectedVastaanotto as VastaanottoOption
+        ],
       );
       hideConfirmation();
     },
@@ -179,12 +184,23 @@ export function VastaanottoRadio({
       });
       refetchTulokset();
     },
-    onError: () =>
-      showNotification({
-        message: t('vastaanotto.virhe'),
-        type: 'error',
-        duration: null,
-      }),
+    onError: (error) => {
+      console.error(error);
+      if (error.message === 'vastaanottoviesti.virhe') {
+        showNotification({
+          message: t(error.message),
+          type: 'error',
+          duration: null,
+        });
+        refetchTulokset();
+      } else {
+        showNotification({
+          message: t('vastaanotto.virhe'),
+          type: 'error',
+          duration: null,
+        });
+      }
+    },
   });
 
   const selectVastaanOtto = (event: ChangeEvent<HTMLInputElement>) => {

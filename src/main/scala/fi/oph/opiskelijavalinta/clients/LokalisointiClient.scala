@@ -2,21 +2,22 @@ package fi.oph.opiskelijavalinta.clients
 
 import fi.oph.opiskelijavalinta.Constants
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
+import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import org.asynchttpclient.Dsl.asyncHttpClient
-import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClientConfig, RequestBuilder, Response}
+import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClientConfig, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Value
 
 import java.util.concurrent.TimeUnit
-import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration.Duration
 
-class OhjausparametritClient {
+class LokalisointiClient {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[OhjausparametritClient])
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiClient])
 
   private val client: AsyncHttpClient = asyncHttpClient(
     new DefaultAsyncHttpClientConfig.Builder()
@@ -28,8 +29,8 @@ class OhjausparametritClient {
   // TODO http-clientien thread pool OPHYOS-47
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
-  def getOhjausparametritForHaku(hakuOid: String): Either[Throwable, String] = {
-    val url = s"https://$opintopolku_virkailija_domain/ohjausparametrit-service/api/v1/rest/parametri/$hakuOid"
+  def getLokalisaatiot(lang: SupportedLanguage): Either[Throwable, String] = {
+    val url = s"https://$opintopolku_virkailija_domain/lokalisointi/tolgee/oma-opiskelijavalinta/$lang.json"
     fetch(url)
   }
 
@@ -42,25 +43,25 @@ class OhjausparametritClient {
       .setRequestTimeout(java.time.Duration.ofMillis(5000))
       .build()
 
-    LOG.info(s"Haetaan ohjausparametrit osoitteesta: $url")
+    LOG.info(s"Haetaan käännökset osoitteesta: $url")
 
     try
       val futureResponse: Future[Either[Throwable, String]] =
         toScalaFuture(client.executeRequest(req)).map { r =>
           if r.getStatusCode == 200 then
-            LOG.debug(s"Ohjausparametrit haettu onnistunesti")
+            LOG.debug(s"Käännökset haettu onnistunesti")
             Right(r.getResponseBody())
           else
             val msg =
               s"HTTP ${r.getStatusCode}: ${r.getStatusText} - ${r.getResponseBody}"
-            LOG.error(s"Virhe Ohjausparametrien hakemisessa: $msg")
+            LOG.error(s"Virhe käännösten hakemisessa: $msg")
             Left(RuntimeException(msg))
         }
       // Synchronous wait
       Await.result(futureResponse, Duration(5, TimeUnit.SECONDS))
     catch
       case e: Throwable =>
-        LOG.error(s"Virhe ohjausparametrien hakemisessa: ${e.getMessage}", e)
+        LOG.error(s"Virhe käännösten hakemisessa: ${e.getMessage}", e)
         Left(e)
   }
 

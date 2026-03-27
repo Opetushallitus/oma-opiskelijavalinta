@@ -33,6 +33,22 @@ export const VastaanottoOptionToToiminto: Record<
     VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI_PERU_ALEMMAT,
 } as const;
 
+export const VastaanottoOptionToKaannosAvain: Record<
+  VastaanottoOption,
+  string
+> = {
+  [VastaanottoOption.PERU]: 'vastaanotto.vaihtoehdot.peru',
+  [VastaanottoOption.VASTAANOTA_SITOVASTI]:
+    'vastaanotto.vaihtoehdot.vastaanota',
+  [VastaanottoOption.VASTAANOTA_SITOVASTI_KK]: 'vastaanotto.vaihtoehdot.sitova',
+  [VastaanottoOption.VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK]:
+    'vastaanotto.vaihtoehdot.sitova-ei-jonotusta',
+  [VastaanottoOption.VASTAANOTA_EHDOLLISESTI_KK]:
+    'vastaanotto.vaihtoehdot.ehdollinen',
+  [VastaanottoOption.VASTAANOTA_SITOVASTI_PERU_ALEMMAT]:
+    'vastaanotto.vaihtoehdot.vastaanota-peru-alemmat', // OPHYOS-39 viilailuissa voi huomioida yksikkö vs monikko
+} as const;
+
 export const VastaanottoModalParams: Record<
   VastaanottoOption,
   {

@@ -1,9 +1,5 @@
 package fi.oph.opiskelijavalinta
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
 import fi.oph.opiskelijavalinta.TestUtils.{
@@ -14,17 +10,16 @@ import fi.oph.opiskelijavalinta.TestUtils.{
   HAKU_OID,
   PERSON_OID
 }
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, OhjausparametritClient, ValintaTulosServiceClient}
-import fi.oph.opiskelijavalinta.model.{
-  DateParam,
-  Hakemus,
-  Haku,
-  Hakuaika,
-  Hakukohde,
-  OhjausparametritRaw,
-  TranslatedName
+import fi.oph.opiskelijavalinta.clients.{
+  AtaruClient,
+  KoutaClient,
+  LokalisointiClient,
+  OnrClient,
+  ValintaTulosServiceClient
 }
+import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.service.{OhjausparametritService, TuloskirjeService}
+import fi.oph.viestinvalitys.ViestinvalitysClient
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
@@ -33,14 +28,13 @@ import org.postgresql.ds.PGSimpleDataSource
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.{UseMainMethod, WebEnvironment}
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.system.{CapturedOutput, OutputCaptureExtension}
 import org.springframework.cache.CacheManager
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.bean.`override`.convention.TestBean
 import org.springframework.test.context.bean.`override`.mockito.{MockReset, MockitoBean}
 import org.springframework.test.util.TestSocketUtils
 import org.springframework.test.web.servlet.MockMvc
@@ -142,6 +136,15 @@ class BaseIntegrationTest {
   val valintaTulosServiceClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
   var mvc: MockMvc                                         = null
 
+  @MockitoBean(reset = MockReset.NONE)
+  val viestinvalitysClient: ViestinvalitysClient = Mockito.mock(classOf[ViestinvalitysClient])
+
+  @MockitoBean(reset = MockReset.NONE)
+  val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
+
+  @MockitoBean(reset = MockReset.NONE)
+  val onrClient: OnrClient = Mockito.mock(classOf[OnrClient])
+
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()
     val intermediate: DefaultMockMvcBuilder = MockMvcBuilders.webAppContextSetup(context).apply(configurer)
@@ -163,7 +166,9 @@ class BaseIntegrationTest {
                 false,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 Option.empty,
-                Option.empty
+                Option.empty,
+                None,
+                None
               )
             )
           )
@@ -189,6 +194,19 @@ class BaseIntegrationTest {
     val entry = objectMapper.readValue(output, classOf[AuditLogEntry])
     outputLength = capturedOutput.length()
     entry
+
+  def getAllAuditLogEntries: List[AuditLogEntry] =
+    val entries = capturedOutput
+      .subSequence(outputLength, capturedOutput.length())
+      .toString
+      .split("\n")
+      .filter(_.contains(".AuditLog"))
+      .map(_.split("\\.AuditLog(\\s)+:(\\s)+")(1))
+      .map(json => objectMapper.readValue(json, classOf[AuditLogEntry]))
+      .toList
+
+    outputLength = capturedOutput.length()
+    entries
 
   @BeforeEach def beforeEach(output: CapturedOutput): Unit =
     capturedOutput = output

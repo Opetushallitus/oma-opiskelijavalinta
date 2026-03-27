@@ -37,8 +37,10 @@ class HakemuksetServiceTest {
                 "2025-02-02T19:32:01Z",
                 false,
                 TranslatedName("Hajuton lomake", null, null),
-                Option.empty,
-                Option.empty
+                None,
+                None,
+                None,
+                None
               )
             )
           )

@@ -43,8 +43,8 @@ class HakemuksetService @Autowired (
   def getHakemukset(oppijanumero: String): HakemuksetEnriched = {
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
-        LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-        throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+        LOG.error(s"Virhe hakemusten hakemisessa henkilölle, personOid $oppijanumero: ${e.getMessage}")
+        throw RuntimeException("Hakemuksien haku epäonnistui")
       case Right(o) =>
         val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
         val enriched = apps.map(a => enrichHakemus(a))
@@ -58,10 +58,31 @@ class HakemuksetService @Autowired (
   def getHakemusOids(oppijanumero: String): List[String] = {
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
-        LOG.error(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
-        throw RuntimeException(s"Failed to fetch applications for personOid $oppijanumero: ${e.getMessage}")
+        LOG.error(s"Virhe hakemus-oidien haussa oppijanumerolla $oppijanumero: ${e.getMessage}")
+        throw RuntimeException("Hakemusoidien haku oppijanumerolla epäonnistui")
       case Right(o) =>
         mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
+    }
+  }
+
+  def getHakemusEmailAndLang(oppijanumero: String, hakemusOid: String): (String, String) = {
+    ataruClient.getHakemukset(oppijanumero) match {
+      case Left(e) =>
+        LOG.error(
+          s"Virhe hakemuksen haussa oppijanumerolla $oppijanumero ja hakemusnumerolla $hakemusOid: ${e.getMessage}"
+        )
+        throw RuntimeException("Virhe hakemustietojen haussa")
+
+      case Right(o) =>
+        val hakemus = mapper
+          .readValue(o, classOf[Array[Hakemus]])
+          .find(_.oid == hakemusOid)
+          .getOrElse(throw RuntimeException(s"Virhe: hakemusta $hakemusOid ei löytynyt"))
+        val email = hakemus.email.getOrElse(
+          throw RuntimeException(s"Sähköpostiosoite puuttuu hakemukselta $hakemusOid")
+        )
+        val lang = hakemus.asiointikieli.getOrElse("fi")
+        (email, lang)
     }
   }
 

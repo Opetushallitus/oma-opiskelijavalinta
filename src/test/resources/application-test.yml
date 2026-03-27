@@ -9,6 +9,9 @@ oma-opiskelijavalinta:
     region: dummy
     bucket: dummy
 
+viestinvalityspalvelu:
+  url: dummy
+
 logging:
   level:
     root: INFO

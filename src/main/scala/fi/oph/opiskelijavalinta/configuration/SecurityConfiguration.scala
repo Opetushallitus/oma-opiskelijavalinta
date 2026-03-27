@@ -12,6 +12,7 @@ import fi.oph.opiskelijavalinta.security.{
   OppijaUserDetails
 }
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
+import fi.oph.viestinvalitys.{ClientBuilder, ViestinvalitysClient}
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
@@ -140,6 +141,20 @@ class SecurityConfiguration {
     )
   }
 
+  @Bean(Array("viestinValitysClient"))
+  def viestinvalitysClient(
+    @Value("${viestinvalityspalvelu.url}") viestinValitysUrl: String = null
+  ): ViestinvalitysClient = {
+    ClientBuilder
+      .viestinvalitysClientBuilder()
+      .withEndpoint(viestinValitysUrl)
+      .withUsername(cas_username)
+      .withPassword(cas_password)
+      .withCasEndpoint(s"https://$opintopolku_virkailija_domain/cas")
+      .withCallerId(Constants.CALLER_ID)
+      .build()
+  }
+
   private def isFrontEndRoute: String => Boolean = path =>
     path.equals("/index.html") || path.equals("/") || path.startsWith("/token") || path.startsWith(
       "/logged-out"
@@ -147,9 +162,6 @@ class SecurityConfiguration {
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
-    LOG.debug(
-      s"FrontendResourceFilter: ${request.getRemoteAddr} ${request.asInstanceOf[HttpServletRequest].getRequestURI}"
-    )
     val req         = request.asInstanceOf[HttpServletRequest]
     val res         = response.asInstanceOf[HttpServletResponse]
     val contextPath = req.getContextPath
@@ -157,13 +169,11 @@ class SecurityConfiguration {
     val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
     val isForwarded = request.getAttribute("custom.forwarded") != null
     if (!isForwarded && isFrontEndRoute(path)) {
-      LOG.debug(s"Forwarding to index.html")
       // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
       request.setAttribute("custom.forwarded", true)
       // Forwardoidaan frontend-pyyntö html-tiedostoon
       request.getRequestDispatcher("/index.html").forward(request, response)
     } else {
-      LOG.debug(s"continue filter chain for path: $path")
       chain.doFilter(request, response)
     }
   }

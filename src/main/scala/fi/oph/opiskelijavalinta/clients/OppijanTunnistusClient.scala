@@ -34,18 +34,18 @@ class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient) {
     try {
       val result = asScala(oppijanTunnistusCasClient.execute(req)).map {
         case r if r.getStatusCode == 200 =>
-          LOG.debug("Succesfully verified oppijan-tunnistus token")
+          LOG.debug("Oppijan-tunnistus token verifioitiin")
           Right(r.getResponseBody())
         case r =>
           LOG.error(
-            s"Error verifying token in oppijan-tunnistus: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
+            s"Virhe oppijan-tunnistus tokenin verifioinnissa: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
           Left(new RuntimeException("Failed to verify token: " + r.getResponseBody()))
       }
       Await.result(result, Duration(5, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
-        LOG.error(s"Error verifying token in oppijan-tunnistus: ${e.getMessage}", e)
+        LOG.error(s"Virhe oppijan-tunnistus tokenin verioinnissa: ${e.getMessage}", e)
         Left(e)
     }
   }

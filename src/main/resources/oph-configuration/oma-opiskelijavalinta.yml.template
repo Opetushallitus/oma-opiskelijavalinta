@@ -21,6 +21,9 @@ cas-service:
   sendRenew: false
   key: oma-opiskelijavalinta
 
+viestinvalityspalvelu:
+ url: {{viestinvalityspalvelu_url}}
+
 logging:
   level:
     root: INFO

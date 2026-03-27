@@ -93,6 +93,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 false,
                 TranslatedName("LinkkiLomake", "Samma på svenska", "Linkform"),
                 None,
+                None,
+                None,
                 None
               ),
               Hakemus(
@@ -103,6 +105,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 "2025-11-19T09:32:01.886Z",
                 false,
                 TranslatedName("WanhaLomake", "Gamla form", "Oldform"),
+                None,
+                None,
                 None,
                 None
               )

@@ -17,7 +17,7 @@ class SessionResource @Autowired (authorizationService: AuthorizationService) {
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[SessionResponse] = {
-    LOG.info("Getting session")
+    LOG.debug("Haetaan sessio")
     val linkUser   = authorizationService.hasLinkUserRole
     val authMethod = if (linkUser) "link" else "cas"
     ResponseEntity.ok(SessionResponse(authMethod))

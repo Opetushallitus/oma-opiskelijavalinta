@@ -24,7 +24,7 @@ class LinkVerificationService @Autowired (
 
     oppijanTunnistusClient.verifyToken(token) match {
       case Left(e) =>
-        LOG.error(s"Verification failed for token $token: ${e.getMessage}")
+        LOG.error(s"Verifiointi epäonnistui tokenille $token: ${e.getMessage}")
         Option.empty
       case Right(o) =>
         Option

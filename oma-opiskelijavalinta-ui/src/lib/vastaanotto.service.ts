@@ -9,12 +9,16 @@ import {
 async function postVastaanotto(
   hakemusOid: string,
   hakukohdeOid: string,
-  vastaanotto: VastaanottoTilaToiminto,
+  requestBody: {
+    vastaanotto: VastaanottoTilaToiminto;
+    hakuOid: string;
+    vastaanottoKaannosAvain: string;
+  },
 ) {
   const config = await getConfiguration();
   return await client.post<string>(
     `${config.routes.vastaanotto}/hakemus/${hakemusOid}/hakukohde/${hakukohdeOid}`,
-    vastaanotto,
+    requestBody,
   );
 }
 
@@ -46,8 +50,11 @@ export async function doVastaanotto(
   hakemusOid: string,
   hakukohdeOid: string,
   vastaanotto: VastaanottoTilaToiminto,
+  hakuOid: string,
+  vastaanottoKaannosAvain: string,
 ): Promise<string> {
-  const response = await postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto);
+  const requestBody = { vastaanotto, hakuOid, vastaanottoKaannosAvain };
+  const response = await postVastaanotto(hakemusOid, hakukohdeOid, requestBody);
   return response.data;
 }
 

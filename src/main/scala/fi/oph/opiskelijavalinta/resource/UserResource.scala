@@ -18,7 +18,7 @@ class UserResource @Autowired (private val onrClient: OnrClient) {
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[Oppija] = {
-    LOG.info("Getting User details")
+    LOG.info("Haetaan käyttäjän tiedot")
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.attributes.get("personOid")
     val hetu: Option[String]      = principal.attributes.get("nationalIdentificationNumber")

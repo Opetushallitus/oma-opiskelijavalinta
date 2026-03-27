@@ -58,8 +58,10 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
                 "2025-11-19T09:32:01.886Z",
                 false,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                Option.empty,
-                Option.empty
+                None,
+                None,
+                None,
+                None
               )
             )
           )
@@ -92,8 +94,10 @@ class IlmoittautuminenIntegrationTest extends BaseIntegrationTest {
                 "2025-11-19T09:32:01.886Z",
                 false,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                Option.empty,
-                Option.empty
+                None,
+                None,
+                None,
+                None
               )
             )
           )

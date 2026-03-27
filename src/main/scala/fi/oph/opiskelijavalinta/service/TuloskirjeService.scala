@@ -45,7 +45,7 @@ class TuloskirjeService(
       case Failure(e: NoSuchKeyException) =>
         None
       case Failure(e) =>
-        LOGGER.error(s"Error while trying to get file data $filename", e)
+        LOGGER.error(s"Virhe tuloskirjetiedoston haussa, tiedosto: $filename", e)
         None
     }
   }
@@ -65,7 +65,7 @@ class TuloskirjeService(
       case Failure(e: NoSuchKeyException) =>
         None
       case Failure(e) =>
-        LOGGER.error(s"Error while trying to get file metadata $filename", e)
+        LOGGER.error(s"Virhe tiedoston metadatan haussa, tiedosto $filename", e)
         None
     }
   }

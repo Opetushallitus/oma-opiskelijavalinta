@@ -34,18 +34,18 @@ class AtaruClient @Autowired (ataruCasClient: CasClient) {
     try {
       val result = asScala(ataruCasClient.execute(req)).map {
         case r if r.getStatusCode == 200 =>
-          LOG.debug("Succesfully fetched applications")
+          LOG.debug("Hakemukset haettu onnistuneesti")
           Right(r.getResponseBody())
         case r =>
           LOG.error(
-            s"Error fetching applications from hakemuspalvelu: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
+            s"Virhe haettaessa hakemuksia hakemuspalvelusta: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
       Await.result(result, Duration(5, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
-        LOG.error(s"Error fetching applications from hakemuspalvelu: ${e.getMessage}", e)
+        LOG.error(s"Virhe haettaessa hakemuksia hakemuspalvelusta: ${e.getMessage}", e)
         Left(e)
     }
   }

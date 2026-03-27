@@ -6,6 +6,7 @@ import org.springframework.cache.caffeine.CaffeineCacheManager
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager
 import org.springframework.context.annotation.{Bean, Configuration}
 import com.github.benmanes.caffeine.cache.{Caffeine, LoadingCache}
+import fi.oph.opiskelijavalinta.configuration
 
 import java.util.concurrent.TimeUnit
 
@@ -15,6 +16,7 @@ object CacheConstants {
   final val KOUTA_HAKUKOHDE_CACHE_NAME  = "KOUTA_HAKUKOHDE_CACHE"
   final val OHJAUSPARAMETRIT_CACHE_NAME = "OHJAUSPARAMETRIT_CACHE"
   final val KOODISTO_CACHE_NAME         = "KOODISTO_CACHE"
+  final val LOKALISOINTI_CACHE_NAME     = "LOKALISOINTI_CACHE"
 
   final val DEFAULT_EXPIRATION_MINUTES = 15
   final val DEFAULT_MAX_SIZE           = 10000
@@ -30,6 +32,7 @@ class CacheConfiguration {
       CacheConstants.KOODISTO_CACHE_NAME,
       CacheConstants.KOUTA_HAKU_CACHE_NAME,
       CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME,
+      CacheConstants.LOKALISOINTI_CACHE_NAME,
       CacheConstants.OHJAUSPARAMETRIT_CACHE_NAME,
       CacheConstants.OAUTH2_CACHE_NAME
     )

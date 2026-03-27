@@ -42,25 +42,25 @@ class KoodistoClient {
       .setRequestTimeout(java.time.Duration.ofMillis(5000))
       .build()
 
-    LOG.info(s"Fetching koodisto from: $url")
+    LOG.info(s"Haetaan koodisto urlista: $url")
 
     try
       val futureResponse: Future[Either[Throwable, String]] =
         toScalaFuture(client.executeRequest(req)).map { r =>
           if r.getStatusCode == 200 then
-            LOG.debug(s"Successfully fetched koodisto")
+            LOG.debug(s"Koodisto haettu onnistuneesti")
             Right(r.getResponseBody())
           else
             val msg =
               s"HTTP ${r.getStatusCode}: ${r.getStatusText} - ${r.getResponseBody}"
-            LOG.error(s"Error fetching koodisto: $msg")
+            LOG.error(s"Virhe koodiston hakemisessa: $msg")
             Left(RuntimeException(msg))
         }
       // Synchronous wait
       Await.result(futureResponse, Duration(5, TimeUnit.SECONDS))
     catch
       case e: Throwable =>
-        LOG.error(s"Exception fetching koodisto: ${e.getMessage}", e)
+        LOG.error(s"Virhe koodiston hakemisessa: ${e.getMessage}", e)
         Left(e)
   }
 

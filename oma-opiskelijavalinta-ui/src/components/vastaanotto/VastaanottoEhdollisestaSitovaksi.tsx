@@ -17,7 +17,11 @@ import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 import { VastaanottoMuutaSitovaksiModalContent } from './VastaanottoMuutaSitovaksiModalContent';
 import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
-import { getVarallaOlevatYlemmatToiveet } from './vastaanotto-utils';
+import {
+  getVarallaOlevatYlemmatToiveet,
+  VastaanottoOption,
+  VastaanottoOptionToKaannosAvain,
+} from './vastaanotto-utils';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -64,6 +68,8 @@ export function VastaanottoEhdollisestaSitovaksi({
         application.oid,
         hakutoive.oid,
         VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
+        application.haku?.oid ?? '',
+        VastaanottoOptionToKaannosAvain[VastaanottoOption.VASTAANOTA_SITOVASTI],
       );
       hideConfirmation();
     },
@@ -74,12 +80,23 @@ export function VastaanottoEhdollisestaSitovaksi({
       });
       refetchTulokset();
     },
-    onError: () =>
-      showNotification({
-        message: t('vastaanotto.virhe'),
-        type: 'error',
-        duration: null,
-      }),
+    onError: (error) => {
+      console.error(error);
+      if (error.message === 'vastaanottoviesti.virhe') {
+        showNotification({
+          message: t(error.message),
+          type: 'error',
+          duration: null,
+        });
+        refetchTulokset();
+      } else {
+        showNotification({
+          message: t('vastaanotto.virhe'),
+          type: 'error',
+          duration: null,
+        });
+      }
+    },
   });
 
   const setSitovaksiChecked = () => {
