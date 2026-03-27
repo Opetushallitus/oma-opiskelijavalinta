@@ -53,7 +53,7 @@ class VastaanottoResource @Autowired (
       ResponseEntity
         .badRequest()
         .body("Virheellinen vastaanottotoiminto")
-    } else if (!sallitutKaannosavaimet.contains(vastaanottoDto.vastaanotto)) {
+    } else if (!sallitutKaannosavaimet.contains(vastaanottoDto.vastaanottoKaannosAvain)) {
       ResponseEntity
         .badRequest()
         .body("Virheellinen vastaanottotoiminnon käännösavain")
