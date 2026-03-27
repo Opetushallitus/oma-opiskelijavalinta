@@ -21,13 +21,13 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
 
   @Override
   def removeSessionByMappingId(mappingId: String): HttpSession = {
-    LOG.info(s"Poistetaan sessiomappaus cas tiketillä $mappingId")
+    LOG.debug(s"Poistetaan sessiomappaus cas tiketillä $mappingId")
     val query =
       sql"""SELECT session_id FROM #$mappingTableName WHERE mapped_ticket_id = $mappingId""".as[String].headOption
     val sessionIdOpt = Await.result(db.run(query), Duration(10, TimeUnit.SECONDS))
-    LOG.info(s"Löytyi poistettava sessio $sessionIdOpt")
+    LOG.debug(s"Löytyi poistettava sessio $sessionIdOpt")
     sessionIdOpt.foreach { sessionId =>
-      LOG.info(s"Poistetaan sessio $sessionId")
+      LOG.debug(s"Poistetaan sessio $sessionId")
       sessionRepository.deleteById(sessionId)
     }
     null
@@ -35,14 +35,14 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
 
   @Override
   def removeBySessionById(sessionId: String): Unit = {
-    LOG.info(s"Poistetaan sessiomappaus session id:llä $sessionId")
+    LOG.debug(s"Poistetaan sessiomappaus session id:llä $sessionId")
     val sql = sqlu"""DELETE FROM #$mappingTableName WHERE session_id = $sessionId"""
     Await.result(db.run(sql), Duration(10, TimeUnit.SECONDS))
   }
 
   @Override
   def addSessionById(mappingId: String, session: HttpSession): Unit = {
-    LOG.info(s"Lisätään sessiomappaus, mappingId: $mappingId, sessionId: ${session.getId}")
+    LOG.debug(s"Lisätään sessiomappaus, mappingId: $mappingId, sessionId: ${session.getId}")
     val sql =
       sqlu"""INSERT INTO #$mappingTableName (mapped_ticket_id, session_id) VALUES ($mappingId, ${session.getId}) ON CONFLICT (mapped_ticket_id) DO NOTHING"""
     Await.result(db.run(sql), Duration(10, TimeUnit.SECONDS))

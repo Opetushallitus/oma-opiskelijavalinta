@@ -29,7 +29,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
 
     koutaClient.getHaku(hakuOid) match {
       case Left(e) =>
-        LOG.warn(s"Failed to fetch haku data for $hakuOid: ${e.getMessage}")
+        LOG.warn(s"Virhe haun tietojen hakemisessa haku-oidilla $hakuOid: ${e.getMessage}")
         Option.empty
       case Right(o) =>
         Option
@@ -41,7 +41,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   def getHakukohde(hakukohdeOid: String): Option[Hakukohde] = {
     koutaClient.getHakukohde(hakukohdeOid) match {
       case Left(e) =>
-        LOG.warn(s"Failed to fetch haku data for $hakukohdeOid: ${e.getMessage}")
+        LOG.warn(s"Virhe hakukohteen tietojen hakemusessa oidilla $hakukohdeOid: ${e.getMessage}")
         Option.empty
       case Right(o) =>
         Option.apply(mapper.readValue(o, classOf[Hakukohde]))

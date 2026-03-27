@@ -40,7 +40,7 @@ class LinkLoginController(
   ): ResponseEntity[Any] = {
 
     if (token == null || token.trim.isEmpty) {
-      LOG.warn("Missing token in link login")
+      LOG.warn("Linkkikirjautumisesta puuttui token")
       return ResponseEntity
         .badRequest()
         .body(Map("error" -> "missing_token"))
@@ -61,7 +61,7 @@ class LinkLoginController(
 
     } catch {
       case ex: LinkAuthenticationException =>
-        LOG.warn("Link login failed: {}", ex.getMessage)
+        LOG.warn("Virhe linkkikirjautumisessa: {}", ex.getMessage)
         SecurityContextHolder.clearContext()
         ResponseEntity
           .status(HttpStatus.FORBIDDEN)

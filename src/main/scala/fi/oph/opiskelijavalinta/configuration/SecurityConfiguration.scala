@@ -162,9 +162,6 @@ class SecurityConfiguration {
 
   @Bean
   def frontendResourceFilter: Filter = (request: ServletRequest, response: ServletResponse, chain: FilterChain) => {
-    LOG.debug(
-      s"FrontendResourceFilter: ${request.getRemoteAddr} ${request.asInstanceOf[HttpServletRequest].getRequestURI}"
-    )
     val req         = request.asInstanceOf[HttpServletRequest]
     val res         = response.asInstanceOf[HttpServletResponse]
     val contextPath = req.getContextPath
@@ -172,13 +169,11 @@ class SecurityConfiguration {
     val queryString = Option(req.getQueryString).map(q => s"?$q").getOrElse("")
     val isForwarded = request.getAttribute("custom.forwarded") != null
     if (!isForwarded && isFrontEndRoute(path)) {
-      LOG.debug(s"Forwarding to index.html")
       // Lisätään attribuutti, jotta voidaan välttää redirect-looppi edellisessä haarassa
       request.setAttribute("custom.forwarded", true)
       // Forwardoidaan frontend-pyyntö html-tiedostoon
       request.getRequestDispatcher("/index.html").forward(request, response)
     } else {
-      LOG.debug(s"continue filter chain for path: $path")
       chain.doFilter(request, response)
     }
   }

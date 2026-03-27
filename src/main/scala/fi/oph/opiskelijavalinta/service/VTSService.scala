@@ -90,7 +90,7 @@ class VTSService @Autowired (
     vtsClient.getValinnanTulokset(hakuOid, hakemusOid) match {
       case Left(e) =>
         LOG.error(
-          s"Failed to fetch valinnantulos data for hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}"
+          s"Virhe valinnan tuloksien hakemisessa, hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}"
         )
         Option.empty
       case Right(o) =>
@@ -116,8 +116,8 @@ class VTSService @Autowired (
   ): Option[String] = {
     vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto.toString) match {
       case Left(e) =>
-        LOG.error(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
-        throw RuntimeException(s"Failed to do vastaanotto for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+        LOG.error(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}")
+        throw RuntimeException(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}")
       case Right(o) =>
         Option.apply(o)
     }
@@ -135,8 +135,8 @@ class VTSService @Autowired (
     )
     vtsClient.postIlmoittautuminen(hakemusOid, hakuOid, requestBody) match {
       case Left(e) =>
-        LOG.error(s"Failed to do ilmoittautuminen for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
-        throw RuntimeException(s"Failed to do ilmoittautuminen for $hakemusOid, $hakukohdeOid: ${e.getMessage}")
+        LOG.error(s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}")
+        throw RuntimeException(s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}")
       case Right(o) => Option.apply(o)
     }
   }

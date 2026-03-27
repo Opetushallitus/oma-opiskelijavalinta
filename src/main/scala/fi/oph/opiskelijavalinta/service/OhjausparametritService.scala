@@ -26,7 +26,7 @@ class OhjausparametritService @Autowired (
 
     ohjausparametritClient.getOhjausparametritForHaku(hakuOid) match {
       case Left(e) =>
-        LOG.info(s"Failed to fetch ohjausparametrit for $hakuOid: ${e.getMessage}")
+        LOG.info(s"Ohjausparametrien haku epäonnistui haulle $hakuOid: ${e.getMessage}")
         Option.empty
       case Right(o) => Option.apply(mapper.readValue(o, classOf[OhjausparametritRaw]))
     }

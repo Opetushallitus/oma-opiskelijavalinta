@@ -25,24 +25,24 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
   ): org.springframework.security.core.Authentication = {
 
     val token = authentication.asInstanceOf[LinkAuthenticationToken].token
-    LOG.info(s"Authenticating link token: $token")
+    LOG.debug(s"Autentikoidaan oppijan-tunnistus token: $token")
 
     val verification = linkVerificationService
       .verify(token)
       .getOrElse(
-        throw new LinkAuthenticationException("Token valid but metadata missing")
+        throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: validi token mutta data puuttuu")
       )
 
     if (!verification.exists || !verification.valid) {
-      throw new LinkAuthenticationException("Invalid or expired token")
+      throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: virheellinen tai vanhentunut kirjautumistoken")
     }
 
     val meta = verification.metadata.getOrElse(
-      throw new LinkAuthenticationException("Token valid but metadata missing")
+      throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: tokenin metadata puuttuu")
     )
 
     val personOid = meta.personOid.getOrElse(
-      throw new LinkAuthenticationException("Missing personOid in token metadata")
+      throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: oppijan oid puuttuu metadatasta")
     )
     val hakemusOid = meta.hakemusOid
 
