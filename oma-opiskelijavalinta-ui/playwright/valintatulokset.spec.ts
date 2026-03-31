@@ -295,7 +295,7 @@ test('Näyttää priorisoidun kk-haun alemman hakutoiveen hyväksytylle tuloksel
         ...hakemuksenTulosHyvaksytty,
         hakukohdeOid: 'hakukohde-oid-2',
         valintatila: 'HYVAKSYTTY',
-        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_EHDOLLISESTI',
       },
     ],
   };

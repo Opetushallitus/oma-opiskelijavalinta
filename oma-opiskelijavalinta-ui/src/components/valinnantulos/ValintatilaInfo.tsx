@@ -177,11 +177,6 @@ const getKkVastaanottoInfo = (
     getVarallaOlevatMuutToiveet(hakemus, tulos.hakukohdeOid).length > 0;
   return (
     <>
-      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
-        <OphTypography sx={{ fontWeight: 'bolder' }}>
-          {t('vastaanotto.info.jonotus')}
-        </OphTypography>
-      )}
       {getVastaanottoPaattyyInfo(vastaanottoPaattyy, true)}
       {yps && (
         <OphTypography>
@@ -193,7 +188,7 @@ const getKkVastaanottoInfo = (
           {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
         </OphTypography>
       )}
-      {hakemus.priorisoidutHakutoiveet && ylempiaVaralla && (
+      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('vastaanotto.info.jonotus')}
         </OphTypography>
