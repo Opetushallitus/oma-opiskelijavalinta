@@ -6,6 +6,8 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { BulletedList, BulletItem } from './BulletedList';
 import { isTruthy } from 'remeda';
 import { styled } from '@/lib/theme';
+import { useAuth } from './authentication/AuthProvider';
+import { isLinkUser } from '@/lib/auth/auth-util';
 
 const PersonInfoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -21,6 +23,10 @@ export default function Info() {
     queryFn: getUser,
   });
 
+  const { state } = useAuth();
+
+  const isLinkLogin = isLinkUser(state);
+
   return (
     <Box>
       <PersonInfoContainer>
@@ -35,7 +41,9 @@ export default function Info() {
       </PersonInfoContainer>
       <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>
       <BulletedList>
-        <BulletItem>{t('info.hakemukset')}</BulletItem>
+        <BulletItem>
+          {t(isLinkLogin ? 'info.hakemus' : 'info.hakemukset')}
+        </BulletItem>
         <BulletItem>{t('info.liitteet')}</BulletItem>
         <BulletItem>{t('info.tulokset')}</BulletItem>
         <BulletItem>{t('info.vastaanotto')}</BulletItem>

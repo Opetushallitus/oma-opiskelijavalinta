@@ -21,11 +21,33 @@ function determineHakemusType(hakemus: Hakemus, past = false): JSX.Element {
   ) : isNonNullish(hakemus.haku) ? (
     <HakemusContainer key={`application-${hakemus.oid}}`} hakemus={hakemus} />
   ) : (
-    <HautonHakemusContainer // OPHYOS-52:ssa tämän paikka saattaa muuttua
+    <HautonHakemusContainer
       key={`application-${hakemus.oid}}`}
       hakemus={hakemus}
     />
   );
+}
+
+export function LinkHakemus() {
+  const { data: hakemukset } = useSuspenseQuery({
+    queryKey: ['hakemukset'],
+    queryFn: getHakemukset,
+  });
+
+  if (hakemukset.current.concat(hakemukset.old).length > 1) {
+    console.error(
+      'Linkillä tunnistautuneella käyttäjällä pitäisi olla vain yksi hakemus',
+    );
+  }
+
+  if (hakemukset.current.length > 1 && isNonNullish(hakemukset.current[0])) {
+    return determineHakemusType(hakemukset.current[0]);
+  } else if (hakemukset.old.length > 1 && isNonNullish(hakemukset.old[0])) {
+    return determineHakemusType(hakemukset.old[0]);
+  } else {
+    console.error('Linkillä tunnistautuneella käyttäjällä ei ollut hakemusta');
+    return null;
+  }
 }
 
 function HakemuksetList() {

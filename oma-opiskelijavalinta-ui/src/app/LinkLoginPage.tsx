@@ -5,7 +5,7 @@ import { useConfig } from '@/configuration';
 import { FetchError, LoginForbiddenError } from '@/http-client';
 import { ErrorView } from '@/components/ErrorView';
 import { useAuth } from '@/components/authentication/AuthProvider';
-import type { AuthMethod } from '@/components/authentication/auth-types';
+import type { AuthMethod } from '@/lib/auth/auth-types';
 import { LocalizationProvider } from '@/components/LocalizationProvider';
 
 export default function LinkLoginPage() {
