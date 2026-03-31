@@ -22,7 +22,7 @@ import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
 import { getVarallaOlevatMuutToiveet } from '@/components/valinnantulos/valinnan-tulos-utils';
 
-const getEhdollisestiVastaanottanutInfo = (
+export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
   lang: Language,
 ) => {

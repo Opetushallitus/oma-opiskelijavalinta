@@ -2,6 +2,7 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import type { Hakukohde } from '@/lib/kouta-types';
 import {
   Valintatila,
+  VASTAANOTETTU_TILAT,
   VastaanottoTila,
   VastaanottoTilaToiminto,
 } from '@/lib/valinta-tulos-types';
@@ -156,3 +157,10 @@ const VASTAANOTETTAVISSA_TILAT = new Set<string>([
 export const vastaanotettavissa = (vastaanotettavuustila: string | undefined) =>
   isNonNullish(vastaanotettavuustila) &&
   VASTAANOTETTAVISSA_TILAT.has(vastaanotettavuustila);
+
+export function isVastaanotettu(vastaanottotila: string | undefined): boolean {
+  return (
+    isNonNullish(vastaanottotila) &&
+    VASTAANOTETTU_TILAT.includes(vastaanottotila as VastaanottoTila)
+  );
+}
