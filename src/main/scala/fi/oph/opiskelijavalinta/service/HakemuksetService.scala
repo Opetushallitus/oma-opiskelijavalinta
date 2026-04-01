@@ -87,8 +87,8 @@ class HakemuksetService @Autowired (
   }
 
   private def isAjankohtainenHaullinenHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
-      val now = System.currentTimeMillis()
-      now < ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
+    val now = System.currentTimeMillis()
+    now < ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
   private def isAjankohtainenHakemus(hakemus: HakemusEnriched) = {
