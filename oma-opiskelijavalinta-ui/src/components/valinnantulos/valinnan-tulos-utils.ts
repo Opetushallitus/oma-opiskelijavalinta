@@ -286,7 +286,9 @@ export function onkoJulkaisemattomiaValinnantiloja(
   return (
     hakutoiveet.length > hakemuksenTulokset.length ||
     hakemuksenTulokset.filter(
-      (ht) => ht.valintatila && ht.valintatila === Valintatila.KESKEN,
+      (ht) =>
+        (ht.valintatila && ht.valintatila === Valintatila.KESKEN) ||
+        !ht.julkaistavissa,
     ).length > 0
   );
 }

@@ -434,6 +434,7 @@ test('Näyttää tuloksen vaikka julkaistavissa on false', async ({ page }) => {
     ],
   };
   await fetchMockData(page, hyvaksyttyJaPeruuntunutApplication);
+  await expect(page.getByText('Hakuaika päättyy')).toBeVisible();
   const tulos1 = page.getByTestId('application-tulos-hakukohde-oid-1');
   await expect(tulos1.getByText('Hyväksytty')).toBeVisible();
   const tulos2 = page.getByTestId('application-tulos-hakukohde-oid-2');
