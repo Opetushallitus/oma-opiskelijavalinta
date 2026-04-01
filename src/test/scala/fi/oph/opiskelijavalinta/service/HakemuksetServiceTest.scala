@@ -25,27 +25,7 @@ class HakemuksetServiceTest {
   def applicationWithoutHakuDoesNotCallOtherServices(): Unit = {
     Mockito
       .when(ataruClient.getHakemukset(OPPIJA_NUMERO))
-      .thenReturn(
-        Right(
-          objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                "application-oid-1",
-                null,
-                List.empty,
-                "secret-1",
-                "2025-02-02T19:32:01Z",
-                false,
-                TranslatedName("Hajuton lomake", null, null),
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      )
+      .thenReturn(hautonHakemus(true))
     val hakemukset = service.getHakemukset(OPPIJA_NUMERO)
     Assertions.assertEquals(0, hakemukset.current.length)
     Assertions.assertEquals(1, hakemukset.old.length)
@@ -56,5 +36,44 @@ class HakemuksetServiceTest {
     Assertions.assertTrue(app.hakukohteet.isEmpty)
     Assertions.assertTrue(app.ohjausparametrit.isEmpty)
     Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
+  }
+
+  @Test
+  def applicationWithoutHakuAndHavingProcessingStatusIsPastApplication(): Unit = {
+    Mockito
+      .when(ataruClient.getHakemukset(OPPIJA_NUMERO))
+      .thenReturn(hautonHakemus(false))
+    val hakemukset = service.getHakemukset(OPPIJA_NUMERO)
+    Assertions.assertEquals(1, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    val app = hakemukset.current.head
+    Assertions.assertEquals("application-oid-1", app.oid)
+    Assertions.assertEquals("Hajuton lomake", app.formName.fi)
+    Assertions.assertTrue(app.haku.isEmpty)
+    Assertions.assertTrue(app.hakukohteet.isEmpty)
+    Assertions.assertTrue(app.ohjausparametrit.isEmpty)
+    Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
+  }
+
+  private def hautonHakemus(processing: Boolean) = {
+    Right(
+      objectMapper.writeValueAsString(
+        Array(
+          Hakemus(
+            "application-oid-1",
+            null,
+            List.empty,
+            "secret-1",
+            "2025-02-02T19:32:01Z",
+            processing,
+            TranslatedName("Hajuton lomake", null, null),
+            None,
+            None,
+            None,
+            None
+          )
+        )
+      )
+    )
   }
 }

@@ -49,8 +49,8 @@ class HakemuksetService @Autowired (
         val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
         val enriched = apps.map(a => enrichHakemus(a))
         HakemuksetEnriched(
-          enriched.filter(a => isAjankohtainenHakemus(a.ohjausparametrit)),
-          enriched.filter(a => isVanhaHakemus(a.ohjausparametrit))
+          enriched.filter(isAjankohtainenHakemus),
+          enriched.filter(isVanhaHakemus)
         )
     }
   }
@@ -86,14 +86,26 @@ class HakemuksetService @Autowired (
     }
   }
 
-  private def isAjankohtainenHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
+  private def isAjankohtainenHaullinenHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
     val now = System.currentTimeMillis()
     now < ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
-  private def isVanhaHakemus(ohjausparametrit: Option[Ohjausparametrit]) = {
-    val now = System.currentTimeMillis()
-    now >= ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
+  private def isAjankohtainenHakemus(hakemus: HakemusEnriched) = {
+    if (hakemus.haku.isEmpty) {
+      !hakemus.processing
+    } else {
+      isAjankohtainenHaullinenHakemus(hakemus.ohjausparametrit)
+    }
+  }
+
+  private def isVanhaHakemus(hakemus: HakemusEnriched) = {
+    if (hakemus.haku.isEmpty) {
+      hakemus.processing
+    } else {
+      val now = System.currentTimeMillis()
+      now >= hakemus.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
+    }
   }
 
   private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
@@ -138,7 +150,7 @@ class HakemuksetService @Autowired (
           )
         })
       // haetaan tulokset vain ajankohtaisille hakemuksille
-      if (isAjankohtainenHakemus(ohjausparametrit)) {
+      if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
         // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
         hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
           case Some(v) => v.hakutoiveet

@@ -12,7 +12,10 @@ import { HautonHakemusContainer } from './HautonHakemusContainer';
 import type { JSX } from 'react';
 import type { Hakemus } from '@/lib/hakemus-types';
 
-function determineHakemusType(hakemus: Hakemus, past = false): JSX.Element {
+export function determineHakemusType(
+  hakemus: Hakemus,
+  past = false,
+): JSX.Element {
   return isNonNullish(hakemus.haku) && past ? (
     <MennytHakemusContainer
       key={`application-${hakemus.oid}}`}
@@ -21,7 +24,7 @@ function determineHakemusType(hakemus: Hakemus, past = false): JSX.Element {
   ) : isNonNullish(hakemus.haku) ? (
     <HakemusContainer key={`application-${hakemus.oid}}`} hakemus={hakemus} />
   ) : (
-    <HautonHakemusContainer // OPHYOS-52:ssa tämän paikka saattaa muuttua
+    <HautonHakemusContainer
       key={`application-${hakemus.oid}}`}
       hakemus={hakemus}
     />

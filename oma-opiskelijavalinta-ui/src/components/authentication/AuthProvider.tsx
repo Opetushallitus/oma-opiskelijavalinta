@@ -3,7 +3,7 @@ import type {
   AuthMethod,
   AuthState,
   SessionResponse,
-} from '@/components/authentication/auth-types';
+} from '@/lib/auth/auth-types';
 import { createContext, use, useEffect, useMemo, useReducer } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';

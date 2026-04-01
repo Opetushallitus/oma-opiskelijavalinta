@@ -42,7 +42,7 @@ export function HakukohteetAccordion({
 }) {
   const { t, translateEntity } = useTranslations();
 
-  const accordionSummaryId = `past-hakutoiveet-accordion-${hakemus.oid}`;
+  const accordionSummaryId = `hakutoiveet-accordion-${hakemus.oid}`;
 
   return (
     <StyledAccordion>

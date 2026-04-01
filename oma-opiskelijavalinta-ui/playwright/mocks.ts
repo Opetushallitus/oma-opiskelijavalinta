@@ -1,5 +1,14 @@
 import { clone } from 'remeda';
 import type { Page } from '@playwright/test';
+import type {
+  HakemuksetResponse,
+  HakemusResponse,
+} from '@/lib/hakemus-service';
+import {
+  VastaanottoTila,
+  type HakutoiveenTulosDto,
+} from '@/lib/valinta-tulos-types';
+import type { Haku } from '@/lib/kouta-types';
 
 export const mockSession = async (page: Page) => {
   await page.route('**/api/session', async (route) => {
@@ -13,14 +22,14 @@ export const mockSession = async (page: Page) => {
   });
 };
 
-export const hakemus1 = {
+export const hakemus1: HakemusResponse = {
   oid: 'hakemus-oid-1',
   secret: 'secret-1',
   haku: {
     oid: 'haku-oid-1',
     nimi: { fi: 'Hurrikaaniopiston erillishaku 2025' },
     hakuaikaKaynnissa: true,
-    viimeisinPaattynytHakuAika: '2025-10-19T13:00:00',
+    viimeisinPaattynytHakuAika: 1760868000000,
     hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
@@ -36,6 +45,7 @@ export const hakemus1 = {
         fi: 'linkkioppilaitokseen.fi',
         en: 'linktostudyplace.fi',
       },
+      yhdenPaikanSaanto: { voimassa: false },
     },
     {
       oid: 'hakukohde-oid-2',
@@ -43,6 +53,8 @@ export const hakemus1 = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: { voimassa: false },
     },
   ],
   ohjausparametrit: {
@@ -52,16 +64,23 @@ export const hakemus1 = {
     varasijatayttoPaattyy: 1779471212000,
   },
   hakemuksenTulokset: [],
+  processing: false,
+  formName: {
+    fi: 'Hurrikaaniopiston lomake',
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
-export const hakemus2 = {
+export const hakemus2: HakemusResponse = {
   oid: 'hakemus-oid-2',
   secret: 'secret-2',
   haku: {
     oid: 'haku-oid-2',
     nimi: { fi: 'Tsunamiopiston tohtoritutkinnon haku 2025' },
     hakuaikaKaynnissa: false,
-    viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+    viimeisinPaattynytHakuAika: 1750312800000,
     hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
@@ -74,24 +93,32 @@ export const hakemus2 = {
         fi: 'Tsunamiopisto, Merenpohjan kampus',
       },
       yhdenPaikanSaanto: { voimassa: true },
+      uudenOpiskelijanUrl: null,
     },
   ],
   ohjausparametrit: {
     hakukierrosPaattyy: 1763971212000,
   },
   hakemuksenTulokset: [],
+  processing: false,
+  formName: {
+    fi: 'Tsunamiopiston lomake',
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
-export const TOISEN_ASTEEN_YHTEISHAKU = {
+export const TOISEN_ASTEEN_YHTEISHAKU: Haku = {
   oid: 'haku-oid-3',
   nimi: { fi: 'Toisten asteen yhteishaku 2024' },
   hakuaikaKaynnissa: false,
-  viimeisinPaattynytHakuAika: '2025-06-19T09:00:00',
+  viimeisinPaattynytHakuAika: 1750312800000,
   hakutapaKoodiUri: 'hakutapa_01',
   kohdejoukkoKoodiUri: 'haunkohdejoukko_11',
 };
 
-export const JATKUVA_HAKU = {
+export const JATKUVA_HAKU: Haku = {
   oid: 'haku-oid-4',
   nimi: { fi: 'Rötkönperän jatkuva haku' },
   hakuaikaKaynnissa: true,
@@ -99,7 +126,7 @@ export const JATKUVA_HAKU = {
   kohdejoukkoKoodiUri: 'haunkohdejoukko_23',
 };
 
-export const hakemus3ToinenAste = {
+export const hakemus3ToinenAste: HakemusResponse = {
   oid: 'hakemus-oid-3',
   secret: 'secret-3',
   haku: TOISEN_ASTEEN_YHTEISHAKU,
@@ -111,6 +138,10 @@ export const hakemus3ToinenAste = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Rekun Lukio, Helsingin Kaupunki',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: {
+        voimassa: false,
+      },
     },
   ],
   ohjausparametrit: {
@@ -119,43 +150,39 @@ export const hakemus3ToinenAste = {
   hakemuksenTulokset: [
     {
       hakukohdeOid: 'hakukohde-oid-4',
-      hakukohdeNimi: 'Lukiokoulutus',
-      tarjoajaOid: 'tarjoaja-oid-4',
-      tarjoajaNimi: 'Rekun Lukio, Helsingin Kaupunki',
-      valintatapajonoOid: '2349',
       valintatila: 'HYVAKSYTTY',
-      vastaanottotila: 'KESKEN',
+      vastaanottotila: VastaanottoTila.KESKEN,
       ilmoittautumistila: {
-        ilmoittautumisaika: {},
         ilmoittautumistila: 'EI_TEHTY',
         ilmoittauduttavissa: false,
       },
       vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
       vastaanottoDeadline: '2025-12-11T13:00:00Z',
-      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
       julkaistavissa: true,
       ehdollisestiHyvaksyttavissa: false,
-      tilanKuvaukset: {},
-      showMigriURL: false,
       jonokohtaisetTulostiedot: [
         {
           oid: '2349',
           nimi: '',
           valintatila: 'HYVAKSYTTY',
           julkaistavissa: true,
-          tilanKuvaukset: {},
           ehdollisestiHyvaksyttavissa: false,
-          ehdollisenHyvaksymisenEhto: {},
-          eiVarasijatayttoa: false,
-          varasijasaannotKaytossa: false,
         },
       ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
     },
   ],
+  processing: false,
+  formName: {
+    fi: 'Toisen asteen yhteishaun lomake',
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
-export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
+export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
   oid: 'hakemus-oid-4',
   secret: 'secret-4',
   haku: TOISEN_ASTEEN_YHTEISHAKU,
@@ -167,6 +194,10 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Rekun Lukio, Helsingin Kaupunki',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: {
+        voimassa: false,
+      },
     },
     {
       oid: 'hakukohde-oid-5',
@@ -174,12 +205,20 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Romuttamo, Romujenkerääjät RY',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: {
+        voimassa: false,
+      },
     },
     {
       oid: 'hakukohde-oid-6',
       nimi: { fi: 'Putkimiehen perustutkinto' },
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Putkittamo, Putket Vuotaa OY',
+      },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: {
+        voimassa: false,
       },
     },
   ],
@@ -190,113 +229,87 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {
   hakemuksenTulokset: [
     {
       hakukohdeOid: 'hakukohde-oid-4',
-      hakukohdeNimi: 'Lukiokoulutus',
-      tarjoajaOid: 'tarjoaja-oid-4',
-      tarjoajaNimi: 'Rekun Lukio, Helsingin Kaupunki',
-      valintatapajonoOid: '2349',
       valintatila: 'HYVAKSYTTY',
-      vastaanottotila: 'KESKEN',
+      vastaanottotila: VastaanottoTila.KESKEN,
       ilmoittautumistila: {
-        ilmoittautumisaika: {},
         ilmoittautumistila: 'EI_TEHTY',
         ilmoittauduttavissa: false,
       },
       vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
       vastaanottoDeadline: '2025-12-11T13:00:00Z',
-      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
       julkaistavissa: true,
       ehdollisestiHyvaksyttavissa: false,
-      tilanKuvaukset: {},
-      showMigriURL: false,
       jonokohtaisetTulostiedot: [
         {
           oid: '2349',
           nimi: '',
           valintatila: 'HYVAKSYTTY',
           julkaistavissa: true,
-          tilanKuvaukset: {},
           ehdollisestiHyvaksyttavissa: false,
-          ehdollisenHyvaksymisenEhto: {},
-          eiVarasijatayttoa: false,
-          varasijasaannotKaytossa: false,
         },
       ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
     },
     {
       hakukohdeOid: 'hakukohde-oid-5',
-      hakukohdeNimi: 'Ajoneuvoalan perustutkinto',
-      tarjoajaOid: 'tarjoaja-oid-5',
-      tarjoajaNimi: 'Romuttamo, Romujenkerääjät RY',
-      valintatapajonoOid: '2358',
       valintatila: 'HYVAKSYTTY',
-      vastaanottotila: 'VASTAANOTTANUT_SITOVASTI',
+      vastaanottotila: VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
       ilmoittautumistila: {
-        ilmoittautumisaika: {},
         ilmoittautumistila: 'EI_TEHTY',
         ilmoittauduttavissa: false,
       },
       vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
       vastaanottoDeadline: '2025-12-11T13:00:00Z',
-      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
       julkaistavissa: true,
       ehdollisestiHyvaksyttavissa: false,
-      tilanKuvaukset: {},
-      showMigriURL: false,
       jonokohtaisetTulostiedot: [
         {
           oid: '2358',
           nimi: '',
           valintatila: 'HYVAKSYTTY',
           julkaistavissa: true,
-          tilanKuvaukset: {},
           ehdollisestiHyvaksyttavissa: false,
-          ehdollisenHyvaksymisenEhto: {},
-          eiVarasijatayttoa: false,
-          varasijasaannotKaytossa: false,
         },
       ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
     },
     {
       hakukohdeOid: 'hakukohde-oid-6',
-      hakukohdeNimi: 'Putkimiehen perustutkinto',
-      tarjoajaOid: 'tarjoaja-oid-6',
-      tarjoajaNimi: 'Putkittamo, Putket Vuotaa OY',
-      valintatapajonoOid: '2359',
       valintatila: 'HYVAKSYTTY',
-      vastaanottotila: 'VASTAANOTTANUT_SITOVASTI',
+      vastaanottotila: VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
       ilmoittautumistila: {
-        ilmoittautumisaika: {},
         ilmoittautumistila: 'EI_TEHTY',
         ilmoittauduttavissa: false,
       },
       vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
       vastaanottoDeadline: '2025-12-11T13:00:00Z',
-      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
       julkaistavissa: true,
       ehdollisestiHyvaksyttavissa: false,
-      tilanKuvaukset: {},
-      showMigriURL: false,
       jonokohtaisetTulostiedot: [
         {
           oid: '2359',
           nimi: '',
           valintatila: 'HYVAKSYTTY',
           julkaistavissa: true,
-          tilanKuvaukset: {},
           ehdollisestiHyvaksyttavissa: false,
-          ehdollisenHyvaksymisenEhto: {},
-          eiVarasijatayttoa: false,
-          varasijasaannotKaytossa: false,
         },
       ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
     },
   ],
+  processing: false,
+  formName: {
+    fi: undefined,
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
-export const hakemus5JatkuvaHaku = {
+export const hakemus5JatkuvaHaku: HakemusResponse = {
   oid: 'hakemus-oid-5',
   secret: 'secret-5',
   haku: JATKUVA_HAKU,
@@ -309,6 +322,10 @@ export const hakemus5JatkuvaHaku = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Lötkönperän koulutuskeskus, Sohva',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: {
+        voimassa: false,
+      },
     },
   ],
   ohjausparametrit: {
@@ -319,31 +336,29 @@ export const hakemus5JatkuvaHaku = {
     varasijatayttoPaattyy: 1769471212000,
   },
   hakemuksenTulokset: [],
+  formName: {
+    fi: 'Lötkölomake',
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
-export const defaultMockHakemukset = {
+export const defaultMockHakemukset: HakemuksetResponse = {
   current: [hakemus1, hakemus2],
   old: [],
 };
 
-export const hakemuksenTulosVarasijalla = {
+export const hakemuksenTulosVarasijalla: HakutoiveenTulosDto = {
   hakukohdeOid: 'hakukohde-oid-1',
-  hakukohdeNimi: 'Meteorologi, Tornadoinen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-1',
-  tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-  valintatapajonoOid: '1234',
   valintatila: 'VARALLA',
   varasijanumero: 2,
-  vastaanottotila: 'KESKEN',
+  vastaanottotila: VastaanottoTila.KESKEN,
   ilmoittautumistila: {
-    ilmoittautumisaika: {},
     ilmoittautumistila: 'EI_TEHTY',
     ilmoittauduttavissa: false,
   },
   vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
-  hyvaksyttyJaJulkaistuDate: null,
   julkaistavissa: true,
   ehdollisestiHyvaksyttavissa: true,
   tilanKuvaukset: {
@@ -351,7 +366,6 @@ export const hakemuksenTulosVarasijalla = {
     SV: '',
     EN: '',
   },
-  showMigriURL: null,
   jonokohtaisetTulostiedot: [
     {
       oid: '1234',
@@ -365,30 +379,21 @@ export const hakemuksenTulosVarasijalla = {
         EN: '',
       },
       ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: null,
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
     },
   ],
+  ilmoittautumisenAikaleima: null,
+  kelaURL: null,
 };
 
-export const hakemuksenTulosVastaanotettu = {
+export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
   hakukohdeOid: 'hakukohde-oid-1',
-  hakukohdeNimi: 'Meteorologi, Tornadoinen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-1',
-  tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-  valintatapajonoOid: '1234',
   valintatila: 'HYVAKSYTTY',
-  vastaanottotila: 'VASTAANOTTANUT_SITOVASTI',
+  vastaanottotila: VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
   ilmoittautumistila: {
-    ilmoittautumisaika: {},
     ilmoittautumistila: 'EI_TEHTY',
     ilmoittauduttavissa: false,
   },
   vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-19T15:24:07Z',
-  hyvaksyttyJaJulkaistuDate: null,
   julkaistavissa: true,
   ehdollisestiHyvaksyttavissa: false,
   tilanKuvaukset: {
@@ -396,7 +401,6 @@ export const hakemuksenTulosVastaanotettu = {
     SV: '',
     EN: '',
   },
-  showMigriURL: null,
   jonokohtaisetTulostiedot: [
     {
       oid: '1234',
@@ -409,66 +413,46 @@ export const hakemuksenTulosVastaanotettu = {
         EN: '',
       },
       ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: null,
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
     },
   ],
+  ilmoittautumisenAikaleima: null,
+  kelaURL: null,
 };
 
-export const hakemuksenTulosHyvaksytty = {
+export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
   hakukohdeOid: 'hakukohde-oid-3',
-  hakukohdeNimi: 'Meteorologi, Hyökyaaltojen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-2',
-  tarjoajaNimi: 'Tsunamiopisto, Merenpohjan kampus',
-  valintatapajonoOid: '2345',
   valintatila: 'HYVAKSYTTY',
-  vastaanottotila: 'KESKEN',
+  vastaanottotila: VastaanottoTila.KESKEN,
   ilmoittautumistila: {
-    ilmoittautumisaika: {},
     ilmoittautumistila: 'EI_TEHTY',
     ilmoittauduttavissa: false,
   },
   vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
   vastaanottoDeadline: '2025-12-11T13:00:00Z',
-  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-  hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
   julkaistavissa: true,
   ehdollisestiHyvaksyttavissa: false,
-  tilanKuvaukset: {},
-  showMigriURL: false,
   jonokohtaisetTulostiedot: [
     {
       oid: '2345',
       nimi: '',
       valintatila: 'HYVAKSYTTY',
       julkaistavissa: true,
-      tilanKuvaukset: {},
       ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: {},
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
     },
   ],
+  ilmoittautumisenAikaleima: null,
+  kelaURL: null,
 };
 
-export const hakemuksenTulosHylatty = {
+export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
   hakukohdeOid: 'hakukohde-oid-3',
-  hakukohdeNimi: 'Meteorologi, Hyökyaaltojen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-2',
-  tarjoajaNimi: 'Tsunamiopisto, Merenpohjan kampus',
-  valintatapajonoOid: '2345',
   valintatila: 'HYLATTY',
-  vastaanottotila: 'KESKEN',
+  vastaanottotila: VastaanottoTila.KESKEN,
   ilmoittautumistila: {
-    ilmoittautumisaika: {},
     ilmoittautumistila: 'KESKEN',
     ilmoittauduttavissa: false,
   },
   vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-  hyvaksyttyJaJulkaistuDate: null,
   julkaistavissa: true,
   ehdollisestiHyvaksyttavissa: false,
   tilanKuvaukset: {
@@ -476,7 +460,6 @@ export const hakemuksenTulosHylatty = {
     SV: 'Pohjakoulutus ei ole riittävä',
     EN: 'Pohjakoulutus ei ole riittävä',
   },
-  showMigriURL: false,
   jonokohtaisetTulostiedot: [
     {
       oid: '2345',
@@ -489,30 +472,21 @@ export const hakemuksenTulosHylatty = {
         EN: 'Pohjakoulutus ei ole riittävä',
       },
       ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: {},
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
     },
   ],
+  ilmoittautumisenAikaleima: null,
+  kelaURL: null,
 };
 
-export const hakemuksenTulosPeruuntunut = {
+export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
   hakukohdeOid: 'hakukohde-oid-3',
-  hakukohdeNimi: 'Meteorologi, Hyökyaaltojen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-2',
-  tarjoajaNimi: 'Tsunamiopisto, Merenpohjan kampus',
-  valintatapajonoOid: '2345',
   valintatila: 'PERUUNTUNUT',
-  vastaanottotila: 'KESKEN',
+  vastaanottotila: VastaanottoTila.KESKEN,
   ilmoittautumistila: {
-    ilmoittautumisaika: {},
     ilmoittautumistila: 'KESKEN',
     ilmoittauduttavissa: false,
   },
   vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-  hyvaksyttyJaJulkaistuDate: null,
   julkaistavissa: true,
   ehdollisestiHyvaksyttavissa: false,
   tilanKuvaukset: {
@@ -520,7 +494,6 @@ export const hakemuksenTulosPeruuntunut = {
     SV: 'Sait ylemmän hakutoiveen opiskelupaikan SV',
     EN: 'Sait ylemmän hakutoiveen opiskelupaikan EN',
   },
-  showMigriURL: false,
   jonokohtaisetTulostiedot: [
     {
       oid: '2345',
@@ -528,170 +501,129 @@ export const hakemuksenTulosPeruuntunut = {
       valintatila: 'PERUUNTUNUT',
       julkaistavissa: true,
       tilanKuvaukset: {
-        fi: 'Sait ylemmän hakutoiveen paikan',
-        sv: 'Sait ylemmän hakutoiveen paikan',
-        en: 'Sait ylemmän hakutoiveen paikan',
+        FI: 'Sait ylemmän hakutoiveen paikan',
+        SV: 'Sait ylemmän hakutoiveen paikan',
+        EN: 'Sait ylemmän hakutoiveen paikan',
       },
       ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: {},
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
     },
   ],
+  ilmoittautumisenAikaleima: null,
+  kelaURL: null,
 };
 
-export const hakemuksenTulosPeruuntunutEiKuvausta = {
+export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
   hakukohdeOid: 'hakukohde-oid-3',
-  hakukohdeNimi: 'Meteorologi, Hyökyaaltojen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-2',
-  tarjoajaNimi: 'Tsunamiopisto, Merenpohjan kampus',
-  valintatapajonoOid: '2345',
   valintatila: 'PERUUNTUNUT',
-  vastaanottotila: 'KESKEN',
+  vastaanottotila: VastaanottoTila.KESKEN,
   ilmoittautumistila: {
-    ilmoittautumisaika: {},
     ilmoittautumistila: 'KESKEN',
     ilmoittauduttavissa: false,
   },
   vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-  hyvaksyttyJaJulkaistuDate: null,
   julkaistavissa: false,
   ehdollisestiHyvaksyttavissa: false,
-  tilanKuvaukset: {},
-  showMigriURL: false,
   jonokohtaisetTulostiedot: [
     {
       oid: '2345',
       nimi: '',
       valintatila: 'PERUUNTUNUT',
       julkaistavissa: false,
-      tilanKuvaukset: {},
       ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: {},
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
     },
   ],
+  ilmoittautumisenAikaleima: null,
+  kelaURL: null,
 };
 
-export const hakemuksenTulosHyvaksyttyVastaanottoPerunut = {
-  hakukohdeOid: 'hakukohde-oid-3',
-  hakukohdeNimi: 'Meteorologi, Hyökyaaltojen tutkimislinja',
-  tarjoajaOid: 'tarjoaja-oid-2',
-  tarjoajaNimi: 'Tsunamiopisto, Merenpohjan kampus',
-  valintatapajonoOid: '2345',
-  valintatila: 'HYVAKSYTTY',
-  vastaanottotila: 'PERUNUT',
-  ilmoittautumistila: {
-    ilmoittautumisaika: {},
-    ilmoittautumistila: 'KESKEN',
-    ilmoittauduttavissa: false,
-  },
-  vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-  vastaanottoDeadline: null,
-  viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-  hyvaksyttyJaJulkaistuDate: null,
-  julkaistavissa: true,
-  ehdollisestiHyvaksyttavissa: false,
-  tilanKuvaukset: {
-    FI: 'Sait ylemmän hakutoiveen opiskelupaikan',
-    SV: 'Sait ylemmän hakutoiveen opiskelupaikan SV',
-    EN: 'Sait ylemmän hakutoiveen opiskelupaikan EN',
-  },
-  showMigriURL: false,
-  jonokohtaisetTulostiedot: [
-    {
-      oid: '2345',
-      nimi: '',
-      valintatila: 'HYVAKSYTTY',
-      julkaistavissa: true,
-      ehdollisestiHyvaksyttavissa: false,
-      ehdollisenHyvaksymisenEhto: {},
-      eiVarasijatayttoa: false,
-      varasijasaannotKaytossa: false,
-    },
-  ],
-};
-
-export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty = [
+export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
   {
-    hakukohdeOid: 'hakukohde-oid-1',
-    tarjoajaOid: 'tarjoaja-oid-1',
-    tarjoajaNimi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-    valintatapajonoOid: '2344',
-    valintatila: 'VARALLA',
-    vastaanottotila: 'KESKEN',
+    hakukohdeOid: 'hakukohde-oid-3',
+    valintatila: 'HYVAKSYTTY',
+    vastaanottotila: VastaanottoTila.PERUNUT,
     ilmoittautumistila: {
-      ilmoittautumisaika: {},
-      ilmoittautumistila: 'EI_TEHTY',
+      ilmoittautumistila: 'KESKEN',
       ilmoittauduttavissa: false,
     },
     vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
-    vastaanottoDeadline: '2025-12-11T13:00:00Z',
-    viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-    hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
     julkaistavissa: true,
     ehdollisestiHyvaksyttavissa: false,
-    tilanKuvaukset: {},
-    showMigriURL: false,
-    jonokohtaisetTulostiedot: [
-      {
-        oid: '2345',
-        nimi: '',
-        valintatila: 'VARALLA',
-        julkaistavissa: true,
-        tilanKuvaukset: {},
-        ehdollisestiHyvaksyttavissa: false,
-        ehdollisenHyvaksymisenEhto: {},
-        eiVarasijatayttoa: false,
-        varasijasaannotKaytossa: false,
-      },
-    ],
-  },
-  {
-    hakukohdeOid: 'hakukohde-oid-2',
-    tarjoajaOid: 'tarjoaja-oid-2',
-    tarjoajaNimi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
-    valintatapajonoOid: '2345',
-    valintatila: 'HYVAKSYTTY',
-    vastaanottotila: 'EHDOLLISESTI_VASTAANOTTANUT',
-    ilmoittautumistila: {
-      ilmoittautumisaika: {},
-      ilmoittautumistila: 'EI_TEHTY',
-      ilmoittauduttavissa: false,
+    tilanKuvaukset: {
+      FI: 'Sait ylemmän hakutoiveen opiskelupaikan',
+      SV: 'Sait ylemmän hakutoiveen opiskelupaikan SV',
+      EN: 'Sait ylemmän hakutoiveen opiskelupaikan EN',
     },
-    vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
-    vastaanottoDeadline: '2025-12-11T13:00:00Z',
-    viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-    hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
-    julkaistavissa: true,
-    ehdollisestiHyvaksyttavissa: false,
-    tilanKuvaukset: {},
-    showMigriURL: false,
     jonokohtaisetTulostiedot: [
       {
         oid: '2345',
         nimi: '',
         valintatila: 'HYVAKSYTTY',
         julkaistavissa: true,
-        tilanKuvaukset: {},
         ehdollisestiHyvaksyttavissa: false,
-        ehdollisenHyvaksymisenEhto: {},
-        eiVarasijatayttoa: false,
-        varasijasaannotKaytossa: false,
       },
     ],
-  },
-];
+    ilmoittautumisenAikaleima: null,
+    kelaURL: null,
+  };
+
+export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenTulosDto> =
+  [
+    {
+      hakukohdeOid: 'hakukohde-oid-1',
+      valintatila: 'VARALLA',
+      vastaanottotila: VastaanottoTila.KESKEN,
+      ilmoittautumistila: {
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2345',
+          nimi: '',
+          valintatila: 'VARALLA',
+          julkaistavissa: true,
+          ehdollisestiHyvaksyttavissa: false,
+        },
+      ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
+    },
+    {
+      hakukohdeOid: 'hakukohde-oid-2',
+      valintatila: 'HYVAKSYTTY',
+      vastaanottotila: VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT,
+      ilmoittautumistila: {
+        ilmoittautumistila: 'EI_TEHTY',
+        ilmoittauduttavissa: false,
+      },
+      vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      vastaanottoDeadline: '2025-12-11T13:00:00Z',
+      julkaistavissa: true,
+      ehdollisestiHyvaksyttavissa: false,
+      jonokohtaisetTulostiedot: [
+        {
+          oid: '2345',
+          nimi: '',
+          valintatila: 'HYVAKSYTTY',
+          julkaistavissa: true,
+          ehdollisestiHyvaksyttavissa: false,
+        },
+      ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
+    },
+  ];
 
 export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa =
   (() => {
     const tulokset = clone(hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty);
     if (tulokset[1]) {
       tulokset[1].vastaanotettavuustila = 'VASTAANOTETTAVISSA_EHDOLLISESTI';
-      tulokset[1].vastaanottotila = 'KESKEN';
+      tulokset[1].vastaanottotila = VastaanottoTila.KESKEN;
     }
     return tulokset;
   })();
@@ -702,9 +634,9 @@ export const hakemuksenTuloksiaYlinHyvaksyttyAlimmatPeruuntuneet = (() => {
   );
   if (tulokset[0] && tulokset[1] && tulokset[2]) {
     tulokset[0].vastaanotettavuustila = 'EI_VASTAANOTETTAVISSA';
-    tulokset[0].vastaanottotila = 'VASTAANOTTANUT_SITOVASTI';
-    tulokset[1].vastaanottotila = 'PERUNUT';
-    tulokset[2].vastaanottotila = 'PERUNUT';
+    tulokset[0].vastaanottotila = VastaanottoTila.VASTAANOTTANUT_SITOVASTI;
+    tulokset[1].vastaanottotila = VastaanottoTila.PERUNUT;
+    tulokset[2].vastaanottotila = VastaanottoTila.PERUNUT;
   }
   return tulokset;
 })();

@@ -6,6 +6,8 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { LinkLogoutButton } from '@/components/LinkLogoutButton';
 import { useAuth } from '@/components/authentication/AuthProvider';
+import { isLinkUser } from '@/lib/auth/auth-util';
+import { LinkHakemus } from '@/components/hakemukset/LinkHakemus';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -21,8 +23,7 @@ export default function HomePage() {
   const { t } = useTranslations();
   const { state } = useAuth();
 
-  const isLinkLogin =
-    state.status === 'authenticated' && state.method === 'link';
+  const isLinkLogin = isLinkUser(state);
 
   return (
     <Box>
@@ -30,7 +31,8 @@ export default function HomePage() {
       <StyledBox>
         {isLinkLogin && <LinkLogoutButton />}
         <Info />
-        <Hakemukset />
+        {isLinkLogin && <LinkHakemus />}
+        {!isLinkLogin && <Hakemukset />}
       </StyledBox>
     </Box>
   );

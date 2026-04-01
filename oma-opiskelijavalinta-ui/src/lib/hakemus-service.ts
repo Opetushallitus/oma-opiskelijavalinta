@@ -35,7 +35,7 @@ export type HakemusResponse = {
   tuloskirjeModified: number | null;
 };
 
-type HakemuksetResponse = {
+export type HakemuksetResponse = {
   current: Array<HakemusResponse>;
   old: Array<HakemusResponse>;
 };

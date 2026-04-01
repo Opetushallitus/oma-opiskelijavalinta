@@ -1,7 +1,7 @@
 import { client } from '@/http-client';
 import { getConfiguration, isDev } from '@/configuration';
 import type { User } from '@/lib/types';
-import type { SessionResponse } from '@/components/authentication/auth-types';
+import type { SessionResponse } from '@/lib/auth/auth-types';
 
 export async function getSession(): Promise<SessionResponse> {
   const config = await getConfiguration();

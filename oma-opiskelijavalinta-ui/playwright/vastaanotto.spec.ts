@@ -18,6 +18,7 @@ import {
 } from './mocks';
 import { clone } from 'remeda';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
+import type { HakemusResponse } from '@/lib/hakemus-service';
 
 test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   await setup(page);
@@ -565,10 +566,7 @@ const vastaanotettuTulos = (vastaanottoTila: VastaanottoTila) => {
   return tulos;
 };
 
-async function setup(
-  page: Page,
-  overridableApplication?: Record<string, object | string>,
-) {
+async function setup(page: Page, overridableApplication?: HakemusResponse) {
   const hyvaksyttyApplication = overridableApplication ?? {
     ...hakemus2,
     hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
