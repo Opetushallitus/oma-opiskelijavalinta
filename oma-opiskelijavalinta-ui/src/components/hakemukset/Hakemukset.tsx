@@ -12,7 +12,10 @@ import { HautonHakemusContainer } from './HautonHakemusContainer';
 import type { JSX } from 'react';
 import type { Hakemus } from '@/lib/hakemus-types';
 
-function determineHakemusType(hakemus: Hakemus, past = false): JSX.Element {
+export function determineHakemusType(
+  hakemus: Hakemus,
+  past = false,
+): JSX.Element {
   return isNonNullish(hakemus.haku) && past ? (
     <MennytHakemusContainer
       key={`application-${hakemus.oid}}`}
@@ -26,28 +29,6 @@ function determineHakemusType(hakemus: Hakemus, past = false): JSX.Element {
       hakemus={hakemus}
     />
   );
-}
-
-export function LinkHakemus() {
-  const { data: hakemukset } = useSuspenseQuery({
-    queryKey: ['hakemukset'],
-    queryFn: getHakemukset,
-  });
-
-  if (hakemukset.current.concat(hakemukset.old).length > 1) {
-    console.error(
-      'Linkillä tunnistautuneella käyttäjällä pitäisi olla vain yksi hakemus',
-    );
-  }
-
-  if (hakemukset.current.length > 1 && isNonNullish(hakemukset.current[0])) {
-    return determineHakemusType(hakemukset.current[0]);
-  } else if (hakemukset.old.length > 1 && isNonNullish(hakemukset.old[0])) {
-    return determineHakemusType(hakemukset.old[0]);
-  } else {
-    console.error('Linkillä tunnistautuneella käyttäjällä ei ollut hakemusta');
-    return null;
-  }
 }
 
 function HakemuksetList() {

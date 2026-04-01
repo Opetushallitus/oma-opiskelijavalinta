@@ -1,5 +1,7 @@
 import { clone } from 'remeda';
 import type { Page } from '@playwright/test';
+import type { HakemusResponse } from '@/lib/hakemus-service';
+import { VastaanottoTila } from '@/lib/valinta-tulos-types';
 
 export const mockSession = async (page: Page) => {
   await page.route('**/api/session', async (route) => {
@@ -13,7 +15,7 @@ export const mockSession = async (page: Page) => {
   });
 };
 
-export const hakemus1 = {
+export const hakemus1: HakemusResponse = {
   oid: 'hakemus-oid-1',
   secret: 'secret-1',
   haku: {
@@ -36,6 +38,7 @@ export const hakemus1 = {
         fi: 'linkkioppilaitokseen.fi',
         en: 'linktostudyplace.fi',
       },
+      yhdenPaikanSaanto: { voimassa: false },
     },
     {
       oid: 'hakukohde-oid-2',
@@ -43,6 +46,8 @@ export const hakemus1 = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: { voimassa: false },
     },
   ],
   ohjausparametrit: {
@@ -52,6 +57,13 @@ export const hakemus1 = {
     varasijatayttoPaattyy: 1779471212000,
   },
   hakemuksenTulokset: [],
+  processing: false,
+  formName: {
+    fi: 'Hurrikaaniopiston lomake',
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
 export const hakemus2 = {
@@ -99,7 +111,7 @@ export const JATKUVA_HAKU = {
   kohdejoukkoKoodiUri: 'haunkohdejoukko_23',
 };
 
-export const hakemus3ToinenAste = {
+export const hakemus3ToinenAste: HakemusResponse = {
   oid: 'hakemus-oid-3',
   secret: 'secret-3',
   haku: TOISEN_ASTEEN_YHTEISHAKU,
@@ -111,6 +123,10 @@ export const hakemus3ToinenAste = {
       jarjestyspaikkaHierarkiaNimi: {
         fi: 'Rekun Lukio, Helsingin Kaupunki',
       },
+      uudenOpiskelijanUrl: null,
+      yhdenPaikanSaanto: {
+        voimassa: false,
+      },
     },
   ],
   ohjausparametrit: {
@@ -119,40 +135,36 @@ export const hakemus3ToinenAste = {
   hakemuksenTulokset: [
     {
       hakukohdeOid: 'hakukohde-oid-4',
-      hakukohdeNimi: 'Lukiokoulutus',
-      tarjoajaOid: 'tarjoaja-oid-4',
-      tarjoajaNimi: 'Rekun Lukio, Helsingin Kaupunki',
-      valintatapajonoOid: '2349',
       valintatila: 'HYVAKSYTTY',
-      vastaanottotila: 'KESKEN',
+      vastaanottotila: VastaanottoTila.KESKEN,
       ilmoittautumistila: {
-        ilmoittautumisaika: {},
         ilmoittautumistila: 'EI_TEHTY',
         ilmoittauduttavissa: false,
       },
       vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
       vastaanottoDeadline: '2025-12-11T13:00:00Z',
-      viimeisinHakemuksenTilanMuutos: '2025-11-27T09:50:18Z',
-      hyvaksyttyJaJulkaistuDate: '2025-11-27T10:57:22Z',
       julkaistavissa: true,
       ehdollisestiHyvaksyttavissa: false,
-      tilanKuvaukset: {},
-      showMigriURL: false,
       jonokohtaisetTulostiedot: [
         {
           oid: '2349',
           nimi: '',
           valintatila: 'HYVAKSYTTY',
-          julkaistavissa: true,
-          tilanKuvaukset: {},
+          julkaistavissa: 'true',
           ehdollisestiHyvaksyttavissa: false,
-          ehdollisenHyvaksymisenEhto: {},
-          eiVarasijatayttoa: false,
-          varasijasaannotKaytossa: false,
         },
       ],
+      ilmoittautumisenAikaleima: null,
+      kelaURL: null,
     },
   ],
+  processing: false,
+  formName: {
+    fi: 'Toisen asteen yhteishaun lomake',
+    en: undefined,
+    sv: undefined,
+  },
+  tuloskirjeModified: null,
 };
 
 export const hakemus4ToinenAsteAlempiaHyvaksyttyja = {

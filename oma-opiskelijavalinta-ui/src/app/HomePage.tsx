@@ -1,4 +1,4 @@
-import Hakemukset, { LinkHakemus } from '@/components/hakemukset/Hakemukset';
+import Hakemukset from '@/components/hakemukset/Hakemukset';
 import Info from '@/components/Info';
 import { useTranslations } from '@/hooks/useTranslations';
 import { styled } from '@/lib/theme';
@@ -7,6 +7,7 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { LinkLogoutButton } from '@/components/LinkLogoutButton';
 import { useAuth } from '@/components/authentication/AuthProvider';
 import { isLinkUser } from '@/lib/auth/auth-util';
+import { LinkHakemus } from '@/components/hakemukset/LinkHakemus';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
