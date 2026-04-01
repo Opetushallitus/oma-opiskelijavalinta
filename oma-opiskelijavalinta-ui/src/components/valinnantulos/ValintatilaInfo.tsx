@@ -53,6 +53,10 @@ const getVarasijallaInfo = (
     application.varasijatayttoPaattyy,
     lang,
   );
+  const config = useConfig();
+  const lisatietoUrl = kk
+    ? 'paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun'
+    : 'peruskoulun-jalkeisten-koulutusten-yhteishaun-valintojen-tulokset#varasijat';
   return (
     <>
       {kk && !priorisoidutHakutoiveet && (
@@ -76,6 +80,13 @@ const getVarasijallaInfo = (
           {t('tulos.info.varasijalta-hyvaksyminen')}
         </OphTypography>
       )}
+      <OphTypography>
+        <ExternalLinkParagraph
+          name={t('tulos.info.varasija-lisatietoa')}
+          href={`${config.routes.yleiset.konfo}/${lang}/sivu/${lisatietoUrl}`}
+          underline={'always'}
+        />
+      </OphTypography>
     </>
   );
 };

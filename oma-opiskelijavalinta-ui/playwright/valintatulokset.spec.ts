@@ -64,6 +64,12 @@ test('Näyttää varasijanumeron', async ({ page }) => {
       'Voit tulla hyväksytyksi varasijalta 11.1.2026 klo 17:00 asti.',
     ),
   ).toBeVisible();
+  const link = app1.getByText('Lisätietoa varasijoista');
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute(
+    'href',
+    /paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun/,
+  );
 });
 
 test('Ei näytä varasijatäytön päättymistekstiä jos päättymispäivä puuttuu', async ({
@@ -357,6 +363,12 @@ test('Näyttää 2. asteen haussa infon varasijan säilymisestä jos on ylempi h
       'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
     ),
   ).toBeHidden();
+  const link = infoToive1.getByText('Lisätietoa varasijoista');
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute(
+    'href',
+    /peruskoulun-jalkeisten-koulutusten-yhteishaun-valintojen-tulokset/,
+  );
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
