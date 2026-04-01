@@ -4,7 +4,7 @@ export type Haku = {
   oid: string;
   nimi: TranslatedName;
   hakuaikaKaynnissa: boolean;
-  viimeisinPaattynytHakuAika: string;
+  viimeisinPaattynytHakuAika?: number;
   kohdejoukkoKoodiUri: string;
   hakutapaKoodiUri: string;
   koulutuksenAlkamiskausi?: 'kausi_k' | 'kausi_s' | null;

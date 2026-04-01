@@ -38,7 +38,7 @@ export type HakutoiveenTulosDto = {
   valintatila: string;
   varasijanumero?: number | null;
   vastaanotettavuustila?: VastaanotettavuusTila;
-  vastaanottoDeadline: string;
+  vastaanottoDeadline?: string;
   vastaanottotila?: VastaanottoTila;
   ehdollisestiHyvaksyttavissa?: boolean | null;
   ehdollisenHyvaksymisenEhto?: TranslatedName | null;
@@ -55,7 +55,7 @@ export type JonokohtainenTulostietoDto = {
   pisteet?: number;
   alinHyvaksyttyPistemaara?: number;
   valintatila: string;
-  julkaistavissa?: string;
+  julkaistavissa?: boolean;
   valintatapajonoPrioriteetti?: number;
   tilanKuvaukset?: { FI: string; SV: string; EN: string };
   ehdollisestiHyvaksyttavissa?: boolean;
