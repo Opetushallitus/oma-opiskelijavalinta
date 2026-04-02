@@ -1,5 +1,7 @@
 {
-  "otsikko": "Oma Opiskelijavalinta",
+  "oma-opintopolku": "Oma Opintopolku",
+  "otsikko": "Hakemukset ja opiskelupaikan vastaanotto",
+  "otsikko-linkki": "Opiskelupaikan vastaanotto",
   "yleinen": {
     "peruuta": "Peruuta",
     "logout": "Kirjaudu ulos"

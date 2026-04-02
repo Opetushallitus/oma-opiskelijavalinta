@@ -4,7 +4,6 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import { LinkLogoutButton } from '@/components/LinkLogoutButton';
 import { useAuth } from '@/components/authentication/AuthProvider';
 import { isLinkUser } from '@/lib/auth/auth-util';
 import { LinkHakemus } from '@/components/hakemukset/LinkHakemus';
@@ -27,9 +26,10 @@ export default function HomePage() {
 
   return (
     <Box>
-      <StyledHeader variant="h1">{t('otsikko')}</StyledHeader>
+      <StyledHeader variant="h1">
+        {t(isLinkLogin ? 'otsikko-linkki' : 'otsikko')}
+      </StyledHeader>
       <StyledBox>
-        {isLinkLogin && <LinkLogoutButton />}
         <Info />
         {isLinkLogin && <LinkHakemus />}
         {!isLinkLogin && <Hakemukset />}
