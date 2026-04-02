@@ -40,7 +40,11 @@ const StyledHeader = styled(OphTypography)(() => ({
   fontFamily: "'Source Sans Pro', sans-serif",
 }));
 
-export default function LinkLoginBanner() {
+export default function LinkLoginBanner({
+  hideLogoutButton = false,
+}: {
+  hideLogoutButton: boolean;
+}) {
   const { t } = useTranslations();
 
   const theme = useTheme();
@@ -60,7 +64,7 @@ export default function LinkLoginBanner() {
           )}
           <StyledHeader>{t('oma-opintopolku')}</StyledHeader>
         </Box>
-        <LinkLogoutButton />
+        {!hideLogoutButton && <LinkLogoutButton />}
       </BannerContent>
     </StyledBanner>
   );
