@@ -1,7 +1,7 @@
 import { useTranslations } from '@/hooks/useTranslations';
 import { notDesktop, styled } from '@/lib/theme';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
-import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
+import { ophColors } from '@opetushallitus/oph-design-system';
 import { LinkLogoutButton } from '@/components/LinkLogoutButton';
 import imgUrl from '@/assets/oma-opintopolku_ikoni.svg';
 
@@ -32,12 +32,13 @@ const BannerContent = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledHeader = styled(OphTypography)(() => ({
+const StyledHeader = styled('a')(() => ({
   fontSize: '24px',
   fontWeight: 'bold',
   whiteSpace: 'nowrap',
   color: ophColors.white,
   fontFamily: "'Source Sans Pro', sans-serif",
+  textDecoration: 'none',
 }));
 
 export default function LinkLoginBanner({
@@ -62,7 +63,9 @@ export default function LinkLoginBanner({
               sx={{ marginRight: '10px', width: '44px', height: '44px' }}
             />
           )}
-          <StyledHeader>{t('oma-opintopolku')}</StyledHeader>
+          <StyledHeader href="/oma-opintopolku">
+            {t('oma-opintopolku')}
+          </StyledHeader>
         </Box>
         {!hideLogoutButton && <LinkLogoutButton />}
       </BannerContent>
