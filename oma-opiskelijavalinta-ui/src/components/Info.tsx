@@ -39,15 +39,26 @@ export default function Info() {
           </OphTypography>
         )}
       </PersonInfoContainer>
-      <OphTypography variant="body1">{t('info.kuvaus')}</OphTypography>
+      <OphTypography variant="body1">
+        {t(isLinkLogin ? 'info.kuvaus-linkki' : 'info.kuvaus')}
+      </OphTypography>
       <BulletedList>
-        <BulletItem>
-          {t(isLinkLogin ? 'info.hakemus' : 'info.hakemukset')}
-        </BulletItem>
-        <BulletItem>{t('info.liitteet')}</BulletItem>
-        <BulletItem>{t('info.tulokset')}</BulletItem>
-        <BulletItem>{t('info.vastaanotto')}</BulletItem>
-        <BulletItem>{t('info.ilmoittautua')}</BulletItem>
+        {isLinkLogin && (
+          <>
+            <BulletItem>{t('info.tulokset')}</BulletItem>
+            <BulletItem>{t('info.vastaanotto')}</BulletItem>
+            <BulletItem>{t('info.ilmoittautua')}</BulletItem>
+          </>
+        )}
+        {!isLinkLogin && (
+          <>
+            <BulletItem>{t('info.hakemukset')}</BulletItem>
+            <BulletItem>{t('info.liitteet')}</BulletItem>
+            <BulletItem>{t('info.tulokset')}</BulletItem>
+            <BulletItem>{t('info.vastaanotto')}</BulletItem>
+            <BulletItem>{t('info.ilmoittautua')}</BulletItem>
+          </>
+        )}
       </BulletedList>
     </Box>
   );
