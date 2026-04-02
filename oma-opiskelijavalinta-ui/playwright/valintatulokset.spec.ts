@@ -421,7 +421,9 @@ test('Näyttää kesken-tilan jos hakuaika on päättynyt ja tulosta ei ole julk
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
 });
 
-test('Näyttää tuloksen vaikka julkaistavissa on false', async ({ page }) => {
+test('Näyttää peruuntuneen tuloksen vaikka julkaistavissa on false', async ({
+  page,
+}) => {
   const hyvaksyttyJaPeruuntunutApplication = {
     ...hakemus1,
     hakemuksenTulokset: [
@@ -434,7 +436,9 @@ test('Näyttää tuloksen vaikka julkaistavissa on false', async ({ page }) => {
     ],
   };
   await fetchMockData(page, hyvaksyttyJaPeruuntunutApplication);
-  await expect(page.getByText('Hakuaika päättyy')).toBeVisible();
+  await expect(
+    page.getByText('Opiskelijavalinta on kesken. Hakuaika päättyi'),
+  ).toBeVisible();
   const tulos1 = page.getByTestId('application-tulos-hakukohde-oid-1');
   await expect(tulos1.getByText('Hyväksytty')).toBeVisible();
   const tulos2 = page.getByTestId('application-tulos-hakukohde-oid-2');

@@ -16,7 +16,7 @@ import {
 } from '@/lib/kouta-utils';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
-import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { onKeskeneraisiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { BulletedList, BulletItem } from '../BulletedList';
 
 function JulkaistaanJaVarasijatList({
@@ -164,10 +164,7 @@ export function HakemusInfo({
 }) {
   return isTruthy(hakemus.haku) &&
     (isEmpty(tulokset) ||
-      onkoJulkaisemattomiaValinnantiloja(
-        tulokset,
-        hakemus.hakukohteet ?? [],
-      )) &&
+      onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? [])) &&
     !onkoVastaanottoTehty(tulokset) ? (
     <HakuMuokkausInfo haku={hakemus.haku} hakemus={hakemus} />
   ) : null;
