@@ -93,23 +93,6 @@ test.describe('Heikko tunnistautuminen: kirjautumislogiikka', () => {
     await expect(logoutButton).toBeVisible();
   });
 
-  test('Ohjaa heikosti tunnistautuneen uloskirjautumisen jälkeen uloskirjautuneen näkymään', async ({
-    page,
-  }) => {
-    await page.goto(`oma-opiskelijavalinta/token/${TEST_TOKEN}`);
-
-    const logoutButton = page.getByRole('button', { name: 'Kirjaudu ulos' });
-    await expect(logoutButton).toBeVisible();
-
-    await logoutButton.click();
-    await expect(page).toHaveURL('oma-opiskelijavalinta/logged-out');
-    await expect(page.getByText('Olet kirjautunut ulos')).toBeVisible();
-    await expect(
-      page.getByText('Sinut on kirjattu ulos palvelusta'),
-    ).toBeVisible();
-    await expect(page.getByText('Opintopolun etusivulle')).toBeVisible();
-  });
-
   test('Virheellisellä kirjautumislinkillä näytetään virhesivu', async ({
     page,
   }) => {

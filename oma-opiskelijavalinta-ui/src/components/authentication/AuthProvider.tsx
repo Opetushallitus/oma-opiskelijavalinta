@@ -96,14 +96,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const isPublicRoute =
       location.pathname.startsWith('/token/') ||
-      location.pathname === '/logged-out' ||
       location.pathname === '/session-expired';
 
     if (state.status === 'unauthenticated' && !isPublicRoute) {
       window.location.href = conf.routes.yleiset.loginApiUrl;
-    }
-    if (state.status === 'loggedOut' && !isPublicRoute) {
-      navigate('/logged-out', { replace: true });
     }
     if (state.status === 'expired' && !isPublicRoute) {
       window.location.replace(conf.routes.yleiset.expiredUrl);
