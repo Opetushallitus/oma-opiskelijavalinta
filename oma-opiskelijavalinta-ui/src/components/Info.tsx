@@ -8,6 +8,10 @@ import { isTruthy } from 'remeda';
 import { styled } from '@/lib/theme';
 import { useAuth } from './authentication/AuthProvider';
 import { isLinkUser } from '@/lib/auth/auth-util';
+import {
+  DEFAULT_DATE_FORMAT,
+  toFormattedDateTimeString,
+} from '@/lib/localization/translation-utils';
 
 const PersonInfoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -32,6 +36,11 @@ export default function Info() {
       <PersonInfoContainer>
         <OphTypography variant="body1" sx={{ fontWeight: 700 }}>
           {`${user?.kutsumanimi} ${user?.sukunimi}`}
+          {isTruthy(user?.syntymaaika) && (
+            <OphTypography component="span" sx={{ fontWeight: 'normal' }}>
+              {` ${toFormattedDateTimeString(user.syntymaaika, DEFAULT_DATE_FORMAT)}`}
+            </OphTypography>
+          )}
         </OphTypography>
         {isTruthy(user?.oppijanumero) && (
           <OphTypography variant="body1">
