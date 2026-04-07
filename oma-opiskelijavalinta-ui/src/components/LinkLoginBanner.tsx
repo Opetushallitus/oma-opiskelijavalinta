@@ -7,7 +7,7 @@ import imgUrl from '@/assets/oma-opintopolku_ikoni.svg';
 
 const WIDTH = '1081px';
 
-const StyledBanner = styled(Box)(({ theme }) => ({
+const StyledBanner = styled('header')(({ theme }) => ({
   width: '100%',
   padding: '15px 0 15px',
   backgroundColor: ophColors.green2,
@@ -61,6 +61,7 @@ export default function LinkLoginBanner({
               component="img"
               src={imgUrl}
               sx={{ marginRight: '10px', width: '44px', height: '44px' }}
+              role="presentation"
             />
           )}
           <StyledHeader href="/oma-opintopolku">

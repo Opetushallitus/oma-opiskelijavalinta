@@ -25,7 +25,9 @@ test('Lataa sivun uudelleen onnistuneesti', async ({ page }) => {
   await mockAuthenticatedUser(page);
   await mockHakemuksetFetch(page, { current: [], old: [] });
   await page.getByRole('button', { name: 'Lataa sivu uudestaan' }).click();
-  await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
+  await expect(
+    page.getByText('Hakemukset ja opiskelupaikan vastaanotto'),
+  ).toBeVisible();
   await expect(page.getByText('Ruhtinas Nukettaja')).toBeVisible();
 });
 

@@ -7,8 +7,10 @@ import {
 
 test('Näyttää etusivun infoineen', async ({ page }) => {
   await setup(page);
-  await expect(page).toHaveTitle('Oma Opiskelijavalinta');
-  await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
+  await expect(page).toHaveTitle('Hakemukset ja opiskelupaikan vastaanotto');
+  await expect(
+    page.getByText('Hakemukset ja opiskelupaikan vastaanotto'),
+  ).toBeVisible();
   await expect(page.getByText('Ruhtinas Nukettaja')).toBeVisible();
   await expect(page.getByText('1.2.246.562.24.00000000001')).toBeVisible();
   await expect(
@@ -28,7 +30,9 @@ test('Näyttää etusivun infoineen', async ({ page }) => {
 
 test('Etusivun saavutettavuus', async ({ page }) => {
   await setup(page);
-  await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
+  await expect(
+    page.getByText('Hakemukset ja opiskelupaikan vastaanotto'),
+  ).toBeVisible();
   await expectPageAccessibilityOk(page);
 });
 

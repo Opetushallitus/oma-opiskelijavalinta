@@ -1,6 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
 import { hakemus1, hakemus3ToinenAste } from './mocks';
-import { mockHakemuksetFetch } from './lib/playwrightUtils';
+import {
+  expectPageAccessibilityOk,
+  mockHakemuksetFetch,
+} from './lib/playwrightUtils';
 import type { HakemusResponse } from '@/lib/hakemus-service';
 
 const mockLinkAuth = async (page: Page, validToken = 'test-link-token') => {
@@ -84,7 +87,7 @@ test.describe('Heikko tunnistautuminen: kirjautumislogiikka', () => {
   }) => {
     await page.goto(`oma-opiskelijavalinta/token/${TEST_TOKEN}`);
 
-    await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
+    await expect(page.getByText('Opiskelupaikan vastaanotto')).toBeVisible();
     await expect(page.getByText('Linkki Käyttäjä')).toBeVisible();
     const logoutButton = page.getByRole('button', { name: 'Kirjaudu ulos' });
     await expect(logoutButton).toBeVisible();
@@ -129,10 +132,10 @@ test.describe('Heikko tunnistautuminen: hakemukset', () => {
   test('Näyttää aktiivisen hakemuksen', async ({ page }) => {
     await initPage(page);
     await page.goto(`oma-opiskelijavalinta/token/${TEST_TOKEN}`);
-    await expect(page.getByText('Oma Opiskelijavalinta')).toBeVisible();
+    await expect(page.getByText('Opiskelupaikan vastaanotto')).toBeVisible();
     await expect(page.getByText('Linkki Käyttäjä')).toBeVisible();
     await expect(
-      page.getByText('tarkastella hakemustasi ja muokata sitä hakuaikana'),
+      page.getByText('nähdä opiskelijavalinnan tulokset'),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Hurrikaaniopiston erillishaku' }),
@@ -141,13 +144,9 @@ test.describe('Heikko tunnistautuminen: hakemukset', () => {
       page.getByRole('link', { name: 'Muokkaa hakemusta' }),
     ).toBeVisible();
     await expect(
-      page.getByRole('heading', {
-        name: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-      }),
+      page.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
     ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Hurrikaaniopisto, Myrskynsilm' }),
-    ).toBeVisible();
+    await expect(page.getByText('Hurrikaaniopisto, Myrskynsilm')).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Opiskelijavalintojen tulokset' }),
     ).toBeHidden();
@@ -169,4 +168,14 @@ test.describe('Heikko tunnistautuminen: hakemukset', () => {
       page.getByRole('button', { name: 'Opiskelijavalintojen tulokset' }),
     ).toBeVisible();
   });
+});
+
+test('Heikko tunnistautuminen: saavutettavuus', async ({ page }) => {
+  await initPage(page);
+  await page.goto(`oma-opiskelijavalinta/token/${TEST_TOKEN}`);
+  await expect(page.getByText('Opiskelupaikan vastaanotto')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Hurrikaaniopiston erillishaku' }),
+  ).toBeVisible();
+  await expectPageAccessibilityOk(page);
 });

@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { Hakutoive } from './Hakutoive';
 import { isJulkaistuHakutoiveenTulos } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
 
 export function HakukohteetContainer({
   hakemus,
@@ -22,9 +23,15 @@ export function HakukohteetContainer({
 
   const hakuaikaKaynnissa = hakemus.haku?.hakuaikaKaynnissa;
 
+  const adjustHeaderLevel = useAdjustHeaderLevel();
+
   return (
     <>
-      <OphTypography variant="h4" sx={{ fontWeight: 'normal', mt: 3 }}>
+      <OphTypography
+        variant="h4"
+        component={adjustHeaderLevel ? 'h3' : 'h4'}
+        sx={{ fontWeight: 'normal', mt: 3 }}
+      >
         {hakemuksenTulokset?.length || !hakuaikaKaynnissa
           ? t('hakemukset.valintatilanne')
           : t('hakemukset.hakutoiveet')}

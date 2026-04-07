@@ -18,6 +18,7 @@ import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
 import { TutustuContainer } from './TutustuContainer';
 import { HakemusStatus } from './HakemusStatus';
 import { MigriContainer } from './MigriContainer';
+import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
@@ -32,6 +33,8 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     hakemus.haku,
   );
 
+  const adjustHeaderLevel = useAdjustHeaderLevel();
+
   const hakemustaVoiMuokata =
     (!hakemus.processing || !isJatkuvaTaiJoustavaHaku(hakemus.haku)) &&
     (isNullish(hakemus.haku) ||
@@ -41,7 +44,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
 
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
-      <OphTypography variant="h3">
+      <OphTypography variant="h3" component={adjustHeaderLevel ? 'h2' : 'h3'}>
         {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
       <HakemusStatus hakemus={hakemus} tulokset={tulokset} />

@@ -12,10 +12,15 @@ import { HautonHakemusContainer } from './HautonHakemusContainer';
 import type { JSX } from 'react';
 import type { Hakemus } from '@/lib/hakemus-types';
 
-export function determineHakemusType(
-  hakemus: Hakemus,
+export type HakemusTypeParams = {
+  hakemus: Hakemus;
+  past?: boolean;
+};
+
+export function determineHakemusType({
+  hakemus,
   past = false,
-): JSX.Element {
+}: HakemusTypeParams): JSX.Element {
   return isNonNullish(hakemus.haku) && past ? (
     <MennytHakemusContainer
       key={`application-${hakemus.oid}}`}
@@ -45,9 +50,7 @@ function HakemuksetList() {
     </InfoBox>
   ) : (
     <>
-      {hakemukset?.current.map((application) =>
-        determineHakemusType(application),
-      )}
+      {hakemukset?.current.map((hakemus) => determineHakemusType({ hakemus }))}
     </>
   );
 }
@@ -65,7 +68,11 @@ function MenneetHakemuksetList() {
       {t('hakemukset.ei-menneita-hakemuksia')}
     </InfoBox>
   ) : (
-    <>{hakemukset?.old.map((hakemus) => determineHakemusType(hakemus, true))}</>
+    <>
+      {hakemukset?.old.map((hakemus) =>
+        determineHakemusType({ hakemus, past: true }),
+      )}
+    </>
   );
 }
 
