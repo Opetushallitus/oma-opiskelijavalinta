@@ -279,7 +279,7 @@ export function getVarallaOlevatMuutToiveet(
     .filter(isNonNullish);
 }
 
-export function onkoJulkaisemattomiaValinnantiloja(
+export function onKeskeneraisiaValinnantiloja(
   hakemuksenTulokset: Array<HakutoiveenTulos>,
   hakutoiveet: Array<Hakukohde>,
 ): boolean {
@@ -287,6 +287,20 @@ export function onkoJulkaisemattomiaValinnantiloja(
     hakutoiveet.length > hakemuksenTulokset.length ||
     hakemuksenTulokset.filter(
       (ht) => ht.valintatila && ht.valintatila === Valintatila.KESKEN,
+    ).length > 0
+  );
+}
+
+export function onKeskeneraisiaTaiJulkaisemattomiaValinnantiloja(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+  hakutoiveet: Array<Hakukohde>,
+): boolean {
+  return (
+    hakutoiveet.length > hakemuksenTulokset.length ||
+    hakemuksenTulokset.filter(
+      (ht) =>
+        (ht.valintatila && ht.valintatila === Valintatila.KESKEN) ||
+        !ht.julkaistavissa,
     ).length > 0
   );
 }

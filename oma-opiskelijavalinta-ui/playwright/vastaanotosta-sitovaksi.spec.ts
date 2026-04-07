@@ -22,6 +22,22 @@ test('Näyttää jonotustilassa olevan hakutoiveen', async ({ page }) => {
       'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
     ),
   ).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Opiskelijavalintojen tulokset' })
+    .click();
+  await expect(
+    page
+      .getByTestId('application-hakutoiveet-hakemus-oid-1')
+      .getByText('1', { exact: true }),
+  ).toBeVisible();
+  const hakutoiveInfo = page.getByTestId('valintatilainfo-hakukohde-oid-2');
+  await expect(
+    hakutoiveInfo.getByText('Ota opiskelupaikka vastaan'),
+  ).toBeHidden();
+  await expect(hakutoiveInfo.getByText('Jos tulet hyväksytyksi')).toBeVisible();
+  await expect(
+    hakutoiveInfo.getByText('Voit tehdä lukuvuosi-ilmoittautumisen'),
+  ).toBeVisible();
   await expect(
     vastaanotot.getByText(
       'Luovun jonotuksesta ja muutan vastaanoton sitovaksi',

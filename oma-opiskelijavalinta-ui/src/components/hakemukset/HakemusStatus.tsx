@@ -2,7 +2,10 @@ import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakemus } from '@/lib/hakemus-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { isEmptyish, isTruthy } from 'remeda';
-import { onkoJulkaisemattomiaValinnantiloja } from '../valinnantulos/valinnan-tulos-utils';
+import {
+  onKeskeneraisiaTaiJulkaisemattomiaValinnantiloja,
+  onKeskeneraisiaValinnantiloja,
+} from '../valinnantulos/valinnan-tulos-utils';
 import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { ExternalLink } from '../ExternalLink';
@@ -80,16 +83,35 @@ export function HakemusStatus({
   let tila = null;
 
   if (isTruthy(hakemus.haku)) {
-    const tuloksetJulkaistu =
+    const tuloksetValmiit =
       tulokset.length > 0 &&
-      !onkoJulkaisemattomiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []);
+      !onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []);
+    const tuloksetValmiitJaJulkaistavissa =
+      !onKeskeneraisiaTaiJulkaisemattomiaValinnantiloja(
+        tulokset,
+        hakemus.hakukohteet ?? [],
+      );
+    console.log('tulokset valmiit:', tuloksetValmiit);
+    console.log(
+      'tuloksetValmiitJaJulkaistavissa',
+      tuloksetValmiitJaJulkaistavissa,
+    );
     if (
       hakemus.haku.hakuaikaKaynnissa &&
-      !tuloksetJulkaistu &&
+      !tuloksetValmiit &&
       !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
     ) {
       tila = <HakuKaynnissa hakemus={hakemus} />;
-    } else if (tuloksetJulkaistu) {
+    } else if (
+      hakemus.haku.hakuaikaKaynnissa &&
+      tuloksetValmiit &&
+      !tuloksetValmiitJaJulkaistavissa
+    ) {
+      // ei kesken-tilaisia, julkaisematon peruuntunut
+      tila = <ValinnatKesken hakemus={hakemus} />;
+    } else if (tuloksetValmiitJaJulkaistavissa) {
+      console.log('tulokset julkaistu');
+      // ei kesken-tilaisia eikä peruuntuneita
       tila = <TuloksetJulkaistu hakemus={hakemus} />;
     } else if (
       !hakemus.haku.hakuaikaKaynnissa &&

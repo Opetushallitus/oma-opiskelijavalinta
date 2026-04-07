@@ -11,7 +11,7 @@ import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
-import { onkoJulkaisemattomiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { onKeskeneraisiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { hasKelaUrl } from '@/lib/hakemus-service';
 import { KelaContainer } from './KelaContainer';
 import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
@@ -36,10 +36,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     (isNullish(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
         (isEmpty(tulokset) ||
-          onkoJulkaisemattomiaValinnantiloja(
-            tulokset,
-            hakemus.hakukohteet ?? [],
-          ))));
+          onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []))));
 
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
@@ -55,7 +52,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
         />
       ) : (
         (isEmpty(tulokset) ||
-          onkoJulkaisemattomiaValinnantiloja(
+          onKeskeneraisiaValinnantiloja(
             tulokset,
             hakemus.hakukohteet ?? [],
           )) && (

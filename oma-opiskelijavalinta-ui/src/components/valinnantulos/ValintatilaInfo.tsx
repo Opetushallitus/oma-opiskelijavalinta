@@ -30,9 +30,13 @@ import {
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ExternalLinkParagraph } from '@/components/ExternalLink';
 import { List } from '@mui/material';
-import { getVastaanottoPaattyyInfo } from '@/components/vastaanotto/VastaanottoInfo';
+import {
+  getEhdollisestiVastaanottanutInfo,
+  getVastaanottoPaattyyInfo,
+} from '@/components/vastaanotto/VastaanottoInfo';
 import {
   getVarallaOlevatYlemmatToiveet,
+  isVastaanotettu,
   vastaanotettavissa,
 } from '@/components/vastaanotto/vastaanotto-utils';
 import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarning';
@@ -49,6 +53,10 @@ const getVarasijallaInfo = (
     application.varasijatayttoPaattyy,
     lang,
   );
+  const config = useConfig();
+  const lisatietoUrl = kk
+    ? 'paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun'
+    : 'peruskoulun-jalkeisten-koulutusten-yhteishaun-valintojen-tulokset#varasijat';
   return (
     <>
       {kk && !priorisoidutHakutoiveet && (
@@ -72,6 +80,13 @@ const getVarasijallaInfo = (
           {t('tulos.info.varasijalta-hyvaksyminen')}
         </OphTypography>
       )}
+      <OphTypography>
+        <ExternalLinkParagraph
+          name={t('tulos.info.varasija-lisatietoa')}
+          href={`${config.routes.yleiset.konfo}/${lang}/sivu/${lisatietoUrl}`}
+          underline={'always'}
+        />
+      </OphTypography>
     </>
   );
 };
@@ -172,16 +187,10 @@ const getKkVastaanottoInfo = (
     tulos.vastaanottoDeadline,
     lang,
   );
-
   const muitaHakutoiveitaVaralla =
     getVarallaOlevatMuutToiveet(hakemus, tulos.hakukohdeOid).length > 0;
   return (
     <>
-      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
-        <OphTypography sx={{ fontWeight: 'bolder' }}>
-          {t('vastaanotto.info.jonotus')}
-        </OphTypography>
-      )}
       {getVastaanottoPaattyyInfo(vastaanottoPaattyy, true)}
       {yps && (
         <OphTypography>
@@ -193,7 +202,7 @@ const getKkVastaanottoInfo = (
           {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
         </OphTypography>
       )}
-      {hakemus.priorisoidutHakutoiveet && ylempiaVaralla && (
+      {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('vastaanotto.info.jonotus')}
         </OphTypography>
@@ -265,6 +274,8 @@ const getInfoText = (
           {t('tulos.info.varalla-ylempaan-alempi-hyvaksytty')}
         </OphTypography>
       )}
+      {tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT &&
+        getEhdollisestiVastaanottanutInfo(application, lang)}
       {tulos.valintatila === Valintatila.VARALLA &&
         getVarasijallaInfo(
           application,
@@ -276,10 +287,12 @@ const getInfoText = (
       {kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
+        !isVastaanotettu(tulos.vastaanottotila) &&
         getKkVastaanottoInfo(application, tulos, YPS, ylempiaVaralla, lang, t)}
       {!kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
+        !isVastaanotettu(tulos.vastaanottotila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
       {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(tulos, lang, t)}

@@ -64,6 +64,12 @@ test('Näyttää varasijanumeron', async ({ page }) => {
       'Voit tulla hyväksytyksi varasijalta 11.1.2026 klo 17:00 asti.',
     ),
   ).toBeVisible();
+  const link = app1.getByText('Lisätietoa varasijoista');
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute(
+    'href',
+    /paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun/,
+  );
 });
 
 test('Ei näytä varasijatäytön päättymistekstiä jos päättymispäivä puuttuu', async ({
@@ -295,7 +301,7 @@ test('Näyttää priorisoidun kk-haun alemman hakutoiveen hyväksytylle tuloksel
         ...hakemuksenTulosHyvaksytty,
         hakukohdeOid: 'hakukohde-oid-2',
         valintatila: 'HYVAKSYTTY',
-        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_EHDOLLISESTI',
       },
     ],
   };
@@ -357,6 +363,12 @@ test('Näyttää 2. asteen haussa infon varasijan säilymisestä jos on ylempi h
       'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
     ),
   ).toBeHidden();
+  const link = infoToive1.getByText('Lisätietoa varasijoista');
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute(
+    'href',
+    /peruskoulun-jalkeisten-koulutusten-yhteishaun-valintojen-tulokset/,
+  );
 });
 
 test('Näyttää hylätyn tuloksen', async ({ page }) => {
@@ -409,7 +421,9 @@ test('Näyttää kesken-tilan jos hakuaika on päättynyt ja tulosta ei ole julk
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
 });
 
-test('Näyttää tuloksen vaikka julkaistavissa on false', async ({ page }) => {
+test('Näyttää peruuntuneen tuloksen vaikka julkaistavissa on false', async ({
+  page,
+}) => {
   const hyvaksyttyJaPeruuntunutApplication = {
     ...hakemus1,
     hakemuksenTulokset: [
@@ -422,6 +436,9 @@ test('Näyttää tuloksen vaikka julkaistavissa on false', async ({ page }) => {
     ],
   };
   await fetchMockData(page, hyvaksyttyJaPeruuntunutApplication);
+  await expect(
+    page.getByText('Opiskelijavalinta on kesken. Hakuaika päättyi'),
+  ).toBeVisible();
   const tulos1 = page.getByTestId('application-tulos-hakukohde-oid-1');
   await expect(tulos1.getByText('Hyväksytty')).toBeVisible();
   const tulos2 = page.getByTestId('application-tulos-hakukohde-oid-2');
