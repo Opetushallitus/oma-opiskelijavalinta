@@ -114,5 +114,5 @@ export default function () {
   const logoutRes = http.get(`${OMA_OPISKELIJAVALINTA}/api/session`)
   console.log('logout status:', logoutRes.status);
 
-  sleep(1); //sleep(Math.random()*0.1);
+  sleep(Math.random()*0.1);
 }
