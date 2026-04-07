@@ -44,7 +44,7 @@ const StyledHeader = styled('a')(() => ({
 export default function LinkLoginBanner({
   hideLogoutButton = false,
 }: {
-  hideLogoutButton: boolean;
+  hideLogoutButton?: boolean;
 }) {
   const { t } = useTranslations();
 
