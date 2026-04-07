@@ -28,7 +28,7 @@ test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   ).toBeVisible();
   await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
   await expect(
-    vastaanotot.getByText('Otan tämän opiskelupaikan'),
+    vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
   ).toBeVisible();
   await expect(
     vastaanotot.getByText('En ota tätä opiskelupaikkaa'),
@@ -39,6 +39,28 @@ test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   await expect(
     vastaanotot.getByText('Sinulle tarjotaan opiskelupaikkaa hakutoiveesta'),
   ).toBeHidden();
+});
+
+test('Näyttää priorisoidussa kk-haun vastaanottovaihtoehdossa sitovasti-tekstin', async ({
+  page,
+}) => {
+  const hyvaksyttyPrioKkApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
+    ohjausparametrit: {
+      ...hakemus2.ohjausparametrit,
+      jarjestetytHakutoiveet: true,
+    },
+  };
+  await setup(page, hyvaksyttyPrioKkApplication);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await expect(
+    vastaanotot.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
+  ).toBeVisible();
 });
 
 test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async ({
@@ -60,7 +82,7 @@ test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async (
     vastaanotot.locator('.MuiChip-root').getByText('Ehdollinen'),
   ).toBeVisible();
   await expect(
-    vastaanotot.getByText('Otan tämän opiskelupaikan'),
+    vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
   ).toBeVisible();
   await expect(
     vastaanotot.getByText('En ota tätä opiskelupaikkaa'),

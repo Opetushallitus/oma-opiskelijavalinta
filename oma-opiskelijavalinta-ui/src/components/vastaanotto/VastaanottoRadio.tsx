@@ -103,7 +103,7 @@ function getKKPriorityOptions(application: Hakemus, hakukohde: Hakukohde) {
   if (vastaanotettavissaEhdollisesti) {
     return vastaanottoOptionsWithHigherPriorityWaitingOption;
   }
-  return defaultVastaanottoOptions;
+  return vastaanottoOptionsKK;
 }
 
 function determineVastaanottoOptions(

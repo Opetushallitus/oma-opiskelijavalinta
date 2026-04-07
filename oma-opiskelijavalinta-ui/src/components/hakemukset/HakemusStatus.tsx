@@ -91,11 +91,6 @@ export function HakemusStatus({
         tulokset,
         hakemus.hakukohteet ?? [],
       );
-    console.log('tulokset valmiit:', tuloksetValmiit);
-    console.log(
-      'tuloksetValmiitJaJulkaistavissa',
-      tuloksetValmiitJaJulkaistavissa,
-    );
     if (
       hakemus.haku.hakuaikaKaynnissa &&
       !tuloksetValmiit &&
@@ -110,7 +105,6 @@ export function HakemusStatus({
       // ei kesken-tilaisia, julkaisematon peruuntunut
       tila = <ValinnatKesken hakemus={hakemus} />;
     } else if (tuloksetValmiitJaJulkaistavissa) {
-      console.log('tulokset julkaistu');
       // ei kesken-tilaisia eikä peruuntuneita
       tila = <TuloksetJulkaistu hakemus={hakemus} />;
     } else if (
