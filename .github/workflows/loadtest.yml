@@ -21,10 +21,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node + pnpm for loadtest folder
+      - name: Setup Node + pnpm for cdk folder
         uses: ./.github/actions/setup-node-env
         with:
-          project_path: loadtest
+          project_path: cdk
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
