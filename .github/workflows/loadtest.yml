@@ -25,7 +25,18 @@ jobs:
 
       # Run the test
       - name: Run k6 load test
+        env:
+          AWS_REGION: eu-west-1
+          S3_BUCKET: oma-opintopolku-loadtest
         run: |
           cd loadtest
           pnpm install        # ensure local dependencies are ready
-          k6 run script.js
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          RESULT_FILE="results-$TIMESTAMP.json"
+          echo "Running k6 test -> $RESULT_FILE"
+          k6 run script.js --out json=$RESULT_FILE
+          
+          # Upload to S3
+          aws s3 cp $RESULT_FILE s3://$S3_BUCKET/$RESULT_FILE
+          echo "Uploaded $RESULT_FILE to s3://$S3_BUCKET/"
+          aws s3 cp $RESULT_FILE s3://$S3_BUCKET/latest.json
