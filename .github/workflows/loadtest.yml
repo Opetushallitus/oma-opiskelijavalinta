@@ -1,10 +1,30 @@
-name: loadtest.yml
+name: Loadtest
+
 on:
   workflow_dispatch:
 
 jobs:
-  dummy:
+  run-loadtest:
     runs-on: ubuntu-latest
     steps:
-      - name: Dummy step
-        run: echo "This is a dummy job to prevent workflow from being empty."
+      - uses: actions/checkout@v4
+
+      # Setup Node + pnpm in loadtest folder
+      - uses: ./.github/actions/setup-node-env
+        with:
+          project_path: loadtest
+
+      # Install k6 for load testing
+      - name: Install k6
+        run: |
+          sudo dnf -y install https://dl.k6.io/rpm/repo.rpm
+          sudo dnf -y install k6
+
+      # Run the test
+      - name: Run k6 load test
+        run: |
+          cd loadtest
+          pnpm install       # ensures local deps are ready
+          k6 run script.js
+          
+          
