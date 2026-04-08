@@ -18,17 +18,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Setup Node + pnpm for CDK
       - uses: ./.github/actions/setup-node-env
         with:
           project_path: cdk
 
-      - name: Install AWS CDK
-        run: npm install -g aws-cdk
+      # Install CDK & ts-node globally
+      - name: Install CDK & ts-node
+        run: |
+          pnpm install
+          pnpm exec npm install -g aws-cdk ts-node typescript
 
+      # Deploy LoadtestStack using ts-node
       - name: Deploy LoadtestStack
         working-directory: ./cdk
-        run: cdk deploy LoadtestStack --require-approval never
+        run: |
+          pnpm exec cdk deploy LoadtestStack --require-approval never --app "ts-node bin/app.ts"
 
+      # Get EC2 instance ID
       - name: Get Loadtest EC2 instance ID
         id: ec2info
         run: |
@@ -39,7 +46,8 @@ jobs:
             --output text)
           echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
 
-      - name: Run k6 on EC2 via SSM
+      # Run k6 via SSM
+      - name: Run k6 on EC2
         run: |
           COMMAND_ID=$(aws ssm send-command \
             --targets "Key=instanceIds,Values=$INSTANCE_ID" \
@@ -52,6 +60,7 @@ jobs:
           echo "Waiting for SSM command to finish..."
           aws ssm wait command-executed --command-id $COMMAND_ID --instance-id $INSTANCE_ID
 
+      # Download results.json from EC2
       - name: Download results.json
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
@@ -61,12 +70,15 @@ jobs:
             --query "StandardOutputContent" \
             --output text > ./loadtest/results-$TIMESTAMP.json
 
+      # Upload results to S3
       - name: Upload results to S3
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           aws s3 cp ./loadtest/results-$TIMESTAMP.json s3://oma-opintopolku-loadtest/results-$TIMESTAMP.json
 
-      - name: Destroy LoadtestStack (optional)
+      # Optional destroy
+      - name: Destroy LoadtestStack
         if: ${{ github.event.inputs.destroy == 'true' }}
         working-directory: ./cdk
-        run: cdk destroy LoadtestStack -f
+        run: |
+          pnpm exec cdk destroy LoadtestStack -f --app "ts-node bin/app.ts"
