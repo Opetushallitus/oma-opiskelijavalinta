@@ -36,7 +36,7 @@ jobs:
       - name: Deploy Loadtest Stack
         working-directory: ./cdk
         run: |
-          npm install
+          pnpm install
           npx cdk deploy ${LOADTEST_STACK_NAME} --require-approval never
 
       - name: Wait for EC2 instance to be ready
