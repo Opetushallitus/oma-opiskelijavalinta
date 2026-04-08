@@ -9,34 +9,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-node-env
-        with:
-          project_path: loadtest
-
-      # Install k6 for load testing
-      - name: Install k6
+      # Deploy EC2 stack
+      - name: Deploy LoadtestStack
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg software-properties-common
-          sudo wget -q -O - https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install -y k6
+          cd cdk
+          npx cdk deploy LoadtestStack --require-approval never -c "environmentName=dev"
 
-      # Run the test
-      - name: Run k6 load test
-        env:
-          AWS_REGION: eu-west-1
-          S3_BUCKET: oma-opintopolku-loadtest
+      # Trigger load test on EC2 using SSM
+      - name: Run k6 test on EC2
         run: |
-          cd loadtest
-          pnpm install        # ensure local dependencies are ready
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          RESULT_FILE="results-$TIMESTAMP.json"
-          echo "Running k6 test -> $RESULT_FILE"
-          k6 run script.js --out json=$RESULT_FILE
-          
-          # Upload to S3
-          aws s3 cp $RESULT_FILE s3://$S3_BUCKET/$RESULT_FILE
-          echo "Uploaded $RESULT_FILE to s3://$S3_BUCKET/"
-          aws s3 cp $RESULT_FILE s3://$S3_BUCKET/latest.json
+          INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:aws:cdk:stack-name,Values=LoadtestStack" \
+            --query "Reservations[0].Instances[0].InstanceId" \
+            --output text)
+
+          aws ssm send-command \
+            --targets "Key=instanceIds,Values=$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Start k6 load test" \
+            --parameters 'commands=[
+              "cd /home/ec2-user/loadtest",
+              "pnpm install",
+              "k6 run script.js --out json=/home/ec2-user/loadtest/results-$(date +%Y%m%d-%H%M%S).json",
+              "aws s3 cp /home/ec2-user/loadtest/results-*.json s3://oma-opintopolku-loadtest/ --acl private"
+            ]'
+
+      # Destroy EC2 stack
+      - name: Destroy LoadtestStack
+        run: |
+          cd cdk
+          npx cdk destroy LoadtestStack -f
