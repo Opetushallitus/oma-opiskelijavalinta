@@ -1,10 +1,47 @@
-name: destroy-loadtest-stack.yml
+name: Destroy Loadtest Stack
+
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment name'
+        required: true
+        type: choice
+        options:
+          - untuva
+          - hahtuva
+          - pallero
+        default: pallero
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: eu-west-1
+  LOADTEST_STACK_NAME: LoadtestStack
 
 jobs:
-  dummy:
+  destroy-stack:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Dummy step
-        run: echo "This is a dummy job to prevent workflow from being empty."
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: ./.github/actions/setup-node-env
+        with:
+          project_path: cdk
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OPINTOPOLKU_DEV_ROLE_ARN }}
+          role-session-name: destroy-stack-session
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Destroy Loadtest Stack
+        working-directory: ./cdk
+        run: |
+          pnpm install
+          pnpm dlx aws-cdk destroy ${LOADTEST_STACK_NAME} -f
