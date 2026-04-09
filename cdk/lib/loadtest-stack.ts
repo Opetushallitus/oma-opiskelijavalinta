@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3assets from 'aws-cdk-lib/aws-s3-assets';
 import { Construct } from 'constructs';
 
@@ -14,7 +15,6 @@ export class LoadtestStack extends cdk.Stack {
 
     const vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 1 });
 
-    // Upload local loadtest folder to S3
     const asset = new s3assets.Asset(this, 'LoadtestAsset', {
       path: '../loadtest',
     });
@@ -38,6 +38,12 @@ export class LoadtestStack extends cdk.Stack {
       associatePublicIpAddress: true,
       ssmSessionPermissions: true,
       instanceName: `${props.environmentName}-loadtest-instance`,
+    });
+
+    const resultsBucket = new s3.Bucket(this, 'ResultsBucket', {
+      bucketName: 'oma-opiskelijavalinta-loadtest',
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      autoDeleteObjects: true,
     });
 
     instance.userData.addCommands(
