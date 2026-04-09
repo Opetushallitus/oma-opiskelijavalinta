@@ -19,7 +19,7 @@ permissions:
 
 env:
   AWS_REGION: eu-west-1
-  LOADTEST_STACK_NAME: LoadtestStack
+  LOADTEST_STACK_NAME: oma-opiskelijavalinta-LoadtestStack
 
 jobs:
   destroy-stack:
