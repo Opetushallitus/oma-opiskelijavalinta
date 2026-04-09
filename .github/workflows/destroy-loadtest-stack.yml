@@ -42,4 +42,6 @@ jobs:
 
       - name: Destroy Loadtest Stack
         working-directory: ./cdk
-        run: npx cdk destroy ${LOADTEST_STACK_NAME} -f
+        run: |
+          pnpm install
+          pnpm dlx aws-cdk destroy ${LOADTEST_STACK_NAME} -f

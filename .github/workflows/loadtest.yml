@@ -72,4 +72,4 @@ jobs:
       - name: Destroy stack
         if: ${{ github.event.inputs.destroy == 'true' }}
         working-directory: ./cdk
-        run: npx cdk destroy ${LOADTEST_STACK_NAME} -f
+        run: pnpm dlx aws-cdk destroy ${LOADTEST_STACK_NAME} -f
