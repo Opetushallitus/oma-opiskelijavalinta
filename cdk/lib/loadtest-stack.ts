@@ -43,7 +43,6 @@ export class LoadtestStack extends cdk.Stack {
     const resultsBucket = new s3.Bucket(this, 'ResultsBucket', {
       bucketName: 'oma-opiskelijavalinta-loadtest',
       removalPolicy: cdk.RemovalPolicy.RETAIN,
-      autoDeleteObjects: true,
     });
 
     instance.userData.addCommands(
