@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment name'
+        description: 'Environment name (for reference)'
         required: true
         type: choice
         options:
@@ -42,6 +42,4 @@ jobs:
 
       - name: Destroy Loadtest Stack
         working-directory: ./cdk
-        run: |
-          pnpm install
-          pnpm dlx aws-cdk destroy ${LOADTEST_STACK_NAME} -f
+        run: npx cdk destroy ${LOADTEST_STACK_NAME} -f
