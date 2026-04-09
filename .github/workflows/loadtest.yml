@@ -17,6 +17,10 @@ on:
           - pallero
         default: 'pallero'
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   AWS_REGION: eu-west-1
   LOADTEST_STACK_NAME: LoadtestStack
