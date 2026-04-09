@@ -114,6 +114,7 @@ object VTSMockData {
         varasijasaannotKaytossa = Some(false)
       )
     ),
+    None,
     None
   )
 
@@ -145,6 +146,7 @@ object VTSMockData {
     showMigriURL = None,
     ilmoittautumisenAikaleima = None,
     jonokohtaisetTulostiedot = List.empty,
+    None,
     None
   )
 

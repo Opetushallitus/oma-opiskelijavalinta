@@ -9,6 +9,8 @@ import fi.oph.opiskelijavalinta.security.{
   AuditOperation,
   AuditedSingleSignOutFilter,
   LinkAuthenticationProvider,
+  MigriJsonWebToken,
+  OiliJsonWebToken,
   OppijaUserDetails
 }
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
@@ -389,6 +391,16 @@ class SecurityConfiguration {
     val singleSignOutFilter: SingleSignOutFilter = new SingleSignOutFilter()
     singleSignOutFilter.setIgnoreInitConfiguration(true)
     new AuditedSingleSignOutFilter(singleSignOutFilter)
+  }
+
+  @Bean(Array("migriToken"))
+  def createMigriToken(@Value("${migri.key}") key: String): MigriJsonWebToken = {
+    MigriJsonWebToken(key)
+  }
+
+  @Bean(Array("oiliToken"))
+  def createOiliToken(@Value("${oili.key}") key: String): OiliJsonWebToken = {
+    OiliJsonWebToken(key)
   }
 
 }

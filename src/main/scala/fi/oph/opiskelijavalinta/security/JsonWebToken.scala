@@ -17,11 +17,8 @@ case class OiliJWT(hakijaOid: String, expires: Long)
 
 case class MigriJWT(hakijaOid: String, expires: Long)
 
-@Bean
-class MigriJsonWebToken(mapper: ObjectMapper = new ObjectMapper()) {
+class MigriJsonWebToken(val secret: String, mapper: ObjectMapper = new ObjectMapper()) {
 
-  @Value("${migri.key}")
-  val secret: String = null
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new Jdk8Module())
 
@@ -36,11 +33,7 @@ class MigriJsonWebToken(mapper: ObjectMapper = new ObjectMapper()) {
   }
 }
 
-@Bean
-class OiliJsonWebToken(mapper: ObjectMapper = new ObjectMapper()) {
-
-  @Value("${oili.key}")
-  val secret: String = null
+class OiliJsonWebToken(val secret: String, mapper: ObjectMapper = new ObjectMapper()) {
 
   if (secret.getBytes.length * 8 < MINIMUM_SECRET_LENGTH_IN_BITS)
     throw new RuntimeException("HMAC secret has to be at least 256 bits")

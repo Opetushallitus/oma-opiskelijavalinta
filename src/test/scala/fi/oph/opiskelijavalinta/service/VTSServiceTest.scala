@@ -4,6 +4,7 @@ import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{ehdollinenTulos, hakutoiveEhdollisestiHyvaksytty}
 import fi.oph.opiskelijavalinta.model.{KoodistoKoodi, KoodistoMetadata}
+import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
 import org.junit.jupiter.api.{Assertions, Test, TestInstance}
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mockito.Mockito
@@ -16,8 +17,10 @@ class VTSServiceTest {
   val HAKU_OID    = "HAKU-OID-1"
   val HAKEMUS_OID = "HAKEMUS-OID-1"
 
-  val mockKoodistoService = Mockito.mock(classOf[KoodistoService])
-  val vtsService          = VTSService(vtsClient, mockKoodistoService)
+  val mockKoodistoService: KoodistoService = Mockito.mock(classOf[KoodistoService])
+  val migriToken: MigriJsonWebToken        = Mockito.mock(classOf[MigriJsonWebToken])
+  val oiliToken: OiliJsonWebToken          = Mockito.mock(classOf[OiliJsonWebToken])
+  val vtsService                           = VTSService(vtsClient, mockKoodistoService, migriToken, oiliToken)
 
   @Test
   def returnsEhdollisuudenSyyFromKoodisto(): Unit = {

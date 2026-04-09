@@ -10,10 +10,10 @@ oma-opiskelijavalinta:
     bucket: dummy
 
 migri:
-  key: dummy
+  key: verylongplaceholdertosatisfyminimumlimit
 
 oili:
-  key: dummy
+  key: verylongplaceholdertosatisfyminimumlimit
 
 viestinvalityspalvelu:
   url: dummy

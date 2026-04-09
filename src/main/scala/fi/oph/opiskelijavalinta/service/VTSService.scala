@@ -6,7 +6,15 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksenTulos,
+  HakemuksenTulosRaw,
+  HakutoiveenTulos,
+  HakutoiveenTulosEnriched,
+  Ilmoittautumistapa,
+  Ilmoittautumistila
+}
+import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
 import fi.oph.opiskelijavalinta.util.TranslationUtil
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +32,8 @@ case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokk
 class VTSService @Autowired (
   vtsClient: ValintaTulosServiceClient,
   koodistoService: KoodistoService,
+  migriToken: MigriJsonWebToken,
+  oiliToken: OiliJsonWebToken,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
 
@@ -82,7 +92,8 @@ class VTSService @Autowired (
       showMigriURL = tulos.showMigriURL,
       ilmoittautumisenAikaleima = tulos.ilmoittautumisenAikaleima,
       jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot,
-      kelaURL = tulos.kelaURL
+      kelaURL = tulos.kelaURL,
+      migriURL = None
     )
   }
 
@@ -107,6 +118,29 @@ class VTSService @Autowired (
           )
         )
     }
+  }
+
+  def addJwtsForLinkUserIfNecessary(hakijaOid: String, tulos: HakutoiveenTulosEnriched): HakutoiveenTulosEnriched = {
+    val migriUrl: Option[String] = if (tulos.showMigriURL.getOrElse(false)) {
+      Some(migriToken.createMigriJWT(hakijaOid))
+    } else None
+    val ilmoittautumisTila: Option[Ilmoittautumistila] = tulos.ilmoittautumistila.map(it => {
+      if (it.ilmoittauduttavissa.getOrElse(false) && it.ilmoittautumistapa.flatMap(it => it.url).isDefined) {
+        val ilmoittautumisTapa = Some(
+          Ilmoittautumistapa(
+            it.ilmoittautumistapa.flatMap(tapa => tapa.nimi),
+            it.ilmoittautumistapa.map(tapa => s"${tapa.url}?token=${oiliToken.createOiliJwt(hakijaOid)}")
+          )
+        )
+        it.copy(ilmoittautumistapa = ilmoittautumisTapa)
+      } else {
+        it
+      }
+    })
+    tulos.copy(
+      migriURL = migriUrl,
+      ilmoittautumistila = ilmoittautumisTila
+    )
   }
 
   def doVastaanotto(
