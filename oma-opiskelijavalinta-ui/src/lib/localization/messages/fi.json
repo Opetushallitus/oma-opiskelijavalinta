@@ -245,6 +245,13 @@
     "otsake": "Tee opintotukihakemus",
     "linkki": "Siirry Kelan asiointipalveluun"
   },
+  "migri": {
+    "otsake": "Voit nyt hakea oleskelulupaa",
+    "ohjeet": "Katso ensin ohjeet oleskeluluvan hakemiseen: ",
+    "ohjelinkki": "opas opiskelijoille",
+    "oppilasnumero": "Kansallinen oppilasnumerosi annetaan automaattisesti oleskelulupahakemuksessasi tämän linkin kautta:",
+    "hae": "Hae oleskelulupaa"
+  },
   "tuloskirje": "Tuloskirje {pvm}",
   "vastaanottoviesti": {
     "otsikko": "Opintopolku: Vastauksesi on vastaanotettu",

@@ -12,11 +12,12 @@ import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import { onKeskeneraisiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { hasKelaUrl } from '@/lib/hakemus-service';
+import { hasKelaUrl, showMigriURL } from '@/lib/hakemus-service';
 import { KelaContainer } from './KelaContainer';
 import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
 import { TutustuContainer } from './TutustuContainer';
 import { HakemusStatus } from './HakemusStatus';
+import { MigriContainer } from './MigriContainer';
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
@@ -75,6 +76,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
             isKorkeakouluHaku(hakemus.haku) && (
               <TutustuContainer hakemus={hakemus} />
             )}
+          {showMigriURL(tulokset) && <MigriContainer tulokset={tulokset} />}
           {onkoVastaanottoTehty(tulokset) && (
             <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}

@@ -103,3 +103,11 @@ export function getKelaUrl(
 export function hasKelaUrl(tulokset: Array<HakutoiveenTulos>): boolean {
   return isTruthy(getKelaUrl(tulokset));
 }
+
+export function showMigriURL(tulokset: Array<HakutoiveenTulos>): boolean {
+  return isTruthy(tulokset.find((t) => t.showMigriURL));
+}
+
+export function getMigriUrl(tulokset: Array<HakutoiveenTulos>): string {
+  return tulokset.find((t) => t.showMigriURL)?.migriURL ?? '';
+}
