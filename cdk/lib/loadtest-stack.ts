@@ -11,8 +11,10 @@ interface LoadtestStackProps extends cdk.StackProps {
 export class LoadtestStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: LoadtestStackProps) {
     super(scope, id, props);
-
-    const vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: 'vpc-xxxx' });
+    
+    const vpc = new ec2.Vpc(this, 'Vpc', {
+      maxAzs: 1,
+    });
 
     const asset = new s3assets.Asset(this, 'LoadtestAsset', {
       path: '../loadtest',
@@ -22,7 +24,7 @@ export class LoadtestStack extends cdk.Stack {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'), // quick & dirty
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
       ],
     });
 
@@ -35,6 +37,8 @@ export class LoadtestStack extends cdk.Stack {
       role,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       associatePublicIpAddress: true,
+
+      ssmSessionPermissions: true,
     });
 
     instance.userData.addCommands(
