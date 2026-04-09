@@ -37,6 +37,7 @@ export class LoadtestStack extends cdk.Stack {
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       associatePublicIpAddress: true,
       ssmSessionPermissions: true,
+      instanceName: `${props.environmentName}-loadtest-instance`,
     });
 
     // Only install dependencies
@@ -47,5 +48,9 @@ export class LoadtestStack extends cdk.Stack {
       'dnf install -y k6',
       'mkdir -p /home/ec2-user/loadtest'
     );
+
+    // Optional: expose S3 asset info as CloudFormation output
+    new cdk.CfnOutput(this, 'LoadtestAssetBucket', { value: asset.s3BucketName });
+    new cdk.CfnOutput(this, 'LoadtestAssetKey', { value: asset.s3ObjectKey });
   }
 }

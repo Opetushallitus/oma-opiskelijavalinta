@@ -3,10 +3,10 @@ name: Loadtest
 on:
   workflow_dispatch:
     inputs:
-      destroy:
-        description: 'Destroy stack after test'
-        required: false
-        default: 'true'
+#      destroy:
+#        description: 'Destroy stack after test'
+#        required: false
+#        default: 'true'
       environment:
         description: 'Test environment'
         required: true
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node
         uses: ./.github/actions/setup-node-env
@@ -39,7 +39,7 @@ jobs:
           project_path: cdk
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_OPINTOPOLKU_DEV_ROLE_ARN }}
           role-session-name: loadtest-session
@@ -53,23 +53,23 @@ jobs:
             --require-approval never \
             -c environment=${{ github.event.inputs.environment }}
 
-      - name: Run load test via SSM
-        run: |
-          INSTANCE_ID=$(aws ec2 describe-instances \
-            --filters "Name=tag:aws:cloudformation:stack-name,Values=${LOADTEST_STACK_NAME}" \
-            --query "Reservations[0].Instances[0].InstanceId" --output text)
+#      - name: Run load test via SSM
+#        run: |
+#          INSTANCE_ID=$(aws ec2 describe-instances \
+#            --filters "Name=tag:aws:cloudformation:stack-name,Values=${LOADTEST_STACK_NAME}" \
+#            --query "Reservations[0].Instances[0].InstanceId" --output text)
+#
+#          aws ssm send-command \
+#            --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
+#            --document-name "AWS-RunShellScript" \
+#            --comment "Run load test" \
+#            --parameters commands="[
+#              \"cd /home/ec2-user/loadtest\",
+#              \"chmod +x run.sh\",
+#              \"./run.sh ${GITHUB_EVENT_INPUTS_ENVIRONMENT}\"
+#            ]"
 
-          aws ssm send-command \
-            --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
-            --document-name "AWS-RunShellScript" \
-            --comment "Run load test" \
-            --parameters commands="[
-              \"cd /home/ec2-user/loadtest\",
-              \"chmod +x run.sh\",
-              \"./run.sh ${GITHUB_EVENT_INPUTS_ENVIRONMENT}\"
-            ]"
-
-      - name: Destroy stack
-        if: ${{ github.event.inputs.destroy == 'true' }}
-        working-directory: ./cdk
-        run: pnpm dlx aws-cdk destroy ${LOADTEST_STACK_NAME} -f
+#      - name: Destroy stack
+#        if: ${{ github.event.inputs.destroy == 'true' }}
+#        working-directory: ./cdk
+#        run: pnpm dlx aws-cdk destroy ${LOADTEST_STACK_NAME} -f
