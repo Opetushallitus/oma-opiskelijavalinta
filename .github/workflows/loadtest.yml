@@ -49,7 +49,7 @@ jobs:
         working-directory: ./cdk
         run: |
           pnpm install
-          npx cdk deploy ${LOADTEST_STACK_NAME} \
+          pnpm dlx aws-cdk deploy ${LOADTEST_STACK_NAME} \
             --require-approval never \
             -c environment=${{ github.event.inputs.environment }}
 
