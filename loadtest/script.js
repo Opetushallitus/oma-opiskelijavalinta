@@ -7,12 +7,34 @@ export const options = {
   iterations: 10, // for testing, adjust later
 };
 
-// --- Load user tokens from JSON file ---
+const ENV = __ENV.ENVIRONMENT || 'pallero';
+
+const config = {
+  untuva: {
+    usersFile: './users-untuva.json',
+    baseUrl: 'https://untuvaopintopolku.fi',
+  },
+  hahtuva: {
+    usersFile: './users-hahtuva.json',
+    baseUrl: 'https://hahtuvaopintopolku.fi',
+  },
+  pallero: {
+    usersFile: './users-pallero.json',
+    baseUrl: 'https://testiopintopolku.fi',
+  },
+};
+
+const selected = config[ENV];
+
+if (!selected) {
+  throw new Error(`Unknown environment: ${ENV}`);
+}
+
 const users = new SharedArray('users', function () {
-  return JSON.parse(open('./users.json'));
+  return JSON.parse(open(selected.usersFile));
 });
 
-const BASE = 'https://untuvaopintopolku.fi';
+const BASE = selected.baseUrl;
 const OMA_OPISKELIJAVALINTA = `${BASE}/oma-opiskelijavalinta`;
 
 function login(token) {

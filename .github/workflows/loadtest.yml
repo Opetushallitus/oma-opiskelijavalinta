@@ -6,7 +6,16 @@ on:
       destroy:
         description: 'Destroy stack after test'
         required: false
-        default: 'false'
+        default: 'true'
+      environment:
+        description: 'Test environment'
+        required: true
+        type: choice
+        options:
+          - untuva
+          - hahtuva
+          - pallero
+        default: 'pallero'
 
 env:
   AWS_REGION: eu-west-1
@@ -18,64 +27,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node + pnpm for cdk folder
+      - name: Setup Node
         uses: ./.github/actions/setup-node-env
         with:
           project_path: cdk
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_OPINTOPOLKU_DEV_ROLE_ARN }}
+          role-session-name: loadtest-session
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Deploy Loadtest Stack
+      - name: Deploy stack
         working-directory: ./cdk
         run: |
           pnpm install
-          npx cdk deploy ${LOADTEST_STACK_NAME} --require-approval never
+          npx cdk deploy ${LOADTEST_STACK_NAME} \
+            --require-approval never \
+            -c environment=${{ github.event.inputs.environment }}
 
-      - name: Wait for EC2 instance to be ready
-        run: sleep 30
+      - name: Wait for instance
+        run: sleep 60
 
-      - name: Run k6 load test via SSM
+      - name: Run load test via SSM
         run: |
           INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:aws:cloudformation:stack-name,Values=${LOADTEST_STACK_NAME}" \
             --query "Reservations[0].Instances[0].InstanceId" --output text)
 
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          OUTPUT_FILE="/tmp/results-${TIMESTAMP}.json"
 
           aws ssm send-command \
             --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
             --document-name "AWS-RunShellScript" \
             --comment "Run k6 load test" \
-            --parameters 'commands=["cd /home/ec2-user/loadtest && pnpm install && k6 run script.js --out json='"${OUTPUT_FILE}"'"]'
+            --parameters commands="[
+              \"cd /home/ec2-user/loadtest\",
+              \"export ENVIRONMENT=${{ github.event.inputs.environment }}\",
+              \"pnpm install\",
+              \"k6 run script.js --out json=/tmp/results-${TIMESTAMP}.json\",
+              \"aws s3 cp /tmp/results-${TIMESTAMP}.json s3://${S3_RESULTS_BUCKET}/results-${TIMESTAMP}.json\"
+            ]"
 
-      - name: Download results and upload to S3
-        run: |
-          INSTANCE_ID=$(aws ec2 describe-instances \
-            --filters "Name=tag:aws:cloudformation:stack-name,Values=${LOADTEST_STACK_NAME}" \
-            --query "Reservations[0].Instances[0].InstanceId" --output text)
-
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          LOCAL_FILE="./results-${TIMESTAMP}.json"
-
-          aws ssm get-command-invocation \
-            --command-id $(aws ssm list-commands \
-              --filters "Key=DocumentName,Values=AWS-RunShellScript" \
-              --query "Commands[-1].CommandId" --output text) \
-            --instance-id ${INSTANCE_ID} \
-            --query "StandardOutputContent" --output text > ${LOCAL_FILE}
-
-          aws s3 cp ${LOCAL_FILE} s3://${S3_RESULTS_BUCKET}/results-${TIMESTAMP}.json
-
-      - name: Destroy Loadtest Stack (optional)
+      - name: Destroy stack
         if: ${{ github.event.inputs.destroy == 'true' }}
         working-directory: ./cdk
         run: |
