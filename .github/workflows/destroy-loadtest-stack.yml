@@ -1,0 +1,10 @@
+name: destroy-loadtest-stack.yml
+on:
+  workflow_dispatch:
+
+jobs:
+  dummy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dummy step
+        run: echo "This is a dummy job to prevent workflow from being empty."
