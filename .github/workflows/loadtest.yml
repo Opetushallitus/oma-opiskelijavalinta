@@ -53,31 +53,23 @@ jobs:
             --require-approval never \
             -c environment=${{ github.event.inputs.environment }}
 
-      - name: Wait for instance
-        run: sleep 60
-
       - name: Run load test via SSM
         run: |
           INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:aws:cloudformation:stack-name,Values=${LOADTEST_STACK_NAME}" \
             --query "Reservations[0].Instances[0].InstanceId" --output text)
 
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-
           aws ssm send-command \
             --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
             --document-name "AWS-RunShellScript" \
-            --comment "Run k6 load test" \
+            --comment "Run load test" \
             --parameters commands="[
               \"cd /home/ec2-user/loadtest\",
-              \"export ENVIRONMENT=${{ github.event.inputs.environment }}\",
-              \"pnpm install\",
-              \"k6 run script.js --out json=/tmp/results-${TIMESTAMP}.json\",
-              \"aws s3 cp /tmp/results-${TIMESTAMP}.json s3://${S3_RESULTS_BUCKET}/results-${TIMESTAMP}.json\"
+              \"chmod +x run.sh\",
+              \"./run.sh ${GITHUB_EVENT_INPUTS_ENVIRONMENT}\"
             ]"
 
       - name: Destroy stack
         if: ${{ github.event.inputs.destroy == 'true' }}
         working-directory: ./cdk
-        run: |
-          npx cdk destroy ${LOADTEST_STACK_NAME} -f
+        run: npx cdk destroy ${LOADTEST_STACK_NAME} -f

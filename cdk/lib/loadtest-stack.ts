@@ -11,11 +11,10 @@ interface LoadtestStackProps extends cdk.StackProps {
 export class LoadtestStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: LoadtestStackProps) {
     super(scope, id, props);
-    
-    const vpc = new ec2.Vpc(this, 'Vpc', {
-      maxAzs: 1,
-    });
 
+    const vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 1 });
+
+    // Upload local loadtest folder to S3
     const asset = new s3assets.Asset(this, 'LoadtestAsset', {
       path: '../loadtest',
     });
@@ -24,7 +23,7 @@ export class LoadtestStack extends cdk.Stack {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
-        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'), // run.sh uploads results
       ],
     });
 
@@ -37,19 +36,16 @@ export class LoadtestStack extends cdk.Stack {
       role,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       associatePublicIpAddress: true,
-
       ssmSessionPermissions: true,
     });
 
+    // Only install dependencies
     instance.userData.addCommands(
       'dnf install -y nodejs unzip',
       'npm install -g pnpm',
       'dnf install -y https://dl.k6.io/rpm/repo.rpm',
       'dnf install -y k6',
-      'mkdir -p /home/ec2-user/loadtest',
-      `aws s3 cp s3://${asset.s3BucketName}/${asset.s3ObjectKey} /home/ec2-user/loadtest.zip`,
-      'unzip /home/ec2-user/loadtest.zip -d /home/ec2-user/loadtest',
-      'chown -R ec2-user:ec2-user /home/ec2-user/loadtest'
+      'mkdir -p /home/ec2-user/loadtest'
     );
   }
 }
