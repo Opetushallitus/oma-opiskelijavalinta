@@ -6,18 +6,11 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
-import fi.oph.opiskelijavalinta.model.{
-  HakemuksenTulos,
-  HakemuksenTulosRaw,
-  HakutoiveenTulos,
-  HakutoiveenTulosEnriched,
-  Ilmoittautumistapa,
-  Ilmoittautumistila
-}
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched, Ilmoittautumistapa, Ilmoittautumistila}
 import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
 import fi.oph.opiskelijavalinta.util.TranslationUtil
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.stereotype.Service
 
 enum AllowedIlmoittautumisTila:
@@ -36,6 +29,9 @@ class VTSService @Autowired (
   oiliToken: OiliJsonWebToken,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
+
+  @Value("${migri.url}")
+  val migriUrl: String = null
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -93,7 +89,7 @@ class VTSService @Autowired (
       ilmoittautumisenAikaleima = tulos.ilmoittautumisenAikaleima,
       jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot,
       kelaURL = tulos.kelaURL,
-      migriURL = None
+      migriURL = if (tulos.showMigriURL.getOrElse(false)) Some(migriUrl) else None
     )
   }
 
@@ -121,8 +117,8 @@ class VTSService @Autowired (
   }
 
   def addJwtsForLinkUserIfNecessary(hakijaOid: String, tulos: HakutoiveenTulosEnriched): HakutoiveenTulosEnriched = {
-    val migriUrl: Option[String] = if (tulos.showMigriURL.getOrElse(false)) {
-      Some(migriToken.createMigriJWT(hakijaOid))
+    val migriUrlWithToken: Option[String] = if (tulos.showMigriURL.getOrElse(false)) {
+      Some(s"${migriUrl}?token=${migriToken.createMigriJWT(hakijaOid)}")
     } else None
     val ilmoittautumisTila: Option[Ilmoittautumistila] = tulos.ilmoittautumistila.map(it => {
       if (it.ilmoittauduttavissa.getOrElse(false) && it.ilmoittautumistapa.flatMap(it => it.url).isDefined) {
@@ -138,7 +134,7 @@ class VTSService @Autowired (
       }
     })
     tulos.copy(
-      migriURL = migriUrl,
+      migriURL = migriUrlWithToken,
       ilmoittautumistila = ilmoittautumisTila
     )
   }
