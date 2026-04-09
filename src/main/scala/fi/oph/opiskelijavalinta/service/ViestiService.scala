@@ -45,7 +45,7 @@ class ViestiService @Autowired (
         Option(oppija.sukunimi).getOrElse("")
       ).mkString(" ").trim
       val (email, lang) = hakemuksetService.getHakemusEmailAndLang(oppijanumero, hakemusOid)
-      val asiointikieli = SupportedLanguage.values.find(_.toString == lang.toUpperCase).getOrElse(SupportedLanguage.fi)
+      val asiointikieli = SupportedLanguage.values.find(_.toString.equalsIgnoreCase(lang)).getOrElse(SupportedLanguage.fi)
       LOGGER.info(
         s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
       )
