@@ -6,8 +6,8 @@ fi
 ENVIRONMENT=$1
 INSTANCE_NAME="${ENVIRONMENT}-loadtest-instance"
 
-# Find the running instance by Name tag
 INSTANCE_ID=$(aws ec2 describe-instances \
+  --region eu-west-1 \
   --filters "Name=tag:Name,Values=${INSTANCE_NAME}" "Name=instance-state-name,Values=running" \
   --query "Reservations[0].Instances[0].InstanceId" \
   --output text)
@@ -20,4 +20,6 @@ fi
 echo "Connecting to instance $INSTANCE_ID ($INSTANCE_NAME)..."
 
 # Start SSM session (interactive shell)
-aws ssm start-session --target "$INSTANCE_ID"
+aws ssm start-session \
+  --region eu-west-1 \
+  --target "$INSTANCE_ID"

@@ -4,7 +4,7 @@ set -e
 ENVIRONMENT=$1
 S3_BUCKET=$2
 
-cd /home/ec2-user/loadtest
+cd /home/ssm-user/loadtest
 
 # Select environment-specific user file
 USER_FILE="users-${ENVIRONMENT}.json"

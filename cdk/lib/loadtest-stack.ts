@@ -40,13 +40,25 @@ export class LoadtestStack extends cdk.Stack {
       instanceName: `${props.environmentName}-loadtest-instance`,
     });
 
-    // Only install dependencies
     instance.userData.addCommands(
+      // Install deps
       'dnf install -y nodejs unzip',
       'npm install -g pnpm',
       'dnf install -y https://dl.k6.io/rpm/repo.rpm',
       'dnf install -y k6',
-      'mkdir -p /home/ec2-user/loadtest'
+
+      // Create folder
+      'mkdir -p /home/ssm-user/loadtest',
+
+      // Download loadtest bundle from CDK asset bucket
+      `aws s3 cp s3://${asset.s3BucketName}/${asset.s3ObjectKey} /home/ssm-user/loadtest.zip`,
+
+      // Unzip into folder
+      'unzip /home/ssm-user/loadtest.zip -d /home/ssm-user/loadtest',
+
+      // Fix permissions for SSM user
+      'chown -R ssm-user:ssm-user /home/ssm-user/loadtest',
+      'chmod +x /home/ssm-user/loadtest/run.sh'
     );
 
     // Optional: expose S3 asset info as CloudFormation output
