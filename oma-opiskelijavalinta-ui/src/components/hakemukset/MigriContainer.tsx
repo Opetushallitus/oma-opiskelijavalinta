@@ -41,7 +41,11 @@ export function MigriContainer({
         </BulletItem>
         <BulletItem>{t('migri.oppilasnumero')}</BulletItem>
       </BulletedList>
-      <ExternalLinkButton href={getMigriUrl(tulokset)} name={t('migri.hae')} />
+      <ExternalLinkButton
+        variant="outlined"
+        href={getMigriUrl(tulokset)}
+        name={t('migri.hae')}
+      />
     </StyledBox>
   );
 }
