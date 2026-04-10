@@ -8,6 +8,7 @@ import { MenneetHakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
 import { Divider } from '@mui/material';
 import { KirjeLink } from './KirjeLink';
 import { RowFlexBox } from '../FlexBox';
+import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
 
 export function MennytHakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
@@ -17,9 +18,11 @@ export function MennytHakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     return null;
   }
 
+  const adjustHeaderLevel = useAdjustHeaderLevel();
+
   return (
     <HakemusPaper tabIndex={0} data-test-id={`past-application-${hakemus.oid}`}>
-      <OphTypography variant="h3">
+      <OphTypography variant="h3" component={adjustHeaderLevel ? 'h2' : 'h3'}>
         {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
       <RowFlexBox>

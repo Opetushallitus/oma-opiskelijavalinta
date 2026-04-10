@@ -104,7 +104,7 @@ export function Hakutoive({
           mt: hakemus.priorisoidutHakutoiveet ? '8px' : '10px',
         }}
       >
-        <OphTypography variant="h5">
+        <OphTypography variant="h5" component="div">
           {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
         </OphTypography>
         <OphTypography variant="body1">

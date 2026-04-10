@@ -17,9 +17,9 @@ function LinkHakemusContent() {
   }
 
   if (!isEmpty(hakemukset.current) && isNonNullish(hakemukset.current[0])) {
-    return determineHakemusType(hakemukset.current[0]);
+    return determineHakemusType({ hakemus: hakemukset.current[0] });
   } else if (!isEmpty(hakemukset.old) && isNonNullish(hakemukset.old[0])) {
-    return determineHakemusType(hakemukset.old[0], true);
+    return determineHakemusType({ hakemus: hakemukset.old[0], past: true });
   } else {
     console.error('Linkillä tunnistautuneella käyttäjällä ei ollut hakemusta');
     return null;

@@ -5,9 +5,6 @@ export default [
     route('/token/:token', './LinkLoginPage.tsx'),
   ]),
   layout('./HomeLayout.tsx', [route('/', './HomePage.tsx')]),
-  layout('./LoggedOutLayout.tsx', [
-    route('/logged-out', './LoggedOutPage.tsx'),
-  ]),
   layout('./SessionExpiredLayout.tsx', [
     route('/session-expired', './SessionExpiredPage.tsx'),
   ]),

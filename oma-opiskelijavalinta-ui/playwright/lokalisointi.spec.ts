@@ -5,7 +5,7 @@ test.describe('Lokalisointi', () => {
   test('Kääntää sivun suomeksi', async ({ page }) => {
     await mockAuthenticatedUser(page);
     await page.goto('');
-    await expect(page).toHaveTitle(/Oma Opiskelijavalinta/);
+    await expect(page).toHaveTitle(/Hakemukset ja opiskelupaikan vastaanotto/);
     await expect(page.getByText('Ajankohtaiset hakemukset')).toBeVisible();
     await expect(page.getByText('hakemukset.ajankohtaiset')).toBeHidden();
     await expect(page.getByText('info.kuvaus')).toBeHidden();

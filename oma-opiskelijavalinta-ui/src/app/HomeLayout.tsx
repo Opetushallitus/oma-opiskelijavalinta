@@ -8,6 +8,8 @@ import { NavigationSpinner } from './NavigationSpinner';
 import { useAuth } from '@/components/authentication/AuthProvider';
 import { FullSpinner } from '@/components/FullSpinner';
 import { useTranslations } from '@/hooks/useTranslations';
+import { isLinkUser } from '@/lib/auth/auth-util';
+import LinkLoginBanner from '@/components/LinkLoginBanner';
 
 function InnerHomeLayout() {
   const { state } = useAuth();
@@ -25,17 +27,23 @@ function InnerHomeLayout() {
     return <FullSpinner />;
   }
 
+  const isLinkLogin = isLinkUser(state);
+
   return (
-    <PageLayout>
-      <title>{t('otsikko')}</title>
-      <Stack direction="row">
-        <main style={{ flexGrow: 1 }}>
-          <NavigationSpinner>
-            <Outlet />
-          </NavigationSpinner>
-        </main>
-      </Stack>
-    </PageLayout>
+    <>
+      {isLinkLogin && <LinkLoginBanner />}
+      <PageLayout>
+        <title>{t('otsikko')}</title>
+
+        <Stack direction="row">
+          <main style={{ flexGrow: 1 }}>
+            <NavigationSpinner>
+              <Outlet />
+            </NavigationSpinner>
+          </main>
+        </Stack>
+      </PageLayout>
+    </>
   );
 }
 

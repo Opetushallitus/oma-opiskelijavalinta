@@ -1,15 +1,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
 import { useConfig } from '@/configuration';
 import { useTranslations } from '@/hooks/useTranslations';
-import { OphButton } from '@opetushallitus/oph-design-system';
+import { OphButton, ophColors } from '@opetushallitus/oph-design-system';
 import { useAuth } from '@/components/authentication/AuthProvider';
+import type { Language } from '@/types/ui-types';
+
+const LANG_LOGOUT_PAGE_MAP: Record<Language, string> = {
+  fi: 'fi/sivu/uloskirjautuminen',
+  sv: 'sv/sivu/utloggningen',
+  en: 'en/sivu/logout',
+};
 
 function useLinkLogout() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { getLanguage } = useTranslations();
   const conf = useConfig();
   const { dispatch } = useAuth();
+
+  const logoutPage = `${conf.routes.yleiset.konfo}/${LANG_LOGOUT_PAGE_MAP[getLanguage()]}`;
 
   return useMutation({
     mutationFn: async () => {
@@ -26,7 +34,7 @@ function useLinkLogout() {
       // Update auth state
       dispatch({ type: 'LOGOUT' });
       // Navigate to logged-out page
-      navigate('/logged-out', { replace: true });
+      window.document.location = logoutPage;
     },
   });
 }
@@ -37,9 +45,10 @@ export function LinkLogoutButton() {
 
   return (
     <OphButton
-      variant="outlined"
+      variant="contained"
       onClick={() => logoutMutation.mutate()}
       loading={logoutMutation.isPending}
+      sx={{ borderColor: ophColors.white }}
     >
       {t('yleinen.logout')}
     </OphButton>

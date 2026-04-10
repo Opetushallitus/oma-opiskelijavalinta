@@ -25,7 +25,7 @@ class UserResource @Autowired (private val onrClient: OnrClient) {
     val oppija                    = (personOid, hetu) match
       case (Some(personOid), _) => onrClient.getPersonInfo(personOid)
       case (None, Some(hetu))   => onrClient.getPersonInfoByHetu(hetu)
-      case _ => null // TODO: käsittele tapaukset ilman hetua tai kun on heikko tunnistautuminen käytössä
+      case _                    => null
     ResponseEntity.ok(oppija)
   }
 }
