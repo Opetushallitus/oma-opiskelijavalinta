@@ -14,7 +14,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 const MIGRI_GUIDE_LINKS: Record<Language, string> = {
-  fi: 'https://migri.fi/opiskelijan-opas#',
+  fi: 'https://migri.fi/opiskelijan-opas',
   sv: 'https://migri.fi/sv/guiden-for-studerande',
   en: 'https://migri.fi/en/guide-for-students',
 };

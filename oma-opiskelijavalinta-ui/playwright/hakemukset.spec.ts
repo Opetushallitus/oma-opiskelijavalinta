@@ -363,7 +363,7 @@ test('Näyttää migrilinkin kun sellainen löytyy', async ({ page }) => {
   ).toBeVisible();
   await expect(
     hakemukset.getByRole('link', { name: 'opas opiskelijoille' }),
-  ).toHaveAttribute('href', 'https://migri.fi/opiskelijan-opas#');
+  ).toHaveAttribute('href', 'https://migri.fi/opiskelijan-opas');
 
   await expect(
     hakemukset.getByRole('link', { name: 'Hae oleskelulupaa' }),
