@@ -6,7 +6,14 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched, Ilmoittautumistapa, Ilmoittautumistila}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksenTulos,
+  HakemuksenTulosRaw,
+  HakutoiveenTulos,
+  HakutoiveenTulosEnriched,
+  Ilmoittautumistapa,
+  Ilmoittautumistila
+}
 import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
 import fi.oph.opiskelijavalinta.util.TranslationUtil
 import org.slf4j.{Logger, LoggerFactory}
