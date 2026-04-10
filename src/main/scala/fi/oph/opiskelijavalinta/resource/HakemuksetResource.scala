@@ -1,9 +1,9 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants.HAKEMUKSET_PATH
-import fi.oph.opiskelijavalinta.model.HakemuksetEnriched
+import fi.oph.opiskelijavalinta.model.{HakemuksetEnriched, HakemusEnriched}
 import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, OppijaUser}
-import fi.oph.opiskelijavalinta.service.{AuthorizationService, HakemuksetService}
+import fi.oph.opiskelijavalinta.service.{AuthorizationService, HakemuksetService, VTSService}
 import fi.oph.opiskelijavalinta.util.{LogHakemus, LogUtil}
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 
 @RequestMapping(path = Array(HAKEMUKSET_PATH))
 @RestController
-class HakemuksetResource @Autowired (hakemuksetService: HakemuksetService, authorizationService: AuthorizationService) {
+class HakemuksetResource @Autowired (
+  hakemuksetService: HakemuksetService,
+  authorizationService: AuthorizationService,
+  vtsService: VTSService
+) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[HakemuksetResource]);
 
@@ -27,8 +31,10 @@ class HakemuksetResource @Autowired (hakemuksetService: HakemuksetService, autho
     AuditLog.log(request, Map.empty, AuditOperation.HaeHakemukset, None)
     if (linkUser) {
       val hakemusOid      = authorizationService.getHakemusOidFromLinkUser
-      val currentFiltered = hakemukset.current.filter(h => h.oid.equals(hakemusOid.getOrElse("")))
-      val oldFiltered     = hakemukset.old.filter(h => h.oid.equals(hakemusOid.getOrElse("")))
+      val currentFiltered = hakemukset.current
+        .filter(h => h.oid.equals(hakemusOid.getOrElse("")))
+        .map(h => mapTuloksetWithJwtsForLinkUser(h, personOid.get))
+      val oldFiltered = hakemukset.old.filter(h => h.oid.equals(hakemusOid.getOrElse("")))
       hakemukset = HakemuksetEnriched(currentFiltered, oldFiltered)
     }
     LOG.info(
@@ -36,4 +42,11 @@ class HakemuksetResource @Autowired (hakemuksetService: HakemuksetService, autho
     )
     ResponseEntity.ok(hakemukset)
   }
+
+  private def mapTuloksetWithJwtsForLinkUser(hakemus: HakemusEnriched, hakijaOid: String): HakemusEnriched = {
+    hakemus.copy(hakemuksenTulokset =
+      hakemus.hakemuksenTulokset.map(ht => vtsService.addJwtsForLinkUserIfNecessary(hakijaOid, ht))
+    )
+  }
+
 }

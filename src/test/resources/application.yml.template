@@ -9,6 +9,12 @@ oma-opiskelijavalinta:
     region: PLACEHOLDER
     bucket: PLACEHOLDER
 
+migri:
+  key: PLACEHOLDER
+
+oili:
+  key: PLACEHOLDER
+
 logging:
   level:
     root: INFO

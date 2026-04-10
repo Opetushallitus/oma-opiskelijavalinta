@@ -35,7 +35,8 @@ case class HakutoiveenTulosEnriched(
   showMigriURL: Option[Boolean],
   ilmoittautumisenAikaleima: Option[String],
   jonokohtaisetTulostiedot: List[JonokohtainenTulostieto],
-  kelaURL: Option[String]
+  kelaURL: Option[String],
+  migriURL: Option[String]
 )
 
 case class HakutoiveenTulos(

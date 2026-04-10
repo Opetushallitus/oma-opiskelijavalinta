@@ -9,6 +9,13 @@ oma-opiskelijavalinta:
     region: dummy
     bucket: dummy
 
+migri:
+  key: verylongplaceholdertosatisfyminimumlimit
+  url: dummy
+
+oili:
+  key: verylongplaceholdertosatisfyminimumlimit
+
 viestinvalityspalvelu:
   url: dummy
 

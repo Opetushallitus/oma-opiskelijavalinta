@@ -1,9 +1,21 @@
 package fi.oph.opiskelijavalinta.service
 
-import fi.oph.opiskelijavalinta.TestUtils.objectMapper
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, PERSON_OID}
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
-import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{ehdollinenTulos, hakutoiveEhdollisestiHyvaksytty}
-import fi.oph.opiskelijavalinta.model.{KoodistoKoodi, KoodistoMetadata}
+import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{
+  ehdollinenTulos,
+  hakutoive1Hyvaksytty,
+  hakutoiveEhdollisestiHyvaksytty
+}
+import fi.oph.opiskelijavalinta.model.{
+  HakutoiveenTulosEnriched,
+  Ilmoittautumistapa,
+  Ilmoittautumistila,
+  KoodistoKoodi,
+  KoodistoMetadata,
+  TranslatedName
+}
+import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
 import org.junit.jupiter.api.{Assertions, Test, TestInstance}
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mockito.Mockito
@@ -16,8 +28,10 @@ class VTSServiceTest {
   val HAKU_OID    = "HAKU-OID-1"
   val HAKEMUS_OID = "HAKEMUS-OID-1"
 
-  val mockKoodistoService = Mockito.mock(classOf[KoodistoService])
-  val vtsService          = VTSService(vtsClient, mockKoodistoService)
+  val mockKoodistoService: KoodistoService = Mockito.mock(classOf[KoodistoService])
+  val migriToken: MigriJsonWebToken        = Mockito.mock(classOf[MigriJsonWebToken])
+  val oiliToken: OiliJsonWebToken          = Mockito.mock(classOf[OiliJsonWebToken])
+  val vtsService                           = VTSService(vtsClient, mockKoodistoService, migriToken, oiliToken)
 
   @Test
   def returnsEhdollisuudenSyyFromKoodisto(): Unit = {
@@ -84,6 +98,36 @@ class VTSServiceTest {
     Assertions.assertEquals(true, hakutoiveenTulosEnriched.ehdollisestiHyvaksyttavissa.getOrElse(false))
     Assertions.assertFalse(hakutoiveenTulosEnriched.ehdollisenHyvaksymisenEhto.isEmpty)
     Assertions.assertEquals("Muu syy", hakutoiveenTulosEnriched.ehdollisenHyvaksymisenEhto.get.fi)
+  }
+
+  @Test
+  def addsMigriTokenToMigriUrl(): Unit = {
+    Mockito.when(migriToken.createMigriJWT(PERSON_OID)).thenReturn("MIGRI_TOKEN")
+    val tulos =
+      vtsService.addJwtsForLinkUserIfNecessary(PERSON_OID, hakutoive1Hyvaksytty.copy(showMigriURL = Some(true)))
+    Assertions.assertTrue(tulos.migriURL.get.contains("MIGRI_TOKEN"))
+    Mockito.verifyNoInteractions(oiliToken)
+  }
+
+  @Test
+  def addsOiliTokenToIlmoittautumisUrl(): Unit = {
+    Mockito.when(oiliToken.createOiliJWT(PERSON_OID)).thenReturn("OILI_TOKEN")
+    val tulos = vtsService.addJwtsForLinkUserIfNecessary(
+      PERSON_OID,
+      hakutoive1Hyvaksytty.copy(ilmoittautumistila =
+        Some(
+          Ilmoittautumistila(
+            ilmoittautumisaika = None,
+            ilmoittautumistila = None,
+            ilmoittauduttavissa = Some(true),
+            ilmoittautumistapa =
+              Some(Ilmoittautumistapa(url = Some("/oili"), nimi = Some(TranslatedName("Oili", "Oili", "Oili"))))
+          )
+        )
+      )
+    )
+    Assertions.assertTrue(tulos.ilmoittautumistila.get.ilmoittautumistapa.get.url.get.contains("OILI_TOKEN"))
+    Mockito.verifyNoInteractions(migriToken)
   }
 
 }

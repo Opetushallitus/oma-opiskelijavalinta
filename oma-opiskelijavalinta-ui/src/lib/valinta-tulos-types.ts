@@ -47,6 +47,8 @@ export type HakutoiveenTulosDto = {
   ilmoittautumistila: Ilmoittautuminen;
   ilmoittautumisenAikaleima: string | null;
   kelaURL: string | null;
+  showMigriURL?: boolean | null;
+  migriURL?: string | null;
 };
 
 export type JonokohtainenTulostietoDto = {

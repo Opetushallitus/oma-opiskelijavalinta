@@ -11,6 +11,13 @@ oma-opiskelijavalinta:
     region: {{viestintapalvelu_downloadfiles_s3_region}}
     bucket: {{viestintapalvelu_downloadfiles_s3_bucket}}
 
+migri:
+  key: {{omatsivut_migri_crypto_hmac_key}}
+  url: {{omatsivut_migri_url}}
+
+oili:
+  key: {{omatsivut.crypto.hmac.key}}
+
 web:
   url:
     cas: https://{{host_oppija}}/cas-oppija

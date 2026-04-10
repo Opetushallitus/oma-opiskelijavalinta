@@ -82,6 +82,16 @@ test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
   ).toHaveCount(1);
 
   await expect(
+    activehakemukset.getByRole('link', {
+      name: 'Siirry Kelan asiointipalveluun',
+    }),
+  ).toHaveCount(0);
+
+  await expect(
+    activehakemukset.getByRole('link', { name: 'Hae oleskelulupaa' }),
+  ).toHaveCount(0);
+
+  await expect(
     page
       .getByTestId('past-hakemukset')
       .getByText('Sinulla ei ole aiempia hakemuksia.', { exact: true }),
@@ -321,6 +331,42 @@ test('Näyttää kelalinkin kun sellainen löytyy', async ({ page }) => {
 
   await expect(
     hakemukset.getByRole('link', { name: 'Siirry Kelan asiointipalveluun' }),
+  ).toHaveCount(1);
+});
+
+test('Näyttää migrilinkin kun sellainen löytyy', async ({ page }) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      hakemus1,
+      {
+        ...hakemus2,
+        hakemuksenTulokset: [
+          {
+            ...hakemuksenTulosVastaanotettu,
+            showMigriURL: true,
+            migriURL: 'migri.fi',
+          },
+        ],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const hakemukset = page.getByTestId('active-hakemukset');
+  await expect(
+    hakemukset.getByText('Voit nyt hakea oleskelulupaa'),
+  ).toBeVisible();
+  await expect(
+    hakemukset.getByRole('link', { name: 'opas opiskelijoille' }),
+  ).toBeVisible();
+  await expect(
+    hakemukset.getByRole('link', { name: 'opas opiskelijoille' }),
+  ).toHaveAttribute('href', 'https://migri.fi/opiskelijan-opas');
+
+  await expect(
+    hakemukset.getByRole('link', { name: 'Hae oleskelulupaa' }),
   ).toHaveCount(1);
 });
 

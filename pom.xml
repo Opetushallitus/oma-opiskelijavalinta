@@ -119,6 +119,11 @@
                 <version>2.0.5</version>
             </dependency>
             <dependency>
+                <groupId>com.github.jwt-scala</groupId>
+                <artifactId>jwt-core_3</artifactId>
+                <version>11.0.4</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-servlet-api</artifactId>
                 <version>${tomcat.version}</version>
@@ -270,6 +275,10 @@
         <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick_3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jwt-scala</groupId>
+            <artifactId>jwt-core_3</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
