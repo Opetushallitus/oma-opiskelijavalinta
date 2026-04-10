@@ -132,7 +132,7 @@ class VTSService @Autowired (
         val ilmoittautumisTapa = Some(
           Ilmoittautumistapa(
             it.ilmoittautumistapa.flatMap(tapa => tapa.nimi),
-            it.ilmoittautumistapa.map(tapa => s"${tapa.url}?token=${oiliToken.createOiliJwt(hakijaOid)}")
+            it.ilmoittautumistapa.map(tapa => s"${tapa.url}?token=${oiliToken.createOiliJWT(hakijaOid)}")
           )
         )
         it.copy(ilmoittautumistapa = ilmoittautumisTapa)

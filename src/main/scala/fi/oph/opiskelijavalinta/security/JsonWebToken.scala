@@ -35,12 +35,15 @@ class MigriJsonWebToken(val secret: String, mapper: ObjectMapper = new ObjectMap
 
 class OiliJsonWebToken(val secret: String, mapper: ObjectMapper = new ObjectMapper()) {
 
+  mapper.registerModule(DefaultScalaModule)
+  mapper.registerModule(new Jdk8Module())
+
   if (secret.getBytes.length * 8 < MINIMUM_SECRET_LENGTH_IN_BITS)
     throw new RuntimeException("HMAC secret has to be at least 256 bits")
 
   val algo: JwtAlgorithm = JwtAlgorithm.HS256
 
-  def createOiliJwt(hakijaOid: String): String = {
+  def createOiliJWT(hakijaOid: String): String = {
     val oiliJwt = OiliJWT(hakijaOid, System.currentTimeMillis + EXPIRATION_TIME)
     Jwt.encode(mapper.writeValueAsString(oiliJwt), secret, algo)
   }
