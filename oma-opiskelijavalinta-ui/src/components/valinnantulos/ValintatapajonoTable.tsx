@@ -152,7 +152,7 @@ function ValintatapajonoMobile({
   const { t } = useTranslations();
 
   return (
-    <Stack spacing={2} data-test-id="valintatapajono-mobile">
+    <Stack spacing={0} data-test-id="valintatapajono-mobile">
       {jonokohtaisetTulostiedot.map((jonotulos, index) => (
         <Box
           key={jonotulos.valintatapajonoPrioriteetti}
@@ -162,7 +162,7 @@ function ValintatapajonoMobile({
         >
           <Stack
             spacing={1}
-            margin={2}
+            padding={2}
             data-test-id={`valintatapajono-${jonotulos.oid}`}
           >
             <Box>
