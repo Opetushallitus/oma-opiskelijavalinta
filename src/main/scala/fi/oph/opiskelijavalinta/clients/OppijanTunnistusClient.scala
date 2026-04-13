@@ -5,7 +5,6 @@ import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
-import java.time.Duration as JavaDuration
 import java.util.concurrent.TimeUnit
 import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration

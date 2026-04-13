@@ -2,8 +2,7 @@ package fi.oph.opiskelijavalinta.clients
 
 import fi.oph.opiskelijavalinta.Constants
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
-import org.asynchttpclient.Dsl.asyncHttpClient
-import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClientConfig, RequestBuilder}
+import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.stereotype.Component
