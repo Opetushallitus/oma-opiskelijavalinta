@@ -35,7 +35,7 @@ const OrderNumberBox = styled(Box)(({ theme }) => ({
   borderRadius: '4px',
   fontWeight: 'bold',
   fontSize: '1.2rem',
-  padding: `${theme.spacing(0.5)} ${theme.spacing(1.4)}`,
+  padding: `${theme.spacing(0.8)} ${theme.spacing(1.4)}`,
   marginRight: theme.spacing(2),
 }));
 
@@ -83,7 +83,7 @@ export function Hakutoive({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          flexWrap: 'wrap',
+          justifyItems: 'start',
           mb: '10px',
         }}
       >
