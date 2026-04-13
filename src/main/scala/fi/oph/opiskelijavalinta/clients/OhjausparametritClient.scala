@@ -34,7 +34,6 @@ class OhjausparametritClient @Autowired() (
       .setHeader("Content-Type", "application/json")
       .setHeader("Caller-Id", Constants.CALLER_ID)
       .setUrl(url)
-      .setRequestTimeout(java.time.Duration.ofMillis(5000))
       .build()
 
     LOG.info(s"Haetaan ohjausparametrit osoitteesta: $url")

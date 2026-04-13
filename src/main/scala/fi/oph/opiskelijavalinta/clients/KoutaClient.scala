@@ -34,7 +34,6 @@ class KoutaClient @Autowired (koutaCasClient: CasClient, httpExecutionContext: E
       .setMethod("GET")
       .setHeader("Content-Type", "application/json")
       .setUrl(url)
-      .setRequestTimeout(JavaDuration.ofMillis(5000))
       .build()
     try {
       val result = asScala(koutaCasClient.execute(req)).map {

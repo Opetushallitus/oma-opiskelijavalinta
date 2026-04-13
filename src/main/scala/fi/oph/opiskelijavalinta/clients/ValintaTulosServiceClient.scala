@@ -42,7 +42,6 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient, httpExecuti
       .setHeader("Content-Type", "application/json")
       .setBody(body)
       .setUrl(url)
-      .setRequestTimeout(java.time.Duration.ofMillis(5000))
       .build()
     try {
       val result = asScala(vtsCasClient.execute(req)).map {
@@ -68,7 +67,6 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient, httpExecuti
       .setMethod("GET")
       .setHeader("Content-Type", "application/json")
       .setUrl(url)
-      .setRequestTimeout(java.time.Duration.ofMillis(5000))
       .build()
     try {
       val result = asScala(vtsCasClient.execute(req)).map {
