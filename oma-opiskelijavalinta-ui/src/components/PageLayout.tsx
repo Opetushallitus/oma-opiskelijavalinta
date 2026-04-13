@@ -6,7 +6,7 @@ import { PageContent } from './PageContent';
 const ContentWrapper = styled(PageContent)(({ theme }) => ({
   padding: theme.spacing(4),
   [notDesktop(theme)]: {
-    maxWidth: '100vw',
+    maxWidth: '100%',
     padding: theme.spacing(1, 1),
   },
 }));

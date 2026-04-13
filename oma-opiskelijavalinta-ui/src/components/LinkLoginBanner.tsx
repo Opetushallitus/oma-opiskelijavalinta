@@ -27,7 +27,7 @@ const BannerContent = styled(Box)(({ theme }) => ({
   height: 'inherit',
   maxWidth: '100%',
   [notDesktop(theme)]: {
-    maxWidth: '100vw',
+    maxWidth: '100%',
     padding: '0 0.5rem 0 0.5rem',
   },
 }));

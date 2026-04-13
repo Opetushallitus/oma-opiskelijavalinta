@@ -8,7 +8,7 @@ export const PageContent = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
   margin: 'auto',
   [notDesktop(theme)]: {
-    maxWidth: '100vw',
+    maxWidth: '100%',
     padding: theme.spacing(1, 1),
   },
 }));
