@@ -44,7 +44,7 @@ class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMappe
       .header("Content-Type", "application/x-www-form-urlencoded")
       .POST(BodyPublishers.ofString(body))
       .build
-    val client = HttpClient.newHttpClient
+    val client = HttpClient.newHttpClient // TODO OPHYOS-47
     val res    = client.send(request, BodyHandlers.ofString)
     if (res.statusCode() != 200)
       throw new RuntimeException("Oauth2 bearer returned status code " + res.statusCode + ": " + res.body)

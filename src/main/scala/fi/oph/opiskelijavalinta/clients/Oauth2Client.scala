@@ -26,7 +26,7 @@ class Oauth2Client @Autowired (private val oauth2BearerClient: Oauth2BearerClien
       .setHeader("Authorization", "Bearer " + bearer)
       .setHeader("Caller-Id", Constants.CALLER_ID)
       .build
-    val client = HttpClient.newBuilder.build
+    val client = HttpClient.newBuilder.build // TODO OPHYOS-47
     client.send(request, BodyHandlers.ofString)
   } catch {
     case e @ (_: IOException | _: InterruptedException) =>

@@ -7,14 +7,17 @@ import org.springframework.beans.factory.annotation.{Autowired, Value}
 
 import java.time.Duration as JavaDuration
 import java.util.concurrent.TimeUnit
-import scala.concurrent.Await
+import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
-import scala.concurrent.ExecutionContext.Implicits.global // TODO thread pool OPHYOS-47
 
-class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient) {
+class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient,
+                                         httpExecutionContext: ExecutionContext) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OppijanTunnistusClient])
+  
+  implicit private val ec: ExecutionContext = httpExecutionContext
+  
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 

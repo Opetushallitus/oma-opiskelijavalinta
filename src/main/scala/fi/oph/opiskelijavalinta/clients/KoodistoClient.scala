@@ -5,28 +5,24 @@ import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import org.asynchttpclient.Dsl.asyncHttpClient
 import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClientConfig, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.{Autowired, Value}
+import org.springframework.stereotype.Component
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-class KoodistoClient {
+@Component
+class KoodistoClient @Autowired() (
+  client: AsyncHttpClient,
+  httpExecutionContext: ExecutionContext
+) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoodistoClient])
-
-  private val client: AsyncHttpClient = asyncHttpClient(
-    new DefaultAsyncHttpClientConfig.Builder()
-      .setMaxRedirects(5)
-      .setConnectTimeout(java.time.Duration.ofMillis(10 * 1000))
-      .build
-  )
-
-  // TODO http-clientien thread pool OPHYOS-47
-  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  private val LOG: Logger                   = LoggerFactory.getLogger(classOf[KoodistoClient])
+  implicit private val ec: ExecutionContext = httpExecutionContext
 
   def getKoodit(koodisto: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/koodisto-service/rest/codeelement/codes/$koodisto"
@@ -48,7 +44,7 @@ class KoodistoClient {
       val futureResponse: Future[Either[Throwable, String]] =
         toScalaFuture(client.executeRequest(req)).map { r =>
           if r.getStatusCode == 200 then
-            LOG.debug(s"Koodisto haettu onnistuneesti")
+            LOG.debug("Koodisto haettu onnistuneesti")
             Right(r.getResponseBody())
           else
             val msg =

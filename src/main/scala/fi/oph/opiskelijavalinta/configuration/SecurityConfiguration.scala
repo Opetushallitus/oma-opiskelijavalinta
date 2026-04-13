@@ -19,8 +19,9 @@ import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
 import org.apereo.cas.client.session.{SessionMappingStorage, SingleSignOutFilter}
 import org.apereo.cas.client.validation.{Cas20ProxyTicketValidator, TicketValidator}
+import org.asynchttpclient.AsyncHttpClient
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.context.annotation.{Bean, Configuration, Primary}
 import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
@@ -68,8 +69,8 @@ class SecurityConfiguration {
   }
 
   @Bean(Array("ataruCasClient"))
-  def createAtaruCasClient(): CasClient = {
-    CasClientBuilder.build(
+  def createAtaruCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
+    CasClientBuilder.buildFromConfigAndHttpClient(
       CasConfig
         .CasConfigBuilder(
           cas_username,
@@ -82,13 +83,14 @@ class SecurityConfiguration {
         )
         .setJsessionName("ring-session")
         .setNumberOfRetries(2)
-        .build()
+        .build(),
+      sharedHttpClient
     )
   }
 
   @Bean(Array("koutaCasClient"))
-  def createKoutaCasClient(): CasClient = {
-    CasClientBuilder.build(
+  def createKoutaCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
+    CasClientBuilder.buildFromConfigAndHttpClient(
       CasConfig
         .CasConfigBuilder(
           cas_username,
@@ -101,13 +103,14 @@ class SecurityConfiguration {
         )
         .setJsessionName("session")
         .setNumberOfRetries(2)
-        .build()
+        .build(),
+      sharedHttpClient
     )
   }
 
   @Bean(Array("oppijanTunnistusCasClient"))
-  def createOppijanTunnistusCasClient(): CasClient = {
-    CasClientBuilder.build(
+  def createOppijanTunnistusCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
+    CasClientBuilder.buildFromConfigAndHttpClient(
       CasConfig
         .CasConfigBuilder(
           cas_username,
@@ -120,13 +123,14 @@ class SecurityConfiguration {
         )
         .setJsessionName("ring-session")
         .setNumberOfRetries(2)
-        .build()
+        .build(),
+      sharedHttpClient
     )
   }
 
   @Bean(Array("vtsCasClient"))
-  def createVtsCasClient(): CasClient = {
-    CasClientBuilder.build(
+  def createVtsCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
+    CasClientBuilder.buildFromConfigAndHttpClient(
       CasConfig
         .CasConfigBuilder(
           cas_username,
@@ -139,13 +143,15 @@ class SecurityConfiguration {
         )
         .setJsessionName("session")
         .setNumberOfRetries(2)
-        .build()
+        .build(),
+      sharedHttpClient
     )
   }
 
   @Bean(Array("viestinValitysClient"))
   def viestinvalitysClient(
-    @Value("${viestinvalityspalvelu.url}") viestinValitysUrl: String = null
+    @Value("${viestinvalityspalvelu.url}") viestinValitysUrl: String = null,
+    @Autowired sharedHttpClient: AsyncHttpClient
   ): ViestinvalitysClient = {
     ClientBuilder
       .viestinvalitysClientBuilder()
@@ -154,7 +160,7 @@ class SecurityConfiguration {
       .withPassword(cas_password)
       .withCasEndpoint(s"https://$opintopolku_virkailija_domain/cas")
       .withCallerId(Constants.CALLER_ID)
-      .build()
+      .buildWithHttpClient(sharedHttpClient)
   }
 
   private def isFrontEndRoute: String => Boolean = path =>
