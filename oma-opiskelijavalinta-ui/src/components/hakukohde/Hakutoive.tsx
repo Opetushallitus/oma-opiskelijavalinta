@@ -1,6 +1,6 @@
-import { Box } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
-import { styled } from '@/lib/theme';
+import { notDesktop, styled } from '@/lib/theme';
 import { useTranslations } from '@/hooks/useTranslations';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
@@ -72,6 +72,10 @@ export function Hakutoive({
     hakukohde.oid,
   );
 
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(notDesktop(theme));
+
   const odottaaYlempaa = Boolean(
     tulos &&
     hakemus.priorisoidutHakutoiveet &&
@@ -98,9 +102,10 @@ export function Hakutoive({
       </Box>
       <Box
         sx={{
-          pl: hakemus.priorisoidutHakutoiveet
-            ? `${ORDER_NUMBER_WIDTH + 15}px`
-            : 0,
+          pl:
+            hakemus.priorisoidutHakutoiveet && !isMobile
+              ? `${ORDER_NUMBER_WIDTH + 15}px`
+              : 0,
           mt: hakemus.priorisoidutHakutoiveet ? '8px' : '10px',
         }}
       >
