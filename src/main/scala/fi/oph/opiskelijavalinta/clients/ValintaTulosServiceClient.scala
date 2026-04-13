@@ -10,8 +10,7 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
-class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient,
-                                            httpExecutionContext: ExecutionContext) {
+class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient, httpExecutionContext: ExecutionContext) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null

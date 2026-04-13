@@ -11,15 +11,14 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class KoutaClient @Autowired (koutaCasClient: CasClient, 
-                              httpExecutionContext: ExecutionContext) {
+class KoutaClient @Autowired (koutaCasClient: CasClient, httpExecutionContext: ExecutionContext) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaClient])
+  private val LOG: Logger                   = LoggerFactory.getLogger(classOf[KoutaClient])
   implicit private val ec: ExecutionContext = httpExecutionContext
-  
+
   def getHaku(hakuOid: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/kouta-internal/haku/$hakuOid"
     fetch(url)

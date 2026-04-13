@@ -20,19 +20,23 @@ import scala.concurrent.ExecutionContext
 class ClientConfiguration {
 
   @Bean
-  def ataruClient(@Autowired @Qualifier("ataruCasClient") ataruCasClient: CasClient): AtaruClient = {
-    new AtaruClient(ataruCasClient)
+  def ataruClient(
+    @Autowired @Qualifier("ataruCasClient") ataruCasClient: CasClient,
+    httpExecutionContext: ExecutionContext
+  ): AtaruClient = {
+    new AtaruClient(ataruCasClient, httpExecutionContext)
   }
 
   @Bean
-  def koodistoClient(asyncHttpClient: AsyncHttpClient, 
-                     httpExecutionContext: ExecutionContext): KoodistoClient = {
+  def koodistoClient(asyncHttpClient: AsyncHttpClient, httpExecutionContext: ExecutionContext): KoodistoClient = {
     new KoodistoClient(asyncHttpClient, httpExecutionContext)
   }
 
   @Bean
-  def koutaClient(@Autowired @Qualifier("koutaCasClient") koutaCasClient: CasClient, 
-                  httpExecutionContext: ExecutionContext): KoutaClient = {
+  def koutaClient(
+    @Autowired @Qualifier("koutaCasClient") koutaCasClient: CasClient,
+    httpExecutionContext: ExecutionContext
+  ): KoutaClient = {
     new KoutaClient(koutaCasClient, httpExecutionContext)
   }
 
@@ -53,13 +57,17 @@ class ClientConfiguration {
 
   @Bean
   def oppijanTunnistusClient(
-    @Autowired @Qualifier("oppijanTunnistusCasClient") oppijanTunnistusCasClient: CasClient
+    @Autowired @Qualifier("oppijanTunnistusCasClient") oppijanTunnistusCasClient: CasClient,
+    httpExecutionContext: ExecutionContext
   ): OppijanTunnistusClient = {
-    new OppijanTunnistusClient(oppijanTunnistusCasClient)
+    new OppijanTunnistusClient(oppijanTunnistusCasClient, httpExecutionContext)
   }
 
   @Bean
-  def vtsClient(@Autowired @Qualifier("vtsCasClient") vtsCasClient: CasClient): ValintaTulosServiceClient = {
-    new ValintaTulosServiceClient(vtsCasClient)
+  def vtsClient(
+    @Autowired @Qualifier("vtsCasClient") vtsCasClient: CasClient,
+    httpExecutionContext: ExecutionContext
+  ): ValintaTulosServiceClient = {
+    new ValintaTulosServiceClient(vtsCasClient, httpExecutionContext)
   }
 }

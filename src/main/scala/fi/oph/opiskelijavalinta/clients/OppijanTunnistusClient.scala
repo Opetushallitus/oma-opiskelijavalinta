@@ -11,13 +11,12 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
-class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient,
-                                         httpExecutionContext: ExecutionContext) {
+class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient, httpExecutionContext: ExecutionContext) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OppijanTunnistusClient])
-  
+
   implicit private val ec: ExecutionContext = httpExecutionContext
-  
+
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 

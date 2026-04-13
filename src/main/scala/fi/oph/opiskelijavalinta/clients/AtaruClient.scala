@@ -11,12 +11,11 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class AtaruClient @Autowired (ataruCasClient: CasClient, 
-                              httpExecutionContext: ExecutionContext) {
+class AtaruClient @Autowired (ataruCasClient: CasClient, httpExecutionContext: ExecutionContext) {
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[AtaruClient])
+  private val LOG: Logger                   = LoggerFactory.getLogger(classOf[AtaruClient])
   implicit private val ec: ExecutionContext = httpExecutionContext
-  
+
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
