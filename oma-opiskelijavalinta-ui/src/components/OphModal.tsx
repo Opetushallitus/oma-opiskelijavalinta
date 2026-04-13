@@ -35,7 +35,7 @@ const StyledDialogContent = styled(DialogContent)(() => ({
 
 const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
   [notDesktop(theme)]: {
-    flexDirection: 'column',
+    flexDirection: 'column-reverse',
     button: {
       width: '100%',
       '&:not(style)': {
