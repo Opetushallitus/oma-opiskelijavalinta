@@ -126,7 +126,7 @@ class VTSServiceTest {
         )
       )
     )
-    Assertions.assertTrue(tulos.ilmoittautumistila.get.ilmoittautumistapa.get.url.get.contains("OILI_TOKEN"))
+    Assertions.assertEquals("/oili?token=OILI_TOKEN", tulos.ilmoittautumistila.get.ilmoittautumistapa.get.url.get)
     Mockito.verifyNoInteractions(migriToken)
   }
 
