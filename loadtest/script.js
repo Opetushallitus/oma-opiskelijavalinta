@@ -226,16 +226,19 @@ export default function runScenario(user, toinenaste)  {
 
     const data = JSON.parse(hakemuksetRes.body);
 
-    if (data.current && data.current.length > 0) {
-      hakemusOid = data.current[0].oid;
-      hakuOid = data.current[0].haku.oid;
-      hakukohdeOid = data.current[0].hakukohteet[0].oid;
+    if (!data.current?.length) return;
 
-      //console.log('Parsed IDs:', { hakemusOid, hakuOid, hakukohdeOid });
-    } else {
-      //console.warn('No current hakemukset found');
-      return;
-    }
+    const current = data.current[0];
+
+    hakemusOid = current.oid;
+    hakuOid = current.haku.oid;
+    const acceptedHakemukset = current.hakemuksenTulokset
+    .filter(r => r.vastaanotettavuustila === 'VASTAANOTETTAVISSA_SITOVASTI');
+
+    if (!acceptedHakemukset.length) return;
+
+    const accepted = acceptedHakemukset[__ITER % acceptedHakemukset.length];
+    hakukohdeOid = accepted.hakukohdeOid;
   } catch (e) {
     //console.error('Failed to parse hakemukset:', e);
     return;
