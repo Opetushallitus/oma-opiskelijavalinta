@@ -280,6 +280,50 @@ test('Näyttää hakutoiveen jossa on ilmoittautuminen korkeakouluhaussa', async
   ).toBeVisible();
 });
 
+test('Ei näytä ilmoittautumista ehdollisesti hyväksytylle', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        hakemuksenTulokset: [
+          {
+            ...hakemuksenTulosVastaanotettu,
+            ilmoittautumistila: {
+              ilmoittautumistila: 'EI_TEHTY',
+              ilmoittauduttavissa: true,
+              ilmoittautumistapa: {
+                nimi: { fi: 'Oili', sv: 'Oili', en: 'Oili' },
+                url: '/oili/',
+              },
+            },
+            ilmoittautumisenAikaleima: '2026-03-03T13:00:00Z',
+            ehdollisestiHyvaksyttavissa: true,
+          },
+        ],
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+  await expect(
+    page
+      .getByTestId('vastaanotot-hakemus-oid-1')
+      .getByText('Opiskelupaikka vastaanotettu', { exact: true }),
+  ).toBeVisible();
+  const ilmoittautuminen = page.getByTestId(
+    'ilmoittautuminen-hakemus-oid-1-hakukohde-oid-1',
+  );
+  await expect(
+    ilmoittautuminen.getByRole('button', { name: 'Lähetä ilmoittautuminen' }),
+  ).toBeHidden();
+  await expect(
+    ilmoittautuminen.getByRole('link', { name: 'Siirry ilmoittautumaan' }),
+  ).toBeHidden();
+});
+
 test('Näyttää ja ilmoittautuu kevätkaudelle kun hakuun on sellainen määritelty', async ({
   page,
 }) => {
