@@ -19,6 +19,7 @@ import {
   jonokohtaisetTulostiedotEhdollinen,
   jonokohtaisetTulostiedotHarkinnanvarainen,
   jonokohtaisetTulostiedotPeruuntunut,
+  jonokohtaisetTulostiedotVarasijaltaHyvaksytty,
   mockSession,
 } from './mocks';
 
@@ -149,6 +150,36 @@ test('Näyttää harkinnanvaraisesti hyväksytyn tuloksen', async ({ page }) => 
       .locator('.MuiChip-root')
       .first()
       .getByText('Harkinnanvaraisesti hyväksytty'),
+  ).toBeVisible();
+  await expect(app.getByText('Hakutoiveesi')).toBeHidden();
+  await expect(app.getByText('Valintatilanteesi')).toBeVisible();
+  await expect(
+    page.getByTestId('valintatilainfo-hakukohde-oid-3'),
+  ).toBeVisible();
+});
+
+test('Näyttää varasijalta hyväksytyn tuloksen', async ({ page }) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        valintatila: 'VARASIJALTA_HYVAKSYTTY',
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const app = page.getByTestId('application-hakemus-oid-2');
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
+  await expect(
+    tulokset.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    tulokset
+      .locator('.MuiChip-root')
+      .first()
+      .getByText('Varasijalta hyväksytty'),
   ).toBeVisible();
   await expect(app.getByText('Hakutoiveesi')).toBeHidden();
   await expect(app.getByText('Valintatilanteesi')).toBeVisible();
@@ -803,6 +834,29 @@ test('Näyttää valintatapajonojen tiedoissa harkinnanvaraisen hyväksymisen', 
   );
   await expect(
     paasykoevalintaRow.getByText('Harkinnanvaraisesti hyväksytty'),
+  ).toBeVisible();
+});
+
+test('Näyttää valintatapajonojen tiedoissa varasijalta hyväksymisen', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    ohjausparametrit: { ...hakemus2.ohjausparametrit, sijoittelu: true },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        jonokohtaisetTulostiedot: jonokohtaisetTulostiedotVarasijaltaHyvaksytty,
+      },
+    ],
+  };
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const paasykoevalintaRow = page.getByTestId(
+    'valintatapajono-paasykoevalinta',
+  );
+  await expect(
+    paasykoevalintaRow.getByText('Varasijalta hyväksytty'),
   ).toBeVisible();
 });
 

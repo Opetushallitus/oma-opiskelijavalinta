@@ -35,9 +35,9 @@ const ValintatilaLabels: Record<Valintatila, ValintatilaLabel> = {
     valintatapajonoLabel: 'tulos.harkinnanvaraisesti-hyvaksytty',
   },
   [Valintatila.VARASIJALTA_HYVAKSYTTY]: {
-    hakutoiveLabel: 'hakutoive.tila.hyvaksytty',
-    ilmanJonoaLabel: 'tulos.hyvaksytty',
-    valintatapajonoLabel: 'tulos.hyvaksytty',
+    hakutoiveLabel: 'hakutoive.tila.varasijalta-hyvaksytty',
+    ilmanJonoaLabel: 'tulos.varasijalta-hyvaksytty',
+    valintatapajonoLabel: 'tulos.varasijalta-hyvaksytty',
   },
   [Valintatila.VARALLA]: {
     hakutoiveLabel: 'hakutoive.tila.varalla',
