@@ -6,7 +6,10 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import { Box } from '@mui/material';
 import { styled } from '@/lib/theme';
 import type { Language } from '@/types/ui-types';
-import { VASTAANOTETTU_TILAT } from '@/lib/valinta-tulos-types';
+import {
+  VASTAANOTETTU_TILAT,
+  type HakutoiveenTulos,
+} from '@/lib/valinta-tulos-types';
 import { translateName } from '@/lib/localization/translation-utils';
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -18,9 +21,10 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 function getTutustuHakutoiveeseenUrl(
   hakemus: Hakemus,
+  tulokset: Array<HakutoiveenTulos>,
   lang: Language,
 ): string | null | undefined {
-  const vastaanotto = hakemus.hakemuksenTulokset.find(
+  const vastaanotto = tulokset.find(
     (ht) =>
       ht.vastaanottotila && VASTAANOTETTU_TILAT.includes(ht.vastaanottotila),
   );
@@ -32,10 +36,20 @@ function getTutustuHakutoiveeseenUrl(
     : null;
 }
 
-export function TutustuContainer({ hakemus }: { hakemus: Hakemus }) {
+export function TutustuContainer({
+  tulokset,
+  hakemus,
+}: {
+  tulokset: Array<HakutoiveenTulos>;
+  hakemus: Hakemus;
+}) {
   const { t, getLanguage } = useTranslations();
 
-  const tutustuUrl = getTutustuHakutoiveeseenUrl(hakemus, getLanguage());
+  const tutustuUrl = getTutustuHakutoiveeseenUrl(
+    hakemus,
+    tulokset,
+    getLanguage(),
+  );
 
   return isTruthy(tutustuUrl) ? (
     <StyledBox>

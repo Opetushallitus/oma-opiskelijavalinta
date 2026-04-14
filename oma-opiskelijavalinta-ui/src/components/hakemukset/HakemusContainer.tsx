@@ -77,7 +77,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
           {hasKelaUrl(tulokset) && <KelaContainer tulokset={tulokset} />}
           {onkoVastaanottoTehty(tulokset) &&
             isKorkeakouluHaku(hakemus.haku) && (
-              <TutustuContainer hakemus={hakemus} />
+              <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
             )}
           {showMigriURL(tulokset) && <MigriContainer tulokset={tulokset} />}
           {onkoVastaanottoTehty(tulokset) && (
