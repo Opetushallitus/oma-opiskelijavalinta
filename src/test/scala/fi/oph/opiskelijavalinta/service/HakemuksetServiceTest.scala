@@ -27,9 +27,9 @@ class HakemuksetServiceTest {
       .when(ataruClient.getHakemukset(OPPIJA_NUMERO))
       .thenReturn(hautonHakemus(true))
     val hakemukset = service.getHakemukset(OPPIJA_NUMERO)
-    Assertions.assertEquals(0, hakemukset.current.length)
-    Assertions.assertEquals(1, hakemukset.old.length)
-    val app = hakemukset.old.head
+    Assertions.assertEquals(1, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    val app = hakemukset.current.head
     Assertions.assertEquals("application-oid-1", app.oid)
     Assertions.assertEquals("Hajuton lomake", app.formName.fi)
     Assertions.assertTrue(app.haku.isEmpty)
@@ -38,6 +38,7 @@ class HakemuksetServiceTest {
     Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
   }
 
+  @Disabled(value = "Enabloidaan kunnes ataru palauttaa tiedon processed processing lisäksi")
   @Test
   def applicationWithoutHakuAndHavingProcessingStatusIsPastApplication(): Unit = {
     Mockito

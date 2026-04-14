@@ -2,6 +2,7 @@ import { Chip, type SxProps } from '@mui/material';
 import {
   greenBadgeBackground,
   redBadgeBackground,
+  styled,
   yellowBadgeBackground,
 } from '@/lib/theme';
 import { ophColors } from '@opetushallitus/oph-design-system';
@@ -32,6 +33,21 @@ export const BadgeColors = {
 
 export type BadgeColor = keyof typeof BadgeColors;
 
+const StyledChip = styled(Chip)(() => ({
+  fontWeight: 600,
+  fontSize: '14px',
+  borderRadius: '2px',
+  marginTop: '0px',
+  padding: '2px 6px',
+  whiteSpace: 'normal',
+  height: 'auto',
+  span: {
+    whiteSpace: 'normal',
+    overflow: 'hidden',
+    textOverflow: 'unset',
+  },
+}));
+
 export const BadgeColorKey = {
   Green: 'green',
   Blue: 'blue',
@@ -55,19 +71,11 @@ export function StatusBadgeChip({
   const badgeColor = BadgeColors[badgeProps.color];
 
   return (
-    <Chip
+    <StyledChip
       label={badgeProps.label}
       sx={{
         backgroundColor: badgeColor.background,
         color: badgeColor.color,
-        height: '24px',
-        lineHeight: '24px',
-        fontWeight: 600,
-        fontSize: '14px',
-        borderRadius: '2px',
-        mt: '0px',
-        px: '4px',
-        whiteSpace: 'normal',
         ...sx,
       }}
     />

@@ -5,7 +5,7 @@ import { ophColors } from '@opetushallitus/oph-design-system';
 export const MultiInfoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  rowGap: theme.spacing(2),
+  rowGap: theme.spacing(1.5),
   a: {
     color: ophColors.grey900,
   },
