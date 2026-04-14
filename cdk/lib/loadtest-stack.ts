@@ -4,6 +4,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3assets from 'aws-cdk-lib/aws-s3-assets';
 import { Construct } from 'constructs';
+import { Vpc } from "aws-cdk-lib/aws-ec2";
 
 interface LoadtestStackProps extends cdk.StackProps {
   environmentName: string;
@@ -13,7 +14,7 @@ export class LoadtestStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: LoadtestStackProps) {
     super(scope, id, props);
 
-    const vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 1 });
+    const vpc = Vpc.fromLookup(this, 'MyExistingVPC', {vpcName: `opintopolku-vpc-${props!.environmentName}`})
 
     const asset = new s3assets.Asset(this, 'LoadtestAsset', {
       path: '../loadtest',
