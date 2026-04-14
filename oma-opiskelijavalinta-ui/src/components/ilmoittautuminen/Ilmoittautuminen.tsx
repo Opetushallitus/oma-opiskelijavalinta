@@ -34,6 +34,7 @@ export function IlmoittautuminenContainer({
 
   if (
     !korkeakouluhaku &&
+    !hakemuksenTulos.ehdollisestiHyvaksyttavissa &&
     hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa
   ) {
     return (
@@ -53,6 +54,7 @@ export function IlmoittautuminenContainer({
 
   if (
     !toisenAsteenYhteisHaku &&
+    !hakemuksenTulos.ehdollisestiHyvaksyttavissa &&
     hakemuksenTulos.ilmoittautuminen?.ilmoittauduttavissa &&
     isOili(hakemuksenTulos.ilmoittautuminen)
   ) {
