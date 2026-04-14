@@ -20,7 +20,7 @@ RESULT_FILE="results-${ENVIRONMENT}-${TIMESTAMP}.json"
 # Run k6
 echo "Running k6 load test for environment $ENVIRONMENT..."
 pnpm install
-k6 run script.ts --out json=${RESULT_FILE}
+k6 run script.js --out json=${RESULT_FILE}
 
 # Upload results to S3
 echo "Uploading results to s3://${S3_BUCKET}/${RESULT_FILE}"

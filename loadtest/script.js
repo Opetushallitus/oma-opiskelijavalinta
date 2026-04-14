@@ -81,7 +81,7 @@ const config = {
     baseUrl: 'https://hahtuvaopintopolku.fi',
   },
   pallero: {
-    usersFile: './users-pallero.json',
+    toinenasteUsersFile: './users-pallero.json',
     kkUsersFile: './kk-users-pallero.json',
     baseUrl: 'https://testiopintopolku.fi',
   },
