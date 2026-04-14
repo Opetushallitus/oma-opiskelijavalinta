@@ -1,4 +1,4 @@
-name: Loadtest
+name: Create Loadtest Stack
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ env:
   S3_RESULTS_BUCKET: oma-opiskelijavalinta-loadtest
 
 jobs:
-  run-loadtest:
+  deploy-loadtest-stack:
     runs-on: ubuntu-latest
 
     steps:

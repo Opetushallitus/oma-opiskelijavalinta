@@ -54,15 +54,16 @@ export const options = (() => {
       return {
         scenarios: {
           smoke_toinenaste: {
-            executor: 'constant-vus',
-            vus: 1,
-            duration: '2m',
+            executor: 'shared-iterations',
+            vus: 3,
+            iterations: 9, // 3 users × 3 iterations
             exec: 'toinenAsteFlow',
           },
+
           smoke_kk: {
-            executor: 'constant-vus',
-            vus: 1,
-            duration: '2m',
+            executor: 'shared-iterations',
+            vus: 3,
+            iterations: 9,
             exec: 'kkFlow',
           },
         },
