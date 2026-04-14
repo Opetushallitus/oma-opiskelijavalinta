@@ -92,20 +92,12 @@ class HakemuksetService @Autowired (
   }
 
   private def isAjankohtainenHakemus(hakemus: HakemusEnriched) = {
-    if (hakemus.haku.isEmpty) {
-      !hakemus.processing
-    } else {
-      isAjankohtainenHaullinenHakemus(hakemus.ohjausparametrit)
-    }
+    hakemus.haku.isEmpty || isAjankohtainenHaullinenHakemus(hakemus.ohjausparametrit)
   }
 
   private def isVanhaHakemus(hakemus: HakemusEnriched) = {
-    if (hakemus.haku.isEmpty) {
-      hakemus.processing
-    } else {
-      val now = System.currentTimeMillis()
-      now >= hakemus.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
-    }
+    val now = System.currentTimeMillis()
+    hakemus.haku.isDefined && now >= hakemus.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
   private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
