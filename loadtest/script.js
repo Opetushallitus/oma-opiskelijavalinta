@@ -2,71 +2,7 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 import { SharedArray } from 'k6/data';
 
-export const options = {
-  scenarios: {
-    toinenaste_flow: {
-      executor: 'ramping-vus',
-      exec: 'toinenAsteFlow',
-      startVUs: 50,
-      stages: [
-        { duration: '5m', target: 300 },
-        { duration: '10m', target: 800 },
-        { duration: '5m', target: 0 },
-      ],
-    },
-
-    kk_flow: {
-      executor: 'constant-vus',
-      exec: 'kkFlow',
-      vus: 50,
-      duration: '20m',
-    },
-  },
-};
-/*
-apin toimivuus kuormassa
-stages: [
-  { duration: '5m', target: 100 },
-  { duration: '10m', target: 200 },
-  { duration: '5m', target: 100 },
-]
-missä kohtaa alkaa virheillä
-stages: [
-  { duration: '5m', target: 300 },
-  { duration: '10m', target: 800 },
-  { duration: '10m', target: 1200 },
-]
-mitä tämä kestää
-stages: [
-  { duration: '2m', target: 300 },
-  { duration: '2m', target: 600 },
-  { duration: '2m', target: 1000 },
-  { duration: '2m', target: 1500 },
-  { duration: '2m', target: 2000 },
-]
-spike test
-scenarios: {
-    toinenaste_spike: {
-      executor: 'ramping-vus',
-      exec: 'toinenAsteFlow',
-      startVUs: 50,
-      stages: [
-        { duration: '30s', target: 200 },
-        { duration: '1m', target: 1000 },  // spike up fast
-        { duration: '30s', target: 1500 }, // extreme spike
-        { duration: '1m', target: 0 },     // sudden drop
-      ],
-    },
-
-    kk_spike: {
-      executor: 'constant-vus',
-      exec: 'kkFlow',
-      vus: 200,
-      duration: '3m', // short background noise during spike
-    },
-  },
-};
- */
+const TEST_TYPE = __ENV.TEST_TYPE || 'smoke';
 const ENV = __ENV.ENVIRONMENT || 'pallero';
 
 const config = {
@@ -105,6 +41,131 @@ const kkUsers = new SharedArray('kk users', () =>
 
 const BASE = selected.baseUrl;
 const OMA_OPISKELIJAVALINTA = `${BASE}/oma-opiskelijavalinta`;
+
+/**
+ * -----------------------
+ * SCENARIO SELECTION
+ * -----------------------
+ */
+export const options = (() => {
+  switch (TEST_TYPE) {
+
+    case 'smoke':
+      return {
+        scenarios: {
+          smoke_toinenaste: {
+            executor: 'constant-vus',
+            vus: 1,
+            duration: '2m',
+            exec: 'toinenAsteFlow',
+          },
+          smoke_kk: {
+            executor: 'constant-vus',
+            vus: 1,
+            duration: '2m',
+            exec: 'kkFlow',
+          },
+        },
+      };
+
+    case 'baseline':
+      return {
+        scenarios: {
+          toinenaste_flow: {
+            executor: 'ramping-vus',
+            exec: 'toinenAsteFlow',
+            startVUs: 10,
+            stages: [
+              { duration: '5m', target: 100 },
+              { duration: '10m', target: 200 },
+              { duration: '5m', target: 100 },
+            ],
+          },
+          kk_flow: {
+            executor: 'constant-vus',
+            exec: 'kkFlow',
+            vus: 50,
+            duration: '20m',
+          },
+        },
+      };
+
+    case 'spike':
+      return {
+        scenarios: {
+          toinenaste_spike: {
+            executor: 'ramping-vus',
+            exec: 'toinenAsteFlow',
+            startVUs: 50,
+            stages: [
+              { duration: '30s', target: 200 },
+              { duration: '1m', target: 1000 },
+              { duration: '30s', target: 1500 },
+              { duration: '1m', target: 0 },
+            ],
+          },
+          kk_background: {
+            executor: 'constant-vus',
+            exec: 'kkFlow',
+            vus: 100,
+            duration: '3m',
+          },
+        },
+      };
+
+    case 'stress':
+      return {
+        scenarios: {
+          toinenaste_stress: {
+            executor: 'ramping-vus',
+            exec: 'toinenAsteFlow',
+            stages: [
+              { duration: '2m', target: 300 },
+              { duration: '2m', target: 600 },
+              { duration: '2m', target: 1000 },
+              { duration: '2m', target: 1500 },
+              { duration: '2m', target: 2000 },
+            ],
+          },
+          kk_stress: {
+            executor: 'constant-vus',
+            exec: 'kkFlow',
+            vus: 100,
+            duration: '10m',
+          },
+        },
+      };
+
+    case 'breakpoint':
+      return {
+        scenarios: {
+          toinenaste_break: {
+            executor: 'ramping-vus',
+            exec: 'toinenAsteFlow',
+            stages: [
+              { duration: '2m', target: 300 },
+              { duration: '2m', target: 600 },
+              { duration: '2m', target: 1000 },
+              { duration: '2m', target: 1500 },
+              { duration: '2m', target: 2000 },
+              { duration: '2m', target: 2500 },
+              { duration: '2m', target: 3000 },
+            ],
+          },
+          kk_break: {
+            executor: 'constant-vus',
+            exec: 'kkFlow',
+            vus: 200,
+            duration: '15m',
+          },
+        },
+      };
+
+    default:
+      throw new Error(`Unknown TEST_TYPE: ${TEST_TYPE}`);
+  }
+})();
+
 
 export function toinenAsteFlow() {
   const user = toinenasteUsers[__ITER % toinenasteUsers.length];
