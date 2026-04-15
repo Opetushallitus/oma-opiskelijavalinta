@@ -122,7 +122,10 @@ export function ValintatapajonoTable({
               <TableCell
                 data-test-id={`valintatapajono-${jonotulos.nimi}-alinhyvaksytty`}
               >
-                {jonotulos.alinHyvaksyttyPistemaara ?? '-'}
+                {jonotulos.alinHyvaksyttyPistemaara &&
+                jonotulos.alinHyvaksyttyPistemaara >= 0
+                  ? jonotulos.alinHyvaksyttyPistemaara
+                  : '-'}
               </TableCell>
               <TableCell>
                 <JonoStatus jonotulos={jonotulos} />
