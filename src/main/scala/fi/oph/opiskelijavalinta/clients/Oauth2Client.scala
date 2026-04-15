@@ -16,9 +16,9 @@ class Oauth2Client @Autowired (
   httpExecutionContext: ExecutionContext
 ) {
 
-  val LOG: Logger = LoggerFactory.getLogger(classOf[Oauth2Client]);
+  val LOG: Logger                           = LoggerFactory.getLogger(classOf[Oauth2Client]);
   implicit private val ec: ExecutionContext = httpExecutionContext
-  
+
   private def execute(requestBuilder: RequestBuilder): Future[Response] = {
     val bearer  = oauth2BearerClient.getOauth2Bearer
     val request = requestBuilder

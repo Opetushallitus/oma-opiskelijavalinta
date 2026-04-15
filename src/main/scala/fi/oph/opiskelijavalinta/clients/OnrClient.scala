@@ -12,8 +12,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 @Component
-class OnrClient @Autowired (oauth2Client: Oauth2Client,
-                            objectMapper: ObjectMapper = new ObjectMapper()) {
+class OnrClient @Autowired (oauth2Client: Oauth2Client, objectMapper: ObjectMapper = new ObjectMapper()) {
 
   @Value("${host.virkailija}")
   private val virkailijaHost = ""
@@ -21,7 +20,7 @@ class OnrClient @Autowired (oauth2Client: Oauth2Client,
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
 
   private def fetchPersonInfo(url: String): Oppija = {
-    val requestBuilder  = new RequestBuilder()
+    val requestBuilder = new RequestBuilder()
       .setMethod("GET")
       .setUrl(url)
 

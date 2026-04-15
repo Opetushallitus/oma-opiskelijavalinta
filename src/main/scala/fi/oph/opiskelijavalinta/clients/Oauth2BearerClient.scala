@@ -32,9 +32,9 @@ class Oauth2BearerClient @Autowired (
   @Value("${oauth2.secret}")
   private val oauth2Secret = ""
 
-  val LOG: Logger = LoggerFactory.getLogger(classOf[Oauth2BearerClient]);
+  val LOG: Logger                           = LoggerFactory.getLogger(classOf[Oauth2BearerClient]);
   implicit private val ec: ExecutionContext = httpExecutionContext
-  
+
   @Cacheable(value = Array(CacheConstants.OAUTH2_CACHE_NAME), sync = true)
   @throws[IOException]
   @throws[InterruptedException]
