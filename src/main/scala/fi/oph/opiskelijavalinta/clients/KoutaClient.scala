@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.Constants.KOUTA_TIMEOUT
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -45,7 +46,7 @@ class KoutaClient @Autowired (koutaCasClient: CasClient, httpExecutionContext: E
           )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(5, TimeUnit.SECONDS))
+      Await.result(result, Duration(KOUTA_TIMEOUT, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Virhe kouta-tietojen hakemisessa: ${e.getMessage}", e)

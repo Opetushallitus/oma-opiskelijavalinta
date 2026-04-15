@@ -1,6 +1,7 @@
 package fi.oph.opiskelijavalinta.clients
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fi.oph.opiskelijavalinta.Constants.ONR_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import fi.oph.opiskelijavalinta.clients.model.Oauth2Token
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
@@ -51,7 +52,7 @@ class Oauth2BearerClient @Autowired (
       .setUrl(tokenUrl)
       .setHeader("Content-Type", "application/x-www-form-urlencoded")
       .setBody(body)
-    val response = Await.result(toScalaFuture(client.executeRequest(request)), Duration(5, TimeUnit.SECONDS))
+    val response = Await.result(toScalaFuture(client.executeRequest(request)), Duration(ONR_TIMEOUT, TimeUnit.SECONDS))
 
     if (response.getStatusCode != 200)
       throw new RuntimeException(

@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.Constants.VTS_TIMEOUT
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -54,7 +55,7 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient, httpExecuti
           )
           Left(new RuntimeException("Vastaanoton teko epäonnistui: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(5, TimeUnit.SECONDS))
+      Await.result(result, Duration(VTS_TIMEOUT, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Vastaanoton teko epäonnistui: ${e.getMessage}", e)
@@ -79,7 +80,7 @@ class ValintaTulosServiceClient @Autowired (vtsCasClient: CasClient, httpExecuti
           )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(5, TimeUnit.SECONDS))
+      Await.result(result, Duration(VTS_TIMEOUT, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Valintatulosten haku valintatulospalvelusta epäonnistui: ${e.getMessage}", e)

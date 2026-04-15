@@ -1,6 +1,7 @@
 package fi.oph.opiskelijavalinta.clients
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fi.oph.opiskelijavalinta.Constants.ONR_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
@@ -24,7 +25,7 @@ class OnrClient @Autowired (oauth2Client: Oauth2Client, objectMapper: ObjectMapp
       .setMethod("GET")
       .setUrl(url)
 
-    val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(5, TimeUnit.SECONDS))
+    val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(ONR_TIMEOUT, TimeUnit.SECONDS))
     objectMapper.readValue(response.getResponseBody, classOf[Oppija])
   }
 
