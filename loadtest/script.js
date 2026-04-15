@@ -290,7 +290,7 @@ export default function runScenario(user, toinenaste)  {
 
     //console.log('ilmoittautuminen status:', vastaanotto.status);
     if (ilmoittautuminen.status !== 200) {
-      console.error('ilmoittautuminen failed:', vastaanotto.status, vastaanotto.body);
+      console.error('ilmoittautuminen failed:', ilmoittautuminen.status, ilmoittautuminen.body);
     }
   }
 
