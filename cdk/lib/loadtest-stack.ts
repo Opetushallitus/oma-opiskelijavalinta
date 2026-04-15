@@ -35,8 +35,10 @@ export class LoadtestStack extends cdk.Stack {
         generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2023,
       }),
       role,
-      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
-      associatePublicIpAddress: true,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      associatePublicIpAddress: false,
       ssmSessionPermissions: true,
       instanceName: `${props.environmentName}-loadtest-instance`,
     });
