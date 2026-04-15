@@ -20,8 +20,11 @@ export const getConfiguration = async () => {
       import.meta.env.VITE_HAKIJA_DOMAIN ?? 'https://testiopintopolku.fi';
   } else if (typeof window !== 'undefined') {
     const host = window.location.hostname;
-    VIRKAILIJA_DOMAIN = `https://virkailija.${host}`;
-    HAKIJA_DOMAIN = `https://${host}`;
+    const opintopolkuHost = host
+      .replace('studyinfo', 'opintopolku')
+      .replace('studieinfo', 'opintopolku');
+    VIRKAILIJA_DOMAIN = `https://virkailija.${opintopolkuHost}`;
+    HAKIJA_DOMAIN = `https://${opintopolkuHost}`;
   }
 
   return {
