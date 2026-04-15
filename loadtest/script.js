@@ -69,6 +69,29 @@ export const options = (() => {
         },
       };
 
+    case 'smoke-spike':
+      return {
+        scenarios: {
+          toinenaste_spike: {
+            executor: 'ramping-vus',
+            exec: 'toinenAsteFlow',
+            startVUs: 50,
+            stages: [
+              { duration: "30s", target: 100 },
+              { duration: "2m", target: 200 },
+              { duration: "1m", target: 200 },
+              { duration: "30s", target: 0 },
+            ],
+          },
+          kk_background: {
+            executor: 'constant-vus',
+            exec: 'kkFlow',
+            vus: 50,
+            duration: '3m',
+          },
+        },
+      };
+
     case 'baseline':
       return {
         scenarios: {
@@ -91,6 +114,38 @@ export const options = (() => {
         },
       };
 
+    case 'overnight':
+      return {
+        scenarios: {
+          toinenaste_flow: {
+            executor: 'constant-vus',
+            exec: 'toinenAsteFlow',
+            vus: 100,
+            duration: "8h",
+          },
+          kk_flow: {
+            executor: 'constant-vus',
+            exec: 'kkFlow',
+            vus: 50,
+            duration: '8h',
+          },
+        },
+        thresholds: {
+          // Performance stability
+          http_req_duration: [
+            "p(95)<1500",   // 95% under 1.5s
+            "p(99)<3000",   // 99% under 3s
+          ],
+          // System stability
+          http_req_failed: [
+            "rate<0.05",    // allow up to 5% failures
+          ],
+          // Server health indicator
+          http_reqs: [
+            "rate>10",      // sanity check: system still processing requests
+          ],
+        },
+      }
     case 'spike':
       return {
         scenarios: {
