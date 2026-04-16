@@ -27,6 +27,7 @@ import {
   hasAlempiHyvaksytty,
   isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
   isHyvaksytty,
+  naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ExternalLinkParagraph } from '@/components/ExternalLink';
 import { List } from '@mui/material';
@@ -295,7 +296,7 @@ const getInfoText = (
         !isVastaanotettu(tulos.vastaanottotila) &&
         getVastaanottoInfo(tulos, ylempiaVaralla, lang)}
       {odottaaYlempaa && getOdottaaYlempaaInfo(t)}
-      {tulos.ehdollisestiHyvaksyttavissa && getEhdollisuusInfo(tulos, lang, t)}
+      {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
     </MultiInfoContainer>
   );
 };

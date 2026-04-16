@@ -20,7 +20,10 @@ import { useConfig } from '@/configuration';
 import { getAlemmatVastaanotot } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
-import { getVarallaOlevatMuutToiveet } from '@/components/valinnantulos/valinnan-tulos-utils';
+import {
+  getVarallaOlevatMuutToiveet,
+  naytetaankoEhdollisuus,
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 
 export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -146,8 +149,7 @@ const getInfoText = (
             underline={'always'}
           />
         )}
-        {tulos.ehdollisestiHyvaksyttavissa &&
-          getEhdollisuusInfo(tulos, lang, t)}
+        {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
       </MultiInfoContainer>
     );
   }

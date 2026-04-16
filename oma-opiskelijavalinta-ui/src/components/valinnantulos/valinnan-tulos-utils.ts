@@ -170,6 +170,13 @@ const HYVAKSYTTY_TILAT = new Set<Valintatila>([
   Valintatila.VARASIJALTA_HYVAKSYTTY,
 ]);
 
+const PERUUTETUT_TAI_HYLATYT_TILAT = new Set<Valintatila>([
+  Valintatila.HYLATTY,
+  Valintatila.PERUNUT,
+  Valintatila.PERUUNTUNUT,
+  Valintatila.PERUUTETTU,
+]);
+
 export const isHyvaksyttyTaiVaralla = (t: Valintatila) =>
   HYVAKSYTTY_TAI_VARALLA_TILAT.has(t);
 
@@ -182,6 +189,16 @@ export const isEhdollisestiHyvaksyttyVastaanottanutSitovasti = (
     tulos.ehdollisestiHyvaksyttavissa &&
     isHyvaksytty(tulos.valintatila) &&
     tulos.vastaanottotila === 'VASTAANOTTANUT_SITOVASTI'
+  );
+};
+
+export const naytetaankoEhdollisuus = (
+  tulos?: HakutoiveenTulos | JonokohtainenTulostieto,
+) => {
+  return (
+    isDefined(tulos) &&
+    tulos.ehdollisestiHyvaksyttavissa &&
+    !PERUUTETUT_TAI_HYLATYT_TILAT.has(tulos.valintatila)
   );
 };
 
