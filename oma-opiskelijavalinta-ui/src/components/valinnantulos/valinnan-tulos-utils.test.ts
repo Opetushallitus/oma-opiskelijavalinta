@@ -481,12 +481,6 @@ describe('naytetaankoEhdollisuus', () => {
         ehdollisestiHyvaksyttavissa: true,
       } as HakutoiveenTulos),
     ).toBeTruthy();
-    expect(
-      naytetaankoEhdollisuus({
-        valintatila: Valintatila.KESKEN,
-        ehdollisestiHyvaksyttavissa: true,
-      } as HakutoiveenTulos),
-    ).toBeTruthy();
   });
 
   it('Ei näytetä ehdollisuutta', () => {
@@ -536,6 +530,12 @@ describe('naytetaankoEhdollisuus', () => {
     expect(
       naytetaankoEhdollisuus({
         valintatila: Valintatila.PERUUTETTU,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.KESKEN,
         ehdollisestiHyvaksyttavissa: true,
       } as HakutoiveenTulos),
     ).toBeFalsy();

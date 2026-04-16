@@ -170,11 +170,12 @@ const HYVAKSYTTY_TILAT = new Set<Valintatila>([
   Valintatila.VARASIJALTA_HYVAKSYTTY,
 ]);
 
-const PERUUTETUT_TAI_HYLATYT_TILAT = new Set<Valintatila>([
+const TILAT_JOILLE_EI_NAYTETA_EHDOLLISUUTTA = new Set<Valintatila>([
   Valintatila.HYLATTY,
   Valintatila.PERUNUT,
   Valintatila.PERUUNTUNUT,
   Valintatila.PERUUTETTU,
+  Valintatila.KESKEN,
 ]);
 
 export const isHyvaksyttyTaiVaralla = (t: Valintatila) =>
@@ -198,7 +199,7 @@ export const naytetaankoEhdollisuus = (
   return (
     isDefined(tulos) &&
     tulos.ehdollisestiHyvaksyttavissa &&
-    !PERUUTETUT_TAI_HYLATYT_TILAT.has(tulos.valintatila)
+    !TILAT_JOILLE_EI_NAYTETA_EHDOLLISUUTTA.has(tulos.valintatila)
   );
 };
 
