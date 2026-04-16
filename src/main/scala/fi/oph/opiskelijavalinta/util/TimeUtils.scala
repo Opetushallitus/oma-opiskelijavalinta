@@ -2,6 +2,7 @@ package fi.oph.opiskelijavalinta.util
 
 import java.time.{ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object TimeUtils {
 
@@ -21,4 +22,25 @@ object TimeUtils {
     (dateTime.isAfter(startD) || dateTime.isEqual(startD))
     && dateTime.isBefore(endD)
   }
+
+  private val finnishFormatter =
+    DateTimeFormatter
+      .ofPattern("d.M.yyyy 'klo' HH:mm")
+      .withLocale(Locale.of("fi", "FI"))
+
+  private val swedishFormatter =
+    DateTimeFormatter
+      .ofPattern("d.M.yyyy 'kl.' HH:mm")
+      .withLocale(Locale.of("sv", "SE"))
+
+  private val englishFormatter =
+    DateTimeFormatter
+      .ofPattern("MMM. d, yyyy 'at' hh:mm a z")
+      .withLocale(Locale.US)
+
+  def formatterFor(lang: SupportedLanguage): DateTimeFormatter =
+    lang match
+      case SupportedLanguage.fi => finnishFormatter
+      case SupportedLanguage.sv => swedishFormatter
+      case SupportedLanguage.en => englishFormatter
 }
