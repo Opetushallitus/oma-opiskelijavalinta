@@ -26,12 +26,12 @@ object TimeUtils {
   private val finnishFormatter =
     DateTimeFormatter
       .ofPattern("d.M.yyyy 'klo' HH:mm")
-      .withLocale(Locale.of("fi", "FI"))
+      .withLocale(Locale.forLanguageTag("fi"))
 
   private val swedishFormatter =
     DateTimeFormatter
       .ofPattern("d.M.yyyy 'kl.' HH:mm")
-      .withLocale(Locale.of("sv", "SE"))
+      .withLocale(Locale.forLanguageTag("sv"))
 
   private val englishFormatter =
     DateTimeFormatter
