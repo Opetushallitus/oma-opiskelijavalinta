@@ -9,6 +9,7 @@ import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import {
   getHakutoiveenTilaLabel,
   isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
+  naytetaankoEhdollisuus,
   valintatilaColors,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { VastaanottoTilaChip } from '@/components/vastaanotto/VastaanottoTilaChip';
@@ -79,7 +80,7 @@ export function HakutoiveenTilaBadge({
           color: valintatilaColors[valintatila],
         }}
       />
-      {hakutoiveenTulos?.ehdollisestiHyvaksyttavissa && (
+      {naytetaankoEhdollisuus(hakutoiveenTulos) && (
         <StatusBadgeChip
           sx={{ ml: 1 }}
           badgeProps={{

@@ -6,6 +6,7 @@ import {
   getVarallaOlevatMuutToiveet,
   isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
   isHyvaksyttyOdottaaYlempaa,
+  naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import type { Hakemus } from '@/lib/hakemus-types';
 
@@ -451,5 +452,92 @@ describe('getVarallaOlevatMuutToiveet', () => {
     const result = getVarallaOlevatMuutToiveet(application, 'hk1');
 
     expect(result).toHaveLength(0);
+  });
+});
+
+describe('naytetaankoEhdollisuus', () => {
+  it('Näytetään ehdollisuus', () => {
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.HYVAKSYTTY,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeTruthy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.VARASIJALTA_HYVAKSYTTY,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeTruthy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeTruthy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.VARALLA,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeTruthy();
+  });
+
+  it('Ei näytetä ehdollisuutta', () => {
+    expect(naytetaankoEhdollisuus()).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.VARASIJALTA_HYVAKSYTTY,
+        ehdollisestiHyvaksyttavissa: false,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.HARKINNANVARAISESTI_HYVAKSYTTY,
+        ehdollisestiHyvaksyttavissa: false,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.VARALLA,
+        ehdollisestiHyvaksyttavissa: false,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.KESKEN,
+        ehdollisestiHyvaksyttavissa: false,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.HYLATTY,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.PERUNUT,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.PERUUNTUNUT,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.PERUUTETTU,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
+    expect(
+      naytetaankoEhdollisuus({
+        valintatila: Valintatila.KESKEN,
+        ehdollisestiHyvaksyttavissa: true,
+      } as HakutoiveenTulos),
+    ).toBeFalsy();
   });
 });

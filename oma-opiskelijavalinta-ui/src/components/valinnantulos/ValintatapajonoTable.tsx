@@ -20,6 +20,7 @@ import { BadgeColorKey, StatusBadgeChip } from '@/components/StatusBadgeChip';
 import {
   getValintatapajononTilaLabel,
   isHyvaksyttyTaiVaralla,
+  naytetaankoEhdollisuus,
   valintatilaColors,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { ophColors } from '@/lib/theme';
@@ -129,7 +130,7 @@ export function ValintatapajonoTable({
               </TableCell>
               <TableCell>
                 <JonoStatus jonotulos={jonotulos} />
-                {jonotulos.ehdollisestiHyvaksyttavissa && (
+                {naytetaankoEhdollisuus(jonotulos) && (
                   <StatusBadgeChip
                     badgeProps={{
                       label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
