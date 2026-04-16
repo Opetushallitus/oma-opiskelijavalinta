@@ -3,7 +3,7 @@ package fi.oph.opiskelijavalinta.service
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
 import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
-import fi.oph.opiskelijavalinta.util.TimeUtils.{ZONE_FINLAND, formatterFor}
+import fi.oph.opiskelijavalinta.util.TimeUtils.{formatterFor, ZONE_FINLAND}
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
 import org.slf4j.{Logger, LoggerFactory}
