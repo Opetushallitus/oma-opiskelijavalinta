@@ -50,23 +50,33 @@ export class LoadtestStack extends cdk.Stack {
     });
 
     instance.userData.addCommands(
-      // Install deps
+      // system deps
       'dnf install -y nodejs unzip',
-      'npm install -g pnpm',
       'dnf install -y https://dl.k6.io/rpm/repo.rpm',
       'dnf install -y k6',
 
-      // Create folder
-      'mkdir -p /home/ssm-user/loadtest',
+      // enable pnpm without npm global install
+      'corepack enable',
+      'corepack prepare pnpm@latest --activate',
 
-      // Download loadtest bundle from CDK asset bucket
-      `aws s3 cp s3://${asset.s3BucketName}/${asset.s3ObjectKey} /home/ssm-user/loadtest.zip`,
+      // download loadtest bundle
+      `aws s3 cp s3://${asset.s3BucketName}/${asset.s3ObjectKey} /tmp/loadtest.zip`,
 
-      // Unzip into folder
-      'unzip /home/ssm-user/loadtest.zip -d /home/ssm-user/loadtest',
+      // unzip to temp (safe as root)
+      'rm -rf /tmp/loadtest',
+      'unzip /tmp/loadtest.zip -d /tmp/loadtest',
 
-      // Fix permissions for SSM user
+      // move to final location
+      'rm -rf /home/ssm-user/loadtest',
+      'mv /tmp/loadtest /home/ssm-user/loadtest',
+
+      // FIX OWNERSHIP (this is the key line)
       'chown -R ssm-user:ssm-user /home/ssm-user/loadtest',
+
+      // optional safety: ensure ownership is correct
+      'chown -R ssm-user:ssm-user /home/ssm-user',
+
+      // permissions
       'chmod +x /home/ssm-user/loadtest/run.sh'
     );
 
