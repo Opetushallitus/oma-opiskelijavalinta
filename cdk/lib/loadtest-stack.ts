@@ -52,12 +52,9 @@ export class LoadtestStack extends cdk.Stack {
     instance.userData.addCommands(
       // system deps
       'dnf install -y nodejs unzip',
+      'npm install -g pnpm',
       'dnf install -y https://dl.k6.io/rpm/repo.rpm',
       'dnf install -y k6',
-
-      // enable pnpm without npm global install
-      'corepack enable',
-      'corepack prepare pnpm@latest --activate',
 
       // download loadtest bundle
       `aws s3 cp s3://${asset.s3BucketName}/${asset.s3ObjectKey} /tmp/loadtest.zip`,
@@ -72,9 +69,6 @@ export class LoadtestStack extends cdk.Stack {
 
       // FIX OWNERSHIP (this is the key line)
       'chown -R ssm-user:ssm-user /home/ssm-user/loadtest',
-
-      // optional safety: ensure ownership is correct
-      'chown -R ssm-user:ssm-user /home/ssm-user',
 
       // permissions
       'chmod +x /home/ssm-user/loadtest/run.sh'
