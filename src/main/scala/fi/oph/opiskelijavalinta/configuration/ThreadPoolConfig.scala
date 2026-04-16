@@ -22,14 +22,14 @@ class ThreadPoolConfig {
       }
     }
 
-    val queueSize = 500
+    val queueSize = 1000
 
     val queue: BlockingQueue[Runnable] =
       new ArrayBlockingQueue[Runnable](queueSize)
 
     new ThreadPoolExecutor(
-      50,  // core threads
-      100, // max threads
+      100,  // core threads
+      500, // max threads
       60L,
       TimeUnit.SECONDS,
       queue,
