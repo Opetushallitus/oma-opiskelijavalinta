@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime, ZoneId, ZonedDateTime}
+import java.util.Locale
 
 @Service
 class LokalisointiService @Autowired (
@@ -29,7 +30,7 @@ class LokalisointiService @Autowired (
   val DEFAULT_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'klo' HH:mm").withZone(zone)
   val SWEDISH_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'kl.' HH:mm").withZone(zone)
   val ENGLISH_DATE_TIME_FORMAT: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MMM. d, yyyy 'at' HH:mm a z").withZone(zone)
+    DateTimeFormatter.ofPattern("MMM. d, yyyy 'at' HH:mm a z").withLocale(Locale.US).withZone(zone)
   val LANGUAGE_FORMATTER_MAP: Map[SupportedLanguage, DateTimeFormatter] =
     Map(fi -> DEFAULT_DATE_TIME_FORMAT, sv -> SWEDISH_DATE_TIME_FORMAT, en -> ENGLISH_DATE_TIME_FORMAT)
 

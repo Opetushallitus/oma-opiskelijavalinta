@@ -14,14 +14,14 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, Mockito}
 
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 @TestInstance(Lifecycle.PER_METHOD)
 class ViestiServiceTest {
 
   val fileName: String = "/test-translation.json"
-  val fixedTime        = ZonedDateTime.of(2026, 4, 21, 12, 30, 0, 0, ZoneId.of("Europe/Helsinki"))
+  val fixedTime: LocalDateTime = LocalDateTime.of(2026, 4, 21, 12, 30, 0, 0)
   val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
   val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
 
@@ -40,7 +40,7 @@ class ViestiServiceTest {
       authorizationService,
       viestinvalitysClient
     ) {
-      override protected def currentTime(): ZonedDateTime = fixedTime
+      override protected def currentTime(): LocalDateTime = fixedTime
     }
 
   @Test

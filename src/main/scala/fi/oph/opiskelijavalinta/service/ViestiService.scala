@@ -3,14 +3,13 @@ package fi.oph.opiskelijavalinta.service
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
 import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
-import fi.oph.opiskelijavalinta.util.TimeUtils.{formatterFor, ZONE_FINLAND}
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.stereotype.Service
 
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.LocalDateTime
 import java.util.Optional
 
 class ViestinvalitysException(message: String, cause: Throwable = null) extends RuntimeException(message, cause) {
@@ -32,8 +31,8 @@ class ViestiService @Autowired (
 
   private val LOGGER: Logger = LoggerFactory.getLogger(classOf[ViestiService]);
 
-  protected def currentTime(): ZonedDateTime =
-    LocalDateTime.now().atZone(ZONE_FINLAND)
+  protected def currentTime(): LocalDateTime =
+    LocalDateTime.now()
 
   def lahetaVastaanottoViesti(
     hakukohdeOid: String,
@@ -54,7 +53,6 @@ class ViestiService @Autowired (
       LOGGER.info(
         s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
       )
-      val formattedTime = currentTime().format(formatterFor(asiointikieli))
       val haku = koutaService.getHaku(hakuOid).getOrElse(throw new RuntimeException(s"Hakua ei löytynyt: $hakuOid"))
       val hakutoive = koutaService
         .getHakukohde(hakukohdeOid)
@@ -68,8 +66,9 @@ class ViestiService @Autowired (
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
         asiointikieli,
         "vastaanottoviesti.viesti.olemme-vastaanottaneet",
-        Map("aikaleima" -> formattedTime)
+        Map("aikaleima" -> currentTime())
       )
+      LOGGER.info(s"$vastaanottaneet")
       val vastaanotto = lokalisointiService.getTranslation(asiointikieli, vastaanottoKaannosAvain)
       val vastaus     = lokalisointiService.getTranslationWithParams(
         asiointikieli,
