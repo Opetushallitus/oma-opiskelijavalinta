@@ -28,7 +28,7 @@ class ThreadPoolConfig {
       new ArrayBlockingQueue[Runnable](queueSize)
 
     new ThreadPoolExecutor(
-      80, // core threads
+      80,  // core threads
       180, // max threads
       60L,
       TimeUnit.SECONDS,
