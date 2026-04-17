@@ -31,6 +31,9 @@ class ViestiService @Autowired (
 
   private val LOGGER: Logger = LoggerFactory.getLogger(classOf[ViestiService]);
 
+  protected def currentTime(): LocalDateTime =
+    LocalDateTime.now()
+
   def lahetaVastaanottoViesti(
     hakukohdeOid: String,
     hakemusOid: String,
@@ -63,8 +66,9 @@ class ViestiService @Autowired (
       val vastaanottaneet = lokalisointiService.getTranslationWithParams(
         asiointikieli,
         "vastaanottoviesti.viesti.olemme-vastaanottaneet",
-        Map("aikaleima" -> LocalDateTime.now)
+        Map("aikaleima" -> currentTime())
       )
+      LOGGER.info(s"$vastaanottaneet")
       val vastaanotto = lokalisointiService.getTranslation(asiointikieli, vastaanottoKaannosAvain)
       val vastaus     = lokalisointiService.getTranslationWithParams(
         asiointikieli,
