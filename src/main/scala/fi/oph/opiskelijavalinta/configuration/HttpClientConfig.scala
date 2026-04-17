@@ -12,10 +12,10 @@ class HttpClientConfig {
   def asyncHttpClient(): AsyncHttpClient = {
 
     val config = new DefaultAsyncHttpClientConfig.Builder()
-      .setMaxConnections(2000)
-      .setMaxConnectionsPerHost(500)
+      .setMaxConnections(300)
+      .setMaxConnectionsPerHost(100)
       .setConnectTimeout(java.time.Duration.ofSeconds(10))
-      .setRequestTimeout(java.time.Duration.ofSeconds(2))
+      .setRequestTimeout(java.time.Duration.ofSeconds(30)) // perälauta, yksittäiset clientit säädetään erikseen
       .setMaxRedirects(5)
       .build()
 
