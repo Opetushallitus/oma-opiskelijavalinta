@@ -9,4 +9,7 @@ export const MultiInfoContainer = styled(Box)(({ theme }) => ({
   a: {
     color: ophColors.grey900,
   },
+  ['b, strong']: {
+    fontWeight: 600,
+  },
 }));

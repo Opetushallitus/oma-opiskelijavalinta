@@ -248,6 +248,7 @@ export function VastaanottoRadio({
             options={vastaanottoOptions}
             labelId={labelId}
             aria-required={true}
+            sx={{ mt: '2px' }}
           />
         )}
       />

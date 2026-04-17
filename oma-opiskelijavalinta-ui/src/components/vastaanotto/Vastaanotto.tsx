@@ -17,9 +17,10 @@ import { EhdollisuusWarning } from '@/components/valinnantulos/EhdollisuusWarnin
 
 const StyledBox = styled(Box)(({ theme }) => ({
   ':not(:first-of-type)': {
+    marginTop: theme.spacing(3),
     borderTop: '2px solid',
     borderColor: ophColors.grey100,
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(3),
   },
 }));
 
@@ -38,7 +39,7 @@ function VastaanottoBox({
   return (
     <StyledBox>
       <HakutoiveenTilaBadge hakutoiveenTulos={tulos} />
-      <OphTypography variant="h5" component="div">
+      <OphTypography variant="h5" component="div" sx={{ mt: 0.75 }}>
         {translateEntity(hakukohde.jarjestyspaikkaHierarkiaNimi)}
       </OphTypography>
       <OphTypography variant="body1">
