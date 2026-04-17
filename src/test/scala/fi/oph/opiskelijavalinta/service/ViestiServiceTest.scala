@@ -20,9 +20,9 @@ import java.util.UUID
 @TestInstance(Lifecycle.PER_METHOD)
 class ViestiServiceTest {
 
-  val fileName: String = "/test-translation.json"
+  val fileName: String         = "/test-translation.json"
   val fixedTime: LocalDateTime = LocalDateTime.of(2026, 4, 21, 12, 30, 0, 0)
-  val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
+  val text                     = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
   val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
 
   val koutaService: KoutaService                 = Mockito.mock(classOf[KoutaService])
