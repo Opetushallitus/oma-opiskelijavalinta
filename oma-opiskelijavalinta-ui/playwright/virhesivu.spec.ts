@@ -51,7 +51,6 @@ test('Ei näytä virhesivua kun virhe tulee hakemukset-rajapinnasta', async ({
 
 test('Virhesivun saavutettavuus', async ({ page }) => {
   await setup(page);
-  await page.goto('');
   await assertVirheSivu(page);
   await expectPageAccessibilityOk(page);
 });
