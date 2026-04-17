@@ -36,30 +36,39 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const adjustHeaderLevel = useAdjustHeaderLevel();
 
   const hakemustaVoiMuokata =
+    isTruthy(hakemus.modifyLink) &&
     (!hakemus.processing || !isJatkuvaTaiJoustavaHaku(hakemus.haku)) &&
     (isNullish(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
         (isEmpty(tulokset) ||
           onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []))));
 
+  const naytaHakemusPainikeNakyvilla =
+    !hakemustaVoiMuokata &&
+    (isEmpty(tulokset) ||
+      (onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []) &&
+        isTruthy(hakemus.modifyLink)));
+
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
       <OphTypography variant="h3" component={adjustHeaderLevel ? 'h2' : 'h3'}>
         {translateEntity(hakemus?.haku?.nimi)}
       </OphTypography>
-      <HakemusStatus hakemus={hakemus} tulokset={tulokset} />
+      <HakemusStatus
+        hakemus={hakemus}
+        tulokset={tulokset}
+        naytaLinkkiHakemukseen={
+          !(hakemustaVoiMuokata || naytaHakemusPainikeNakyvilla)
+        }
+      />
       <HakemusInfo hakemus={hakemus} tulokset={tulokset} />
-      {isTruthy(hakemus.modifyLink) && hakemustaVoiMuokata ? (
+      {hakemustaVoiMuokata ? (
         <ExternalLinkButton
           href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.muokkaa')}
         />
       ) : (
-        (isEmpty(tulokset) ||
-          onKeskeneraisiaValinnantiloja(
-            tulokset,
-            hakemus.hakukohteet ?? [],
-          )) && (
+        naytaHakemusPainikeNakyvilla && (
           <ExternalLinkButton
             href={hakemus.modifyLink ?? ''}
             name={t('hakemukset.nayta')}

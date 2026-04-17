@@ -7,7 +7,7 @@ const ContentWrapper = styled(PageContent)(({ theme }) => ({
   padding: theme.spacing(4),
   [notDesktop(theme)]: {
     maxWidth: '100%',
-    padding: theme.spacing(1, 1),
+    padding: theme.spacing(1, 1.875),
   },
 }));
 

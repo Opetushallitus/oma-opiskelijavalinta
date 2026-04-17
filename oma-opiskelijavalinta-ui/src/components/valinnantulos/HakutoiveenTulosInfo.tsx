@@ -23,7 +23,7 @@ function ValintatilaIlmanSijoittelua({
     >
       <OphTypography
         variant="body1"
-        sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}
+        sx={{ fontWeight: '600', fontSize: '0.875rem' }}
       >
         {t('tulos.ei-sijoittelua')}
       </OphTypography>

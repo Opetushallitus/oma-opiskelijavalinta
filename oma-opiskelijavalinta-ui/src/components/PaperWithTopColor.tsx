@@ -1,4 +1,4 @@
-import { styled } from '@/lib/theme';
+import { notDesktop, styled } from '@/lib/theme';
 import { Paper } from '@mui/material';
 
 export const PaperWithTopColor = styled(Paper, {
@@ -11,7 +11,7 @@ export const PaperWithTopColor = styled(Paper, {
   position: 'relative',
   borderRadius: '4px',
   padding: theme.spacing(2.5),
-  [theme.breakpoints.down('xs')]: {
-    padding: theme.spacing(1),
+  [notDesktop(theme)]: {
+    padding: theme.spacing(1.5),
   },
 }));

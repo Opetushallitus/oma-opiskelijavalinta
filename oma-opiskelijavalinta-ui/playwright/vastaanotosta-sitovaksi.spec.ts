@@ -180,10 +180,6 @@ test('Sitova vastaanotto on saavutettava', async ({ page }) => {
 test('Sitova vastaanottomodaali on saavutettava', async ({ page }) => {
   await setup(page);
 
-  await page.addStyleTag({
-    content: '* {animation: none !important; transition: none !important; }',
-  });
-
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
   await vastaanotot
     .getByRole('checkbox', { name: 'Luovun jonotuksesta ja muutan' })
@@ -191,6 +187,11 @@ test('Sitova vastaanottomodaali on saavutettava', async ({ page }) => {
   const sendButton = vastaanotot.getByRole('button', {
     name: 'Lähetä vastaus',
   });
+
+  await page.addStyleTag({
+    content: '* {animation: none !important; transition: none !important; }',
+  });
+
   await sendButton.click();
   await expect(
     page.getByText('Vahvista jonotuksesta luopuminen'),

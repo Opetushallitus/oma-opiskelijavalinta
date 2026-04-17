@@ -15,7 +15,8 @@ import {
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { HakutoiveenTilaBadge } from '@/components/valinnantulos/HakutoiveenTilaBadge';
 
-const ORDER_NUMBER_WIDTH = 40; // px
+const ORDER_NUMBER_WIDTH = 34; // px
+
 const HakutoiveContainer = styled(Box)(({ theme }) => ({
   columnGap: theme.spacing(2),
   borderTop: '1px solid',
@@ -88,7 +89,6 @@ export function Hakutoive({
           display: 'flex',
           alignItems: 'center',
           justifyItems: 'start',
-          mb: '10px',
         }}
       >
         {hakemus.priorisoidutHakutoiveet && (
@@ -102,11 +102,8 @@ export function Hakutoive({
       </Box>
       <Box
         sx={{
-          pl:
-            hakemus.priorisoidutHakutoiveet && !isMobile
-              ? `${ORDER_NUMBER_WIDTH + 15}px`
-              : 0,
-          mt: hakemus.priorisoidutHakutoiveet ? '8px' : '10px',
+          pl: hakemus.priorisoidutHakutoiveet && !isMobile ? '50px' : 0,
+          mt: hakemus.priorisoidutHakutoiveet ? '4px' : '10px',
         }}
       >
         <OphTypography variant="h5" component="div">

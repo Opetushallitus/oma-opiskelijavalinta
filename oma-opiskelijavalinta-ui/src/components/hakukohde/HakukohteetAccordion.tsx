@@ -30,6 +30,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
   },
   h4: {
     margin: 0,
+    marginBottom: theme.spacing(2),
   },
 }));
 
