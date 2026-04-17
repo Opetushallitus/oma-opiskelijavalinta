@@ -56,29 +56,45 @@ function TuloksetJulkaistu({ hakemus }: { hakemus: Hakemus }) {
   );
 }
 
-function ValinnatKesken({ hakemus }: { hakemus: Hakemus }) {
+function ValinnatKesken({
+  hakemus,
+  naytaLinkkiHakemukseen,
+}: {
+  hakemus: Hakemus;
+  naytaLinkkiHakemukseen: boolean;
+}) {
   const { t, getLanguage } = useTranslations();
 
   const lang = getLanguage();
 
   return (
-    <OphTypography>
-      {t('hakemukset.tilankuvaukset.valinnat-kesken', {
-        hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
-          hakemus.haku?.viimeisinPaattynytHakuAika,
-          lang,
-        ),
-      })}
-    </OphTypography>
+    <RowFlexBox>
+      <OphTypography>
+        {t('hakemukset.tilankuvaukset.valinnat-kesken', {
+          hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+            hakemus.haku?.viimeisinPaattynytHakuAika,
+            lang,
+          ),
+        })}
+      </OphTypography>
+      {naytaLinkkiHakemukseen && hakemus.modifyLink && (
+        <ExternalLink
+          href={hakemus.modifyLink ?? ''}
+          name={` ${t('hakemukset.nayta')}`}
+        />
+      )}
+    </RowFlexBox>
   );
 }
 
 export function HakemusStatus({
   hakemus,
   tulokset,
+  naytaLinkkiHakemukseen,
 }: {
   hakemus: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
+  naytaLinkkiHakemukseen: boolean;
 }) {
   let tila = null;
 
@@ -103,7 +119,12 @@ export function HakemusStatus({
       !tuloksetValmiitJaJulkaistavissa
     ) {
       // ei kesken-tilaisia, julkaisematon peruuntunut
-      tila = <ValinnatKesken hakemus={hakemus} />;
+      tila = (
+        <ValinnatKesken
+          naytaLinkkiHakemukseen={naytaLinkkiHakemukseen}
+          hakemus={hakemus}
+        />
+      );
     } else if (tuloksetValmiitJaJulkaistavissa) {
       // ei kesken-tilaisia eikä peruuntuneita
       tila = <TuloksetJulkaistu hakemus={hakemus} />;
@@ -111,7 +132,12 @@ export function HakemusStatus({
       !hakemus.haku.hakuaikaKaynnissa &&
       !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
     ) {
-      tila = <ValinnatKesken hakemus={hakemus} />;
+      tila = (
+        <ValinnatKesken
+          naytaLinkkiHakemukseen={naytaLinkkiHakemukseen}
+          hakemus={hakemus}
+        />
+      );
     }
   }
 
