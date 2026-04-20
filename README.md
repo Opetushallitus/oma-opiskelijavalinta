@@ -77,3 +77,5 @@ CLIENTS_TIMEOUT_KOUTA=8`
 tai
 
 `-Dhttp.client.max-connections=500`
+
+Http clientin MaxConnectionsPerHost ja thread poolin core+max pool size pitää olla oikeassa suhteessa toisiinsa (max connections ei saisi olla pienempi kuin poolin koko).
