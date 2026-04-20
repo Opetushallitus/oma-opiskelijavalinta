@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import fi.oph.opiskelijavalinta.Constants.KOUTA_HAKU_OID_LENGTH
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
@@ -47,7 +48,9 @@ class HakemuksetService @Autowired (
         throw RuntimeException("Hakemuksien haku epäonnistui")
       case Right(o) =>
         val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
-        val enriched = apps.map(a => enrichHakemus(a))
+        val enriched = apps
+          .filter(a => a.haku == null || a.haku.isBlank || a.haku.length.equals(KOUTA_HAKU_OID_LENGTH))
+          .map(a => enrichHakemus(a))
         HakemuksetEnriched(
           enriched.filter(isAjankohtainenHakemus),
           enriched.filter(isVanhaHakemus)

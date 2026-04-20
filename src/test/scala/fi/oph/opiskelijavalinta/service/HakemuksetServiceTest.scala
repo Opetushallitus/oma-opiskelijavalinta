@@ -56,6 +56,37 @@ class HakemuksetServiceTest {
     Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
   }
 
+  @Test
+  def haullisetHakemuksetJotkaEivatOleKoutanEiPalauteta(): Unit = {
+    Mockito
+      .when(ataruClient.getHakemukset(OPPIJA_NUMERO))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                "application-oid-1",
+                "mukahaku",
+                List.empty,
+                "secret-1",
+                "2025-02-02T19:32:01Z",
+                false,
+                TranslatedName("Hajuton lomake", null, null),
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+      )
+    val hakemukset = service.getHakemukset(OPPIJA_NUMERO)
+    Assertions.assertEquals(0, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
+  }
+
   private def hautonHakemus(processing: Boolean) = {
     Right(
       objectMapper.writeValueAsString(
