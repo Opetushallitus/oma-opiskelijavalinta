@@ -22,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <Scripts />
         <ScrollRestoration />
-        <div id="oppija-raamit-footer-here" />
+        <div id="oppija-raamit-footer-here" style={{ marginTop: '64px' }} />
       </body>
     </html>
   );
