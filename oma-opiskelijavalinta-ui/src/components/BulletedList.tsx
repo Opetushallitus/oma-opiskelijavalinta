@@ -7,7 +7,6 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   display: 'list-item',
   marginLeft: theme.spacing(2.5),
   maxWidth: `calc(100% - ${theme.spacing(2.5)})`,
-  paddingLeft: '6px',
 }));
 
 type BulletItemProps = {
@@ -24,5 +23,7 @@ export function BulletItem({ children, sx }: BulletItemProps) {
 }
 
 export function BulletedList({ children }: { children: React.ReactNode }) {
-  return <List sx={{ listStyleType: 'disc' }}>{children}</List>;
+  return (
+    <List sx={{ listStyleType: 'disc', marginLeft: '6px' }}>{children}</List>
+  );
 }
