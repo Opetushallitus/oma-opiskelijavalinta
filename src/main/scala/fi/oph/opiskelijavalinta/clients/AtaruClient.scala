@@ -10,9 +10,7 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class AtaruClient @Autowired (ataruCasClient: CasClient, 
-                              httpExecutionContext: ExecutionContext,
-                              timeoutSeconds: Int) {
+class AtaruClient @Autowired (ataruCasClient: CasClient, httpExecutionContext: ExecutionContext, timeoutSeconds: Int) {
 
   private val LOG: Logger                   = LoggerFactory.getLogger(classOf[AtaruClient])
   implicit private val ec: ExecutionContext = httpExecutionContext

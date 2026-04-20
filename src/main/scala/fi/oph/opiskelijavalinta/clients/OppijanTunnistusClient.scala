@@ -10,9 +10,11 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
-class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient, 
-                                         httpExecutionContext: ExecutionContext,
-                                         timeoutSeconds: Int) {
+class OppijanTunnistusClient @Autowired (
+  oppijanTunnistusCasClient: CasClient,
+  httpExecutionContext: ExecutionContext,
+  timeoutSeconds: Int
+) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OppijanTunnistusClient])
 

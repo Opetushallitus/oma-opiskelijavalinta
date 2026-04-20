@@ -13,9 +13,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 @Component
-class OnrClient @Autowired (oauth2Client: Oauth2Client,
-                            objectMapper: ObjectMapper = new ObjectMapper(),
-                            timeouts: ClientTimeoutProperties) {
+class OnrClient @Autowired (
+  oauth2Client: Oauth2Client,
+  objectMapper: ObjectMapper = new ObjectMapper(),
+  timeouts: ClientTimeoutProperties
+) {
 
   @Value("${host.virkailija}")
   private val virkailijaHost = ""

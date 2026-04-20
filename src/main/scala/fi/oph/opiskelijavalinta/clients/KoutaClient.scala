@@ -10,9 +10,7 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class KoutaClient @Autowired (koutaCasClient: CasClient, 
-                              httpExecutionContext: ExecutionContext,
-                              timeoutSeconds: Int) {
+class KoutaClient @Autowired (koutaCasClient: CasClient, httpExecutionContext: ExecutionContext, timeoutSeconds: Int) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
