@@ -1,20 +1,21 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.Constants.ATARU_TIMEOUT
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
-import scala.concurrent.ExecutionContext.Implicits.global // TODO thread pool OPHYOS-47
-import java.time.Duration as JavaDuration
 import scala.jdk.javaapi.FutureConverters.asScala
-import scala.concurrent.Await
+import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class AtaruClient @Autowired (ataruCasClient: CasClient) {
+class AtaruClient @Autowired (ataruCasClient: CasClient, httpExecutionContext: ExecutionContext) {
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[AtaruClient])
+  private val LOG: Logger                   = LoggerFactory.getLogger(classOf[AtaruClient])
+  implicit private val ec: ExecutionContext = httpExecutionContext
+
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
@@ -29,7 +30,6 @@ class AtaruClient @Autowired (ataruCasClient: CasClient) {
       .setMethod("GET")
       .setHeader("Content-Type", "application/json")
       .setUrl(url)
-      .setRequestTimeout(JavaDuration.ofMillis(5000))
       .build()
     try {
       val result = asScala(ataruCasClient.execute(req)).map {
@@ -42,7 +42,7 @@ class AtaruClient @Autowired (ataruCasClient: CasClient) {
           )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(5, TimeUnit.SECONDS))
+      Await.result(result, Duration(ATARU_TIMEOUT, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Virhe haettaessa hakemuksia hakemuspalvelusta: ${e.getMessage}", e)

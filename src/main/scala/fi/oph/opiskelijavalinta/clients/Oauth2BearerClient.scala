@@ -1,22 +1,28 @@
 package fi.oph.opiskelijavalinta.clients
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import fi.oph.opiskelijavalinta.Constants.ONR_TIMEOUT
+import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import fi.oph.opiskelijavalinta.clients.model.Oauth2Token
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
+import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.cache.annotation.{CacheConfig, CacheEvict, Cacheable}
 import org.springframework.stereotype.Component
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
 import java.io.IOException
-import java.net.URI
-import java.net.http.HttpRequest.BodyPublishers
-import java.net.http.HttpResponse.BodyHandlers
-import java.net.http.{HttpClient, HttpRequest}
+import java.util.concurrent.TimeUnit
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 
 @Component
 @CacheConfig(cacheNames = Array("oauth2Bearer"))
-class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMapper = new ObjectMapper) {
+class Oauth2BearerClient @Autowired (
+  final private val objectMapper: ObjectMapper = new ObjectMapper,
+  client: AsyncHttpClient,
+  httpExecutionContext: ExecutionContext
+) {
 
   @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
   private val oauth2IssuerUri = ""
@@ -27,7 +33,8 @@ class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMappe
   @Value("${oauth2.secret}")
   private val oauth2Secret = ""
 
-  val LOG: Logger = LoggerFactory.getLogger(classOf[Oauth2BearerClient]);
+  val LOG: Logger                           = LoggerFactory.getLogger(classOf[Oauth2BearerClient]);
+  implicit private val ec: ExecutionContext = httpExecutionContext
 
   @Cacheable(value = Array(CacheConstants.OAUTH2_CACHE_NAME), sync = true)
   @throws[IOException]
@@ -39,16 +46,19 @@ class Oauth2BearerClient @Autowired (final private val objectMapper: ObjectMappe
       + oauth2Client
       + "&client_secret="
       + oauth2Secret
-    val request = HttpRequest.newBuilder
-      .uri(URI.create(tokenUrl))
-      .header("Content-Type", "application/x-www-form-urlencoded")
-      .POST(BodyPublishers.ofString(body))
-      .build
-    val client = HttpClient.newHttpClient
-    val res    = client.send(request, BodyHandlers.ofString)
-    if (res.statusCode() != 200)
-      throw new RuntimeException("Oauth2 bearer returned status code " + res.statusCode + ": " + res.body)
-    objectMapper.readValue(res.body, classOf[Oauth2Token]).access_token
+
+    val request = new RequestBuilder()
+      .setMethod("POST")
+      .setUrl(tokenUrl)
+      .setHeader("Content-Type", "application/x-www-form-urlencoded")
+      .setBody(body)
+    val response = Await.result(toScalaFuture(client.executeRequest(request)), Duration(ONR_TIMEOUT, TimeUnit.SECONDS))
+
+    if (response.getStatusCode != 200)
+      throw new RuntimeException(
+        "Oauth2 bearer returned status code " + response.getStatusCode + ": " + response.getResponseBody
+      )
+    objectMapper.readValue(response.getResponseBody, classOf[Oauth2Token]).access_token
   }
 
   @CacheEvict(value = Array(CacheConstants.OAUTH2_CACHE_NAME), allEntries = true)

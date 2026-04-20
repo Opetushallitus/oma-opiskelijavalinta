@@ -1,20 +1,22 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.Constants.OPPIJAN_TUNNISTUS_TIMEOUT
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
-import java.time.Duration as JavaDuration
 import java.util.concurrent.TimeUnit
-import scala.concurrent.Await
+import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
-import scala.concurrent.ExecutionContext.Implicits.global // TODO thread pool OPHYOS-47
 
-class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient) {
+class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient, httpExecutionContext: ExecutionContext) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OppijanTunnistusClient])
+
+  implicit private val ec: ExecutionContext = httpExecutionContext
+
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
@@ -29,7 +31,6 @@ class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient) {
       .setMethod("GET")
       .setHeader("Content-Type", "application/json")
       .setUrl(url)
-      .setRequestTimeout(JavaDuration.ofMillis(5000))
       .build()
     try {
       val result = asScala(oppijanTunnistusCasClient.execute(req)).map {
@@ -42,7 +43,7 @@ class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient) {
           )
           Left(new RuntimeException("Failed to verify token: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(5, TimeUnit.SECONDS))
+      Await.result(result, Duration(OPPIJAN_TUNNISTUS_TIMEOUT, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Virhe oppijan-tunnistus tokenin verioinnissa: ${e.getMessage}", e)

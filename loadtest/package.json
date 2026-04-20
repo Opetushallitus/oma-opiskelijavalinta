@@ -1,0 +1,8 @@
+{
+  "name": "loadtest",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "k6 run script.js"
+  }
+}

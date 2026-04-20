@@ -1,32 +1,27 @@
 package fi.oph.opiskelijavalinta.clients
 
 import fi.oph.opiskelijavalinta.Constants
+import fi.oph.opiskelijavalinta.Constants.OHJAUSPARAMETRIT_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
-import org.asynchttpclient.Dsl.asyncHttpClient
-import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClientConfig, RequestBuilder, Response}
+import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.{Autowired, Value}
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-class OhjausparametritClient {
+class OhjausparametritClient @Autowired() (
+  client: AsyncHttpClient,
+  httpExecutionContext: ExecutionContext
+) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OhjausparametritClient])
 
-  private val client: AsyncHttpClient = asyncHttpClient(
-    new DefaultAsyncHttpClientConfig.Builder()
-      .setMaxRedirects(5)
-      .setConnectTimeout(java.time.Duration.ofMillis(10 * 1000))
-      .build
-  )
-
-  // TODO http-clientien thread pool OPHYOS-47
-  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  implicit private val ec: ExecutionContext = httpExecutionContext
 
   def getOhjausparametritForHaku(hakuOid: String): Either[Throwable, String] = {
     val url = s"https://$opintopolku_virkailija_domain/ohjausparametrit-service/api/v1/rest/parametri/$hakuOid"
@@ -39,7 +34,6 @@ class OhjausparametritClient {
       .setHeader("Content-Type", "application/json")
       .setHeader("Caller-Id", Constants.CALLER_ID)
       .setUrl(url)
-      .setRequestTimeout(java.time.Duration.ofMillis(5000))
       .build()
 
     LOG.info(s"Haetaan ohjausparametrit osoitteesta: $url")
@@ -57,7 +51,7 @@ class OhjausparametritClient {
             Left(RuntimeException(msg))
         }
       // Synchronous wait
-      Await.result(futureResponse, Duration(5, TimeUnit.SECONDS))
+      Await.result(futureResponse, Duration(OHJAUSPARAMETRIT_TIMEOUT, TimeUnit.SECONDS))
     catch
       case e: Throwable =>
         LOG.error(s"Virhe ohjausparametrien hakemisessa: ${e.getMessage}", e)
