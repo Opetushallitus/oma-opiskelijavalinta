@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 
 import java.io.IOException
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
@@ -43,9 +45,9 @@ class Oauth2BearerClient @Autowired (
     val tokenUrl = oauth2IssuerUri + "/oauth2/token"
     LOG.info("refetching oauth2 bearer from " + tokenUrl)
     val body = "grant_type=client_credentials&client_id="
-      + oauth2Client
+      + encodeFormValue(oauth2Client)
       + "&client_secret="
-      + oauth2Secret
+      + encodeFormValue(oauth2Secret)
 
     val request = new RequestBuilder()
       .setMethod("POST")
@@ -60,6 +62,8 @@ class Oauth2BearerClient @Autowired (
       )
     objectMapper.readValue(response.getResponseBody, classOf[Oauth2Token]).access_token
   }
+
+  private def encodeFormValue(value: String) = URLEncoder.encode(value, StandardCharsets.UTF_8)
 
   @CacheEvict(value = Array(CacheConstants.OAUTH2_CACHE_NAME), allEntries = true)
   def evictOauth2Bearer(): Unit = {

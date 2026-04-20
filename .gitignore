@@ -50,3 +50,6 @@ application-dev.yml
 application-dev-http.yml
 
 src/main/resources/static/
+
+# Claude
+.claude
