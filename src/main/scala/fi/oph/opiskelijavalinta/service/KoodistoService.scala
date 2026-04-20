@@ -26,7 +26,7 @@ class KoodistoService @Autowired (
 
     koodistoClient.getKoodit(koodisto) match {
       case Left(e) =>
-        LOG.warn(s"Virhe koodiston haussa, koodisto: $koodisto: ${e.getMessage}")
+        LOG.warn(s"Virhe koodiston haussa, koodisto: $koodisto: ${e.getMessage}", e)
         List.empty
       case Right(o) => mapper.readValue(o, classOf[Array[KoodistoKoodi]]).toSeq
     }

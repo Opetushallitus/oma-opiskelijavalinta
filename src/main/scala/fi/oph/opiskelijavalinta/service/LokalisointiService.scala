@@ -45,7 +45,7 @@ class LokalisointiService @Autowired (
 
     lokalisointiClient.getLokalisaatiot(lang) match {
       case Left(e) =>
-        LOG.warn(s"Käännösten lataaminen epäonnistui $lang: ${e.getMessage}")
+        LOG.warn(s"Käännösten lataaminen epäonnistui $lang: ${e.getMessage}", e)
         None
       case Right(o) => Some(JsonParser.parseString(o).getAsJsonObject)
     }

@@ -61,7 +61,7 @@ class HakemuksetService @Autowired (
   def getHakemusOids(oppijanumero: String): List[String] = {
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
-        LOG.error(s"Virhe hakemus-oidien haussa oppijanumerolla $oppijanumero: ${e.getMessage}")
+        LOG.error(s"Virhe hakemus-oidien haussa oppijanumerolla $oppijanumero: ${e.getMessage}", e)
         throw RuntimeException("Hakemusoidien haku oppijanumerolla epäonnistui")
       case Right(o) =>
         mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
@@ -72,7 +72,8 @@ class HakemuksetService @Autowired (
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
         LOG.error(
-          s"Virhe hakemuksen haussa oppijanumerolla $oppijanumero ja hakemusnumerolla $hakemusOid: ${e.getMessage}"
+          s"Virhe hakemuksen haussa oppijanumerolla $oppijanumero ja hakemusnumerolla $hakemusOid: ${e.getMessage}",
+          e
         )
         throw RuntimeException("Virhe hakemustietojen haussa")
 

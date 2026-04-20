@@ -29,7 +29,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
 
     koutaClient.getHaku(hakuOid) match {
       case Left(e) =>
-        LOG.warn(s"Virhe haun tietojen hakemisessa haku-oidilla $hakuOid: ${e.getMessage}")
+        LOG.warn(s"Virhe haun tietojen hakemisessa haku-oidilla $hakuOid: ${e.getMessage}", e)
         Option.empty
       case Right(o) =>
         Option
