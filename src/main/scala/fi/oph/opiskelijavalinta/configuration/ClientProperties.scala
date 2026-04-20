@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties(prefix = "http.client")
 class HttpClientProperties {
-  var maxConnections: Int        = 300
-  var maxConnectionsPerHost: Int = 100
+  var maxConnections: Int        = 500
+  var maxConnectionsPerHost: Int = 200
 }
 
 @Component
