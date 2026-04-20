@@ -11,4 +11,5 @@ object Constants {
   final val OHJAUSPARAMETRIT_TIMEOUT  = 30
   final val OPPIJAN_TUNNISTUS_TIMEOUT = 30
   final val KOODISTO_TIMEOUT          = 120
+  final val LOKALISOINTI_TIMEOUT      = 5
 }
