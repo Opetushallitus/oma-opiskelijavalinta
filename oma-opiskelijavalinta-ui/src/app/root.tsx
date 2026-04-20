@@ -1,7 +1,3 @@
-import '@fontsource/open-sans/latin-400.css';
-import '@fontsource/open-sans/latin-600.css';
-import '@fontsource/open-sans/latin-700.css';
-import '@/styles/global.css';
 import '@/lib/service-global';
 import { Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { UntranslatedFullSpinner } from '@/components/FullSpinner';
@@ -26,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <Scripts />
         <ScrollRestoration />
-        <div id="oppija-raamit-footer-here" />
+        <div id="oppija-raamit-footer-here" style={{ marginTop: '64px' }} />
       </body>
     </html>
   );
