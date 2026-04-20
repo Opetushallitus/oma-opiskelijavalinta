@@ -1,9 +1,9 @@
 package fi.oph.opiskelijavalinta.clients
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import fi.oph.opiskelijavalinta.Constants.ONR_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.model.Oppija
-import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
+import fi.oph.opiskelijavalinta.configuration.ClientTimeoutProperties
+import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.stereotype.Component
@@ -13,7 +13,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 @Component
-class OnrClient @Autowired (oauth2Client: Oauth2Client, objectMapper: ObjectMapper = new ObjectMapper()) {
+class OnrClient @Autowired (oauth2Client: Oauth2Client,
+                            objectMapper: ObjectMapper = new ObjectMapper(),
+                            timeouts: ClientTimeoutProperties) {
 
   @Value("${host.virkailija}")
   private val virkailijaHost = ""
@@ -25,7 +27,7 @@ class OnrClient @Autowired (oauth2Client: Oauth2Client, objectMapper: ObjectMapp
       .setMethod("GET")
       .setUrl(url)
 
-    val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(ONR_TIMEOUT, TimeUnit.SECONDS))
+    val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(timeouts.onr, TimeUnit.SECONDS))
     objectMapper.readValue(response.getResponseBody, classOf[Oppija])
   }
 

@@ -63,3 +63,17 @@ Tai komentorivillä vain halutulla selaimella:
 `pnpm playwright --project=firefox`
 
 Komennot ajetaan oma-opiskelijavalinta-ui -hakemistossa.
+
+### Tuotantokonfiguraatiot
+
+Jos suorituskykyä varten tarvitsee säätää http-clientien thread poolin kokoa, timeoutteja tai muita vastaavia, oletuskonfiguraation voi yliajaa asettamalla ympäristömuuttujan tai JVM args
+
+esim.
+
+`HTTP_CLIENT_MAX_CONNECTIONS=500
+THREADPOOL_HTTP_QUEUE_SIZE=1000
+CLIENTS_TIMEOUT_KOUTA=8`
+
+tai
+
+`-Dhttp.client.max-connections=500`

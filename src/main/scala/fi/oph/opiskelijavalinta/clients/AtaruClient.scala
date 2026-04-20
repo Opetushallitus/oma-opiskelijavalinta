@@ -1,6 +1,5 @@
 package fi.oph.opiskelijavalinta.clients
 
-import fi.oph.opiskelijavalinta.Constants.ATARU_TIMEOUT
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -11,7 +10,9 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
-class AtaruClient @Autowired (ataruCasClient: CasClient, httpExecutionContext: ExecutionContext) {
+class AtaruClient @Autowired (ataruCasClient: CasClient, 
+                              httpExecutionContext: ExecutionContext,
+                              timeoutSeconds: Int) {
 
   private val LOG: Logger                   = LoggerFactory.getLogger(classOf[AtaruClient])
   implicit private val ec: ExecutionContext = httpExecutionContext
@@ -42,7 +43,7 @@ class AtaruClient @Autowired (ataruCasClient: CasClient, httpExecutionContext: E
           )
           Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(ATARU_TIMEOUT, TimeUnit.SECONDS))
+      Await.result(result, Duration(timeoutSeconds, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Virhe haettaessa hakemuksia hakemuspalvelusta: ${e.getMessage}", e)

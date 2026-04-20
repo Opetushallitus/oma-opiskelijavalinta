@@ -6,14 +6,14 @@ import org.springframework.context.annotation.{Bean, Configuration}
 import java.util.concurrent.ThreadPoolExecutor
 
 @Configuration
-class HttpClientConfig {
+class HttpClientConfig(httpClientProperties: HttpClientProperties) {
 
   @Bean(destroyMethod = "close")
   def asyncHttpClient(): AsyncHttpClient = {
 
     val config = new DefaultAsyncHttpClientConfig.Builder()
-      .setMaxConnections(300)
-      .setMaxConnectionsPerHost(100)
+      .setMaxConnections(httpClientProperties.maxConnections)
+      .setMaxConnectionsPerHost(httpClientProperties.maxConnectionsPerHost)
       .setConnectTimeout(java.time.Duration.ofSeconds(10))
       .setRequestTimeout(java.time.Duration.ofSeconds(30)) // perälauta, yksittäiset clientit säädetään erikseen
       .setMaxRedirects(5)

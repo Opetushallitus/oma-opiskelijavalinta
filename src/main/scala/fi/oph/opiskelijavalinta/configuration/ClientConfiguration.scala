@@ -17,19 +17,19 @@ import org.asynchttpclient.AsyncHttpClient
 import scala.concurrent.ExecutionContext
 
 @Configuration
-class ClientConfiguration {
+class ClientConfiguration(timeouts: ClientTimeoutProperties) {
 
   @Bean
   def ataruClient(
     @Autowired @Qualifier("ataruCasClient") ataruCasClient: CasClient,
     httpExecutionContext: ExecutionContext
   ): AtaruClient = {
-    new AtaruClient(ataruCasClient, httpExecutionContext)
+    new AtaruClient(ataruCasClient, httpExecutionContext, timeouts.ataru)
   }
 
   @Bean
   def koodistoClient(asyncHttpClient: AsyncHttpClient, httpExecutionContext: ExecutionContext): KoodistoClient = {
-    new KoodistoClient(asyncHttpClient, httpExecutionContext)
+    new KoodistoClient(asyncHttpClient, httpExecutionContext, timeouts.koodisto)
   }
 
   @Bean
@@ -37,7 +37,7 @@ class ClientConfiguration {
     @Autowired @Qualifier("koutaCasClient") koutaCasClient: CasClient,
     httpExecutionContext: ExecutionContext
   ): KoutaClient = {
-    new KoutaClient(koutaCasClient, httpExecutionContext)
+    new KoutaClient(koutaCasClient, httpExecutionContext, timeouts.kouta)
   }
 
   @Bean
@@ -45,14 +45,14 @@ class ClientConfiguration {
     asyncHttpClient: AsyncHttpClient,
     httpExecutionContext: ExecutionContext
   ): LokalisointiClient =
-    new LokalisointiClient(asyncHttpClient, httpExecutionContext)
+    new LokalisointiClient(asyncHttpClient, httpExecutionContext, timeouts.lokalisointi)
 
   @Bean
   def ohjausparametritClient(
     asyncHttpClient: AsyncHttpClient,
     httpExecutionContext: ExecutionContext
   ): OhjausparametritClient = {
-    new OhjausparametritClient(asyncHttpClient, httpExecutionContext)
+    new OhjausparametritClient(asyncHttpClient, httpExecutionContext, timeouts.ohjausparametrit)
   }
 
   @Bean
@@ -60,7 +60,7 @@ class ClientConfiguration {
     @Autowired @Qualifier("oppijanTunnistusCasClient") oppijanTunnistusCasClient: CasClient,
     httpExecutionContext: ExecutionContext
   ): OppijanTunnistusClient = {
-    new OppijanTunnistusClient(oppijanTunnistusCasClient, httpExecutionContext)
+    new OppijanTunnistusClient(oppijanTunnistusCasClient, httpExecutionContext, timeouts.oppijanTunnistus)
   }
 
   @Bean
@@ -68,6 +68,6 @@ class ClientConfiguration {
     @Autowired @Qualifier("vtsCasClient") vtsCasClient: CasClient,
     httpExecutionContext: ExecutionContext
   ): ValintaTulosServiceClient = {
-    new ValintaTulosServiceClient(vtsCasClient, httpExecutionContext)
+    new ValintaTulosServiceClient(vtsCasClient, httpExecutionContext, timeouts.vts)
   }
 }

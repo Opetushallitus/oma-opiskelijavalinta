@@ -6,7 +6,7 @@ import java.util.concurrent.*
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 @Configuration
-class ThreadPoolConfig {
+class ThreadPoolConfig(props: HttpThreadPoolProperties) {
 
   @Bean
   def httpThreadPool(): ThreadPoolExecutor = {
@@ -22,15 +22,13 @@ class ThreadPoolConfig {
       }
     }
 
-    val queueSize = 1000
-
     val queue: BlockingQueue[Runnable] =
-      new ArrayBlockingQueue[Runnable](queueSize)
+      new ArrayBlockingQueue[Runnable](props.queueSize)
 
     new ThreadPoolExecutor(
-      80,  // core threads
-      180, // max threads
-      60L,
+      props.coreSize,
+      props.maxSize,
+      props.keepAliveSeconds,
       TimeUnit.SECONDS,
       queue,
       threadFactory,

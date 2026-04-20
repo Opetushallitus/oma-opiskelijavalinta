@@ -1,7 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
 import fi.oph.opiskelijavalinta.Constants
-import fi.oph.opiskelijavalinta.Constants.KOODISTO_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
@@ -15,7 +14,8 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 @Component
 class KoodistoClient @Autowired() (
   client: AsyncHttpClient,
-  httpExecutionContext: ExecutionContext
+  httpExecutionContext: ExecutionContext,
+  timeoutSeconds: Int
 ) {
 
   @Value("${host.virkailija}")
@@ -52,7 +52,7 @@ class KoodistoClient @Autowired() (
             Left(RuntimeException(msg))
         }
       // Synchronous wait
-      Await.result(futureResponse, Duration(KOODISTO_TIMEOUT, TimeUnit.SECONDS))
+      Await.result(futureResponse, Duration(timeoutSeconds, TimeUnit.SECONDS))
     catch
       case e: Throwable =>
         LOG.error(s"Virhe koodiston hakemisessa: ${e.getMessage}", e)
