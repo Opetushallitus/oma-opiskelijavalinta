@@ -41,7 +41,7 @@ class ApiIntegrationTest extends BaseIntegrationTest {
     val attributes  = Map("personOid" -> "someValue")
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
-    val oppijaUser = new OppijaUser(attributes, "testuser", authorities)
+    val oppijaUser = new OppijaUser(attributes, username = "testuser", authorities = authorities)
 
     mvc
       .perform(

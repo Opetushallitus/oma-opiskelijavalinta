@@ -50,10 +50,14 @@ object AuditLog {
     audit.log(getUser(request), operaatio, target.build(), elements)
 
   def getUser(request: HttpServletRequest): User =
-    val userOid = AuthorizationService.getPersonOid
-    val ip      = getInetAddress(request)
+    val userOid  = AuthorizationService.getPersonOid
+    val auditOid = userOid match {
+      case Some(oid) => new Oid(oid)
+      case None      => null
+    }
+    val ip = getInetAddress(request)
     new User(
-      new Oid(userOid.get),
+      auditOid,
       ip,
       request.getSession(false).getId,
       Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")

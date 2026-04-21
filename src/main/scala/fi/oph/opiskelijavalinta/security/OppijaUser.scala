@@ -10,6 +10,8 @@ type OppijaAttributes = Map[String, String]
 
 final class OppijaUser(
   val attributes: OppijaAttributes,
+  val hetu: Option[String] = None,
+  val personOid: Option[String] = None, // TODO eidas-tunniste
   private val username: String,
   private val authorities: Collection[_ <: GrantedAuthority] = java.util.Collections.emptyList()
 ) extends UserDetails {
