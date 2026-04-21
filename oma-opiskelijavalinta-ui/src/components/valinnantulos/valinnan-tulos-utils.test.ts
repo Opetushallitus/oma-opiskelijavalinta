@@ -6,6 +6,7 @@ import {
   getVarallaOlevatMuutToiveet,
   isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
   isHyvaksyttyOdottaaYlempaa,
+  kaikkiHakutoiveetHylatty,
   naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import type { Hakemus } from '@/lib/hakemus-types';
@@ -539,5 +540,61 @@ describe('naytetaankoEhdollisuus', () => {
         ehdollisestiHyvaksyttavissa: true,
       } as HakutoiveenTulos),
     ).toBeFalsy();
+  });
+});
+
+describe('kaikkiHakutoiveetHylatty', () => {
+  const mockHakukohde = (oid: string): Hakukohde =>
+    ({
+      oid,
+      nimi: { fi: 'Hakukohde 1' },
+      jarjestyspaikkaHierarkiaNimi: { fi: 'Oppilaitos 1' },
+    }) as Hakukohde;
+
+  const mockTulos = (valintatila: Valintatila | undefined): HakutoiveenTulos =>
+    ({
+      hakukohdeOid: 'hk',
+      valintatila,
+    }) as HakutoiveenTulos;
+
+  it('returns true when all hakutoiveet are HYLATTY and lengths match', () => {
+    const hakutoiveet = [mockHakukohde('oid-1'), mockHakukohde('oid-2')];
+    const tulokset = [
+      mockTulos(Valintatila.HYLATTY),
+      mockTulos(Valintatila.HYLATTY),
+    ];
+    const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when one is not HYLATTY', () => {
+    const hakutoiveet = [mockHakukohde('1'), mockHakukohde('2')];
+    const tulokset = [
+      mockTulos(Valintatila.HYLATTY),
+      mockTulos(Valintatila.HYVAKSYTTY),
+    ];
+    const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when lengths do not match', () => {
+    const hakutoiveet = [mockHakukohde('1'), mockHakukohde('2')];
+    const tulokset = [mockTulos(Valintatila.HYLATTY)];
+    const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when tulokset is empty', () => {
+    const hakutoiveet = [mockHakukohde('1')];
+    const tulokset: Array<HakutoiveenTulos> = [];
+    const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when valintatila is undefined', () => {
+    const hakutoiveet = [mockHakukohde('1')];
+    const tulokset = [mockTulos(undefined)];
+    const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
+    expect(result).toBe(false);
   });
 });

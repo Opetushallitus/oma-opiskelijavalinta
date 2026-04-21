@@ -408,7 +408,12 @@ test('Näyttää hylätyn tuloksen', async ({ page }) => {
     hakemuksenTulokset: [hakemuksenTulosHylatty],
   };
   await fetchMockData(page, hylattyApplication);
-
+  const hylattyInfo = page.getByTestId('error-box');
+  await expect(
+    hylattyInfo.getByText(
+      'Valitettavasti et tällä kertaa saanut opiskelupaikkaa',
+    ),
+  ).toBeVisible();
   const app = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
   await expect(
     app.getByText('Meteorologi, Hyökyaaltojen tutkimislinja'),

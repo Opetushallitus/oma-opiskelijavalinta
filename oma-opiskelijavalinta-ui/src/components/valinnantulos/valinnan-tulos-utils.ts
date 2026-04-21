@@ -322,3 +322,16 @@ export function onKeskeneraisiaTaiJulkaisemattomiaValinnantiloja(
     ).length > 0
   );
 }
+
+export function kaikkiHakutoiveetHylatty(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+  hakutoiveet: Array<Hakukohde>,
+): boolean {
+  return (
+    hakemuksenTulokset.length > 0 &&
+    hakemuksenTulokset.length === hakutoiveet.length &&
+    hakemuksenTulokset.filter(
+      (ht) => ht.valintatila && ht.valintatila === Valintatila.HYLATTY,
+    ).length === hakemuksenTulokset.length
+  );
+}

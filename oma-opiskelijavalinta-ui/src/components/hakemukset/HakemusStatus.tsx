@@ -3,6 +3,7 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { isEmptyish, isTruthy } from 'remeda';
 import {
+  kaikkiHakutoiveetHylatty,
   onKeskeneraisiaTaiJulkaisemattomiaValinnantiloja,
   onKeskeneraisiaValinnantiloja,
 } from '../valinnantulos/valinnan-tulos-utils';
@@ -12,6 +13,7 @@ import { ExternalLink } from '../ExternalLink';
 import { KirjeLink } from './KirjeLink';
 import { Divider } from '@mui/material';
 import { RowFlexBox } from '../FlexBox';
+import { EiOpiskelupaikkaaInfo } from '@/components/valinnantulos/EiOpiskelupaikkaaInfo';
 
 function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
   const { t, getLanguage } = useTranslations();
@@ -127,7 +129,14 @@ export function HakemusStatus({
       );
     } else if (tuloksetValmiitJaJulkaistavissa) {
       // ei kesken-tilaisia eikä peruuntuneita
-      tila = <TuloksetJulkaistu hakemus={hakemus} />;
+      tila = kaikkiHakutoiveetHylatty(tulokset, hakemus.hakukohteet ?? []) ? (
+        <>
+          <TuloksetJulkaistu hakemus={hakemus} />
+          <EiOpiskelupaikkaaInfo />
+        </>
+      ) : (
+        <TuloksetJulkaistu hakemus={hakemus} />
+      );
     } else if (
       !hakemus.haku.hakuaikaKaynnissa &&
       !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
