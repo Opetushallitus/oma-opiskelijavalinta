@@ -1,3 +1,4 @@
+import { styled } from '@/lib/theme';
 import { Box, type SxProps, type Theme } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import ErrorIcon from '@mui/icons-material/Error';
