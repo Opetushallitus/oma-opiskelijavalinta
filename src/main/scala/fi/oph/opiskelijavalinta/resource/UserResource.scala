@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 @RestController
 class UserResource @Autowired (private val onrClient: OnrClient) {
 
-  val LOG: Logger = LoggerFactory.getLogger(classOf[SessionResource]);
+  val LOG: Logger = LoggerFactory.getLogger(classOf[UserResource]);
 
   @GetMapping(path = Array(""))
   def response: ResponseEntity[Oppija] = {
