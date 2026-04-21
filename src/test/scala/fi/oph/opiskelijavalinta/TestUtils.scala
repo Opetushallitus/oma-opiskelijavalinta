@@ -36,6 +36,11 @@ object TestUtils {
     authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
     new OppijaUser(attributes, "testuser", authorities)
 
+  val userWithoutPersonOid: OppijaUser =
+    val authorities = util.ArrayList[SimpleGrantedAuthority]
+    authorities.add(new SimpleGrantedAuthority("ROLE_USER"))
+    new OppijaUser(Map.empty[String, String], "testuser2", authorities)
+
   val linkUser: OppijaUser =
     val attributes  = Map("personOid" -> PERSON_OID, "hakemusOid" -> HAKEMUS_OID)
     val authorities = util.ArrayList[SimpleGrantedAuthority]
