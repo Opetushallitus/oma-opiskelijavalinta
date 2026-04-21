@@ -1,16 +1,16 @@
-import { redBadgeBackground, styled } from '@/lib/theme';
 import { Box, type SxProps, type Theme } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
 import ErrorIcon from '@mui/icons-material/Error';
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: `rgb(from ${redBadgeBackground} r g b / 0.5)`,
+  backgroundColor: `rgb(from ${ophColors.orange3} r g b / 0.1)`,
   display: 'flex',
   flexDirection: 'row',
   columnGap: theme.spacing(2),
   borderRadius: '4px',
   padding: `${theme.spacing(2)} ${theme.spacing(2)}`,
   marginTop: 0,
+  width: '100%',
 }));
 
 const StyledError = styled(ErrorIcon)(() => ({
