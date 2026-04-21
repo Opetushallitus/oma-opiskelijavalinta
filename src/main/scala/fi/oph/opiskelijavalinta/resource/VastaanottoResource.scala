@@ -91,12 +91,17 @@ class VastaanottoResource @Autowired (
         ResponseEntity.ok(result.get)
       } catch {
         case e: ViestinvalitysException =>
-          LOG.error("Vastaanottoviestin lähettäminen epäonnistui: {}", e.getMessage)
+          LOG.error("Vastaanottoviestin lähettäminen epäonnistui: {}", e.getMessage, e)
           ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("vastaanottoviesti.virhe")
-        case _: Exception =>
-          LOG.error("Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}", hakemusOid, hakukohdeOid)
+        case e: Exception =>
+          LOG.error(
+            "Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}",
+            hakemusOid,
+            hakukohdeOid,
+            e
+          )
           ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("vastaanotto.virhe")

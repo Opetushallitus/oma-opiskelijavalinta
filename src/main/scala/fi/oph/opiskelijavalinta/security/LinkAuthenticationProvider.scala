@@ -30,21 +30,21 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     val verification = linkVerificationService
       .verify(token)
       .getOrElse(
-        throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: validi token mutta data puuttuu")
+        throw new LinkAuthenticationException("kirjautumistokenin data puuttuu")
       )
 
     if (!verification.exists || !verification.valid) {
       throw new LinkAuthenticationException(
-        "Virhe linkkikirjautumisessa: virheellinen tai vanhentunut kirjautumistoken"
+        "virheellinen tai vanhentunut kirjautumistoken"
       )
     }
 
     val meta = verification.metadata.getOrElse(
-      throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: tokenin metadata puuttuu")
+      throw new LinkAuthenticationException("kirjautumistokenin metadata puuttuu")
     )
 
     val personOid = meta.personOid.getOrElse(
-      throw new LinkAuthenticationException("Virhe linkkikirjautumisessa: oppijan oid puuttuu metadatasta")
+      throw new LinkAuthenticationException("oppijan oid puuttuu kirjautumistokenin metadatasta")
     )
     val hakemusOid = meta.hakemusOid
 
