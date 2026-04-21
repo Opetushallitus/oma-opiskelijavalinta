@@ -30,7 +30,7 @@ export function HakukohteetContainer({
       <OphTypography
         variant="h4"
         component={adjustHeaderLevel ? 'h3' : 'h4'}
-        sx={{ fontWeight: 'normal', mt: 2 }}
+        sx={{ fontWeight: 'normal', mt: 3 }}
       >
         {hakemuksenTulokset?.length || !hakuaikaKaynnissa
           ? t('hakemukset.valintatilanne')
