@@ -1,7 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
 import fi.oph.opiskelijavalinta.Constants
-import fi.oph.opiskelijavalinta.Constants.LOKALISOINTI_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
@@ -14,7 +13,8 @@ import scala.concurrent.duration.Duration
 
 class LokalisointiClient @Autowired() (
   client: AsyncHttpClient,
-  httpExecutionContext: ExecutionContext
+  httpExecutionContext: ExecutionContext,
+  timeoutSeconds: Int
 ) {
 
   @Value("${host.virkailija}")
@@ -52,7 +52,7 @@ class LokalisointiClient @Autowired() (
             Left(RuntimeException(msg))
         }
       // Synchronous wait
-      Await.result(futureResponse, Duration(LOKALISOINTI_TIMEOUT, TimeUnit.SECONDS))
+      Await.result(futureResponse, Duration(timeoutSeconds, TimeUnit.SECONDS))
     catch
       case e: Throwable =>
         LOG.error(s"Virhe käännösten hakemisessa: ${e.getMessage}", e)

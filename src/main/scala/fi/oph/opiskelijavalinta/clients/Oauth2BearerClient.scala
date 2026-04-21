@@ -1,10 +1,9 @@
 package fi.oph.opiskelijavalinta.clients
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import fi.oph.opiskelijavalinta.Constants.ONR_TIMEOUT
 import fi.oph.opiskelijavalinta.clients.ClientUtils.toScalaFuture
 import fi.oph.opiskelijavalinta.clients.model.Oauth2Token
-import fi.oph.opiskelijavalinta.configuration.CacheConstants
+import fi.oph.opiskelijavalinta.configuration.{CacheConstants, ClientTimeoutProperties}
 import org.asynchttpclient.{AsyncHttpClient, RequestBuilder}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.cache.annotation.{CacheConfig, CacheEvict, Cacheable}
@@ -23,7 +22,8 @@ import scala.concurrent.{Await, ExecutionContext}
 class Oauth2BearerClient @Autowired (
   final private val objectMapper: ObjectMapper = new ObjectMapper,
   client: AsyncHttpClient,
-  httpExecutionContext: ExecutionContext
+  httpExecutionContext: ExecutionContext,
+  timeouts: ClientTimeoutProperties
 ) {
 
   @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
@@ -54,7 +54,7 @@ class Oauth2BearerClient @Autowired (
       .setUrl(tokenUrl)
       .setHeader("Content-Type", "application/x-www-form-urlencoded")
       .setBody(body)
-    val response = Await.result(toScalaFuture(client.executeRequest(request)), Duration(ONR_TIMEOUT, TimeUnit.SECONDS))
+    val response = Await.result(toScalaFuture(client.executeRequest(request)), Duration(timeouts.onr, TimeUnit.SECONDS))
 
     if (response.getStatusCode != 200)
       throw new RuntimeException(

@@ -1,6 +1,5 @@
 package fi.oph.opiskelijavalinta.clients
 
-import fi.oph.opiskelijavalinta.Constants.OPPIJAN_TUNNISTUS_TIMEOUT
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -11,7 +10,11 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
-class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient, httpExecutionContext: ExecutionContext) {
+class OppijanTunnistusClient @Autowired (
+  oppijanTunnistusCasClient: CasClient,
+  httpExecutionContext: ExecutionContext,
+  timeoutSeconds: Int
+) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[OppijanTunnistusClient])
 
@@ -43,7 +46,7 @@ class OppijanTunnistusClient @Autowired (oppijanTunnistusCasClient: CasClient, h
           )
           Left(new RuntimeException("Failed to verify token: " + r.getResponseBody()))
       }
-      Await.result(result, Duration(OPPIJAN_TUNNISTUS_TIMEOUT, TimeUnit.SECONDS))
+      Await.result(result, Duration(timeoutSeconds, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
         LOG.error(s"Virhe oppijan-tunnistus tokenin verioinnissa: ${e.getMessage}", e)
