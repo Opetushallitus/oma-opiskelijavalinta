@@ -582,11 +582,25 @@ describe('kaikkiHakutoiveetHylatty', () => {
     const tulokset = [mockTulos(Valintatila.HYLATTY)];
     const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
     expect(result).toBe(false);
+    const tulokset2 = [
+      mockTulos(Valintatila.HYLATTY),
+      mockTulos(Valintatila.HYLATTY),
+      mockTulos(Valintatila.HYLATTY),
+    ];
+    const result2 = kaikkiHakutoiveetHylatty(tulokset2, hakutoiveet);
+    expect(result2).toBe(false);
   });
 
   it('returns false when tulokset is empty', () => {
     const hakutoiveet = [mockHakukohde('1')];
     const tulokset: Array<HakutoiveenTulos> = [];
+    const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when hakukohteet is empty', () => {
+    const hakutoiveet = [] as Array<Hakukohde>;
+    const tulokset: Array<HakutoiveenTulos> = [mockTulos(Valintatila.HYLATTY)];
     const result = kaikkiHakutoiveetHylatty(tulokset, hakutoiveet);
     expect(result).toBe(false);
   });

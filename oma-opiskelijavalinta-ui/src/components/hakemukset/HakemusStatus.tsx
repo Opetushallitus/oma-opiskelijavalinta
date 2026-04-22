@@ -127,16 +127,18 @@ export function HakemusStatus({
           hakemus={hakemus}
         />
       );
-    } else if (tuloksetValmiitJaJulkaistavissa) {
-      // ei kesken-tilaisia eikä peruuntuneita
-      tila = kaikkiHakutoiveetHylatty(tulokset, hakemus.hakukohteet ?? []) ? (
+    } else if (
+      tuloksetValmiitJaJulkaistavissa &&
+      kaikkiHakutoiveetHylatty(tulokset, hakemus.hakukohteet ?? [])
+    ) {
+      tila = (
         <>
           <TuloksetJulkaistu hakemus={hakemus} />
           <EiOpiskelupaikkaaInfo />
         </>
-      ) : (
-        <TuloksetJulkaistu hakemus={hakemus} />
       );
+    } else if (tuloksetValmiitJaJulkaistavissa) {
+      <TuloksetJulkaistu hakemus={hakemus} />;
     } else if (
       !hakemus.haku.hakuaikaKaynnissa &&
       !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
