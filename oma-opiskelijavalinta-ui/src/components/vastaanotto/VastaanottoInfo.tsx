@@ -103,7 +103,12 @@ const getInfoText = (
     getVarallaOlevatMuutToiveet(application, tulos.hakukohdeOid).length > 0;
 
   if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
-    return getEhdollisestiVastaanottanutInfo(application, lang);
+    return (
+      <MultiInfoContainer>
+        {getEhdollisestiVastaanottanutInfo(application, lang)}
+        {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
+      </MultiInfoContainer>
+    );
   } else {
     return (
       <MultiInfoContainer

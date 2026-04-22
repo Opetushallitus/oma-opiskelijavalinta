@@ -79,6 +79,14 @@ test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async (
   ).toBeVisible();
   await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
   await expect(
+    vastaanotot.getByText('Ehdollinen', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen',
+    ),
+  ).toBeVisible();
+  await expect(
     vastaanotot.locator('.MuiChip-root').getByText('Ehdollinen'),
   ).toBeVisible();
   await expect(
