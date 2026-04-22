@@ -50,18 +50,23 @@ object AuditLog {
     audit.log(getUser(request), operaatio, target.build(), elements)
 
   def getUser(request: HttpServletRequest): User =
-    val userOid  = AuthorizationService.getPersonOid
-    val auditOid = userOid match {
-      case Some(oid) => new Oid(oid)
-      case None      => null
+    val userOid = AuthorizationService.getPersonOid
+    val ip      = getInetAddress(request)
+    userOid match {
+      case Some(oid) =>
+        new User(
+          Oid(oid),
+          ip,
+          request.getSession(false).getId,
+          Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")
+        )
+      case None =>
+        new User(
+          ip,
+          request.getSession(false).getId,
+          Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")
+        )
     }
-    val ip = getInetAddress(request)
-    new User(
-      auditOid,
-      ip,
-      request.getSession(false).getId,
-      Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")
-    )
 
   def getInetAddress(request: HttpServletRequest): InetAddress =
     InetAddress.getByName(HttpServletRequestUtils.getRemoteAddress(request))
