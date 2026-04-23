@@ -21,10 +21,18 @@ class LoginController(@Value("${host.oppija:localhost:3777}") val hostOppija: St
 
   @GetMapping(path = Array("/login"))
   def login(request: HttpServletRequest): RedirectView = {
-    AuditLog.log(request, Map.empty, AuditOperation.Login, None)
     val redirectUrl = s"https://$hostOppija/oma-opiskelijavalinta"
-    LOG.debug(s"Redirecting to: $redirectUrl")
-    new RedirectView(redirectUrl)
+    try {
+      AuditLog.log(request, Map.empty, AuditOperation.Login, None)
+      LOG.debug(s"Redirecting to: $redirectUrl")
+      new RedirectView(redirectUrl)
+    } catch {
+      case e: Exception =>
+        LOG.error("Virhe cas-kirjautumisen jälkeen", e)
+        // voidaan ohjata käyttöliittymän etusivulle koska tähän controlleriin päädytään
+        // vasta onnistuneen cas-kirjautumisen jälkeen
+        new RedirectView(redirectUrl)
+    }
   }
 
 }

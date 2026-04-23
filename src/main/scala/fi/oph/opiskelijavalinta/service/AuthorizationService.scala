@@ -29,6 +29,10 @@ class AuthorizationService @Autowired (hakemuksetService: HakemuksetService) {
       return false
     }
     val oppijanumero = getPersonOid
+    if (oppijanumero.isEmpty) {
+      LOG.warn(s"Käyttäjällä ei ole oppijanumeroa, autorisoimaton pyyntö hakemukselle $hakemusOid")
+      return false
+    }
     if (hasLinkUserRole) {
       hasBeenAuthenticated && getHakemusOidFromLinkUser
         .filter(hakemusOid.equals(_))

@@ -5,6 +5,7 @@ import fi.oph.opiskelijavalinta.TestUtils.{
   linkUser,
   objectMapper,
   oppijaUser,
+  userWithoutPersonOid,
   HAKEMUS_OID,
   HAKUKOHDE_OID,
   HAKUKOHDE_OID_2,
@@ -74,6 +75,26 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(mennytTimestamp, app.ohjausparametrit.get.hakukierrosPaattyy.get)
     Mockito.verifyNoInteractions(valintaTulosServiceClient)
     Assertions.assertEquals(List.empty, app.hakemuksenTulokset)
+  }
+
+  @Test
+  def returnsNoApplicationsForUserWhoHasNoPersonOid(): Unit = {
+    Mockito.reset(valintaTulosServiceClient)
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.HAKEMUKSET_PATH)
+          .`with`(user(userWithoutPersonOid))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    val hakemukset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[HakemuksetEnriched])
+    Assertions.assertEquals(0, hakemukset.old.length)
+    Assertions.assertEquals(0, hakemukset.current.length)
+    Mockito.verifyNoInteractions(ataruClient)
+    Mockito.verifyNoInteractions(koutaClient)
+    Mockito.verifyNoInteractions(valintaTulosServiceClient)
   }
 
   @Test

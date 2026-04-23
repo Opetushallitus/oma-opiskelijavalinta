@@ -26,8 +26,14 @@ class HakemuksetResource @Autowired (
   def response(request: HttpServletRequest): ResponseEntity[HakemuksetEnriched] = {
     val personOid: Option[String] = authorizationService.getPersonOid
     val linkUser                  = authorizationService.hasLinkUserRole
-    LOG.info(s"Haetaan hakemukset${if (linkUser) " linkillä tunnistautuneelle" else ""} oppijalle: $personOid")
-    var hakemukset = hakemuksetService.getHakemukset(personOid.get)
+    var hakemukset                = personOid match {
+      case None =>
+        LOG.info(s"Oppilasnumeroa ei löydy, palautetaan tyhjä hakemuslistaus")
+        HakemuksetEnriched(Seq.empty, Seq.empty)
+      case Some(oppilasnumero) =>
+        LOG.info(s"Haetaan hakemukset${if (linkUser) " linkillä tunnistautuneelle" else ""} oppijalle: $oppilasnumero")
+        hakemuksetService.getHakemukset(oppilasnumero)
+    }
     AuditLog.log(request, Map.empty, AuditOperation.HaeHakemukset, None)
     if (linkUser) {
       val hakemusOid      = authorizationService.getHakemusOidFromLinkUser

@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{linkUser, oppijaUser, HAKEMUS_OID, PERSON_OID}
+import fi.oph.opiskelijavalinta.TestUtils.{linkUser, oppijaUser, userWithoutPersonOid, HAKEMUS_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.security.OppijaUser
@@ -17,6 +17,13 @@ class AuthorizationServiceTest {
 
   val hakemuksetService: HakemuksetService = Mockito.mock(classOf[HakemuksetService])
   val service: AuthorizationService        = AuthorizationService(hakemuksetService)
+
+  @Test
+  def ilmanOppijanumeroaEiOleOikeuttaHakemukseen(): Unit = {
+    setup(userWithoutPersonOid)
+    Assertions.assertFalse(service.hasAuthAccessToHakemus(HAKEMUS_OID))
+    Mockito.verifyNoInteractions(hakemuksetService)
+  }
 
   @Test
   def linkatullaKayttajallaEiOleOikeuttaVaaraanHakemukseen(): Unit = {
