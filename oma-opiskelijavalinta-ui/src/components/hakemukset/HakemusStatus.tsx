@@ -138,7 +138,7 @@ export function HakemusStatus({
         </>
       );
     } else if (tuloksetValmiitJaJulkaistavissa) {
-      <TuloksetJulkaistu hakemus={hakemus} />;
+      tila = <TuloksetJulkaistu hakemus={hakemus} />;
     } else if (
       !hakemus.haku.hakuaikaKaynnissa &&
       !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika)
