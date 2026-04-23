@@ -9,7 +9,10 @@ import {
   hakemus1,
   mockSession,
 } from './mocks';
-import { VastaanottoTila } from '@/lib/valinta-tulos-types';
+import {
+  VastaanottoTila,
+  type HakutoiveenTulosDto,
+} from '@/lib/valinta-tulos-types';
 
 test('Näyttää jonotustilassa olevan hakutoiveen', async ({ page }) => {
   await setup(page);
@@ -20,6 +23,68 @@ test('Näyttää jonotustilassa olevan hakutoiveen', async ({ page }) => {
   await expect(
     vastaanotot.getByText(
       'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
+    ),
+  ).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Opiskelijavalintojen tulokset' })
+    .click();
+  await expect(
+    page
+      .getByTestId('application-hakutoiveet-hakemus-oid-1')
+      .getByText('1', { exact: true }),
+  ).toBeVisible();
+  const hakutoiveInfo = page.getByTestId('valintatilainfo-hakukohde-oid-2');
+  await expect(
+    hakutoiveInfo.getByText('Ota opiskelupaikka vastaan'),
+  ).toBeHidden();
+  await expect(hakutoiveInfo.getByText('Jos tulet hyväksytyksi')).toBeVisible();
+  await expect(
+    hakutoiveInfo.getByText('Voit tehdä lukuvuosi-ilmoittautumisen'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Luovun jonotuksesta ja muutan vastaanoton sitovaksi',
+    ),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Ehdollinen', { exact: true }),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen',
+    ),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+});
+
+test('Näyttää jonotustilassa olevan ehdollisen hakutoiveen', async ({
+  page,
+}) => {
+  const toiveet = [
+    hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[0],
+    {
+      ...hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[1],
+      ehdollisestiHyvaksyttavissa: true,
+    },
+  ] as Array<HakutoiveenTulosDto>;
+  await setup(page, toiveet);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Hurrikaaniopisto, Myrskynsilm'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita',
+    ),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Ehdollinen', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen',
     ),
   ).toBeVisible();
   await page
@@ -206,12 +271,15 @@ test('Sitova vastaanottomodaali on saavutettava', async ({ page }) => {
   await expectPageAccessibilityOk(page);
 });
 
-async function setup(page: Page) {
+async function setup(
+  page: Page,
+  tulokset: Array<HakutoiveenTulosDto> = hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty,
+) {
   await mockHakemuksetFetch(page, {
     current: [
       {
         ...hakemus1,
-        hakemuksenTulokset: hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty,
+        hakemuksenTulokset: tulokset,
       },
     ],
     old: [],
