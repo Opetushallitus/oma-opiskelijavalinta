@@ -8,6 +8,9 @@ import scala.jdk.CollectionConverters.*
 
 type OppijaAttributes = Map[String, String]
 
+/* HUOM! tämä tallentuu käyttäjän sessioon Springin kalustolla.
+Jos kenttiä muuttaa, pitää tuotantoasennuksen yhteydessä poistaa vanhat sessiot kannasta
+jotta ei lennä poikkeuksia */
 final class OppijaUser(
   val attributes: OppijaAttributes,
   val hetu: Option[String] = None,
