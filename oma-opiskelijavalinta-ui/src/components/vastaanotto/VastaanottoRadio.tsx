@@ -13,7 +13,7 @@ import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
 import { VastaanottoModalContent } from './VastaanottoModalContent';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotifications } from '../NotificationProvider';
 import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
@@ -145,6 +145,7 @@ export function VastaanottoRadio({
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   const vastaanottoOptions = determineVastaanottoOptions(
     t,
@@ -183,6 +184,7 @@ export function VastaanottoRadio({
         type: 'success',
       });
       refetchTulokset();
+      queryClient.invalidateQueries({ queryKey: ['hakemuksen-tulokset'] });
     },
     onError: (error) => {
       console.error(error);

@@ -192,7 +192,8 @@
       "vastaanotettu-ehdollisesti": "Opiskelupaikka vastaanotettu, jonottaa ylempiä hakutoiveita",
       "peruttu": "Opiskelupaikkaa ei vastaanotettu",
       "ei-vastaanotettu-maara-aikana": "Opiskelupaikkaa ei vastaanotettu määräaikaan mennessä",
-      "peruutettu": "Oppilaitos perui opiskelupaikan"
+      "peruutettu": "Oppilaitos perui opiskelupaikan",
+      "vastaanottanut-toisen-paikan": "Olet vastaanottanut toisen opiskelupaikan"
     },
     "modaali": {
       "muuta-sitovaksi": {
