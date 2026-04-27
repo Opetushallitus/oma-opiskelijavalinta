@@ -35,7 +35,7 @@ const vastaanottoTilaStyles: Record<
     color: BadgeColorKey.Grey,
   },
   [VastaanottoTila.OTTANUT_VASTAAN_TOISEN_PAIKAN]: {
-    label: 'vastaanotto.tila',
+    label: 'vastaanotto.tila.vastaanottanut-toisen-paikan',
     color: BadgeColorKey.Grey,
   },
 };
