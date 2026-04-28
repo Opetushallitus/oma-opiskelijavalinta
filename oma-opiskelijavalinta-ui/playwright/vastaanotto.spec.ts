@@ -454,6 +454,109 @@ test('Lähettää vastaanoton onnistuneesti peruen aiemmat vastaanotot', async (
   ).toBeVisible();
 });
 
+test('Vastaanotto päivittää myös muut hakemukset ja muut kk-vastaanottoradiot katoavat', async ({
+  page,
+}) => {
+  const vastaanotettavaHakemus = {
+    ...hakemus1,
+    oid: 'hakemus-oid-1',
+    hakemuksenTulokset: [
+      { ...hakemuksenTulosHyvaksytty, hakukohdeOid: 'hakukohde-oid-2' },
+    ],
+  };
+
+  const peruuntuvaHakemus = {
+    ...hakemus2,
+    oid: 'hakemus-oid-2',
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
+  };
+
+  await mockHakemuksetFetch(page, {
+    current: [vastaanotettavaHakemus, peruuntuvaHakemus],
+    old: [],
+  });
+
+  await mockAuthenticatedUser(page);
+  await mockSession(page);
+
+  await page.goto('');
+
+  const VastaanotettavanVastaanotot = page.getByTestId(
+    'vastaanotot-hakemus-oid-1',
+  );
+  const peruuntuvanVastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+
+  await expect(
+    VastaanotettavanVastaanotot.getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan',
+    }),
+  ).toBeVisible();
+
+  await expect(
+    peruuntuvanVastaanotot.getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan',
+    }),
+  ).toBeVisible();
+
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({ status: 200 });
+    },
+  );
+
+  await page.route('**/api/valintatulos/hakemus/**', async (route) => {
+    const url = route.request().url();
+
+    const vastaanotettuTulos = {
+      ...hakemuksenTulosHyvaksytty,
+      hakukohdeOid: 'hakukohde-oid-2',
+      vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      vastaanottotila: VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
+    };
+    const peruuntunutTulos = {
+      ...hakemuksenTulosHyvaksytty,
+      vastaanotettavuustila: 'EI_VASTAANOTETTAVISSA',
+      vastaanottotila: VastaanottoTila.OTTANUT_VASTAAN_TOISEN_PAIKAN,
+    };
+    if (url.includes('hakemus-oid-1')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([vastaanotettuTulos]),
+      });
+    } else if (url.includes('hakemus-oid-2')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([peruuntunutTulos]),
+      });
+    }
+  });
+
+  await VastaanotettavanVastaanotot.getByRole('radio', {
+    name: 'Otan tämän opiskelupaikan',
+  }).click();
+  await VastaanotettavanVastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  }).click();
+  await page
+    .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
+    .click();
+
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeVisible();
+  await expect(
+    peruuntuvanVastaanotot.getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan',
+    }),
+  ).toBeHidden();
+  await expect(
+    peruuntuvanVastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeHidden();
+});
+
 test('Valintatulokset on haitarin alla piilossa jos vastaanotto on tehty', async ({
   page,
 }) => {
