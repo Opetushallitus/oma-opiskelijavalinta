@@ -188,6 +188,16 @@ export function VastaanottoRadio({
     },
     onError: (error) => {
       console.error(error);
+      if (error.message === 'vastaanotto.ei-vastaanotettavissa') {
+        console.log('http 400');
+        showNotification({
+          message: t(error.message),
+          type: 'error',
+          duration: null,
+        });
+        refetchTulokset();
+        queryClient.invalidateQueries({ queryKey: ['hakemuksen-tulokset'] });
+      }
       if (error.message === 'vastaanottoviesti.virhe') {
         showNotification({
           message: t(error.message),

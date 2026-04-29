@@ -1,14 +1,9 @@
 package fi.oph.opiskelijavalinta.resource
 
+import fi.oph.opiskelijavalinta.clients.VtsBadRequestException
 import fi.oph.opiskelijavalinta.resource.ApiConstants.VASTAANOTTO_PATH
 import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
-import fi.oph.opiskelijavalinta.service.{
-  AllowedVastaanottoTilaToiminto,
-  AuthorizationService,
-  VTSService,
-  ViestiService,
-  ViestinvalitysException
-}
+import fi.oph.opiskelijavalinta.service.{AllowedVastaanottoTilaToiminto, AuthorizationService, VTSService, ViestiService, ViestinvalitysException}
 import jakarta.validation.constraints.{NotBlank, Pattern}
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
@@ -90,6 +85,15 @@ class VastaanottoResource @Autowired (
         )
         ResponseEntity.ok(result.get)
       } catch {
+        case e: VtsBadRequestException =>
+          LOG.error("Vastaanoton tallentaminen epäonnistui, hakemusOid: {}, hakukohdeOid: {}, virhe: {}",
+            hakemusOid,
+            hakukohdeOid,
+            e.getMessage,
+            e)
+          ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body("vastaanotto.ei-vastaanotettavissa")
         case e: ViestinvalitysException =>
           LOG.error("Vastaanottoviestin lähettäminen epäonnistui: {}", e.getMessage, e)
           ResponseEntity
