@@ -101,7 +101,7 @@ class VastaanottoResource @Autowired (
           )
           ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body("vastaanotto.ei-vastaanotettavissa")
+            .body("vastaanotto.virhe.ei-vastaanotettavissa")
         case e: ViestinvalitysException =>
           LOG.error("Vastaanottoviestin lähettäminen epäonnistui: {}", e.getMessage, e)
           ResponseEntity
@@ -116,7 +116,7 @@ class VastaanottoResource @Autowired (
           )
           ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("vastaanotto.virhe")
+            .body("vastaanotto.virhe.yleinen")
       }
     }
   }

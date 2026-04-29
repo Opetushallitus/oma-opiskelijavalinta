@@ -15,7 +15,10 @@ import { useGlobalConfirmationModal } from '../ConfirmationModal';
 import { VastaanottoModalContent } from './VastaanottoModalContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotifications } from '../NotificationProvider';
-import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import {
+  HAKEMUKSEN_TULOKSET_QUERY_KEY,
+  useHakemuksenTulokset,
+} from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
   getAlemmatVastaanotot,
@@ -184,21 +187,23 @@ export function VastaanottoRadio({
         type: 'success',
       });
       refetchTulokset();
-      queryClient.invalidateQueries({ queryKey: ['hakemuksen-tulokset'] });
+      queryClient.invalidateQueries({
+        queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
+      });
     },
     onError: (error) => {
       console.error(error);
-      if (error.message === 'vastaanotto.ei-vastaanotettavissa') {
-        console.log('http 400');
+      if (error.message === 'vastaanotto.virhe.ei-vastaanotettavissa') {
         showNotification({
           message: t(error.message),
           type: 'error',
           duration: null,
         });
         refetchTulokset();
-        queryClient.invalidateQueries({ queryKey: ['hakemuksen-tulokset'] });
-      }
-      if (error.message === 'vastaanottoviesti.virhe') {
+        queryClient.invalidateQueries({
+          queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
+        });
+      } else if (error.message === 'vastaanottoviesti.virhe') {
         showNotification({
           message: t(error.message),
           type: 'error',
@@ -207,7 +212,7 @@ export function VastaanottoRadio({
         refetchTulokset();
       } else {
         showNotification({
-          message: t('vastaanotto.virhe'),
+          message: t('vastaanotto.virhe.yleinen'),
           type: 'error',
           duration: null,
         });

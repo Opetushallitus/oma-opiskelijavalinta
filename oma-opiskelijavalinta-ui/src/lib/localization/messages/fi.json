@@ -172,7 +172,10 @@
       "2aste-ylempia-varalla": "Opiskelupaikan vastaanottaminen ei vaikuta varasijoihin. Kun otat tämän opiskelupaikan vastaan, olet edelleen varasijalla ylempään hakutoiveeseen."
     },
     "laheta": "Lähetä vastaus",
-    "virhe": "Vastaanottotoiminto epäonnistui",
+    "virhe": {
+      "yleinen": "Vastaanottotoiminto epäonnistui",
+      "ei-vastaanotettavissa:": "Opiskelupaikkaa ei voi vastaanottaa"
+    },
     "jonotus": {
       "otsake": "Varasijojen jonotuksesta luopuminen",
       "valinta": "Luovun jonotuksesta ja muutan vastaanoton sitovaksi"
@@ -193,7 +196,7 @@
       "peruttu": "Opiskelupaikkaa ei vastaanotettu",
       "ei-vastaanotettu-maara-aikana": "Opiskelupaikkaa ei vastaanotettu määräaikaan mennessä",
       "peruutettu": "Oppilaitos perui opiskelupaikan",
-      "vastaanottanut-toisen-paikan": "Olet vastaanottanut toisen opiskelupaikan"
+      "vastaanottanut-toisen-paikan": "Peruuntunut, olet vastaanottanut toisen opiskelupaikan"
     },
     "modaali": {
       "muuta-sitovaksi": {

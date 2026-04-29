@@ -481,19 +481,19 @@ test('Vastaanotto päivittää myös muut hakemukset ja muut kk-vastaanottoradio
 
   await page.goto('');
 
-  const VastaanotettavanVastaanotot = page.getByTestId(
+  const vastaanotettavatVastaanotot = page.getByTestId(
     'vastaanotot-hakemus-oid-1',
   );
-  const peruuntuvanVastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  const peruuntuvatVastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
 
   await expect(
-    VastaanotettavanVastaanotot.getByRole('radio', {
+    vastaanotettavatVastaanotot.getByRole('radio', {
       name: 'Otan tämän opiskelupaikan',
     }),
   ).toBeVisible();
 
   await expect(
-    peruuntuvanVastaanotot.getByRole('radio', {
+    peruuntuvatVastaanotot.getByRole('radio', {
       name: 'Otan tämän opiskelupaikan',
     }),
   ).toBeVisible();
@@ -534,12 +534,16 @@ test('Vastaanotto päivittää myös muut hakemukset ja muut kk-vastaanottoradio
     }
   });
 
-  await VastaanotettavanVastaanotot.getByRole('radio', {
-    name: 'Otan tämän opiskelupaikan',
-  }).click();
-  await VastaanotettavanVastaanotot.getByRole('button', {
-    name: 'Lähetä vastaus',
-  }).click();
+  await vastaanotettavatVastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan',
+    })
+    .click();
+  await vastaanotettavatVastaanotot
+    .getByRole('button', {
+      name: 'Lähetä vastaus',
+    })
+    .click();
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
     .click();
@@ -548,13 +552,21 @@ test('Vastaanotto päivittää myös muut hakemukset ja muut kk-vastaanottoradio
     page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
   ).toBeVisible();
   await expect(
-    peruuntuvanVastaanotot.getByRole('radio', {
+    peruuntuvatVastaanotot.getByRole('radio', {
       name: 'Otan tämän opiskelupaikan',
     }),
   ).toBeHidden();
   await expect(
-    peruuntuvanVastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+    peruuntuvatVastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
   ).toBeHidden();
+  await expect(
+    peruuntuvatVastaanotot.getByText(
+      'Peruuntunut, olet vastaanottanut toisen opiskelupaikan',
+      {
+        exact: true,
+      },
+    ),
+  ).toBeVisible();
 });
 
 test('Valintatulokset on haitarin alla piilossa jos vastaanotto on tehty', async ({

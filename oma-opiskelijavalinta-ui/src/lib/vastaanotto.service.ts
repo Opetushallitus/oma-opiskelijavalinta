@@ -28,11 +28,7 @@ export function naytettavatVastaanottoTiedot(
   return hakemuksenTulokset.filter(
     (ht) =>
       (ht.vastaanottotila &&
-        ![
-          VastaanottoTila.KESKEN,
-          VastaanottoTila.PERUUTETTU,
-          VastaanottoTila.OTTANUT_VASTAAN_TOISEN_PAIKAN,
-        ].includes(ht.vastaanottotila)) ||
+        ![VastaanottoTila.KESKEN].includes(ht.vastaanottotila)) ||
       (ht.vastaanotettavuustila &&
         ht.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA'),
   );

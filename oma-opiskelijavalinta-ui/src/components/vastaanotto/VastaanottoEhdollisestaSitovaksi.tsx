@@ -91,7 +91,7 @@ export function VastaanottoEhdollisestaSitovaksi({
         refetchTulokset();
       } else {
         showNotification({
-          message: t('vastaanotto.virhe'),
+          message: t('vastaanotto.virhe.yleinen'),
           type: 'error',
           duration: null,
         });

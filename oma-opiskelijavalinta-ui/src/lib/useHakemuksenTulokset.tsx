@@ -3,9 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getValintaTulokset } from './valinta-tulos-service';
 import type { Haku } from './kouta-types';
 
+export const HAKEMUKSEN_TULOKSET_QUERY_KEY = 'hakemuksen-tulokset';
+
 export function useHakemuksenTulokset(hakemus: Hakemus, haku: Haku) {
   const { refetch, data, isPending, isRefetching } = useQuery({
-    queryKey: ['hakemuksen-tulokset', hakemus.oid],
+    queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY, hakemus.oid],
     initialData: hakemus.hakemuksenTulokset,
     queryFn: () => getValintaTulokset(hakemus.oid, haku.oid),
   });
