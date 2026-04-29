@@ -10,8 +10,7 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
-case class VtsBadRequestException(body: String)
-  extends RuntimeException(body)
+case class VtsBadRequestException(body: String) extends RuntimeException(body)
 
 class ValintaTulosServiceClient @Autowired (
   vtsCasClient: CasClient,
