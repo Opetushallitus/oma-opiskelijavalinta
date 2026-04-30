@@ -282,9 +282,6 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("1.2.246.562.29.00000000000000065739", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.ilmoittautuminenPaattyy)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.ehdollisetValinnatPaattyy)
-    Assertions.assertEquals(None, app.ohjausparametrit.get.opiskelijanPaikanVastaanottoPaattyy)
     Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoilleAlkaa)
     Assertions.assertEquals(None, app.ohjausparametrit.get.valintaTuloksetJulkaistaanHakijoillePaattyy)
   }

@@ -8,10 +8,7 @@ object OhjausparametritMockData {
   val paattynytHakukierrosMock = Some(
     OhjausparametritRaw(
       PH_HKP = Some(DateParam(Some(mennytTimestamp))),
-      PH_IP = None,
       PH_VTJH = None,
-      PH_EVR = None,
-      PH_OPVP = None,
       PH_VSTP = None,
       None,
       None
@@ -21,10 +18,7 @@ object OhjausparametritMockData {
   val hakukierrosPaattyyTulevaisuudessaMock = Some(
     OhjausparametritRaw(
       PH_HKP = Some(DateParam(Some(System.currentTimeMillis() + 1000000L))),
-      PH_IP = None,
       PH_VTJH = None,
-      PH_EVR = None,
-      PH_OPVP = None,
       PH_VSTP = None,
       None,
       None

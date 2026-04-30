@@ -12,11 +12,8 @@ import { isTruthy } from 'remeda';
 
 type Ohjausparametrit = {
   hakukierrosPaattyy?: number | null;
-  ilmoittautuminenPaattyy?: number | null;
   valintaTuloksetJulkaistaanHakijoilleAlkaa?: number | null;
   valintaTuloksetJulkaistaanHakijoillePaattyy?: number | null;
-  ehdollisetValinnatPaattyy?: number | null;
-  opiskelijanPaikanVastaanottoPaattyy?: number | null;
   varasijatayttoPaattyy?: number | null;
   sijoittelu?: boolean;
   jarjestetytHakutoiveet?: boolean;
