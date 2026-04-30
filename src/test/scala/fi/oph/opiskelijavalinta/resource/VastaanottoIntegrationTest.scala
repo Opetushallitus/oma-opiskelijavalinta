@@ -1,7 +1,15 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID, PERSON_OID, objectMapper, oppijaUser}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  objectMapper,
+  oppijaUser,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID,
+  PERSON_OID
+}
 import fi.oph.opiskelijavalinta.clients.VtsBadRequestException
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, hakukohde2, kaynnissaOlevaHaku}
@@ -155,9 +163,15 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
       .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
-      .thenReturn(Left(VtsBadRequestException("Väärä vastaanotettavuustila kohteella 1.2.246.562.20.00000000000000073288: EI_VASTAANOTETTAVISSA (yritetty muutos: VastaanotaSitovasti)")))
+      .thenReturn(
+        Left(
+          VtsBadRequestException(
+            "Väärä vastaanotettavuustila kohteella 1.2.246.562.20.00000000000000073288: EI_VASTAANOTETTAVISSA (yritetty muutos: VastaanotaSitovasti)"
+          )
+        )
+      )
     val fileName: String = "/test-translation.json"
-    val text = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
+    val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
     Mockito
       .when(lokalisointiClient.getLokalisaatiot(SupportedLanguage.fi))
       .thenReturn(
@@ -176,7 +190,6 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Assertions.assertTrue(result.getResponse.getContentAsString.contains("vastaanotto.virhe.ei-vastaanotettavissa"))
     Mockito.verifyNoInteractions(viestinvalitysClient)
   }
-
 
   @Test
   def get500ResponseWithMessageForFailedViestinvalitys(): Unit = {
