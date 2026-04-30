@@ -28,7 +28,14 @@ class OhjausparametritService @Autowired (
       case Left(e) =>
         LOG.error(s"Ohjausparametrien haku epäonnistui haulle $hakuOid: ${e.getMessage}", e)
         Option.empty
-      case Right(o) => Option.apply(mapper.readValue(o, classOf[OhjausparametritRaw]))
+      case Right(o) =>
+        try {
+          Option.apply(mapper.readValue(o, classOf[OhjausparametritRaw]))
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Ohjausparametrien deserialisointi epäonnistui haulle $hakuOid: ${e.getMessage}", e)
+            Option.empty
+        }
     }
   }
 }

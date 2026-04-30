@@ -135,11 +135,8 @@ class HakemuksetService @Autowired (
         .map(o => {
           Ohjausparametrit(
             o.PH_HKP.flatMap(d => d.date),
-            o.PH_IP.flatMap(d => d.date),
             o.PH_VTJH.flatMap(d => d.dateStart),
             o.PH_VTJH.flatMap(d => d.dateEnd),
-            o.PH_EVR.flatMap(d => d.date),
-            o.PH_OPVP.flatMap(d => d.date),
             o.PH_VSTP.flatMap(d => d.date),
             o.sijoittelu,
             o.jarjestetytHakutoiveet
