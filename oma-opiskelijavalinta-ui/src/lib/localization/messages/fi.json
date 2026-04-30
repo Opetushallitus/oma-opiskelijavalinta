@@ -174,7 +174,7 @@
     "laheta": "Lähetä vastaus",
     "virhe": {
       "yleinen": "Vastaanottotoiminto epäonnistui",
-      "ei-vastaanotettavissa:": "Opiskelupaikkaa ei voi vastaanottaa"
+      "ei-vastaanotettavissa": "Opiskelupaikkaa ei voi vastaanottaa"
     },
     "jonotus": {
       "otsake": "Varasijojen jonotuksesta luopuminen",
@@ -263,6 +263,7 @@
   },
   "tuloskirje": "Tuloskirje {pvm}",
   "vastaanottoviesti": {
+    "virhe": "Vastaanoton vahvistusviestin lähetys epäonnistui",
     "otsikko": "Opintopolku: Vastauksesi on vastaanotettu",
     "viesti": {
       "olemme-vastaanottaneet": "Olemme vastaanottaneet {aikaleima} vastauksesi:",

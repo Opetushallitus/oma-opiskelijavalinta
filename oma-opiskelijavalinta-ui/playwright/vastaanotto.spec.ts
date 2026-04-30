@@ -277,6 +277,70 @@ test('Lähettää vastaanoton epäonnistuneesti', async ({ page }) => {
   ).toBeVisible();
 });
 
+test('Näyttää vastaanottoviestin lähetyksen epäonnistumisen', async ({
+  page,
+}) => {
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-2/**',
+    async (route) => {
+      await route.fulfill({
+        status: 500,
+        body: 'vastaanottoviesti.virhe',
+      });
+    },
+  );
+  await setup(page);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await page
+    .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
+    .click();
+  await expect(
+    page.getByText('Vastaanoton vahvistusviestin lähetys epäonnistui'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+});
+
+test('Näyttää virheilmoituksen jos vastaanotto epäonnistuu koska paikka ei ole vastaanotettavissa', async ({
+  page,
+}) => {
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-2/**',
+    async (route) => {
+      await route.fulfill({
+        status: 500,
+        body: 'vastaanotto.virhe.ei-vastaanotettavissa',
+      });
+    },
+  );
+  await setup(page);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await page
+    .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
+    .click();
+  await expect(
+    page.getByText('Opiskelupaikkaa ei voi vastaanottaa'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeVisible();
+});
+
 test('Peruu vastaanoton onnistuneesti', async ({ page }) => {
   await setup(page);
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
