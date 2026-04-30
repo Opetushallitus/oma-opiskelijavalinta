@@ -67,9 +67,22 @@ export function HakutoiveenTilaBadge({
       </>
     );
   }
-  // jos on vastaanottotieto, näytetään se
+  // jos on vastaanottotieto, näytetään se ja mahdollinen ehdollisuustieto
   if (vastaanottotila !== VastaanottoTila.KESKEN) {
-    return <VastaanottoTilaChip vastaanottoTila={vastaanottotila} />;
+    return (
+      <>
+        <VastaanottoTilaChip vastaanottoTila={vastaanottotila} />
+        {naytetaankoEhdollisuus(hakutoiveenTulos) && (
+          <StatusBadgeChip
+            sx={{ ml: 1 }}
+            badgeProps={{
+              label: t('hakutoive.tila.ehdollisesti-hyvaksytty'),
+              color: BadgeColorKey.Yellow,
+            }}
+          />
+        )}
+      </>
+    );
   }
   // muuten valintatila-badge
   return (

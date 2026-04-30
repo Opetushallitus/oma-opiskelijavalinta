@@ -3,6 +3,13 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { HakutoiveName, HakutoiveList } from '../hakukohde/HakutoiveName';
+import { styled } from '@/lib/theme';
+
+const ModalBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  rowGap: theme.spacing(1.5),
+}));
 
 export function VastaanottoMuutaSitovaksiModalContent({
   hakutoive,
@@ -14,7 +21,7 @@ export function VastaanottoMuutaSitovaksiModalContent({
   const { t } = useTranslations();
 
   return (
-    <Box>
+    <ModalBox>
       <OphTypography>
         {t(
           ylemmatToiveet.length > 1
@@ -30,6 +37,6 @@ export function VastaanottoMuutaSitovaksiModalContent({
         {t('vastaanotto.modaali.muuta-sitovaksi.info')}
       </OphTypography>
       <HakutoiveName hakutoive={hakutoive} />
-    </Box>
+    </ModalBox>
   );
 }
