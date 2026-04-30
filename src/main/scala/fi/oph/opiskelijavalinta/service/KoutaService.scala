@@ -32,8 +32,13 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
         LOG.warn(s"Virhe haun tietojen hakemisessa haku-oidilla $hakuOid: ${e.getMessage}", e)
         Option.empty
       case Right(o) =>
-        Option
-          .apply(mapper.readValue(o, classOf[Haku]))
+        try {
+          Option.apply(mapper.readValue(o, classOf[Haku]))
+        } catch {
+          case e: Exception =>
+            LOG.warn(s"Virhe haun deserialisoinnissa haku-oidilla $hakuOid: ${e.getMessage}", e)
+            Option.empty
+        }
     }
   }
 
@@ -44,7 +49,13 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
         LOG.warn(s"Virhe hakukohteen tietojen hakemusessa oidilla $hakukohdeOid: ${e.getMessage}")
         Option.empty
       case Right(o) =>
-        Option.apply(mapper.readValue(o, classOf[Hakukohde]))
+        try {
+          Option.apply(mapper.readValue(o, classOf[Hakukohde]))
+        } catch {
+          case e: Exception =>
+            LOG.warn(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid: ${e.getMessage}", e)
+            Option.empty
+        }
     }
   }
 
