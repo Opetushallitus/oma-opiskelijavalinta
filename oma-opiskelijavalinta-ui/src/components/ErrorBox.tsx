@@ -7,7 +7,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: `rgb(from ${ophColors.orange3} r g b / 0.1)`,
   display: 'flex',
   flexDirection: 'row',
-  columnGap: theme.spacing(2),
+  columnGap: theme.spacing(1.25),
   borderRadius: '4px',
   padding: `${theme.spacing(2)} ${theme.spacing(2)}`,
   marginTop: 0,
