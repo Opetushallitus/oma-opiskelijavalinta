@@ -47,14 +47,20 @@ class HakemuksetService @Autowired (
         LOG.error(s"Virhe hakemusten hakemisessa henkilölle, personOid $oppijanumero: ${e.getMessage}")
         throw RuntimeException("Hakemuksien haku epäonnistui")
       case Right(o) =>
-        val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
-        val enriched = apps
-          .filter(a => a.haku == null || a.haku.isBlank || a.haku.length.equals(KOUTA_HAKU_OID_LENGTH))
-          .map(a => enrichHakemus(a))
-        HakemuksetEnriched(
-          enriched.filter(isAjankohtainenHakemus),
-          enriched.filter(isVanhaHakemus)
-        )
+        try {
+          val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
+          val enriched = apps
+            .filter(a => a.haku == null || a.haku.isBlank || a.haku.length.equals(KOUTA_HAKU_OID_LENGTH))
+            .map(a => enrichHakemus(a))
+          HakemuksetEnriched(
+            enriched.filter(isAjankohtainenHakemus),
+            enriched.filter(isVanhaHakemus)
+          )
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Hakemusten deserialisointi tai rikastaminen epäonnistui henkilölle $oppijanumero: ${e.getMessage}", e)
+            throw RuntimeException("Hakemuksien haku epäonnistui")
+        }
     }
   }
 
@@ -64,7 +70,13 @@ class HakemuksetService @Autowired (
         LOG.error(s"Virhe hakemus-oidien haussa oppijanumerolla $oppijanumero: ${e.getMessage}", e)
         throw RuntimeException("Hakemusoidien haku oppijanumerolla epäonnistui")
       case Right(o) =>
-        mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
+        try {
+          mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Hakemusten deserialisointi epäonnistui oppijanumerolla $oppijanumero: ${e.getMessage}", e)
+            throw RuntimeException("Hakemusoidien haku oppijanumerolla epäonnistui")
+        }
     }
   }
 
@@ -78,15 +90,25 @@ class HakemuksetService @Autowired (
         throw RuntimeException("Virhe hakemustietojen haussa")
 
       case Right(o) =>
-        val hakemus = mapper
-          .readValue(o, classOf[Array[Hakemus]])
-          .find(_.oid == hakemusOid)
-          .getOrElse(throw RuntimeException(s"Virhe: hakemusta $hakemusOid ei löytynyt"))
-        val email = hakemus.email.getOrElse(
-          throw RuntimeException(s"Sähköpostiosoite puuttuu hakemukselta $hakemusOid")
-        )
-        val lang = hakemus.asiointikieli.getOrElse("fi")
-        (email, lang)
+        try {
+          val hakemus = mapper
+            .readValue(o, classOf[Array[Hakemus]])
+            .find(_.oid == hakemusOid)
+            .getOrElse(throw RuntimeException(s"Virhe: hakemusta $hakemusOid ei löytynyt"))
+          val email = hakemus.email.getOrElse(
+            throw RuntimeException(s"Sähköpostiosoite puuttuu hakemukselta $hakemusOid")
+          )
+          val lang = hakemus.asiointikieli.getOrElse("fi")
+          (email, lang)
+        } catch {
+          case e: RuntimeException => throw e
+          case e: Exception        =>
+            LOG.error(
+              s"Hakemusten deserialisointi epäonnistui oppijanumerolla $oppijanumero, hakemusOid $hakemusOid: ${e.getMessage}",
+              e
+            )
+            throw RuntimeException("Virhe hakemustietojen haussa")
+        }
     }
   }
 

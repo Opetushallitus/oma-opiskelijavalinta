@@ -108,18 +108,25 @@ class VTSService @Autowired (
         )
         Option.empty
       case Right(o) =>
-        val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
-        val enrichedHakutoiveenTulokset =
-          raw.hakutoiveet
-            .map(enrichHakutoiveenTulos)
-        Some(
-          HakemuksenTulos(
-            hakuOid = raw.hakuOid,
-            hakemusOid = raw.hakemusOid,
-            hakijaOid = raw.hakijaOid,
-            hakutoiveet = enrichedHakutoiveenTulokset
+        try {
+          val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
+          val enrichedHakutoiveenTulokset = raw.hakutoiveet.map(enrichHakutoiveenTulos)
+          Some(
+            HakemuksenTulos(
+              hakuOid = raw.hakuOid,
+              hakemusOid = raw.hakemusOid,
+              hakijaOid = raw.hakijaOid,
+              hakutoiveet = enrichedHakutoiveenTulokset
+            )
           )
-        )
+        } catch {
+          case e: Exception =>
+            LOG.error(
+              s"Virhe valinnan tulosten deserialisoinnissa, hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}",
+              e
+            )
+            Option.empty
+        }
     }
   }
 

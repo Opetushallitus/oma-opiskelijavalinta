@@ -28,7 +28,14 @@ class KoodistoService @Autowired (
       case Left(e) =>
         LOG.warn(s"Virhe koodiston haussa, koodisto: $koodisto: ${e.getMessage}", e)
         List.empty
-      case Right(o) => mapper.readValue(o, classOf[Array[KoodistoKoodi]]).toSeq
+      case Right(o) =>
+        try {
+          mapper.readValue(o, classOf[Array[KoodistoKoodi]]).toSeq
+        } catch {
+          case e: Exception =>
+            LOG.warn(s"Virhe koodiston deserialisoinnissa, koodisto: $koodisto: ${e.getMessage}", e)
+            List.empty
+        }
     }
   }
 }
