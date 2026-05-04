@@ -31,6 +31,11 @@ import java.util.UUID
 
 class VastaanottoIntegrationTest extends BaseIntegrationTest {
 
+  @BeforeEach
+  def resetMocks(): Unit = {
+    Mockito.reset(viestinvalitysClient, ataruClient, koutaClient, valintaTulosServiceClient, lokalisointiClient)
+  }
+
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
     mvc
@@ -111,6 +116,29 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       HAKU_OID,
       "vastaanotto.vaihtoehdot.sitova"
     )
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                HAKEMUS_OID,
+                "haku-oid-1",
+                List("hakukohde-oid-1", "hakukohde-oid-2"),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+      )
     mvc
       .perform(
         MockMvcRequestBuilders
