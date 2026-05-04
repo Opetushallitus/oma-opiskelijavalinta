@@ -49,4 +49,17 @@ class KoutaServiceTest {
     Assertions.assertEquals("Samma på svenska", haku.get.nimi.sv)
     Assertions.assertEquals("Gumchewer search", haku.get.nimi.en)
   }
+
+  @Test
+  def returnsNoneWhenHakuDeserializationFails(): Unit = {
+    Mockito.when(koutaClient.getHaku(HAKU_OID)).thenReturn(Right("invalid json"))
+    Assertions.assertTrue(koutaService.getHaku(HAKU_OID).isEmpty)
+  }
+
+  @Test
+  def returnsNoneWhenHakukohdeDeserializationFails(): Unit = {
+    val hakukohdeOid = "HAKUKOHDE-OID-1"
+    Mockito.when(koutaClient.getHakukohde(hakukohdeOid)).thenReturn(Right("invalid json"))
+    Assertions.assertTrue(koutaService.getHakukohde(hakukohdeOid).isEmpty)
+  }
 }

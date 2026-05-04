@@ -110,6 +110,14 @@ class VTSServiceTest {
   }
 
   @Test
+  def returnsNoneWhenDeserializationFails(): Unit = {
+    Mockito
+      .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(Right("invalid json"))
+    Assertions.assertTrue(vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID).isEmpty)
+  }
+
+  @Test
   def addsOiliTokenToIlmoittautumisUrl(): Unit = {
     Mockito.when(oiliToken.createOiliJWT(PERSON_OID)).thenReturn("OILI_TOKEN")
     val tulos = vtsService.addJwtsForLinkUserIfNecessary(
