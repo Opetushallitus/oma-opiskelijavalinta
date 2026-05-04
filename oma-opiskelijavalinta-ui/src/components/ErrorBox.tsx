@@ -1,23 +1,24 @@
 import { styled } from '@/lib/theme';
 import { Box, type SxProps, type Theme } from '@mui/material';
 import { ophColors } from '@opetushallitus/oph-design-system';
-import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: `rgb(from ${ophColors.yellow1} r g b / 0.1)`,
+  backgroundColor: `rgb(from ${ophColors.orange3} r g b / 0.1)`,
   display: 'flex',
   flexDirection: 'row',
   columnGap: theme.spacing(1.25),
   borderRadius: '4px',
   padding: `${theme.spacing(2)} ${theme.spacing(2)}`,
-  marginTop: theme.spacing(2),
+  marginTop: 0,
+  width: '100%',
 }));
 
-const StyledWarning = styled(WarningIcon)(() => ({
-  color: ophColors.yellow1,
+const StyledError = styled(ErrorIcon)(() => ({
+  color: ophColors.orange3,
 }));
 
-export const WarningBox = ({
+export const ErrorBox = ({
   children,
   sx,
 }: {
@@ -25,8 +26,8 @@ export const WarningBox = ({
   sx?: SxProps<Theme>;
 }) => {
   return (
-    <StyledBox sx={sx} data-test-id="warning-box">
-      <StyledWarning />
+    <StyledBox sx={sx} data-test-id="error-box">
+      <StyledError />
       <Box>{children}</Box>
     </StyledBox>
   );
