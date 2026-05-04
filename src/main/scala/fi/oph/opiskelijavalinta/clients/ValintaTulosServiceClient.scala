@@ -10,6 +10,8 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
+case class VtsBadRequestException(body: String) extends RuntimeException(body)
+
 class ValintaTulosServiceClient @Autowired (
   vtsCasClient: CasClient,
   httpExecutionContext: ExecutionContext,
@@ -31,16 +33,16 @@ class ValintaTulosServiceClient @Autowired (
   def postVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/valinta-tulos-service/auth/vastaanotto/hakemus/$hakemusOid/hakukohde/$hakukohdeOid"
-    post(url, s"{\"action\": \"$vastaanotto\"}")
+    post(url, s"{\"action\": \"$vastaanotto\"}", "vastaanotto")
   }
 
   def postIlmoittautuminen(hakemusOid: String, hakuOid: String, body: String): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/valinta-tulos-service/cas/haku/$hakuOid/hakemus/$hakemusOid/ilmoittaudu"
-    post(url, body)
+    post(url, body, "ilmoittautuminen")
   }
 
-  private def post(url: String, body: String): Either[Throwable, String] = {
+  private def post(url: String, body: String, operation: String): Either[Throwable, String] = {
     val req = new RequestBuilder()
       .setMethod("POST")
       .setHeader("Content-Type", "application/json")
@@ -50,18 +52,23 @@ class ValintaTulosServiceClient @Autowired (
     try {
       val result = asScala(vtsCasClient.execute(req)).map {
         case r if r.getStatusCode == 200 =>
-          LOG.debug("Vastaanotto tehty onnistuneesti")
+          LOG.debug(s"$operation tehty onnistuneesti")
           Right(r.getResponseBody())
+        case r if r.getStatusCode == 400 =>
+          LOG.error(
+            s"$operation epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
+          )
+          Left(VtsBadRequestException(r.getResponseBody))
         case r =>
           LOG.error(
-            s"Vastaanoton teko epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
+            s"$operation epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
           Left(new RuntimeException("Vastaanoton teko epäonnistui: " + r.getResponseBody()))
       }
       Await.result(result, Duration(timeoutSeconds, TimeUnit.SECONDS))
     } catch {
       case e: Throwable =>
-        LOG.error(s"Vastaanoton teko epäonnistui: ${e.getMessage}", e)
+        LOG.error(s"$operation epäonnistui: ${e.getMessage}", e)
         Left(e)
     }
   }

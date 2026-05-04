@@ -13,9 +13,12 @@ import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
 import { VastaanottoModalContent } from './VastaanottoModalContent';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotifications } from '../NotificationProvider';
-import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import {
+  HAKEMUKSEN_TULOKSET_QUERY_KEY,
+  useHakemuksenTulokset,
+} from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
   getAlemmatVastaanotot,
@@ -145,6 +148,7 @@ export function VastaanottoRadio({
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   const vastaanottoOptions = determineVastaanottoOptions(
     t,
@@ -183,10 +187,24 @@ export function VastaanottoRadio({
         type: 'success',
       });
       refetchTulokset();
+      queryClient.invalidateQueries({
+        queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
+      });
     },
     onError: (error) => {
       console.error(error);
-      if (error.message === 'vastaanottoviesti.virhe') {
+      if (error.message === 'vastaanotto.virhe.ei-vastaanotettavissa') {
+        console.log('virhe');
+        showNotification({
+          message: t(error.message),
+          type: 'error',
+          duration: null,
+        });
+        refetchTulokset();
+        queryClient.invalidateQueries({
+          queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
+        });
+      } else if (error.message === 'vastaanottoviesti.virhe') {
         showNotification({
           message: t(error.message),
           type: 'error',
@@ -195,7 +213,7 @@ export function VastaanottoRadio({
         refetchTulokset();
       } else {
         showNotification({
-          message: t('vastaanotto.virhe'),
+          message: t('vastaanotto.virhe.yleinen'),
           type: 'error',
           duration: null,
         });

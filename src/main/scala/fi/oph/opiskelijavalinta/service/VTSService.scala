@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
+import fi.oph.opiskelijavalinta.clients.{ValintaTulosServiceClient, VtsBadRequestException}
 import fi.oph.opiskelijavalinta.model.{
   HakemuksenTulos,
   HakemuksenTulosRaw,
@@ -152,10 +152,13 @@ class VTSService @Autowired (
     vastaanotto: AllowedVastaanottoTilaToiminto
   ): Option[String] = {
     vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, vastaanotto.toString) match {
+      case Left(e: VtsBadRequestException) =>
+        LOG.error(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}", e)
+        throw e
       case Left(e) =>
         LOG.error(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}", e)
         throw RuntimeException(
-          s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}"
+          s"Tuntematon virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}"
         )
       case Right(o) =>
         Option.apply(o)

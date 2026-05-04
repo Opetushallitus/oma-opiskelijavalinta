@@ -10,6 +10,7 @@ import fi.oph.opiskelijavalinta.TestUtils.{
   HAKU_OID,
   PERSON_OID
 }
+import fi.oph.opiskelijavalinta.clients.VtsBadRequestException
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, hakukohde2, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
@@ -29,6 +30,11 @@ import scala.jdk.CollectionConverters.*
 import java.util.UUID
 
 class VastaanottoIntegrationTest extends BaseIntegrationTest {
+
+  @BeforeEach
+  def resetMocks(): Unit = {
+    Mockito.reset(viestinvalitysClient, ataruClient, koutaClient, valintaTulosServiceClient, lokalisointiClient)
+  }
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
@@ -110,6 +116,29 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       HAKU_OID,
       "vastaanotto.vaihtoehdot.sitova"
     )
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                HAKEMUS_OID,
+                "haku-oid-1",
+                List("hakukohde-oid-1", "hakukohde-oid-2"),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+      )
     mvc
       .perform(
         MockMvcRequestBuilders
@@ -119,6 +148,75 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isBadRequest)
+  }
+
+  @Test
+  def get400ResponseFromVTSWithMessageForInvalidVastaanotettavuustila(): Unit = {
+    val vastaanottoDTO = VastaanottoDTO(
+      "VastaanotaSitovasti",
+      HAKU_OID,
+      "vastaanotto.vaihtoehdot.sitova"
+    )
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                HAKEMUS_OID,
+                HAKU_OID,
+                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+                None,
+                None,
+                Some("testi.kayttaja@example.org"),
+                Some("fi")
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(koutaClient.getHaku(HAKU_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    Mockito
+      .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti"))
+      .thenReturn(
+        Left(
+          VtsBadRequestException(
+            "Väärä vastaanotettavuustila kohteella 1.2.246.562.20.00000000000000073288: EI_VASTAANOTETTAVISSA (yritetty muutos: VastaanotaSitovasti)"
+          )
+        )
+      )
+    val fileName: String = "/test-translation.json"
+    val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
+    Mockito
+      .when(lokalisointiClient.getLokalisaatiot(SupportedLanguage.fi))
+      .thenReturn(
+        Right(text)
+      )
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(vastaanottoDTO))
+          .`with`(user(oppijaUser))
+      )
+      .andExpect(status().isBadRequest)
+      .andReturn()
+    Assertions.assertTrue(result.getResponse.getContentAsString.contains("vastaanotto.virhe.ei-vastaanotettavissa"))
+    Mockito.verifyNoInteractions(viestinvalitysClient)
   }
 
   @Test
