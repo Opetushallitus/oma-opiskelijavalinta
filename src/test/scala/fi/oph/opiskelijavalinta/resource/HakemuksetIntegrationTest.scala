@@ -57,7 +57,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
 
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock.get)
+    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock)
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -144,7 +144,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock.get)
+    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock)
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -176,7 +176,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
-      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock.get)
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
@@ -221,7 +221,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
-      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock.get)
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
@@ -247,7 +247,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
   def doesNotReturnKeskenResultWhenHakuaikaIsOver(): Unit = {
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
-      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock.get)
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSKeskenResponse)))
