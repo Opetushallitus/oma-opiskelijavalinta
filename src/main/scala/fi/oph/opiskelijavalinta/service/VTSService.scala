@@ -101,6 +101,7 @@ class VTSService @Autowired (
   }
 
   def getValinnanTulokset(hakuOid: String, hakemusOid: String): Option[HakemuksenTulos] = {
+    // TODO näytä virheilmoitus hakijalle, jos valinnan tuloksia ei saatu haettua tai deserialisointi ei onnistunut
     vtsClient.getValinnanTulokset(hakuOid, hakemusOid) match {
       case Left(e) =>
         LOG.error(

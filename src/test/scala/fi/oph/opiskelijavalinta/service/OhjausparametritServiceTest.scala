@@ -17,7 +17,7 @@ class OhjausparametritServiceTest {
 
   @Test
   def returnsOhjausparametritWhenSuccessful(): Unit = {
-    val raw = OhjausparametritMockData.hakukierrosPaattyyTulevaisuudessaMock.get
+    val raw = OhjausparametritMockData.hakukierrosPaattyyTulevaisuudessaMock
     Mockito
       .when(ohjausparametritClient.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(raw)))
