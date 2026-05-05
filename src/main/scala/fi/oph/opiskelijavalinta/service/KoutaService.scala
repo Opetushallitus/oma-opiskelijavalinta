@@ -52,7 +52,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
           mapper.readValue(o, classOf[Hakukohde])
         } catch {
           case e: Exception =>
-            LOG.warn(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid: ${e.getMessage}", e)
+            LOG.error(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid: ${e.getMessage}", e)
             throw RuntimeException(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid", e)
         }
     }
