@@ -51,14 +51,34 @@ class HakemuksetService @Autowired (
           val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
           val enriched = apps
             .filter(a => a.haku == null || a.haku.isBlank || a.haku.length.equals(KOUTA_HAKU_OID_LENGTH))
-            .map(a => enrichHakemus(a))
+            .map(a =>
+              try {
+                enrichHakemus(a)
+              } catch {
+                case e: Exception =>
+                  LOG.error(s"Hakemuksen ${a.oid} rikastaminen epäonnistui: ${e.getMessage}", e)
+                  HakemusEnriched(
+                    oid = a.oid,
+                    haku = None,
+                    hakukohteet = List.empty,
+                    ohjausparametrit = None,
+                    secret = a.secret,
+                    submitted = a.submitted,
+                    hakemuksenTulokset = List.empty,
+                    processing = a.processing,
+                    formName = a.formName,
+                    tuloskirjeModified = None,
+                    enrichmentFailed = true
+                  )
+              }
+            )
           HakemuksetEnriched(
             enriched.filter(isAjankohtainenHakemus),
             enriched.filter(isVanhaHakemus)
           )
         } catch {
           case e: Exception =>
-            LOG.error(s"Hakemusten deserialisointi tai rikastaminen epäonnistui henkilölle $oppijanumero: ${e.getMessage}", e)
+            LOG.error(s"Hakemusten deserialisointi epäonnistui henkilölle $oppijanumero: ${e.getMessage}", e)
             throw RuntimeException("Hakemuksien haku epäonnistui")
         }
     }
@@ -144,26 +164,25 @@ class HakemuksetService @Autowired (
   private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
     val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
-    var hakukohteet: List[Option[Hakukohde]]                  = List.empty
+    var hakukohteet: List[Hakukohde]                          = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulosEnriched] = List.empty
     var tuloskirjeModified: Option[Long]                      = Option.empty
     if (hakemus.haku != null) {
       tuloskirjeModified = tuloskirjeService.getLastModifiedTuloskirje(hakemus.haku, hakemus.oid)
-      haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
+      haku = Some(enrichHaku(koutaService.getHaku(hakemus.haku), hakemus))
       hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
-      ohjausparametrit = ohjausparametritService
-        .getOhjausparametritForHaku(hakemus.haku)
-        .map(o => {
-          Ohjausparametrit(
-            o.PH_HKP.flatMap(d => d.date),
-            o.PH_VTJH.flatMap(d => d.dateStart),
-            o.PH_VTJH.flatMap(d => d.dateEnd),
-            o.PH_VSTP.flatMap(d => d.date),
-            o.sijoittelu,
-            o.jarjestetytHakutoiveet
-          )
-        })
+      val o = ohjausparametritService.getOhjausparametritForHaku(hakemus.haku)
+      ohjausparametrit = Some(
+        Ohjausparametrit(
+          o.PH_HKP.flatMap(d => d.date),
+          o.PH_VTJH.flatMap(d => d.dateStart),
+          o.PH_VTJH.flatMap(d => d.dateEnd),
+          o.PH_VSTP.flatMap(d => d.date),
+          o.sijoittelu,
+          o.jarjestetytHakutoiveet
+        )
+      )
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
         // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää

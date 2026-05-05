@@ -3,8 +3,10 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { isEmpty, isNonNullish } from 'remeda';
 import { determineHakemusType } from './Hakemukset';
 import { QuerySuspenseBoundary } from '../QuerySuspenseBoundary';
+import { useTranslations } from '@/hooks/useTranslations';
 
 function LinkHakemusContent() {
+  const { t } = useTranslations();
   const { data: hakemukset } = useSuspenseQuery({
     queryKey: ['hakemukset'],
     queryFn: getHakemukset,
@@ -17,9 +19,9 @@ function LinkHakemusContent() {
   }
 
   if (!isEmpty(hakemukset.current) && isNonNullish(hakemukset.current[0])) {
-    return determineHakemusType({ hakemus: hakemukset.current[0] });
+    return determineHakemusType({ hakemus: hakemukset.current[0], t });
   } else if (!isEmpty(hakemukset.old) && isNonNullish(hakemukset.old[0])) {
-    return determineHakemusType({ hakemus: hakemukset.old[0], past: true });
+    return determineHakemusType({ hakemus: hakemukset.old[0], past: true, t });
   } else {
     console.error('Linkillä tunnistautuneella käyttäjällä ei ollut hakemusta');
     return null;

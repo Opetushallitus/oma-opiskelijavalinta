@@ -53,10 +53,8 @@ class ViestiService @Autowired (
       LOGGER.info(
         s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
       )
-      val haku = koutaService.getHaku(hakuOid).getOrElse(throw new RuntimeException(s"Hakua ei löytynyt: $hakuOid"))
-      val hakutoive = koutaService
-        .getHakukohde(hakukohdeOid)
-        .getOrElse(throw new RuntimeException(s"Hakukohdetta ei löytynyt: $hakukohdeOid"))
+      val haku      = koutaService.getHaku(hakuOid)
+      val hakutoive = koutaService.getHakukohde(hakukohdeOid)
       val otsikko   = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
       val tervehdys = lokalisointiService.getTranslationWithParams(
         asiointikieli,

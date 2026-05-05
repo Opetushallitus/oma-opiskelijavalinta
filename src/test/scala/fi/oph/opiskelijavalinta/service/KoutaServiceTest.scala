@@ -43,23 +43,35 @@ class KoutaServiceTest {
   @Test
   def returnsHakuForHakemus(): Unit = {
     val haku = koutaService.getHaku(HAKU_OID)
-    Assertions.assertFalse(haku.isEmpty)
-    Assertions.assertEquals(HAKU_OID, haku.get.oid)
-    Assertions.assertEquals("Purkanpurijoiden haku", haku.get.nimi.fi)
-    Assertions.assertEquals("Samma på svenska", haku.get.nimi.sv)
-    Assertions.assertEquals("Gumchewer search", haku.get.nimi.en)
+    Assertions.assertEquals(HAKU_OID, haku.oid)
+    Assertions.assertEquals("Purkanpurijoiden haku", haku.nimi.fi)
+    Assertions.assertEquals("Samma på svenska", haku.nimi.sv)
+    Assertions.assertEquals("Gumchewer search", haku.nimi.en)
   }
 
   @Test
-  def returnsNoneWhenHakuDeserializationFails(): Unit = {
+  def throwsWhenHakuClientFails(): Unit = {
+    Mockito.when(koutaClient.getHaku(HAKU_OID)).thenReturn(Left(RuntimeException("verkkovirhe")))
+    Assertions.assertThrows(classOf[RuntimeException], () => koutaService.getHaku(HAKU_OID))
+  }
+
+  @Test
+  def throwsWhenHakuDeserializationFails(): Unit = {
     Mockito.when(koutaClient.getHaku(HAKU_OID)).thenReturn(Right("invalid json"))
-    Assertions.assertTrue(koutaService.getHaku(HAKU_OID).isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => koutaService.getHaku(HAKU_OID))
   }
 
   @Test
-  def returnsNoneWhenHakukohdeDeserializationFails(): Unit = {
+  def throwsWhenHakukohdeClientFails(): Unit = {
+    val hakukohdeOid = "HAKUKOHDE-OID-1"
+    Mockito.when(koutaClient.getHakukohde(hakukohdeOid)).thenReturn(Left(RuntimeException("verkkovirhe")))
+    Assertions.assertThrows(classOf[RuntimeException], () => koutaService.getHakukohde(hakukohdeOid))
+  }
+
+  @Test
+  def throwsWhenHakukohdeDeserializationFails(): Unit = {
     val hakukohdeOid = "HAKUKOHDE-OID-1"
     Mockito.when(koutaClient.getHakukohde(hakukohdeOid)).thenReturn(Right("invalid json"))
-    Assertions.assertTrue(koutaService.getHakukohde(hakukohdeOid).isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => koutaService.getHakukohde(hakukohdeOid))
   }
 }
