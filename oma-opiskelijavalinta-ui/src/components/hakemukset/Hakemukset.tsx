@@ -26,9 +26,14 @@ export function determineHakemusType({
 }: HakemusTypeParams): JSX.Element {
   if (hakemus.enrichmentFailed) {
     return (
-      <ErrorBox key={`application-${hakemus.oid}`} sx={{ marginTop: '1.5rem' }}>
-        {t('hakemukset.rikastaminen-epaonnistui')}
-      </ErrorBox>
+      <Box
+        key={`application-${hakemus.oid}`}
+        data-test-id={`application-${hakemus.oid}`}
+      >
+        <ErrorBox sx={{ marginTop: '1.5rem' }}>
+          {t('hakemukset.rikastaminen-epaonnistui')}
+        </ErrorBox>
+      </Box>
     );
   }
   return isNonNullish(hakemus.haku) && past ? (
