@@ -26,14 +26,14 @@ class KoodistoService @Autowired (
 
     koodistoClient.getKoodit(koodisto) match {
       case Left(e) =>
-        LOG.warn(s"Virhe koodiston haussa, koodisto: $koodisto: ${e.getMessage}", e)
+        LOG.error(s"Virhe koodiston haussa, koodisto: $koodisto: ${e.getMessage}", e)
         List.empty
       case Right(o) =>
         try {
           mapper.readValue(o, classOf[Array[KoodistoKoodi]]).toSeq
         } catch {
           case e: Exception =>
-            LOG.warn(s"Virhe koodiston deserialisoinnissa, koodisto: $koodisto: ${e.getMessage}", e)
+            LOG.error(s"Virhe koodiston deserialisoinnissa, koodisto: $koodisto: ${e.getMessage}", e)
             List.empty
         }
     }
