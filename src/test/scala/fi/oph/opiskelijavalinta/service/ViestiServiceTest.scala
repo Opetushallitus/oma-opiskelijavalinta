@@ -3,7 +3,7 @@ package fi.oph.opiskelijavalinta.service
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
 import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.clients.model.Oppija
-import fi.oph.opiskelijavalinta.clients.{LokalisointiClient, OnrClient}
+import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClient
@@ -28,7 +28,7 @@ class ViestiServiceTest {
   val koutaService: KoutaService                 = Mockito.mock(classOf[KoutaService])
   val hakemuksetService: HakemuksetService       = Mockito.mock(classOf[HakemuksetService])
   val lokalisointiService: LokalisointiService   = LokalisointiService(lokalisointiClient)
-  val onrClient: OnrClient                       = Mockito.mock(classOf[OnrClient])
+  val onrService: OnrService                     = Mockito.mock(classOf[OnrService])
   val viestinvalitysClient: ViestinvalitysClient = Mockito.mock(classOf[ViestinvalitysClient])
   val authorizationService: AuthorizationService = Mockito.mock(classOf[AuthorizationService])
   val viestiService: ViestiService               =
@@ -36,7 +36,7 @@ class ViestiServiceTest {
       hakemuksetService,
       koutaService,
       lokalisointiService,
-      onrClient,
+      onrService,
       authorizationService,
       viestinvalitysClient
     ) {
@@ -134,11 +134,11 @@ class ViestiServiceTest {
     Mockito.when(authorizationService.getPersonOid).thenReturn(Some(PERSON_OID))
     Mockito
       .when(koutaService.getHaku(HAKU_OID))
-      .thenReturn(Some(kaynnissaOlevaHaku))
+      .thenReturn(kaynnissaOlevaHaku)
     Mockito
       .when(koutaService.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(Some(hakukohde1))
-    Mockito.when(onrClient.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
+      .thenReturn(hakukohde1)
+    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
     Mockito
       .when(viestinvalitysClient.luoViesti(any()))
       .thenReturn(

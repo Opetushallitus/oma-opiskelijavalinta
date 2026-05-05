@@ -27,8 +27,13 @@ class LinkVerificationService @Autowired (
         LOG.error(s"Verifiointi epäonnistui tokenille $token: ${e.getMessage}", e)
         Option.empty
       case Right(o) =>
-        Option
-          .apply(mapper.readValue(o, classOf[OppijanTunnistusVerification]))
+        try {
+          Option.apply(mapper.readValue(o, classOf[OppijanTunnistusVerification]))
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Tokenin deserialisointi epäonnistui tokenille $token: ${e.getMessage}", e)
+            Option.empty
+        }
     }
   }
 }
