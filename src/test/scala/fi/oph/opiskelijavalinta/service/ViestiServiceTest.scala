@@ -134,10 +134,10 @@ class ViestiServiceTest {
     Mockito.when(authorizationService.getPersonOid).thenReturn(Some(PERSON_OID))
     Mockito
       .when(koutaService.getHaku(HAKU_OID))
-      .thenReturn(Some(kaynnissaOlevaHaku))
+      .thenReturn(kaynnissaOlevaHaku)
     Mockito
       .when(koutaService.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(Some(hakukohde1))
+      .thenReturn(hakukohde1)
     Mockito.when(onrClient.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
     Mockito
       .when(viestinvalitysClient.luoViesti(any()))

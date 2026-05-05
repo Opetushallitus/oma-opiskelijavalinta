@@ -22,19 +22,18 @@ class OhjausparametritService @Autowired (
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
 
   @Cacheable(value = Array(CacheConstants.OHJAUSPARAMETRIT_CACHE_NAME), sync = true)
-  def getOhjausparametritForHaku(hakuOid: String): Option[OhjausparametritRaw] = {
-
+  def getOhjausparametritForHaku(hakuOid: String): OhjausparametritRaw = {
     ohjausparametritClient.getOhjausparametritForHaku(hakuOid) match {
       case Left(e) =>
         LOG.error(s"Ohjausparametrien haku epäonnistui haulle $hakuOid: ${e.getMessage}", e)
-        Option.empty
+        throw RuntimeException(s"Ohjausparametrien haku epäonnistui haulle $hakuOid", e)
       case Right(o) =>
         try {
-          Option.apply(mapper.readValue(o, classOf[OhjausparametritRaw]))
+          mapper.readValue(o, classOf[OhjausparametritRaw])
         } catch {
           case e: Exception =>
             LOG.error(s"Ohjausparametrien deserialisointi epäonnistui haulle $hakuOid: ${e.getMessage}", e)
-            Option.empty
+            throw RuntimeException(s"Ohjausparametrien deserialisointi epäonnistui haulle $hakuOid", e)
         }
     }
   }

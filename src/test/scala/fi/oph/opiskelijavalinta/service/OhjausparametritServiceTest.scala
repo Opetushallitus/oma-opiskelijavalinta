@@ -22,21 +22,20 @@ class OhjausparametritServiceTest {
       .when(ohjausparametritClient.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(raw)))
     val result = service.getOhjausparametritForHaku(HAKU_OID)
-    Assertions.assertTrue(result.isDefined)
-    Assertions.assertTrue(result.get.PH_HKP.isDefined)
+    Assertions.assertTrue(result.PH_HKP.isDefined)
   }
 
   @Test
-  def returnsNoneWhenClientFails(): Unit = {
+  def throwsWhenClientFails(): Unit = {
     Mockito
       .when(ohjausparametritClient.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(Left(RuntimeException("verkkovirhe")))
-    Assertions.assertTrue(service.getOhjausparametritForHaku(HAKU_OID).isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => service.getOhjausparametritForHaku(HAKU_OID))
   }
 
   @Test
-  def returnsNoneWhenDeserializationFails(): Unit = {
+  def throwsWhenDeserializationFails(): Unit = {
     Mockito.when(ohjausparametritClient.getOhjausparametritForHaku(HAKU_OID)).thenReturn(Right("invalid json"))
-    Assertions.assertTrue(service.getOhjausparametritForHaku(HAKU_OID).isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => service.getOhjausparametritForHaku(HAKU_OID))
   }
 }
