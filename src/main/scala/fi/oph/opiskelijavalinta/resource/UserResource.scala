@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.clients.model.Oppija
+import fi.oph.opiskelijavalinta.service.OnrService
 import fi.oph.opiskelijavalinta.resource.ApiConstants.USER_PATH
 import fi.oph.opiskelijavalinta.security.OppijaUser
 import org.slf4j.{Logger, LoggerFactory}
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 
 @RequestMapping(path = Array(USER_PATH))
 @RestController
-class UserResource @Autowired (private val onrClient: OnrClient) {
+class UserResource @Autowired (private val onrService: OnrService) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[UserResource]);
 
@@ -23,8 +23,8 @@ class UserResource @Autowired (private val onrClient: OnrClient) {
     val personOid: Option[String] = principal.personOid
     val hetu: Option[String]      = principal.hetu
     val oppija                    = (personOid, hetu) match
-      case (Some(personOid), _) => onrClient.getPersonInfo(personOid)
-      case (None, Some(hetu))   => onrClient.getPersonInfoByHetu(hetu)
+      case (Some(personOid), _) => onrService.getPersonInfo(personOid)
+      case (None, Some(hetu))   => onrService.getPersonInfoByHetu(hetu)
       case _                    => null // TODO eidas-tunniste
     ResponseEntity.ok(oppija)
   }
