@@ -46,7 +46,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
     koutaClient.getHakukohde(hakukohdeOid) match {
       case Left(e) =>
         LOG.warn(s"Virhe hakukohteen tietojen hakemusessa oidilla $hakukohdeOid: ${e.getMessage}")
-        throw RuntimeException(s"Virhe hakukohteen tietojen hakemusessa oidilla $hakukohdeOid", e)
+        throw RuntimeException(s"Virhe hakukohteen tietojen hakemisessa oidilla $hakukohdeOid", e)
       case Right(o) =>
         try {
           mapper.readValue(o, classOf[Hakukohde])
