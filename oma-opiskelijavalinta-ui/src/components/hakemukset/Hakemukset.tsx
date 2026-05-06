@@ -16,7 +16,7 @@ import type { Hakemus } from '@/lib/hakemus-types';
 export type HakemusTypeParams = {
   hakemus: Hakemus;
   past?: boolean;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string>) => string;
 };
 
 export function determineHakemusType({
@@ -31,7 +31,7 @@ export function determineHakemusType({
         data-test-id={`application-${hakemus.oid}`}
       >
         <ErrorBox sx={{ marginTop: '1.5rem' }}>
-          {t('hakemukset.rikastaminen-epaonnistui')}
+          {t('hakemukset.rikastaminen-epaonnistui', { oid: hakemus.oid })}
         </ErrorBox>
       </Box>
     );

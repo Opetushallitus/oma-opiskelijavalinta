@@ -445,7 +445,7 @@ test('Näyttää virheilmoituksen hakemukselle jonka rikastaminen epäonnistui',
   await expect(app.getByTestId('error-box')).toBeVisible();
   await expect(
     app.getByText(
-      'Hakemuksen tietojen lataaminen epäonnistui. Yritä myöhemmin uudelleen.',
+      'Hakemuksen hakemus-oid-1 tietojen lataaminen epäonnistui. Yritä myöhemmin uudelleen.',
     ),
   ).toBeVisible();
 });

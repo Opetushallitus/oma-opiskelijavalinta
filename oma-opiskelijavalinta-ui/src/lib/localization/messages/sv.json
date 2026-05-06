@@ -1,6 +1,6 @@
 {
   "otsikko": "Mitt Studieinfo",
   "hakemukset": {
-    "rikastaminen-epaonnistui": "Det gick inte att läsa in ansökningsuppgifterna. Försök igen senare."
+    "rikastaminen-epaonnistui": "Det gick inte att läsa in ansökningsuppgifterna {oid}. Försök igen senare."
   }
 }
