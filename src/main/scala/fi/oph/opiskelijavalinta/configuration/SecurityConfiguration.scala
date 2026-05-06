@@ -3,7 +3,7 @@ package fi.oph.opiskelijavalinta.configuration
 import fi.oph.opiskelijavalinta.Constants
 import fi.vm.sade.javautils.nio.cas.{CasClient, CasClientBuilder, CasConfig}
 import fi.oph.opiskelijavalinta.resource.ApiConstants
-import fi.oph.opiskelijavalinta.resource.ApiConstants.{LINK_LOGIN_PATH, LINK_LOGOUT_PATH}
+import fi.oph.opiskelijavalinta.resource.ApiConstants.{LINK_LOGIN_PATH, LINK_LOGOUT_PATH, TULOSKIRJE_PATH}
 import fi.oph.opiskelijavalinta.security.{
   AuditLog,
   AuditOperation,
@@ -224,7 +224,8 @@ class SecurityConfiguration {
             "/assets/**",
             "/js/**",
             "/token/**",
-            "/session-expired"
+            "/session-expired",
+            TULOSKIRJE_PATH + "/token/**"
           )
           .permitAll()
           .requestMatchers(
