@@ -16,7 +16,11 @@ import java.nio.charset.StandardCharsets
 @RequestMapping(path = Array(TULOSKIRJE_PATH))
 @Validated
 @RestController
-class TulosKirjeResource @Autowired (kirjeService: TuloskirjeService, authorizationService: AuthorizationService, linkVerificationService: LinkVerificationService) {
+class TulosKirjeResource @Autowired (
+  kirjeService: TuloskirjeService,
+  authorizationService: AuthorizationService,
+  linkVerificationService: LinkVerificationService
+) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[TulosKirjeResource]);
 
@@ -51,12 +55,12 @@ class TulosKirjeResource @Autowired (kirjeService: TuloskirjeService, authorizat
     }
   }
 
-  @GetMapping(path = Array("/haku/{hakuOid}/token/{token}"))
+  @GetMapping(path = Array("/token/{token}/haku/{hakuOid}"))
   def getTuloskirjeWithToken(
-                              @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakuOid: String,
-                              @PathVariable(required = true) token: String,
-                              request: HttpServletRequest
-                            ): ResponseEntity[String] = {
+    @PathVariable(required = true) token: String,
+    @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakuOid: String,
+    request: HttpServletRequest
+  ): ResponseEntity[String] = {
     LOG.info(s"Haetaan tuloskirje oppijan-tunnistus tokenilla haulle $hakuOid")
 
     if (token == null || token.trim.isEmpty) {
@@ -92,7 +96,7 @@ class TulosKirjeResource @Autowired (kirjeService: TuloskirjeService, authorizat
         request,
         Map(
           "hakemusOid" -> hakemusOid,
-          "hakuOid" -> hakuOid
+          "hakuOid"    -> hakuOid
         ),
         AuditOperation.HaeTulosKirje,
         None
@@ -100,7 +104,8 @@ class TulosKirjeResource @Autowired (kirjeService: TuloskirjeService, authorizat
       result match {
         case Some(data) =>
           LOG.info(s"Tuloskirje haettu hakemuksella $hakemusOid ja haulla $hakuOid")
-          ResponseEntity.ok()
+          ResponseEntity
+            .ok()
             .contentType(MediaType.parseMediaType("text/html;charset=UTF-8"))
             .body(new String(data, StandardCharsets.UTF_8))
         case None =>
@@ -112,7 +117,7 @@ class TulosKirjeResource @Autowired (kirjeService: TuloskirjeService, authorizat
         LOG.error(s"Virhe tuloskirjeen latauksessa, hakuOid: $hakuOid, token: $token", ex.getMessage)
         ResponseEntity
           .status(HttpStatus.FORBIDDEN)
-          .body("virheellinen tai vanhentunut kirjautumistoken")
+          .body(ex.getMessage)
       case e: Exception =>
         LOG.error(
           s"Virhe tuloskirjeen latauksessa, hakuOid: $hakuOid, token: $token",
