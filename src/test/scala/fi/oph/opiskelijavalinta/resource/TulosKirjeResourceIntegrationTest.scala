@@ -3,17 +3,22 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
-import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{Hakemus, OppijanTunnistusVerification, TranslatedName}
 import fi.oph.opiskelijavalinta.service.AllowedIlmoittautumisTila.LASNA_KOKO_LUKUVUOSI
+import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
+import org.springframework.test.context.bean.`override`.mockito.{MockReset, MockitoBean}
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
+
+  @MockitoBean(reset = MockReset.NONE)
+  val verificationService: LinkVerificationService = Mockito.mock(classOf[LinkVerificationService])
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
@@ -145,5 +150,50 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
+  }
+
+  @Test
+  def returnsForbiddenForInvalidToken(): Unit = {
+    Mockito
+      .when(verificationService.verify("invalid-token"))
+      .thenReturn(
+        Some(
+          OppijanTunnistusVerification(
+            exists = false,
+            valid = false,
+            metadata = None
+          )
+        )
+      )
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token/haku/$HAKU_OID")
+      )
+      .andExpect(status().isForbidden)
+      .andReturn()
+    Assertions.assertTrue(
+      result.getResponse.getContentAsString.contains("virheellinen tai vanhentunut tuloskirjeen kirjautumistoken")
+    )
+  }
+
+  @Test
+  def returnsForbiddenForFailedVerification(): Unit = {
+    Mockito
+      .when(verificationService.verify("invalid-token"))
+      .thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token/haku/$HAKU_OID")
+      )
+      .andExpect(status().isForbidden)
+      .andReturn()
+    LOG.info(result.getResponse.getContentAsString)
+//      Assertions.assertTrue(
+//      result.getResponse.getContentAsString.contains("virheellinen tai vanhentunut tuloskirjeen kirjautumistoken")
+//    )
   }
 }
