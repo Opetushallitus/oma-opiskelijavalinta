@@ -38,16 +38,31 @@ object AuditLog {
   def log(
     request: HttpServletRequest,
     targetFields: Map[String, String],
-    operaatio: AuditOperation,
+    operation: AuditOperation,
     entity: Option[Any]
-  ): Unit =
-    val target = new Target.Builder()
-    for ((key, value) <- targetFields)
-      target.setField(key, value)
-    val elements: JsonArray = new JsonArray()
-    if (entity.isDefined)
-      elements.add(JsonParser.parseString(mapper.writeValueAsString(entity.get)))
-    audit.log(getUser(request), operaatio, target.build(), elements)
+  ): Unit = {
+    audit.log(
+      buildAuthenticatedUser(request),
+      operation,
+      buildTarget(targetFields),
+      buildChanges(entity)
+    )
+  }
+
+  def logUnauthenticated(
+    request: HttpServletRequest,
+    targetFields: Map[String, String],
+    operation: AuditOperation,
+    entity: Option[Any],
+    userOid: String
+  ): Unit = {
+    audit.log(
+      buildUnauthenticatedUser(request, userOid),
+      operation,
+      buildTarget(targetFields),
+      buildChanges(entity)
+    )
+  }
 
   def getUser(request: HttpServletRequest): User =
     val userOid = AuthorizationService.getPersonOid
@@ -67,6 +82,84 @@ object AuditLog {
           Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")
         )
     }
+
+  private def buildTarget(targetFields: Map[String, String]): Target = {
+    val targetBuilder = new Target.Builder()
+    for ((key, value) <- targetFields)
+      targetBuilder.setField(key, value)
+    targetBuilder.build()
+  }
+
+  private def buildChanges(entity: Option[Any]): JsonArray = {
+    val elements = new JsonArray()
+    entity.foreach { value =>
+      elements.add(
+        JsonParser.parseString(
+          mapper.writeValueAsString(value)
+        )
+      )
+    }
+    elements
+  }
+
+  private def buildAuthenticatedUser(request: HttpServletRequest): User = {
+    val ip        = getInetAddress(request)
+    val sessionId = getSessionId(request)
+    val userAgent = getUserAgent(request)
+
+    AuthorizationService.getPersonOid match {
+      case Some(oid) =>
+        new User(
+          Oid(oid),
+          ip,
+          sessionId,
+          userAgent
+        )
+
+      case None =>
+        new User(
+          ip,
+          sessionId,
+          userAgent
+        )
+    }
+  }
+
+  private def buildUnauthenticatedUser(
+    request: HttpServletRequest,
+    userOid: String
+  ): User = {
+
+    val ip        = getInetAddress(request)
+    val userAgent = getUserAgent(request)
+
+    try {
+      new User(
+        Oid(userOid),
+        ip,
+        "", // unauthenticated request has no session
+        userAgent
+      )
+    } catch {
+      case e: Exception =>
+        LOG.error(s"Virheellinen userOid auditlogiin: $userOid", e)
+
+        new User(
+          ip,
+          getSessionId(request),
+          userAgent
+        )
+    }
+  }
+
+  private def getSessionId(request: HttpServletRequest): String =
+    Option(request.getSession(false))
+      .map(_.getId)
+      .getOrElse("")
+
+  def getUserAgent(request: HttpServletRequest): String =
+    Option(request.getHeader("User-Agent"))
+      .getOrElse("Tuntematon user agent")
 
   def getInetAddress(request: HttpServletRequest): InetAddress =
     InetAddress.getByName(HttpServletRequestUtils.getRemoteAddress(request))

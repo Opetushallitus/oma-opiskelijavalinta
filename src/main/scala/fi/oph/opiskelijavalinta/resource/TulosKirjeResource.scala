@@ -55,13 +55,12 @@ class TulosKirjeResource @Autowired (
     }
   }
 
-  @GetMapping(path = Array("/token/{token}/haku/{hakuOid}"))
+  @GetMapping(path = Array("/token/{token}"))
   def getTuloskirjeWithToken(
     @PathVariable(required = true) token: String,
-    @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakuOid: String,
     request: HttpServletRequest
   ): ResponseEntity[String] = {
-    LOG.info(s"Haetaan tuloskirje oppijan-tunnistus tokenilla haulle $hakuOid")
+    LOG.info(s"Haetaan tuloskirje oppijan-tunnistus tokenilla")
 
     if (token == null || token.trim.isEmpty) {
       LOG.warn("tuloskirjeen latauksesta puuttui kirjautumistoken")
@@ -85,21 +84,24 @@ class TulosKirjeResource @Autowired (
       val meta = verification.metadata.getOrElse(
         throw new LinkAuthenticationException("tuloskirjeen kirjautumistokenin metadata puuttuu")
       )
-
+      val personOid = meta.personOid.getOrElse(
+        throw new LinkAuthenticationException("oppijan oid puuttuu kirjautumistokenin metadatasta")
+      )
       val hakuOid = meta.hakuOid.getOrElse(
         throw new LinkAuthenticationException("haun oid puuttuu tuloskirjeen kirjautumistokenin metadatasta")
       )
       val hakemusOid = meta.hakemusOid
 
       val result = kirjeService.getTuloskirje(hakuOid, hakemusOid)
-      AuditLog.log(
+      AuditLog.logUnauthenticated(
         request,
         Map(
           "hakemusOid" -> hakemusOid,
           "hakuOid"    -> hakuOid
         ),
         AuditOperation.HaeTulosKirje,
-        None
+        None,
+        personOid
       )
       result match {
         case Some(data) =>
@@ -109,18 +111,18 @@ class TulosKirjeResource @Autowired (
             .contentType(MediaType.parseMediaType("text/html;charset=UTF-8"))
             .body(new String(data, StandardCharsets.UTF_8))
         case None =>
-          LOG.info(s"Tuloskirjeen haku $hakemusOid ja haulla $hakuOid epäonnistui")
+          LOG.info(s"Tuloskirjeen haku hakemukselle $hakemusOid ja haulla $hakuOid epäonnistui")
           ResponseEntity.notFound.build
       }
     } catch {
       case ex: LinkAuthenticationException =>
-        LOG.error(s"Virhe tuloskirjeen latauksessa, hakuOid: $hakuOid, token: $token", ex.getMessage)
+        LOG.error(s"Virhe tuloskirjeen latauksessa, token: $token", ex.getMessage)
         ResponseEntity
           .status(HttpStatus.FORBIDDEN)
           .body(ex.getMessage)
       case e: Exception =>
         LOG.error(
-          s"Virhe tuloskirjeen latauksessa, hakuOid: $hakuOid, token: $token",
+          s"Virhe tuloskirjeen latauksessa, token: $token",
           e
         )
         ResponseEntity

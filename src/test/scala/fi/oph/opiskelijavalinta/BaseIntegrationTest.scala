@@ -47,7 +47,10 @@ import slick.jdbc.JdbcBackend.Database
 class OphPostgresContainer(dockerImageName: String)
     extends PostgreSQLContainer[OphPostgresContainer](dockerImageName) {}
 
-case class AuditLogEntry(operation: String, target: Map[String, Any], changes: List[Any])
+case class AuditUser(
+  oid: String
+)
+case class AuditLogEntry(operation: String, target: Map[String, Any], changes: List[Any], user: AuditUser)
 
 object BaseIntegrationTest {
 
