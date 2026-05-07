@@ -39,10 +39,10 @@ export function determineHakemusType({
         data-test-id={`application-${hakemus.oid}`}
       >
         <ErrorBox sx={{ marginTop: '1.5rem' }}>
-          <OphTypography sx={{ fontWeight: 600, padding: '0.1rem 0' }}>
+          <OphTypography sx={{ fontWeight: 600 }}>
             {t('hakemukset.rikastaminen-epaonnistui.otsikko')}
           </OphTypography>
-          <OphTypography sx={{ marginTop: '0.5rem' }}>
+          <OphTypography>
             {t('hakemukset.rikastaminen-epaonnistui.kuvaus', {
               oid: hakemus.oid,
               submitted,
@@ -67,6 +67,25 @@ export function determineHakemusType({
   );
 }
 
+function EpaonnistuneetHakemuksetList() {
+  const { t } = useTranslations();
+
+  const { data: hakemukset } = useSuspenseQuery({
+    queryKey: ['hakemukset'],
+    queryFn: getHakemukset,
+  });
+
+  const epaonnistuneet = [...hakemukset.current, ...hakemukset.old].filter(
+    (h) => h.enrichmentFailed,
+  );
+
+  if (isEmpty(epaonnistuneet)) return null;
+
+  return (
+    <>{epaonnistuneet.map((hakemus) => determineHakemusType({ hakemus, t }))}</>
+  );
+}
+
 function HakemuksetList() {
   const { t } = useTranslations();
 
@@ -75,16 +94,14 @@ function HakemuksetList() {
     queryFn: getHakemukset,
   });
 
+  const nonFailed = hakemukset.current.filter((h) => !h.enrichmentFailed);
+
   return isEmpty(hakemukset.current) ? (
     <InfoBox sx={{ marginTop: '1.5rem' }}>
       {t('hakemukset.ei-hakemuksia')}
     </InfoBox>
   ) : (
-    <>
-      {hakemukset?.current.map((hakemus) =>
-        determineHakemusType({ hakemus, t }),
-      )}
-    </>
+    <>{nonFailed.map((hakemus) => determineHakemusType({ hakemus, t }))}</>
   );
 }
 
@@ -96,13 +113,15 @@ function MenneetHakemuksetList() {
     queryFn: getHakemukset,
   });
 
+  const nonFailed = hakemukset.old.filter((h) => !h.enrichmentFailed);
+
   return isEmpty(hakemukset.old) ? (
     <InfoBox sx={{ marginTop: '1.5rem' }}>
       {t('hakemukset.ei-menneita-hakemuksia')}
     </InfoBox>
   ) : (
     <>
-      {hakemukset?.old.map((hakemus) =>
+      {nonFailed.map((hakemus) =>
         determineHakemusType({ hakemus, past: true, t }),
       )}
     </>
@@ -114,6 +133,9 @@ export default function Hakemukset() {
 
   return (
     <>
+      <QuerySuspenseBoundary suspenseFallback={<></>}>
+        <EpaonnistuneetHakemuksetList />
+      </QuerySuspenseBoundary>
       <Box data-test-id="active-hakemukset">
         <OphTypography variant="h2">
           {t('hakemukset.ajankohtaiset')}

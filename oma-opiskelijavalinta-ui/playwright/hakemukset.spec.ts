@@ -451,6 +451,10 @@ test('Näyttää virheilmoituksen hakemukselle jonka rikastaminen epäonnistui',
       'Hakemuksen hakemus-oid-1 tietojen hakemisessa on ongelmia. Hakemus on jätetty 18.10.2025.',
     ),
   ).toBeVisible();
+
+  await expect(
+    page.getByTestId('active-hakemukset').getByTestId('error-box'),
+  ).toBeHidden();
 });
 
 test('Hakemusten saavutettavuus', async ({ page }) => {

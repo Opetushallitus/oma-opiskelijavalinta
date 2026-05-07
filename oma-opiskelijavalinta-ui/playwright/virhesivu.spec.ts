@@ -4,6 +4,7 @@ import {
   mockAuthenticatedUser,
   mockHakemuksetFetch,
 } from './lib/playwrightUtils';
+import { mockSession } from './mocks';
 
 test('Näyttää virhesivun', async ({ page }) => {
   await setup(page);
@@ -41,12 +42,17 @@ test('Näyttää virhesivun kun virhe tulee user-rajapinnasta', async ({
 test('Ei näytä virhesivua kun virhe tulee hakemukset-rajapinnasta', async ({
   page,
 }) => {
-  await setup(page, '**/api/hakemukset');
+  await mockSession(page);
+  await mockAuthenticatedUser(page);
+  await page.route('**/api/hakemukset', async (route) => {
+    await route.fulfill({ status: 500 });
+  });
+  await page.goto('');
   await expect(page.getByText('Tapahtui palvelinvirhe. Lataa')).toBeHidden();
   await expect(
     page.getByRole('heading', { name: 'Nyt meni jokin pieleen' }),
   ).toBeHidden();
-  await expect(page.getByText('Palvelinvirhe')).toHaveCount(2);
+  await expect(page.getByText('Palvelinvirhe')).toHaveCount(3);
 });
 
 test('Virhesivun saavutettavuus', async ({ page }) => {
