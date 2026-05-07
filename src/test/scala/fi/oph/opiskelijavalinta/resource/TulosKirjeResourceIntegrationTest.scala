@@ -3,7 +3,8 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
-import fi.oph.opiskelijavalinta.model.{Hakemus, OppijanTunnistusVerification, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{Hakemus, OppijanTunnistusVerification, OppijantunnistusMetadata, TranslatedName}
+import fi.oph.opiskelijavalinta.security.AuditOperation
 import fi.oph.opiskelijavalinta.service.AllowedIlmoittautumisTila.LASNA_KOKO_LUKUVUOSI
 import fi.oph.opiskelijavalinta.service.LinkVerificationService
 import org.junit.jupiter.api.*
@@ -169,7 +170,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
     val result = mvc
       .perform(
         MockMvcRequestBuilders
-          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token/haku/$HAKU_OID")
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token")
       )
       .andExpect(status().isForbidden)
       .andReturn()
@@ -187,13 +188,58 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
     val result = mvc
       .perform(
         MockMvcRequestBuilders
-          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token/haku/$HAKU_OID")
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token")
       )
       .andExpect(status().isForbidden)
       .andReturn()
     LOG.info(result.getResponse.getContentAsString)
-//      Assertions.assertTrue(
-//      result.getResponse.getContentAsString.contains("virheellinen tai vanhentunut tuloskirjeen kirjautumistoken")
-//    )
+    Assertions.assertTrue(
+      result.getResponse.getContentAsString.contains("tuloskirjeen kirjautumistokenin data puuttuu")
+    )
+  }
+
+  @Test
+  def returnsTulosKirjeWithValidToken(): Unit = {
+    Mockito
+      .when(verificationService.verify("valid-token"))
+      .thenReturn(
+        Some(
+          OppijanTunnistusVerification(
+            exists = true,
+            valid = true,
+            metadata = Some(
+              OppijantunnistusMetadata(
+                hakemusOid = HAKEMUS_OID,
+                personOid = Some(PERSON_OID),
+                hakuOid = Some(HAKU_OID)
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(tulosKirjeService.getTuloskirje(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(Some(Array(Byte.MaxValue)))
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/valid-token")
+      )
+      .andExpect(status().isOk)
+    val auditEntries = getAllAuditLogEntries
+    val tuloskirjeAudit = auditEntries.find(
+      _.operation == "HAE TULOSKIRJE"
+    )
+    Assertions.assertTrue(
+      tuloskirjeAudit.isDefined
+    )
+    Assertions.assertEquals(
+      HAKEMUS_OID,
+      tuloskirjeAudit.get.target("hakemusOid")
+    )
+    Assertions.assertEquals(
+      PERSON_OID,
+      tuloskirjeAudit.get.user.oid
+    )
   }
 }
