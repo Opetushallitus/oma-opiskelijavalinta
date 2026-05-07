@@ -88,7 +88,7 @@ class ValintaTulosServiceClient @Autowired (
           LOG.error(
             s"Valintatulosten haku valintatulospalvelusta epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
-          Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
+          Left(new RuntimeException("Valintatulosten haku valintatulospalvelusta epäonnistui: " + r.getResponseBody()))
       }
       Await.result(result, Duration(timeoutSeconds, TimeUnit.SECONDS))
     } catch {
