@@ -64,25 +64,6 @@ object AuditLog {
     )
   }
 
-  def getUser(request: HttpServletRequest): User =
-    val userOid = AuthorizationService.getPersonOid
-    val ip      = getInetAddress(request)
-    userOid match {
-      case Some(oid) =>
-        new User(
-          Oid(oid),
-          ip,
-          request.getSession(false).getId,
-          Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")
-        )
-      case None =>
-        new User(
-          ip,
-          request.getSession(false).getId,
-          Option(request.getHeader("User-Agent")).getOrElse("Tuntematon user agent")
-        )
-    }
-
   private def buildTarget(targetFields: Map[String, String]): Target = {
     val targetBuilder = new Target.Builder()
     for ((key, value) <- targetFields)
