@@ -10,6 +10,10 @@ import { InfoBox } from '../InfoBox';
 import { ErrorBox } from '../ErrorBox';
 import { MennytHakemusContainer } from './MennytHakemusContainer';
 import { HautonHakemusContainer } from './HautonHakemusContainer';
+import {
+  toFormattedDateTimeString,
+  DEFAULT_DATE_FORMAT,
+} from '@/lib/localization/translation-utils';
 import type { JSX } from 'react';
 import type { Hakemus } from '@/lib/hakemus-types';
 
@@ -25,13 +29,25 @@ export function determineHakemusType({
   t,
 }: HakemusTypeParams): JSX.Element {
   if (hakemus.enrichmentFailed) {
+    const submitted = toFormattedDateTimeString(
+      hakemus.submitted,
+      DEFAULT_DATE_FORMAT,
+    );
     return (
       <Box
         key={`application-${hakemus.oid}`}
         data-test-id={`application-${hakemus.oid}`}
       >
         <ErrorBox sx={{ marginTop: '1.5rem' }}>
-          {t('hakemukset.rikastaminen-epaonnistui', { oid: hakemus.oid })}
+          <OphTypography sx={{ fontWeight: 600, padding: '0.1rem 0' }}>
+            {t('hakemukset.rikastaminen-epaonnistui.otsikko')}
+          </OphTypography>
+          <OphTypography sx={{ marginTop: '0.5rem' }}>
+            {t('hakemukset.rikastaminen-epaonnistui.kuvaus', {
+              oid: hakemus.oid,
+              submitted,
+            })}
+          </OphTypography>
         </ErrorBox>
       </Box>
     );

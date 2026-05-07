@@ -444,8 +444,11 @@ test('Näyttää virheilmoituksen hakemukselle jonka rikastaminen epäonnistui',
   const app = page.getByTestId('application-hakemus-oid-1');
   await expect(app.getByTestId('error-box')).toBeVisible();
   await expect(
+    app.getByText('Tietojen hakemisessa on ongelmia', { exact: true }),
+  ).toBeVisible();
+  await expect(
     app.getByText(
-      'Hakemuksen hakemus-oid-1 tietojen lataaminen epäonnistui. Yritä myöhemmin uudelleen.',
+      'Hakemuksen hakemus-oid-1 tietojen hakemisessa on ongelmia. Hakemus on jätetty 18.10.2025.',
     ),
   ).toBeVisible();
 });

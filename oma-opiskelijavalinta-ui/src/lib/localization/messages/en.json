@@ -3,7 +3,10 @@
   "hakemukset": {
     "ajankohtaiset": "Current applications",
     "ei-hakemuksia": "No current applications",
-    "rikastaminen-epaonnistui": "Failed to load application {oid} details. Please try again later.",
+    "rikastaminen-epaonnistui": {
+      "otsikko": "There are problems fetching data",
+      "kuvaus": "There are problems fetching data for application {oid}. Application was submitted {submitted}."
+    },
     "info": {
       "lahettanyt": "You have sent an application.",
       "voit-muokata": "You can modify your application until the end of application period that ends {hakuaikaPaattyy}. You can modify your contact info even after application period has ended."
