@@ -226,7 +226,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
           .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/valid-token")
       )
       .andExpect(status().isOk)
-    val auditEntries = getAllAuditLogEntries
+    val auditEntries    = getAllAuditLogEntries
     val tuloskirjeAudit = auditEntries.find(
       _.operation == "HAE TULOSKIRJE"
     )
