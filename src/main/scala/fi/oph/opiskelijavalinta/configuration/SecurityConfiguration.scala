@@ -128,6 +128,26 @@ class SecurityConfiguration {
     )
   }
 
+  @Bean(Array("supaCasClient"))
+  def createSupaCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
+    CasClientBuilder.buildFromConfigAndHttpClient(
+      CasConfig
+        .CasConfigBuilder(
+          cas_username,
+          cas_password,
+          s"https://$opintopolku_virkailija_domain/cas",
+          s"https://$opintopolku_virkailija_domain/suorituspalvelu",
+          Constants.CALLER_ID,
+          Constants.CALLER_ID,
+          "/api/login/j_spring_cas_security_check"
+        )
+        .setJsessionName("JSESSIONID")
+        .setNumberOfRetries(2)
+        .build(),
+      sharedHttpClient
+    )
+  }
+
   @Bean(Array("vtsCasClient"))
   def createVtsCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
     CasClientBuilder.buildFromConfigAndHttpClient(
