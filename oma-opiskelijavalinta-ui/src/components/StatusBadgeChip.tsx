@@ -73,6 +73,7 @@ export function StatusBadgeChip({
   return (
     <StyledChip
       label={badgeProps.label}
+      clickable={false}
       sx={{
         backgroundColor: badgeColor.background,
         color: badgeColor.color,

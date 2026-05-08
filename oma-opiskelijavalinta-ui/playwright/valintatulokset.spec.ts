@@ -1032,6 +1032,30 @@ test('Tulos ilman valintatapajonoa on saavutettava', async ({ page }) => {
   await expectPageAccessibilityOk(page);
 });
 
+test('Tilabadge ei näy ruudunlukijalle klikattavana elementtinä', async ({
+  page,
+}) => {
+  const hyvaksyttyApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
+  };
+
+  await fetchMockData(page, hyvaksyttyApplication);
+
+  const tulokset = page.getByTestId('application-hakutoiveet-hakemus-oid-2');
+
+  const badge = tulokset
+    .locator('.MuiChip-root')
+    .filter({ hasText: 'Hyväksytty' })
+    .first();
+
+  await expect(badge).toBeVisible();
+
+  await expect(badge).not.toHaveAttribute('role', 'button');
+  await expect(badge).not.toHaveAttribute('tabindex', /.+/);
+  await expect(badge).not.toHaveClass(/MuiChip-clickable/);
+});
+
 test('Valintatapajonojen tulos on saavutettava', async ({ page }) => {
   const hyvaksyttyApplication = {
     ...hakemus2,
