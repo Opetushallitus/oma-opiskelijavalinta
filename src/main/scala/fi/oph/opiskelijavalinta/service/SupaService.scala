@@ -1,0 +1,75 @@
+package fi.oph.opiskelijavalinta.service
+
+import com.fasterxml.jackson.annotation.{JsonSetter, Nulls}
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import fi.oph.opiskelijavalinta.clients.SuoritusPalveluClient
+import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpiskeluOikeudetResponse, YosVirhe}
+import org.slf4j.{Logger, LoggerFactory}
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+@Service
+class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectMapper = new ObjectMapper()) {
+
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[SupaService]);
+
+  mapper.registerModule(DefaultScalaModule)
+  mapper.registerModule(new JavaTimeModule())
+  mapper.registerModule(new Jdk8Module())
+  mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+  mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+  mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
+  mapper
+    .configOverride(classOf[List[_]])
+    .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
+
+  def haePaattyvatOpiskeluOikeudet(
+    hakijaOid: String,
+    hakuOid: String,
+    hakukohdeOid: String
+  ): Option[List[PaatettavaOpiskeluOikeus]] = {
+    LOG.info(s"Haetaan päättyvät opiskeluoikeudet hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid")
+    supaClient.getPaattyvatOpintoOikeudet(hakijaOid, hakuOid, hakukohdeOid) match {
+      case Left(e) =>
+        LOG.error(
+          s"Virhe päättyvien opiskeluoikeuksien hakemisessa, hakijaOid=$hakijaOid, hakuOid=$hakuOid, hakukohdeOid=$hakukohdeOid: ${e.getMessage}"
+        )
+        None
+      case Right(o) =>
+        try {
+          val raw = mapper.readValue(o, classOf[PaatettavatOpiskeluOikeudetResponse])
+          raw match {
+            case PaatettavatOpiskeluOikeudetResponse(_, Some(virhe), Some(viesti)) =>
+              handleYosVirhe(virhe, viesti)
+              None
+            case PaatettavatOpiskeluOikeudetResponse(paatettavatOpiskeluOikeudet, _, _) =>
+              paatettavatOpiskeluOikeudet
+          }
+        } catch {
+          case e: Exception =>
+            LOG.error(
+              "Päättyvien opiskeluoikeuksien deserialisointi epäonnistui hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid",
+              e
+            )
+            None
+        }
+    }
+  }
+
+  private def handleYosVirhe(virhe: YosVirhe, viesti: String): Unit = {
+    // TODO: OPHYOS-170, mihin tämän virheen pitäisi vaikuttaa? Näytetäänkö käyttäjälle?
+    virhe match {
+      case YosVirhe.VIRHE_HAKUTOIVEEN_PAATTELYSSA =>
+        LOG.error(s"Virhe tapahtunut päätellessä kuuluuko hakutoive YOS piiriin, virhe $virhe, viesti $viesti")
+      case YosVirhe.VIRHE_PAATETTAVIEN_OPISKELUOIKEUKSIEN_HAUSSA =>
+        LOG.error(s"Virhe tapahtunut hakiessa päätettäviä opiskeluoikeuksia, virhe $virhe, viesti $viesti")
+      case _ =>
+        LOG.error(s"Virhe tapahtunut rajapinta kutsussa, virhe $virhe, viesti $viesti")
+      // TODO pitäisikö tässä lentää poikkeus?
+    }
+  }
+
+}
