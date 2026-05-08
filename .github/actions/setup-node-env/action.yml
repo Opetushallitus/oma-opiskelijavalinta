@@ -23,7 +23,7 @@ runs:
       uses: actions/setup-node@v6
       with:
         cache: 'pnpm'
-        cache-dependency-path: ${{ inputs.project_path }}/pnpm-lock.yaml
+        cache-dependency-path: ${{ github.workspace }}/${{ inputs.project_path }}/pnpm-lock.yaml
         registry-url: 'https://npm.pkg.github.com'
         scope: '@opetushallitus'
     - name: Install pnpm dependencies
