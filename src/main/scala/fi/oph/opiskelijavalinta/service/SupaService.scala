@@ -30,22 +30,22 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
     hakijaOid: String,
     hakuOid: String,
     hakukohdeOid: String
-  ): Option[List[PaatettavaOpiskeluOikeus]] = {
+  ): List[PaatettavaOpiskeluOikeus] = {
     LOG.info(s"Haetaan päättyvät opiskeluoikeudet hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid")
     supaClient.getPaattyvatOpintoOikeudet(hakijaOid, hakuOid, hakukohdeOid) match {
       case Left(e) =>
         LOG.error(
           s"Virhe päättyvien opiskeluoikeuksien hakemisessa, hakijaOid=$hakijaOid, hakuOid=$hakuOid, hakukohdeOid=$hakukohdeOid: ${e.getMessage}"
         )
-        None
+        List.empty
       case Right(o) =>
         try {
           val raw = mapper.readValue(o, classOf[PaatettavatOpiskeluOikeudetResponse])
           raw match {
             case PaatettavatOpiskeluOikeudetResponse(_, Some(virhe), Some(viesti)) =>
               handleYosVirhe(virhe, viesti)
-              None
-            case PaatettavatOpiskeluOikeudetResponse(paatettavatOpiskeluOikeudet, _, _) =>
+              List.empty
+            case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
               paatettavatOpiskeluOikeudet
           }
         } catch {
@@ -54,7 +54,7 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
               "Päättyvien opiskeluoikeuksien deserialisointi epäonnistui hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid",
               e
             )
-            None
+            List.empty
         }
     }
   }
@@ -68,7 +68,7 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
         LOG.error(s"Virhe tapahtunut hakiessa päätettäviä opiskeluoikeuksia, virhe $virhe, viesti $viesti")
       case _ =>
         LOG.error(s"Virhe tapahtunut rajapinta kutsussa, virhe $virhe, viesti $viesti")
-      // TODO pitäisikö tässä lentää poikkeus?
+      // TODO OPHYOS-170: pitäisikö tässä lentää poikkeus?
     }
   }
 
