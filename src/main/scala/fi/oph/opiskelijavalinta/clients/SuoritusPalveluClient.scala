@@ -13,9 +13,10 @@ import scala.jdk.javaapi.FutureConverters.asScala
 case class VtsBadRequestException(body: String) extends RuntimeException(body)
 
 class SuoritusPalveluClient @Autowired (
-                             supaCasClient: CasClient,
-                             httpExecutionContext: ExecutionContext,
-                             timeoutSeconds: Int) {
+  supaCasClient: CasClient,
+  httpExecutionContext: ExecutionContext,
+  timeoutSeconds: Int
+) {
 
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
@@ -24,8 +25,13 @@ class SuoritusPalveluClient @Autowired (
 
   implicit private val ec: ExecutionContext = httpExecutionContext
 
-  def getPaattyvatOpintoOikeudet(hakijaOid: String, hakuOid: String, hakukohdeOid: String): Either[Throwable, String] = {
-    val url = s"https://$opintopolku_virkailija_domain/suorituspalvelu/api/v1/yos/hakija/$hakijaOid/haku/$hakuOid/hakukohde/$hakukohdeOid/opiskeluoikeudet"
+  def getPaattyvatOpintoOikeudet(
+    hakijaOid: String,
+    hakuOid: String,
+    hakukohdeOid: String
+  ): Either[Throwable, String] = {
+    val url =
+      s"https://$opintopolku_virkailija_domain/suorituspalvelu/api/v1/yos/hakija/$hakijaOid/haku/$hakuOid/hakukohde/$hakukohdeOid/opiskeluoikeudet"
     fetch(url)
   }
 
@@ -44,7 +50,11 @@ class SuoritusPalveluClient @Autowired (
           LOG.error(
             s"Päättyvien opinto-oikeuksien haku suorituspalvelusta epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
-          Left(new RuntimeException("Päättyvien opinto-oikeuksien haku suorituspalvelusta epäonnistui: " + r.getResponseBody()))
+          Left(
+            new RuntimeException(
+              "Päättyvien opinto-oikeuksien haku suorituspalvelusta epäonnistui: " + r.getResponseBody()
+            )
+          )
       }
       Await.result(result, Duration(timeoutSeconds, TimeUnit.SECONDS))
     } catch {

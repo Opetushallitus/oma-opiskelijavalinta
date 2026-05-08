@@ -7,6 +7,7 @@ import fi.oph.opiskelijavalinta.clients.{
   LokalisointiClient,
   OhjausparametritClient,
   OppijanTunnistusClient,
+  SuoritusPalveluClient,
   ValintaTulosServiceClient
 }
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
@@ -65,9 +66,9 @@ class ClientConfiguration(timeouts: ClientTimeoutProperties) {
 
   @Bean
   def supaClient(
-                 @Autowired @Qualifier("supaCasClient") supaCasClient: CasClient,
-                 httpExecutionContext: ExecutionContext
-               ): SuoritusPalveluClient = {
+    @Autowired @Qualifier("supaCasClient") supaCasClient: CasClient,
+    httpExecutionContext: ExecutionContext
+  ): SuoritusPalveluClient = {
     new SuoritusPalveluClient(supaCasClient, httpExecutionContext, timeouts.vts)
   }
 
