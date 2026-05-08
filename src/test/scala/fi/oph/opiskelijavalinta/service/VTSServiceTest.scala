@@ -8,7 +8,6 @@ import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{
   hakutoiveEhdollisestiHyvaksytty
 }
 import fi.oph.opiskelijavalinta.model.{
-  HakutoiveenTulosEnriched,
   Ilmoittautumistapa,
   Ilmoittautumistila,
   KoodistoKoodi,
@@ -25,13 +24,15 @@ class VTSServiceTest {
 
   val vtsClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
 
+  val HAKIJA_OID  = "HAKIJA_OID-1"
   val HAKU_OID    = "HAKU-OID-1"
   val HAKEMUS_OID = "HAKEMUS-OID-1"
 
   val mockKoodistoService: KoodistoService = Mockito.mock(classOf[KoodistoService])
+  val mockSupaService: SupaService         = Mockito.mock(classOf[SupaService])
   val migriToken: MigriJsonWebToken        = Mockito.mock(classOf[MigriJsonWebToken])
   val oiliToken: OiliJsonWebToken          = Mockito.mock(classOf[OiliJsonWebToken])
-  val vtsService                           = VTSService(vtsClient, mockKoodistoService, migriToken, oiliToken)
+  val vtsService = VTSService(vtsClient, mockKoodistoService, mockSupaService, migriToken, oiliToken)
 
   @Test
   def returnsEhdollisuudenSyyFromKoodisto(): Unit = {
@@ -58,7 +59,7 @@ class VTSServiceTest {
           )
         )
       )
-    val tulos = vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID)
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Assertions.assertFalse(tulos.isEmpty)
     Assertions.assertFalse(tulos.get.hakutoiveet.isEmpty)
     val hakutoiveenTulosEnriched = tulos.get.hakutoiveet.head
@@ -91,7 +92,7 @@ class VTSServiceTest {
         )
       )
     Mockito.verifyNoInteractions(mockKoodistoService)
-    val tulos = vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID)
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Assertions.assertFalse(tulos.isEmpty)
     Assertions.assertFalse(tulos.get.hakutoiveet.isEmpty)
     val hakutoiveenTulosEnriched = tulos.get.hakutoiveet.head
