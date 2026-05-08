@@ -10,8 +10,6 @@ import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration.Duration
 import scala.jdk.javaapi.FutureConverters.asScala
 
-case class VtsBadRequestException(body: String) extends RuntimeException(body)
-
 class SuoritusPalveluClient @Autowired (
   supaCasClient: CasClient,
   httpExecutionContext: ExecutionContext,
@@ -21,7 +19,7 @@ class SuoritusPalveluClient @Autowired (
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[YosClient]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[SuoritusPalveluClient]);
 
   implicit private val ec: ExecutionContext = httpExecutionContext
 

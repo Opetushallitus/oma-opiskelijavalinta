@@ -31,9 +31,10 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
       val linkUser = authorizationService.hasLinkUserRole
+      val oppilasnumero = authorizationService.getPersonOid.get
       try {
         val result = vtsService
-          .getValinnanTulokset(hakuOid, hakemusOid)
+          .getValinnanTulokset(oppilasnumero, hakuOid, hakemusOid)
           .map(ht => {
             if (linkUser) {
               val toiveet: List[HakutoiveenTulosEnriched] =

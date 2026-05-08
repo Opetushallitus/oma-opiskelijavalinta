@@ -58,7 +58,7 @@ class HakemuksetService @Autowired (
             .filter(a => a.haku == null || a.haku.isBlank || a.haku.length.equals(KOUTA_HAKU_OID_LENGTH))
             .map(a =>
               try {
-                enrichHakemus(a)
+                enrichHakemus(a, oppijanumero)
               } catch {
                 case e: Exception =>
                   LOG.error(s"Hakemuksen ${a.oid} rikastaminen epäonnistui: ${e.getMessage}", e)
@@ -180,7 +180,7 @@ class HakemuksetService @Autowired (
     )
   }
 
-  private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
+  private def enrichHakemus(hakemus: Hakemus, oppijanumero: String): HakemusEnriched = {
     val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
     var hakukohteet: List[HakukohdeEnriched]                  = List.empty
@@ -207,7 +207,7 @@ class HakemuksetService @Autowired (
       if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
         try {
           // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
-          hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
+          hakutoiveidenTulokset = VTSService.getValinnanTulokset(oppijanumero: String, hakemus.haku, hakemus.oid) match {
             case Some(v) => v.hakutoiveet
             case _       => List.empty
           }

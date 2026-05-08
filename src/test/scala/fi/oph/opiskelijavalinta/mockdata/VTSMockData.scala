@@ -115,7 +115,8 @@ object VTSMockData {
       )
     ),
     None,
-    None
+    None,
+    List.empty
   )
 
   val hakutoive2Kesken = HakutoiveenTulosEnriched(
@@ -147,7 +148,8 @@ object VTSMockData {
     ilmoittautumisenAikaleima = None,
     jonokohtaisetTulostiedot = List.empty,
     None,
-    None
+    None,
+    List.empty
   )
 
   val mockVTSResponse = HakemuksenTulos(

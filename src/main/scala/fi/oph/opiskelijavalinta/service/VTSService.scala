@@ -32,6 +32,7 @@ case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokk
 class VTSService @Autowired (
   vtsClient: ValintaTulosServiceClient,
   koodistoService: KoodistoService,
+  supaService: SupaService,
   migriToken: MigriJsonWebToken,
   oiliToken: OiliJsonWebToken,
   mapper: ObjectMapper = new ObjectMapper()
@@ -39,6 +40,8 @@ class VTSService @Autowired (
 
   @Value("${migri.url}")
   val migriUrl: String = null
+
+  private val VASTAANOTETTAVAT_TILAT = List("VASTAANOTETTAVISSA_SITOVASTI", "VASTAANOTETTAVISSA_EHDOLLISESTI")
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -54,8 +57,14 @@ class VTSService @Autowired (
 
   private val MUU_KOODI = "muu"
 
+  private def vastaanotettavissa(tulos: HakutoiveenTulos): Boolean = {
+    VASTAANOTETTAVAT_TILAT.contains(tulos.vastaanotettavuustila.getOrElse(""))
+  }
+
   private def enrichHakutoiveenTulos(
-    tulos: HakutoiveenTulos
+    tulos: HakutoiveenTulos,
+    hakijaOid: String,
+    hakuOid: String
   ): HakutoiveenTulosEnriched = {
     val hyvaksymisenEhto =
       if (!tulos.ehdollisestiHyvaksyttavissa.contains(true)) {
@@ -73,6 +82,11 @@ class VTSService @Autowired (
             TranslationUtil.inlineHyvaksymisenEhto(tulos)
         }
       }
+
+    val opiskeluOikeudetJotkaVastaanottoPaattaa = (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
+      case (true, Some(hakukohdeOid)) => supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
+      case (false, _)                 => List.empty
+    }
 
     HakutoiveenTulosEnriched(
       hakukohdeOid = tulos.hakukohdeOid,
@@ -96,11 +110,12 @@ class VTSService @Autowired (
       ilmoittautumisenAikaleima = tulos.ilmoittautumisenAikaleima,
       jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot,
       kelaURL = tulos.kelaURL,
-      migriURL = if (tulos.showMigriURL.getOrElse(false)) Some(migriUrl) else None
+      migriURL = if (tulos.showMigriURL.getOrElse(false)) Some(migriUrl) else None,
+      paatettavatOpiskeluOikeudet = opiskeluOikeudetJotkaVastaanottoPaattaa
     )
   }
 
-  def getValinnanTulokset(hakuOid: String, hakemusOid: String): Option[HakemuksenTulos] = {
+  def getValinnanTulokset(hakijaOid: String, hakuOid: String, hakemusOid: String): Option[HakemuksenTulos] = {
     vtsClient.getValinnanTulokset(hakuOid, hakemusOid) match {
       case Left(e) =>
         LOG.error(
@@ -110,7 +125,7 @@ class VTSService @Autowired (
       case Right(o) =>
         try {
           val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
-          val enrichedHakutoiveenTulokset = raw.hakutoiveet.map(enrichHakutoiveenTulos)
+          val enrichedHakutoiveenTulokset = raw.hakutoiveet.map(enrichHakutoiveenTulos(_, hakijaOid, hakuOid))
           Some(
             HakemuksenTulos(
               hakuOid = raw.hakuOid,
