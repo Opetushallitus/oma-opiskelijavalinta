@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.Constants.KOUTA_HAKU_OID_LENGTH
+import fi.oph.opiskelijavalinta.Constants.{
+  KOULUTUKSEN_ALKAMISKAUSI_KEVAT,
+  KOULUTUKSEN_ALKAMISKAUSI_SYKSY,
+  KOUTA_HAKU_OID_LENGTH
+}
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
@@ -124,7 +128,14 @@ class HakemuksetService @Autowired (
         jarjestyspaikkaHierarkiaNimi = hk.jarjestyspaikkaHierarkiaNimi,
         uudenOpiskelijanUrl = hk.uudenOpiskelijanUrl,
         yhdenPaikanSaanto = hk.yhdenPaikanSaanto,
-        koulutuksenAlkamiskausi = hk.paateltyAlkamiskausi.flatMap(pa => pa.kausiUri)
+        koulutuksenAlkamiskausi = hk.paateltyAlkamiskausi
+          .flatMap(pa =>
+            pa.kausiUri
+              .map(s =>
+                if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
+                else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
+              )
+          )
       )
     )
   }
