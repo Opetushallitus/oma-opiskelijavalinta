@@ -47,7 +47,7 @@ export function IlmoittautumisCheckbox({
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
 
-  const kevatIlmoittautuminen = isKevatAlkamiskausi(application.haku);
+  const kevatIlmoittautuminen = isKevatAlkamiskausi(hakutoive);
 
   const mutation = useMutation({
     mutationFn: async () => {

@@ -324,7 +324,7 @@ test('Ei näytä ilmoittautumista ehdollisesti hyväksytylle', async ({
   ).toBeHidden();
 });
 
-test('Näyttää ja ilmoittautuu kevätkaudelle kun hakuun on sellainen määritelty', async ({
+test('Näyttää ja ilmoittautuu kevätkaudelle kun hakukohteeseen on sellainen määritelty', async ({
   page,
 }) => {
   await setup(page, 'kausi_k');
@@ -394,7 +394,13 @@ const vastaanotettuHakemus = ({
 }) => {
   return {
     ...hakemus3ToinenAste,
-    haku: { ...hakemus3ToinenAste.haku, koulutuksenAlkamiskausi: kausi },
+    haku: { ...hakemus3ToinenAste.haku },
+    hakukohteet: [
+      {
+        ...hakemus3ToinenAste.hakukohteet[0],
+        koulutuksenAlkamiskausi: kausi,
+      },
+    ],
     hakemuksenTulokset: [
       {
         ...hakemus3ToinenAste.hakemuksenTulokset[0],

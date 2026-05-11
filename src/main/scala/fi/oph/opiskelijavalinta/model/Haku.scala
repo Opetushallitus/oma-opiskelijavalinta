@@ -13,8 +13,7 @@ case class Haku(
   nimi: TranslatedName,
   hakutapaKoodiUri: String,
   kohdejoukkoKoodiUri: String,
-  hakuajat: Seq[Hakuaika],
-  metadata: Option[Metadata]
+  hakuajat: Seq[Hakuaika]
 )
 
 case class HakuEnriched(
@@ -23,6 +22,5 @@ case class HakuEnriched(
   hakuaikaKaynnissa: Boolean,
   viimeisinPaattynytHakuAika: Option[Long],
   kohdejoukkoKoodiUri: String,
-  hakutapaKoodiUri: String,
-  koulutuksenAlkamiskausi: Option[String]
+  hakutapaKoodiUri: String
 )
