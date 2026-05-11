@@ -32,6 +32,13 @@ export const VASTAANOTETTU_TILAT = [
   VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
 ];
 
+export type PaatettavaOpiskeluOikeus = {
+  tunniste: String,
+  organisaatioOid: String,
+  organisaatioNimi: TranslatedName,
+  nimi: TranslatedName,
+};
+
 export type HakutoiveenTulosDto = {
   hakukohdeOid: string;
   julkaistavissa: boolean;
@@ -49,6 +56,7 @@ export type HakutoiveenTulosDto = {
   kelaURL: string | null;
   showMigriURL?: boolean | null;
   migriURL?: string | null;
+  paatettavatOpiskeluOikeudet: Array<PaatettavaOpiskeluOikeus>;
 };
 
 export type JonokohtainenTulostietoDto = {
@@ -86,6 +94,7 @@ export type HakutoiveenTulos = Omit<
   valintatila: Valintatila;
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
   ilmoittautuminen: Ilmoittautuminen;
+  paatettavatOpiskeluOikeudet: Array<PaatettavaOpiskeluOikeus>;
 };
 
 export enum VastaanottoTilaToiminto {
