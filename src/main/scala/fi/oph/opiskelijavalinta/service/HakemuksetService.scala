@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.Constants.KOUTA_HAKU_OID_LENGTH
+import fi.oph.opiskelijavalinta.Constants.{
+  KOULUTUKSEN_ALKAMISKAUSI_KEVAT,
+  KOULUTUKSEN_ALKAMISKAUSI_SYKSY,
+  KOUTA_HAKU_OID_LENGTH
+}
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
@@ -13,6 +17,7 @@ import fi.oph.opiskelijavalinta.model.{
   Haku,
   HakuEnriched,
   Hakukohde,
+  HakukohdeEnriched,
   HakutoiveenTulosEnriched,
   Ohjausparametrit
 }
@@ -111,25 +116,41 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaIsOn.getOrElse(false),
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
-      haku.hakutapaKoodiUri,
-      haku.metadata
-        .flatMap(metadata => metadata.koulutuksenAlkamiskausi)
-        .flatMap(kak => kak.koulutuksenAlkamiskausi)
-        .flatMap(k => k.koodiUri)
+      haku.hakutapaKoodiUri
+    )
+  }
+
+  private def enrichHakukohde(hakukohde: Option[Hakukohde]): Option[HakukohdeEnriched] = {
+    hakukohde.map(hk =>
+      HakukohdeEnriched(
+        oid = hk.oid,
+        nimi = hk.nimi,
+        jarjestyspaikkaHierarkiaNimi = hk.jarjestyspaikkaHierarkiaNimi,
+        uudenOpiskelijanUrl = hk.uudenOpiskelijanUrl,
+        yhdenPaikanSaanto = hk.yhdenPaikanSaanto,
+        koulutuksenAlkamiskausi = hk.paateltyAlkamiskausi
+          .flatMap(pa =>
+            pa.kausiUri
+              .map(s =>
+                if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
+                else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
+              )
+          )
+      )
     )
   }
 
   private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
     val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
-    var hakukohteet: List[Option[Hakukohde]]                  = List.empty
+    var hakukohteet: List[Option[HakukohdeEnriched]]          = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulosEnriched] = List.empty
     var tuloskirjeModified: Option[Long]                      = Option.empty
     if (hakemus.haku != null) {
       tuloskirjeModified = tuloskirjeService.getLastModifiedTuloskirje(hakemus.haku, hakemus.oid)
       haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
-      hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde)
+      hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde).map(enrichHakukohde)
       ohjausparametrit = ohjausparametritService
         .getOhjausparametritForHaku(hakemus.haku)
         .map(o => {

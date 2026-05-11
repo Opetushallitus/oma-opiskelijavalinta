@@ -1,5 +1,5 @@
 import { isTruthy } from 'remeda';
-import type { Haku } from './kouta-types';
+import type { Haku, Hakukohde } from './kouta-types';
 
 const HAKUTAPA_YHTEISHAKU = 'hakutapa_01';
 const HAKUTAPA_JATKUVA = 'hakutapa_03';
@@ -37,6 +37,6 @@ export function isJatkuvaTaiJoustavaHaku(haku?: Haku): boolean {
   );
 }
 
-export function isKevatAlkamiskausi(haku?: Haku | null): boolean {
-  return isTruthy(haku) && haku.koulutuksenAlkamiskausi === 'kausi_k';
+export function isKevatAlkamiskausi(hakukohde?: Hakukohde | null): boolean {
+  return isTruthy(hakukohde) && hakukohde.koulutuksenAlkamiskausi === 'kausi_k';
 }
