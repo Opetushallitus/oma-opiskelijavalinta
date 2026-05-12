@@ -201,6 +201,39 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa k
   ).toBeVisible();
 });
 
+test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa tutkintoon johtamattomalle kk-hakutoiveelle', async ({
+  page,
+}) => {
+  await setup(page, {
+    ...hakemus2,
+    hakukohteet: [
+      {
+        oid: 'hakukohde-oid-3',
+        nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
+        jarjestyspaikkaHierarkiaNimi: {
+          fi: 'Tsunamiopisto, Merenpohjan kampus',
+        },
+        yhdenPaikanSaanto: { voimassa: false },
+        uudenOpiskelijanUrl: null,
+      },
+    ],
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await expect(
+    page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Huomioithan, että et voi ottaa muuta'),
+  ).toBeHidden();
+});
+
 test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
   await setup(page);
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
