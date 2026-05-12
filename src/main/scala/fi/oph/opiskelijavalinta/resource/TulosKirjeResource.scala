@@ -84,9 +84,6 @@ class TulosKirjeResource @Autowired (
       val meta = verification.metadata.getOrElse(
         throw new LinkAuthenticationException("tuloskirjeen kirjautumistokenin metadata puuttuu")
       )
-      val personOid = meta.personOid.getOrElse(
-        throw new LinkAuthenticationException("oppijan oid puuttuu kirjautumistokenin metadatasta")
-      )
       val hakuOid = meta.hakuOid.getOrElse(
         throw new LinkAuthenticationException("haun oid puuttuu tuloskirjeen kirjautumistokenin metadatasta")
       )
@@ -100,8 +97,7 @@ class TulosKirjeResource @Autowired (
           "hakuOid"    -> hakuOid
         ),
         AuditOperation.HaeTulosKirje,
-        None,
-        personOid
+        None
       )
       result match {
         case Some(data) =>

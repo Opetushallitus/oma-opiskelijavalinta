@@ -210,7 +210,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
             metadata = Some(
               OppijantunnistusMetadata(
                 hakemusOid = HAKEMUS_OID,
-                personOid = Some(PERSON_OID),
+                personOid = None,
                 hakuOid = Some(HAKU_OID)
               )
             )
@@ -236,10 +236,6 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(
       HAKEMUS_OID,
       tuloskirjeAudit.get.target("hakemusOid")
-    )
-    Assertions.assertEquals(
-      PERSON_OID,
-      tuloskirjeAudit.get.user.oid
     )
   }
 }
