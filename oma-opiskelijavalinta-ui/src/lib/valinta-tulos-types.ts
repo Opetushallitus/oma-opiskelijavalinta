@@ -33,10 +33,10 @@ export const VASTAANOTETTU_TILAT = [
 ];
 
 export type PaatettavaOpiskeluOikeus = {
-  tunniste: String,
-  organisaatioOid: String,
-  organisaatioNimi: TranslatedName,
-  nimi: TranslatedName,
+  tunniste: string;
+  organisaatioOid: string;
+  organisaatioNimi: TranslatedName;
+  nimi: TranslatedName;
 };
 
 export type HakutoiveenTulosDto = {
