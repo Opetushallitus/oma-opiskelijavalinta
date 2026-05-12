@@ -25,12 +25,12 @@ export function VastaanottoModalContent({
   };
 }) {
   const { t } = useTranslations();
-
+  const YPS = hakutoive.yhdenPaikanSaanto?.voimassa;
   return (
     <ModalBox>
       <OphTypography>{t(modalParams.info)}</OphTypography>
       <HakutoiveName hakutoive={hakutoive} />
-      {modalParams.info2 && (
+      {modalParams.info2 && YPS && (
         <OphTypography>
           <T
             keyName={modalParams.info2}
