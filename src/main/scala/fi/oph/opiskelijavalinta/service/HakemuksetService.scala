@@ -55,7 +55,7 @@ class HakemuksetService @Autowired (
         val apps     = mapper.readValue(o, classOf[Array[Hakemus]]).toSeq
         val enriched = apps
           .filter(a => a.haku == null || a.haku.isBlank || a.haku.length.equals(KOUTA_HAKU_OID_LENGTH))
-          .map(a => enrichHakemus(a))
+          .map(a => enrichHakemus(a, oppijanumero))
         HakemuksetEnriched(
           enriched.filter(isAjankohtainenHakemus),
           enriched.filter(isVanhaHakemus)
@@ -140,7 +140,7 @@ class HakemuksetService @Autowired (
     )
   }
 
-  private def enrichHakemus(hakemus: Hakemus): HakemusEnriched = {
+  private def enrichHakemus(hakemus: Hakemus, oppijanumero: String): HakemusEnriched = {
     val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
     var hakukohteet: List[Option[HakukohdeEnriched]]          = List.empty
@@ -169,7 +169,7 @@ class HakemuksetService @Autowired (
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
         // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
-        hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
+        hakutoiveidenTulokset = VTSService.getValinnanTulokset(oppijanumero: String, hakemus.haku, hakemus.oid) match {
           case Some(v) => v.hakutoiveet
           case _       => List.empty
         }
