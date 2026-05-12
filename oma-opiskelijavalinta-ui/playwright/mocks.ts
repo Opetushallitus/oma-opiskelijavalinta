@@ -171,6 +171,7 @@ export const hakemus3ToinenAste: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
     },
   ],
   processing: false,
@@ -250,6 +251,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
     },
     {
       hakukohdeOid: 'hakukohde-oid-5',
@@ -274,6 +276,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
     },
     {
       hakukohdeOid: 'hakukohde-oid-6',
@@ -298,6 +301,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
     },
   ],
   processing: false,
@@ -383,6 +387,7 @@ export const hakemuksenTulosVarasijalla: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
 };
 
 export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
@@ -417,6 +422,7 @@ export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
 };
 
 export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
@@ -442,6 +448,7 @@ export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
 };
 
 export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
@@ -476,6 +483,7 @@ export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
 };
 
 export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
@@ -510,6 +518,7 @@ export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
 };
 
 export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
@@ -534,6 +543,7 @@ export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
 };
 
 export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
@@ -564,6 +574,7 @@ export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
     ],
     ilmoittautumisenAikaleima: null,
     kelaURL: null,
+    paatettavatOpiskeluOikeudet: [],
   };
 
 export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenTulosDto> =
@@ -591,6 +602,7 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenT
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
     },
     {
       hakukohdeOid: 'hakukohde-oid-2',
@@ -615,6 +627,7 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenT
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
     },
   ];
 
