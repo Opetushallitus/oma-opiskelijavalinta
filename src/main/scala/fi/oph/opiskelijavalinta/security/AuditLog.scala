@@ -53,11 +53,10 @@ object AuditLog {
     request: HttpServletRequest,
     targetFields: Map[String, String],
     operation: AuditOperation,
-    entity: Option[Any],
-    userOid: String
+    entity: Option[Any]
   ): Unit = {
     audit.log(
-      buildUnauthenticatedUser(request, userOid),
+      buildUnauthenticatedUser(request),
       operation,
       buildTarget(targetFields),
       buildChanges(entity)
@@ -107,30 +106,15 @@ object AuditLog {
   }
 
   private def buildUnauthenticatedUser(
-    request: HttpServletRequest,
-    userOid: String
+    request: HttpServletRequest
   ): User = {
-
     val ip        = getInetAddress(request)
     val userAgent = getUserAgent(request)
-
-    try {
-      new User(
-        Oid(userOid),
-        ip,
-        "", // unauthenticated request has no session
-        userAgent
-      )
-    } catch {
-      case e: Exception =>
-        LOG.error(s"Virheellinen userOid auditlogiin: $userOid", e)
-
-        new User(
-          ip,
-          getSessionId(request),
-          userAgent
-        )
-    }
+    new User(
+      ip,
+      getSessionId(request),
+      userAgent
+    )
   }
 
   private def getSessionId(request: HttpServletRequest): String =
