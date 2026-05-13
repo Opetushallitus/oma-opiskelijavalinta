@@ -68,45 +68,6 @@ test('Näyttää priorisoidussa kk-haun vastaanottovaihtoehdossa sitovasti-tekst
   ).toBeVisible();
 });
 
-test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
-  page,
-}) => {
-  const hyvaksyttyPrioKkApplication = {
-    ...hakemus2,
-    hakemuksenTulokset: [
-      {
-        ...hakemuksenTulosHyvaksytty,
-        paatettavatOpiskeluOikeudet: [
-          {
-            tunniste: 'tunniste-1',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
-            nimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
-          },
-          {
-            tunniste: 'tunniste-2',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
-            nimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
-          },
-        ],
-      },
-    ],
-  };
-  await setup(page, hyvaksyttyPrioKkApplication);
-  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
-  await expect(
-    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
-  ).toBeVisible();
-  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
-  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
-  await expect(vastaanotot.getByText('Poral')).toBeVisible();
-  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
-  await expect(
-    vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
-  ).toBeVisible();
-});
-
 test('Näyttää ehdollisesti hyväksytyn vastaanotettavan hakutoiveen', async ({
   page,
 }) => {
@@ -879,6 +840,69 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
   await expect(
     tulosWarning.getByText('Ehdollinen opiskelijavalinta'),
   ).toBeHidden();
+});
+
+test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
+  page,
+}) => {
+  const hyvaksyttyPrioKkApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        paatettavatOpiskeluOikeudet: [
+          {
+            tunniste: 'tunniste-1',
+            organisaatioOid: '',
+            organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
+            nimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
+          },
+          {
+            tunniste: 'tunniste-2',
+            organisaatioOid: '',
+            organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
+            nimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
+          },
+        ],
+      },
+    ],
+  };
+  await setup(page, hyvaksyttyPrioKkApplication);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
+  await expect(
+    page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista opiskelupaikan')
+      .getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista opiskelupaikan')
+      .getByText('Valkoiset Lakanat Oy'),
+  ).toBeVisible();
+  await expect(
+    page.getByLabel('Vahvista opiskelupaikan').getByText('Lakana Lisensiaatti'),
+  ).toBeVisible();
+  await expect(
+    page.getByLabel('Vahvista opiskelupaikan').getByText('Poral'),
+  ).toBeVisible();
+  await expect(
+    page.getByLabel('Vahvista opiskelupaikan').getByText('Hampaiden Poraaja'),
+  ).toBeVisible();
 });
 
 test('Vastaanotto on saavutettava', async ({ page }) => {
