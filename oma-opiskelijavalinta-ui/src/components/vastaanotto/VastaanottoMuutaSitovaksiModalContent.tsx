@@ -4,6 +4,9 @@ import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
 import { HakutoiveName, HakutoiveList } from '../hakukohde/HakutoiveName';
 import { styled } from '@/lib/theme';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
+import { naytetaankoPeruuntuvatOpiskelupaikat } from './vastaanotto-utils';
+import { PaatettavatOikeudetInfo } from './PaatettavatOikeudetInfo';
 
 const ModalBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -14,9 +17,11 @@ const ModalBox = styled(Box)(({ theme }) => ({
 export function VastaanottoMuutaSitovaksiModalContent({
   hakutoive,
   ylemmatToiveet,
+  tulos,
 }: {
   hakutoive: Hakukohde;
   ylemmatToiveet: Array<Hakukohde>;
+  tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
 
@@ -37,6 +42,12 @@ export function VastaanottoMuutaSitovaksiModalContent({
         {t('vastaanotto.modaali.muuta-sitovaksi.info')}
       </OphTypography>
       <HakutoiveName hakutoive={hakutoive} />
+      {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
+        <PaatettavatOikeudetInfo
+          oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          showLink={false}
+        />
+      )}
     </ModalBox>
   );
 }
