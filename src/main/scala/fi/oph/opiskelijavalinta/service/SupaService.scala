@@ -47,6 +47,9 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
               List.empty
             case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
               paatettavatOpiskeluOikeudet
+            case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
+              LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
+              List.empty
           }
         } catch {
           case e: Exception =>

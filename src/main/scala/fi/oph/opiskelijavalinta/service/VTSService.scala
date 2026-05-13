@@ -85,7 +85,7 @@ class VTSService @Autowired (
 
     val opiskeluOikeudetJotkaVastaanottoPaattaa = (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
       case (true, Some(hakukohdeOid)) => supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
-      case (false, _)                 => List.empty
+      case (_, _)                     => List.empty
     }
 
     HakutoiveenTulosEnriched(
