@@ -59,6 +59,48 @@ test('Näyttää priorisoidussa kk-haun vastaanottovaihtoehdossa sitovasti-tekst
   ).toBeVisible();
   await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
   await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
+  ).toBeVisible();
+});
+
+test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
+  page,
+}) => {
+  const hyvaksyttyPrioKkApplication = {
+    ...hakemus2,
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        paatettavatOpiskeluOikeudet: [
+          {
+            tunniste: 'tunniste-1',
+            organisaatioOid: '',
+            organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
+            nimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
+          },
+          {
+            tunniste: 'tunniste-2',
+            organisaatioOid: '',
+            organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
+            nimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
+          },
+        ],
+      },
+    ],
+  };
+  await setup(page, hyvaksyttyPrioKkApplication);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(
     vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
   ).toBeVisible();
 });
