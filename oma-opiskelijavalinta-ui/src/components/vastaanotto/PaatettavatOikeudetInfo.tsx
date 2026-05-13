@@ -4,6 +4,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { BulletedList, BulletItem } from '../BulletedList';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
+import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 
 export function PaatettavatOikeudetInfo({
   oikeudet,
@@ -17,9 +18,9 @@ export function PaatettavatOikeudetInfo({
   const yosHref = `${config.routes.yleiset.konfo}`;
 
   return (
-    <>
-      <OphTypography variant="h5">{t('tulos.yos.otsikko')}</OphTypography>
-      <OphTypography>{t('tulos.yos.kuvaus')}</OphTypography>
+    <MultiInfoContainer>
+      <OphTypography variant="h5">{t('vastaanotto.yos.otsikko')}</OphTypography>
+      <OphTypography>{t('vastaanotto.yos.kuvaus')}</OphTypography>
       <BulletedList>
         {oikeudet.map((oikeus) => (
           <BulletItem
@@ -31,8 +32,8 @@ export function PaatettavatOikeudetInfo({
             <OphTypography>{translateEntity(oikeus.nimi)}</OphTypography>
           </BulletItem>
         ))}
-        <ExternalLink href={yosHref} name={t('tulos.yos.linkki')} />
       </BulletedList>
-    </>
+      <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />
+    </MultiInfoContainer>
   );
 }
