@@ -17,7 +17,10 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { getAlemmatVastaanotot, naytetaankoPeruuntuvatOpiskelupaikat } from './vastaanotto-utils';
+import {
+  getAlemmatVastaanotot,
+  naytetaankoPeruuntuvatOpiskelupaikat,
+} from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
 import {
@@ -108,6 +111,11 @@ const getInfoText = (
       <MultiInfoContainer>
         {getEhdollisestiVastaanottanutInfo(application, lang)}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
+        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
+          <PaatettavatOikeudetInfo
+            oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          />
+        )}
       </MultiInfoContainer>
     );
   } else {
@@ -159,7 +167,9 @@ const getInfoText = (
         )}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
         {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
-          <PaatettavatOikeudetInfo oikeudet={tulos.paatettavatOpiskeluOikeudet} />
+          <PaatettavatOikeudetInfo
+            oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          />
         )}
       </MultiInfoContainer>
     );
