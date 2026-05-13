@@ -185,6 +185,14 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
   await setup(page, tulokset);
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
 
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+
   await vastaanotot.getByText('Luovun jonotuksesta ja muutan').click();
   await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
   await expect(
