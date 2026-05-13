@@ -64,6 +64,7 @@ function VastaanottoBox({
           <VastaanottoEhdollisestaSitovaksi
             application={application}
             hakutoive={hakukohde}
+            tulos={tulos}
           />
         )}
       <IlmoittautuminenContainer
