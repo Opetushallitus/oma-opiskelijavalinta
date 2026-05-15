@@ -23,7 +23,7 @@ export async function getUser() {
   const response = await fetchUser();
   const user = response.data as User;
   // Return with raamit-compatible name field
-  const name = `${user.kutsumanimi} ${user.sukunimi}`;
+  const name = `${user?.kutsumanimi || ''} ${user?.sukunimi || ''}`.trim();
   return {
     ...user,
     name: name ?? '',
