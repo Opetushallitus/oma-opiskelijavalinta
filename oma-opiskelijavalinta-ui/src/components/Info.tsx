@@ -30,8 +30,6 @@ export default function Info() {
   const { state } = useAuth();
 
   const isLinkLogin = isLinkUser(state);
-  console.log('user: ', user);
-  console.log(JSON.stringify(user, null, 2));
   return (
     <Box>
       <PersonInfoContainer>
