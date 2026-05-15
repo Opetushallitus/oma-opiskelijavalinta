@@ -28,6 +28,10 @@
     "link-login": {
       "otsikko": "Kirjautumislinkki ei toimi",
       "kielletty": "Käyttämäsi kirjautumislinkki ei toimi. Ota yhteyttä oppilaitokseen johon olet hakenut."
+    },
+    "tuloskirje-link": {
+      "otsikko": "Latauslinkki ei toimi",
+      "teksti": "Linkki, jota yritit käyttää, on vanhentunut tai virheellinen."
     }
   },
   "info": {
