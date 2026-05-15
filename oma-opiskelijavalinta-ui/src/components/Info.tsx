@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { BulletedList, BulletItem } from './BulletedList';
-import { isTruthy } from 'remeda';
+import { isEmptyish, isTruthy } from 'remeda';
 import { styled } from '@/lib/theme';
 import { useAuth } from './authentication/AuthProvider';
 import { isLinkUser } from '@/lib/auth/auth-util';
@@ -30,12 +30,11 @@ export default function Info() {
   const { state } = useAuth();
 
   const isLinkLogin = isLinkUser(state);
-
   return (
     <Box>
       <PersonInfoContainer>
         <OphTypography variant="body1" sx={{ fontWeight: 700 }}>
-          {`${user?.kutsumanimi} ${user?.sukunimi}`}
+          {!isEmptyish(user.name) && `${user?.kutsumanimi} ${user?.sukunimi}`}
           {isTruthy(user?.syntymaaika) && (
             <OphTypography component="span" sx={{ fontWeight: 'normal' }}>
               {` ${toFormattedDateTimeString(user.syntymaaika, DEFAULT_DATE_FORMAT)}`}

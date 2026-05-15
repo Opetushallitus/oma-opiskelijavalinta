@@ -56,7 +56,8 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
 
     val principal = new OppijaUser(
       attributes = attrs,
-      username = personOid
+      username = personOid,
+      personOid = Some(personOid)
     )
 
     val authorities = List(new SimpleGrantedAuthority(Authorities.ROLE_LINK_USER)).asJava
