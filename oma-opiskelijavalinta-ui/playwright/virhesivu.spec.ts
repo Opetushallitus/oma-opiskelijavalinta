@@ -49,6 +49,27 @@ test('Ei näytä virhesivua kun virhe tulee hakemukset-rajapinnasta', async ({
   await expect(page.getByText('Palvelinvirhe')).toHaveCount(2);
 });
 
+test('Näyttää virhesivun /error polulla', async ({ page }) => {
+  await page.goto('oma-opiskelijavalinta/error');
+  await assertVirheSivu(page);
+});
+
+test('Näyttää eri virhesivun /link-error polulla', async ({ page }) => {
+  await page.goto('oma-opiskelijavalinta/link-error');
+  await expect(page).toHaveTitle('Hakemukset ja opiskelupaikan vastaanotto');
+  await expect(
+    page.getByRole('heading', { name: 'Latauslinkki ei toimi' }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      'Linkki, jota yritit käyttää, on vanhentunut tai virheellinen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Oma Opintopolun etusivulle' }),
+  ).toBeVisible();
+});
+
 test('Virhesivun saavutettavuus', async ({ page }) => {
   await setup(page);
   await assertVirheSivu(page);
@@ -65,7 +86,7 @@ async function setup(page: Page, api: string = '**/api/session') {
 }
 
 async function assertVirheSivu(page: Page) {
-  await expect(page).toHaveTitle('Oma Opiskelijavalinta');
+  await expect(page).toHaveTitle('Hakemukset ja opiskelupaikan vastaanotto');
   await expect(
     page.getByRole('heading', { name: 'Nyt meni jokin pieleen' }),
   ).toBeVisible();

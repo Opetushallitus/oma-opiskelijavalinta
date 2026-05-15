@@ -27,6 +27,7 @@ class LinkVerificationService @Autowired (
         LOG.error(s"Verifiointi epäonnistui tokenille $token: ${e.getMessage}", e)
         Option.empty
       case Right(o) =>
+        LOG.info(s"Saatiin verifiointivastaus tokenille: $o")
         Option
           .apply(mapper.readValue(o, classOf[OppijanTunnistusVerification]))
     }
