@@ -8,5 +8,9 @@ export default [
   layout('./SessionExpiredLayout.tsx', [
     route('/session-expired', './SessionExpiredPage.tsx'),
   ]),
+  layout('./ErrorLayout.tsx', [
+    route('/link-error', './LinkErrorPage.tsx'),
+    route('/error', '../components/GenericErrorPage.tsx'),
+  ]),
   layout('./NotFoundLayout.tsx', [route('*', './NotFoundPage.tsx')]),
 ] satisfies RouteConfig;

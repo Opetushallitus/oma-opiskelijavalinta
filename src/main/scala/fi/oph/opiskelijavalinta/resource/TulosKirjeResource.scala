@@ -3,13 +3,14 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.resource.ApiConstants.TULOSKIRJE_PATH
 import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, LinkAuthenticationException}
 import fi.oph.opiskelijavalinta.service.{AuthorizationService, LinkVerificationService, TuloskirjeService, VTSService}
-import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.validation.constraints.Pattern
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.http.{HttpStatus, MediaType, ResponseEntity}
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.{GetMapping, PathVariable, RequestMapping, RestController}
+import org.springframework.web.servlet.view.RedirectView
 
 import java.nio.charset.StandardCharsets
 
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets
 @Validated
 @RestController
 class TulosKirjeResource @Autowired (
+  @Value("${host.oppija:localhost:3777}") val hostOppija: String,
   kirjeService: TuloskirjeService,
   authorizationService: AuthorizationService,
   linkVerificationService: LinkVerificationService
@@ -59,7 +61,7 @@ class TulosKirjeResource @Autowired (
   def getTuloskirjeWithToken(
     @PathVariable(required = true) token: String,
     request: HttpServletRequest
-  ): ResponseEntity[String] = {
+  ): ResponseEntity[String] | RedirectView = {
     LOG.info(s"Haetaan tuloskirje oppijan-tunnistus tokenilla")
 
     if (token == null || token.trim.isEmpty) {
@@ -113,17 +115,15 @@ class TulosKirjeResource @Autowired (
     } catch {
       case ex: LinkAuthenticationException =>
         LOG.error(s"Virhe tuloskirjeen latauksessa, token: $token", ex.getMessage)
-        ResponseEntity
-          .status(HttpStatus.FORBIDDEN)
-          .body(ex.getMessage)
+        val linkErrorUrl = s"https://$hostOppija/oma-opiskelijavalinta/link-error"
+        new RedirectView(linkErrorUrl)
       case e: Exception =>
         LOG.error(
           s"Virhe tuloskirjeen latauksessa, token: $token",
           e
         )
-        ResponseEntity
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("Virhe tuloskirjeen latauksessa")
+        val errorUrl = s"https://$hostOppija/oma-opiskelijavalinta/error"
+        new RedirectView(errorUrl)
     }
   }
 }
