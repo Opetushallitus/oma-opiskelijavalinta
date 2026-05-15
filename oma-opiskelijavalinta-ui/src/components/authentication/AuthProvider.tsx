@@ -96,8 +96,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const isPublicRoute =
       location.pathname.startsWith('/token/') ||
-      location.pathname === '/session-expired';
-
+      location.pathname === '/session-expired' ||
+      location.pathname === '/error' ||
+      location.pathname === '/link-error';
     if (state.status === 'unauthenticated' && !isPublicRoute) {
       window.location.href = conf.routes.yleiset.loginApiUrl;
     }

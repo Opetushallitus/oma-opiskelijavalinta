@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
+import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID, objectMapper, oppijaUser}
 import fi.oph.opiskelijavalinta.dto.IlmoittautuminenDTO
 import fi.oph.opiskelijavalinta.model.{Hakemus, OppijanTunnistusVerification, OppijantunnistusMetadata, TranslatedName}
 import fi.oph.opiskelijavalinta.security.AuditOperation
@@ -14,7 +14,7 @@ import org.mockito.Mockito
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.context.bean.`override`.mockito.{MockReset, MockitoBean}
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.{redirectedUrlPattern, status}
 
 class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
 
@@ -154,7 +154,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsForbiddenForInvalidToken(): Unit = {
+  def redirectsToLinkErrorPageWhenInvalidToken(): Unit = {
     Mockito
       .when(verificationService.verify("invalid-token"))
       .thenReturn(
@@ -167,35 +167,68 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
         )
       )
 
-    val result = mvc
+    mvc
       .perform(
         MockMvcRequestBuilders
           .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token")
       )
-      .andExpect(status().isForbidden)
-      .andReturn()
-    Assertions.assertTrue(
-      result.getResponse.getContentAsString.contains("virheellinen tai vanhentunut tuloskirjeen kirjautumistoken")
-    )
+      .andExpect(status().is3xxRedirection)
+      .andExpect(
+        redirectedUrlPattern("**/oma-opiskelijavalinta/link-error")
+      )
   }
 
   @Test
-  def returnsForbiddenForFailedVerification(): Unit = {
+  def redirectsToLinkErrorPageWhenVerificationFails(): Unit = {
     Mockito
       .when(verificationService.verify("invalid-token"))
       .thenReturn(None)
 
-    val result = mvc
+    mvc
       .perform(
         MockMvcRequestBuilders
           .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token")
       )
-      .andExpect(status().isForbidden)
-      .andReturn()
-    LOG.info(result.getResponse.getContentAsString)
-    Assertions.assertTrue(
-      result.getResponse.getContentAsString.contains("tuloskirjeen kirjautumistokenin data puuttuu")
-    )
+      .andExpect(status().is3xxRedirection)
+      .andExpect(
+        redirectedUrlPattern("**/oma-opiskelijavalinta/link-error")
+      )
+  }
+
+  @Test
+  def redirectsToErrorPageOnServerException(): Unit = {
+
+    Mockito
+      .when(verificationService.verify("valid-token"))
+      .thenReturn(
+        Some(
+          OppijanTunnistusVerification(
+            exists = true,
+            valid = true,
+            metadata = Some(
+              OppijantunnistusMetadata(
+                hakemusOid = HAKEMUS_OID,
+                personOid = None,
+                hakuOid = Some(HAKU_OID)
+              )
+            )
+          )
+        )
+      )
+
+    Mockito
+      .when(tulosKirjeService.getTuloskirje(HAKU_OID, HAKEMUS_OID))
+      .thenThrow(new RuntimeException("boom"))
+
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/valid-token")
+      )
+      .andExpect(status().is3xxRedirection)
+      .andExpect(
+        redirectedUrlPattern("**/oma-opiskelijavalinta/error")
+      )
   }
 
   @Test

@@ -194,7 +194,6 @@ export function VastaanottoRadio({
     onError: (error) => {
       console.error(error);
       if (error.message === 'vastaanotto.virhe.ei-vastaanotettavissa') {
-        console.log('virhe');
         showNotification({
           message: t(error.message),
           type: 'error',
