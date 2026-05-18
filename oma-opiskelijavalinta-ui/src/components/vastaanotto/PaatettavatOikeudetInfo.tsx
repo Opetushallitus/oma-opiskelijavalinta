@@ -6,6 +6,26 @@ import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 
+function PaatettavaOikeusInfo({
+  oikeus,
+}: {
+  oikeus: PaatettavaOpiskeluOikeus;
+}) {
+  const { translateEntity } = useTranslations();
+
+  const virtaNimi = translateEntity(oikeus.virtaNimi);
+
+  return (
+    <BulletItem>
+      <OphTypography>{translateEntity(oikeus.organisaatioNimi)}</OphTypography>
+      <OphTypography>{translateEntity(oikeus.supaNimi)}</OphTypography>
+      {virtaNimi.trim().length > 0 && (
+        <OphTypography>{virtaNimi}</OphTypography>
+      )}
+    </BulletItem>
+  );
+}
+
 export function PaatettavatOikeudetInfo({
   oikeudet,
   showLink = true,
@@ -13,7 +33,7 @@ export function PaatettavatOikeudetInfo({
   oikeudet: Array<PaatettavaOpiskeluOikeus>;
   showLink?: boolean;
 }) {
-  const { t, translateEntity } = useTranslations();
+  const { t } = useTranslations();
 
   const config = useConfig();
 
@@ -25,14 +45,10 @@ export function PaatettavatOikeudetInfo({
       <OphTypography>{t('vastaanotto.yos.kuvaus')}</OphTypography>
       <BulletedList>
         {oikeudet.map((oikeus) => (
-          <BulletItem
+          <PaatettavaOikeusInfo
             key={`paatettava-oikeus-${oikeus.organisaatioOid ?? oikeus.tunniste}`}
-          >
-            <OphTypography>
-              {translateEntity(oikeus.organisaatioNimi)}
-            </OphTypography>
-            <OphTypography>{translateEntity(oikeus.nimi)}</OphTypography>
-          </BulletItem>
+            oikeus={oikeus}
+          />
         ))}
       </BulletedList>
       {showLink && (
