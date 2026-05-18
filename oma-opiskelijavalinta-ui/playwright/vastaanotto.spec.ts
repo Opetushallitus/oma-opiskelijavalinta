@@ -14,6 +14,8 @@ import {
   hakemus2,
   hakemus3ToinenAste,
   hakemus4ToinenAsteAlempiaHyvaksyttyja,
+  hakukohde1Yps,
+  hakukohde2Yps,
   mockSession,
 } from './mocks';
 import { clone } from 'remeda';
@@ -240,29 +242,7 @@ test('Ei näytä yhden paikan sääntö -infoa ehdollisen vastaanoton vahvistusd
 }) => {
   await setup(page, {
     ...hakemus1,
-    hakukohteet: [
-      {
-        oid: 'hakukohde-oid-1',
-        nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
-        jarjestyspaikkaHierarkiaNimi: {
-          fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
-        },
-        uudenOpiskelijanUrl: {
-          fi: 'linkkioppilaitokseen.fi',
-          en: 'linktostudyplace.fi',
-        },
-        yhdenPaikanSaanto: { voimassa: true },
-      },
-      {
-        oid: 'hakukohde-oid-2',
-        nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
-        jarjestyspaikkaHierarkiaNimi: {
-          fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
-        },
-        uudenOpiskelijanUrl: null,
-        yhdenPaikanSaanto: { voimassa: true },
-      },
-    ],
+    hakukohteet: [hakukohde1Yps, hakukohde2Yps],
     hakemuksenTulokset:
       hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
   });
