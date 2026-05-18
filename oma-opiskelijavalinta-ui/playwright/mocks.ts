@@ -741,3 +741,26 @@ export const jonokohtaisetTulostiedotPeruuntunut = [
     varasijasaannotKaytossa: false,
   },
 ];
+
+export const hakukohde1Yps = {
+  oid: 'hakukohde-oid-1',
+  nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
+  jarjestyspaikkaHierarkiaNimi: {
+    fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+  },
+  uudenOpiskelijanUrl: {
+    fi: 'linkkioppilaitokseen.fi',
+    en: 'linktostudyplace.fi',
+  },
+  yhdenPaikanSaanto: { voimassa: true },
+};
+
+export const hakukohde2Yps = {
+  oid: 'hakukohde-oid-2',
+  nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
+  jarjestyspaikkaHierarkiaNimi: {
+    fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+  },
+  uudenOpiskelijanUrl: null,
+  yhdenPaikanSaanto: { voimassa: true },
+};
