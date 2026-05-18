@@ -156,11 +156,11 @@ class VTSServiceTest {
       .thenReturn(
         List(
           PaatettavaOpiskeluOikeus(
-            tunniste = "nuke-tunniste",
+            virtaOpiskeluOikeusId = "nuke-tunniste",
             organisaatioOid = "",
             organisaatioNimi = TranslatedName("NukeTehdas", "", ""),
-            nimi = TranslatedName("Räjäyttäjä", "", ""),
-            koulutusKoodi = null
+            supaNimi = TranslatedName("Räjäyttäjä", "", ""),
+            virtaNimi = TranslatedName("", "", "")
           )
         )
       )
@@ -168,7 +168,7 @@ class VTSServiceTest {
     Assertions.assertEquals(1, tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.size)
     val oikeus = tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.head
     Assertions.assertEquals("NukeTehdas", oikeus.organisaatioNimi.fi)
-    Assertions.assertEquals("Räjäyttäjä", oikeus.nimi.fi)
+    Assertions.assertEquals("Räjäyttäjä", oikeus.supaNimi.fi)
   }
 
 }
