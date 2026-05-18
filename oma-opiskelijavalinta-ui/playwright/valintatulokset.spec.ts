@@ -269,7 +269,7 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
   ).toBeVisible();
 });
 
-test('Ei näytä infoa yhden paikan säännöstä jos varasijan priorisoimaton hakutoive ei ole yps:n piirissä', async ({
+test('Ei näytä priorisoinnittoman kk-haun varasijatulokselle infoa yhden paikan säännöstä jos hakutoive ei ole yps:n piirissä', async ({
   page,
 }) => {
   const varasijaApplication = {

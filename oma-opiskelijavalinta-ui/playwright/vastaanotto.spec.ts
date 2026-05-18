@@ -237,7 +237,7 @@ test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa jos yps ei ol
   ).toBeHidden();
 });
 
-test('Ei näytä yhden paikan sääntö -infoa ehdollisen vastaanoton vahvistusdialogissa jos yps ei ole voimassa', async ({
+test('Näyttää yhden paikan sääntö -infon ehdollisen vastaanoton vahvistusdialogissa jos yps on voimassa', async ({
   page,
 }) => {
   await setup(page, {
@@ -272,6 +272,42 @@ test('Ei näytä yhden paikan sääntö -infoa ehdollisen vastaanoton vahvistusd
   await expect(
     page.getByText('Ymmärrän, että en voi ottaa muuta'),
   ).toBeVisible();
+});
+
+test('Ei näytä yhden paikan sääntö -infoa ehdollisen vastaanoton vahvistusdialogissa jos yps ei ole voimassa', async ({
+  page,
+}) => {
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset:
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
+    })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await expect(page.getByText('Jäät jonottamaan ylempiä')).toBeVisible();
+  await expect(
+    page.getByText('Ymmärrän, että en voi ottaa muuta'),
+  ).toBeHidden();
+  const peruutaButton = page.getByRole('button', { name: 'Peruuta' });
+  await peruutaButton.click();
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan',
+    })
+    .click();
+  await sendButton.click();
+  await expect(page.getByText('En jää jonottamaan ylempiä')).toBeVisible();
+  await expect(
+    page.getByText('Ymmärrän, että en voi ottaa muuta'),
+  ).toBeHidden();
 });
 
 test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {

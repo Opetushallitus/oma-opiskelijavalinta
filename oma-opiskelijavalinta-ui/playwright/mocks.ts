@@ -762,5 +762,5 @@ export const hakukohde2Yps = {
     fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
   },
   uudenOpiskelijanUrl: null,
-  yhdenPaikanSaanto: { voimassa: false },
+  yhdenPaikanSaanto: { voimassa: true },
 };
