@@ -47,6 +47,7 @@ const getVarasijallaInfo = (
   application: Hakemus,
   kk: boolean,
   priorisoidutHakutoiveet: boolean,
+  yps: boolean | undefined,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
@@ -60,7 +61,7 @@ const getVarasijallaInfo = (
     : 'peruskoulun-jalkeisten-koulutusten-yhteishaun-valintojen-tulokset#varasijat';
   return (
     <>
-      {kk && !priorisoidutHakutoiveet && (
+      {kk && !priorisoidutHakutoiveet && yps && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('tulos.info.varalla-peruuntuu')}
         </OphTypography>
@@ -282,6 +283,7 @@ const getInfoText = (
           application,
           kkHaku,
           application.priorisoidutHakutoiveet,
+          YPS,
           lang,
           t,
         )}
