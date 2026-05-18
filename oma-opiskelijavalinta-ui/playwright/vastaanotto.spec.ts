@@ -201,11 +201,12 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa k
   ).toBeVisible();
 });
 
-test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa tutkintoon johtamattomalle kk-hakutoiveelle', async ({
+test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa jos yps ei ole voimassa kk-hakutoiveelle', async ({
   page,
 }) => {
   await setup(page, {
     ...hakemus2,
+    hakemuksenTulokset: [hakemuksenTulosHyvaksytty],
     hakukohteet: [
       {
         oid: 'hakukohde-oid-3',
@@ -232,6 +233,65 @@ test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa tutkintoon jo
   await expect(
     page.getByText('Huomioithan, että et voi ottaa muuta'),
   ).toBeHidden();
+});
+
+test('Ei näytä yhden paikan sääntö -infoa ehdollisen vastaanoton vahvistusdialogissa jos yps ei ole voimassa', async ({
+  page,
+}) => {
+  await setup(page, {
+    ...hakemus1,
+    hakukohteet: [
+      {
+        oid: 'hakukohde-oid-1',
+        nimi: { fi: 'Meteorologi, Tornadoinen tutkimislinja' },
+        jarjestyspaikkaHierarkiaNimi: {
+          fi: 'Hurrikaaniopisto, Hiekkalinnan kampus',
+        },
+        uudenOpiskelijanUrl: {
+          fi: 'linkkioppilaitokseen.fi',
+          en: 'linktostudyplace.fi',
+        },
+        yhdenPaikanSaanto: { voimassa: true },
+      },
+      {
+        oid: 'hakukohde-oid-2',
+        nimi: { fi: 'Meteorologi, Hurrikaanien tutkimislinja' },
+        jarjestyspaikkaHierarkiaNimi: {
+          fi: 'Hurrikaaniopisto, Myrskynsilmän kampus',
+        },
+        uudenOpiskelijanUrl: null,
+        yhdenPaikanSaanto: { voimassa: true },
+      },
+    ],
+    hakemuksenTulokset:
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
+    })
+    .click();
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await expect(page.getByText('Jäät jonottamaan ylempiä')).toBeVisible();
+  await expect(
+    page.getByText('Ymmärrän, että en voi ottaa muuta'),
+  ).toBeVisible();
+  const peruutaButton = page.getByRole('button', { name: 'Peruuta' });
+  await peruutaButton.click();
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan',
+    })
+    .click();
+  await sendButton.click();
+  await expect(page.getByText('En jää jonottamaan ylempiä')).toBeVisible();
+  await expect(
+    page.getByText('Ymmärrän, että en voi ottaa muuta'),
+  ).toBeVisible();
 });
 
 test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
@@ -451,6 +511,10 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
     },
   );
   await expect(page.getByText('Jäät jonottamaan ylempiä')).toBeVisible();
+  // tämä mock-hakukohde ei ole YPS-säännön piirissä
+  await expect(
+    page.getByText('Ymmärrän, että en voi ottaa muuta'),
+  ).toBeHidden();
   await page
     .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
     .click();

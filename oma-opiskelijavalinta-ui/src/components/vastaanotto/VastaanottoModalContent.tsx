@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { T } from '@tolgee/react';
 import { styled } from '@/lib/theme';
 import { HakutoiveName } from '../hakukohde/HakutoiveName';
 
@@ -22,6 +21,7 @@ export function VastaanottoModalContent({
     title: string;
     confirmLabel: string;
     info2?: string;
+    yps?: string;
   };
 }) {
   const { t } = useTranslations();
@@ -30,15 +30,11 @@ export function VastaanottoModalContent({
     <ModalBox>
       <OphTypography>{t(modalParams.info)}</OphTypography>
       <HakutoiveName hakutoive={hakutoive} />
-      {modalParams.info2 && YPS && (
-        <OphTypography>
-          <T
-            keyName={modalParams.info2}
-            params={{
-              br: <br />,
-            }}
-          ></T>
-        </OphTypography>
+      {modalParams.info2 && (
+        <OphTypography>{t(modalParams.info2)}</OphTypography>
+      )}
+      {YPS && modalParams.yps && (
+        <OphTypography>{t(modalParams.yps)}</OphTypography>
       )}
     </ModalBox>
   );
