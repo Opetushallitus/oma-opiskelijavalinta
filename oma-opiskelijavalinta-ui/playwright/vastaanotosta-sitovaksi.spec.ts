@@ -171,13 +171,15 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
           tunniste: 'tunniste-1',
           organisaatioOid: '',
           organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
-          nimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
+          supaNimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
+          virtaNimi: { fi: 'Lakana', sv: '', en: '' },
         },
         {
           tunniste: 'tunniste-2',
           organisaatioOid: '',
           organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
-          nimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
+          supaNimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
+          virtaNimi: { fi: 'Poraaja', sv: '', en: '' },
         },
       ],
     },
@@ -190,8 +192,10 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
   ).toBeVisible();
   await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
   await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana', { exact: true })).toBeVisible();
   await expect(vastaanotot.getByText('Poral')).toBeVisible();
   await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(vastaanotot.getByText('Poraaja', { exact: true })).toBeVisible();
 
   await vastaanotot.getByText('Luovun jonotuksesta ja muutan').click();
   await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
@@ -214,12 +218,22 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
       .getByText('Lakana Lisensiaatti'),
   ).toBeVisible();
   await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta luopuminen')
+      .getByText('Lakana', { exact: true }),
+  ).toBeVisible();
+  await expect(
     page.getByLabel('Vahvista jonotuksesta luopuminen').getByText('Poral'),
   ).toBeVisible();
   await expect(
     page
       .getByLabel('Vahvista jonotuksesta luopuminen')
       .getByText('Hampaiden Poraaja'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta luopuminen')
+      .getByText('Poraaja', { exact: true }),
   ).toBeVisible();
 });
 
