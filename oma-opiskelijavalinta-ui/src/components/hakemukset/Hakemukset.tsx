@@ -10,6 +10,15 @@ import { InfoBox } from '../InfoBox';
 import { ErrorBox } from '../ErrorBox';
 import { MennytHakemusContainer } from './MennytHakemusContainer';
 import { HautonHakemusContainer } from './HautonHakemusContainer';
+
+function HakemuksetVirhe() {
+  const { t } = useTranslations();
+  return (
+    <ErrorBox sx={{ marginTop: '1.5rem' }}>
+      <OphTypography>{t('virhe.palvelin.kuvaus')}</OphTypography>
+    </ErrorBox>
+  );
+}
 import {
   toFormattedDateTimeString,
   DEFAULT_DATE_FORMAT,
@@ -133,20 +142,23 @@ export default function Hakemukset() {
 
   return (
     <>
-      <QuerySuspenseBoundary suspenseFallback={<></>}>
+      <QuerySuspenseBoundary
+        suspenseFallback={<></>}
+        errorFallback={<HakemuksetVirhe />}
+      >
         <EpaonnistuneetHakemuksetList />
       </QuerySuspenseBoundary>
       <Box data-test-id="active-hakemukset">
         <OphTypography variant="h2">
           {t('hakemukset.ajankohtaiset')}
         </OphTypography>
-        <QuerySuspenseBoundary>
+        <QuerySuspenseBoundary errorFallback={<></>}>
           <HakemuksetList />
         </QuerySuspenseBoundary>
       </Box>
       <Box data-test-id="past-hakemukset">
         <OphTypography variant="h2">{t('hakemukset.menneet')}</OphTypography>
-        <QuerySuspenseBoundary>
+        <QuerySuspenseBoundary errorFallback={<></>}>
           <MenneetHakemuksetList />
         </QuerySuspenseBoundary>
       </Box>

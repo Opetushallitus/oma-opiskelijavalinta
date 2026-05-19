@@ -48,11 +48,10 @@ test('Ei näytä virhesivua kun virhe tulee hakemukset-rajapinnasta', async ({
     await route.fulfill({ status: 500 });
   });
   await page.goto('');
-  await expect(page.getByText('Tapahtui palvelinvirhe. Lataa')).toBeHidden();
   await expect(
     page.getByRole('heading', { name: 'Nyt meni jokin pieleen' }),
   ).toBeHidden();
-  await expect(page.getByText('Palvelinvirhe')).toHaveCount(3);
+  await expect(page.getByText('palvelinvirhe')).toHaveCount(1);
 });
 
 test('Virhesivun saavutettavuus', async ({ page }) => {
