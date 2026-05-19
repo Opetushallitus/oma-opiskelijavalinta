@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@/components/LocalizationProvider';
 
 type FallbackRenderType = ErrorBoundaryPropsWithRender['fallbackRender'];
 
-const errorFallbackRender: FallbackRenderType = ({
+const defaultErrorFallbackRender: FallbackRenderType = ({
   resetErrorBoundary,
   error,
 }) => (
@@ -19,12 +19,19 @@ const errorFallbackRender: FallbackRenderType = ({
 export const SuspenseBoundary = ({
   children,
   suspenseFallback,
+  errorFallback,
   onResetErrorBoundary,
 }: {
   children: React.ReactNode;
   suspenseFallback?: React.ReactNode;
+  errorFallback?: React.ReactNode;
   onResetErrorBoundary?: () => void;
 }) => {
+  const errorFallbackRender: FallbackRenderType =
+    errorFallback !== undefined
+      ? () => <>{errorFallback}</>
+      : defaultErrorFallbackRender;
+
   return (
     <ErrorBoundary
       fallbackRender={errorFallbackRender}

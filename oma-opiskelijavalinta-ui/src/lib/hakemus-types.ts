@@ -18,6 +18,7 @@ export type Hakemus = {
   hakemuksenTulokset: Array<HakutoiveenTulos>;
   processing: boolean;
   tuloskirjeModified?: number | null;
+  enrichmentFailed?: boolean;
 };
 
 export type Hakemukset = {

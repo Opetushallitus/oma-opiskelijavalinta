@@ -1,7 +1,6 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
-import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
@@ -21,7 +20,7 @@ class ViestiService @Autowired (
   hakemuksetService: HakemuksetService,
   koutaService: KoutaService,
   lokalisointiService: LokalisointiService,
-  onrClient: OnrClient,
+  onrService: OnrService,
   authorizationService: AuthorizationService,
   @Autowired @Qualifier("viestinValitysClient") viestinvalitysClient: ViestinvalitysClient
 ) {
@@ -42,7 +41,7 @@ class ViestiService @Autowired (
   ): Unit = {
     try {
       val oppijanumero = authorizationService.getPersonOid.get
-      val oppija       = onrClient.getPersonInfo(oppijanumero)
+      val oppija       = onrService.getPersonInfo(oppijanumero)
       val nimi         = Seq(
         Option(oppija.kutsumanimi).getOrElse(""),
         Option(oppija.sukunimi).getOrElse("")
@@ -53,10 +52,8 @@ class ViestiService @Autowired (
       LOGGER.info(
         s"Lähetetään vastaanottoviesti: hakemusOid $hakemusOid, hakukohdeOid $hakukohdeOid, vastaanotto: $vastaanottoKaannosAvain"
       )
-      val haku = koutaService.getHaku(hakuOid).getOrElse(throw new RuntimeException(s"Hakua ei löytynyt: $hakuOid"))
-      val hakutoive = koutaService
-        .getHakukohde(hakukohdeOid)
-        .getOrElse(throw new RuntimeException(s"Hakukohdetta ei löytynyt: $hakukohdeOid"))
+      val haku      = koutaService.getHaku(hakuOid)
+      val hakutoive = koutaService.getHakukohde(hakukohdeOid)
       val otsikko   = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.otsikko")
       val tervehdys = lokalisointiService.getTranslationWithParams(
         asiointikieli,

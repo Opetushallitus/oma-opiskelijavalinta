@@ -1,7 +1,5 @@
 package fi.oph.opiskelijavalinta.clients
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.configuration.ClientTimeoutProperties
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -15,31 +13,33 @@ import scala.concurrent.duration.Duration
 @Component
 class OnrClient @Autowired (
   oauth2Client: Oauth2Client,
-  objectMapper: ObjectMapper = new ObjectMapper(),
   timeouts: ClientTimeoutProperties
 ) {
 
   @Value("${host.virkailija}")
   private val virkailijaHost = ""
 
-  val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient]);
+  val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient])
 
-  private def fetchPersonInfo(url: String): Oppija = {
-    val requestBuilder = new RequestBuilder()
-      .setMethod("GET")
-      .setUrl(url)
-
-    val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(timeouts.onr, TimeUnit.SECONDS))
-    objectMapper.readValue(response.getResponseBody, classOf[Oppija])
+  private def fetch(url: String): Either[Throwable, String] = {
+    val requestBuilder = new RequestBuilder().setMethod("GET").setUrl(url)
+    try {
+      val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(timeouts.onr, TimeUnit.SECONDS))
+      Right(response.getResponseBody)
+    } catch {
+      case e: Throwable =>
+        LOG.error(s"Virhe haettaessa henkilötietoja osoitteesta $url: ${e.getMessage}", e)
+        Left(e)
+    }
   }
 
-  def getPersonInfo(oid: String): Oppija = {
+  def getPersonInfo(oid: String): Either[Throwable, String] = {
     LOG.info(s"Haetaan käyttäjän tiedot onr:sta oppijanumerolla $oid")
-    fetchPersonInfo(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/$oid/master")
+    fetch(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/$oid/master")
   }
 
-  def getPersonInfoByHetu(hetu: String): Oppija = {
+  def getPersonInfoByHetu(hetu: String): Either[Throwable, String] = {
     LOG.info(s"Haetaan käyttäjän tiedot onr:sta hetulla $hetu")
-    fetchPersonInfo(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/hetu=$hetu")
+    fetch(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/hetu=$hetu")
   }
 }

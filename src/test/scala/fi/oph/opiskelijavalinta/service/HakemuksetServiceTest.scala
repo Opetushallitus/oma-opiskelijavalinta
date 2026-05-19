@@ -87,6 +87,18 @@ class HakemuksetServiceTest {
     Mockito.verifyNoInteractions(koutaService, ohjausparametritService, vtsService)
   }
 
+  @Test
+  def getHakemuksetThrowsWhenDeserializationFails(): Unit = {
+    Mockito.when(ataruClient.getHakemukset(OPPIJA_NUMERO)).thenReturn(Right("invalid json"))
+    Assertions.assertThrows(classOf[RuntimeException], () => service.getHakemukset(OPPIJA_NUMERO))
+  }
+
+  @Test
+  def getHakemusOidsThrowsWhenDeserializationFails(): Unit = {
+    Mockito.when(ataruClient.getHakemukset(OPPIJA_NUMERO)).thenReturn(Right("invalid json"))
+    Assertions.assertThrows(classOf[RuntimeException], () => service.getHakemusOids(OPPIJA_NUMERO))
+  }
+
   private def hautonHakemus(processing: Boolean) = {
     Right(
       objectMapper.writeValueAsString(
