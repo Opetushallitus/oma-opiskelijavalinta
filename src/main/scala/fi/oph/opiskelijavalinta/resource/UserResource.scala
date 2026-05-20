@@ -1,9 +1,10 @@
 package fi.oph.opiskelijavalinta.resource
 
-import fi.oph.opiskelijavalinta.clients.OnrClient
 import fi.oph.opiskelijavalinta.clients.model.Oppija
+import fi.oph.opiskelijavalinta.service.OnrService
 import fi.oph.opiskelijavalinta.resource.ApiConstants.USER_PATH
-import fi.oph.opiskelijavalinta.security.OppijaUser
+import fi.oph.opiskelijavalinta.security.{AuditLog, OppijaUser}
+import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 
 @RequestMapping(path = Array(USER_PATH))
 @RestController
-class UserResource @Autowired (private val onrClient: OnrClient) {
+class UserResource @Autowired (private val onrService: OnrService) {
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[UserResource]);
 
@@ -25,7 +26,7 @@ class UserResource @Autowired (private val onrClient: OnrClient) {
     val oppija                    = (personOid, hetu) match
       case (Some(personOid), _) => onrService.getPersonInfo(personOid)
       case (None, Some(hetu))   => onrService.getPersonInfoByHetu(hetu)
-      case _ => // TODO eidas-tunniste
+      case _                    => // TODO eidas-tunniste
         val userAgent = AuditLog.getUserAgent(request)
         val ipAddress = AuditLog.getInetAddress(request)
         LOG.info(
