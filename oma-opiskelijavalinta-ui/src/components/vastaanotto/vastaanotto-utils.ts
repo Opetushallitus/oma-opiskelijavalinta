@@ -55,6 +55,7 @@ export const VastaanottoModalParams: Record<
   {
     info: string;
     info2?: string;
+    yps?: string;
     title: string;
     confirmLabel: string;
     successMessage: string;
@@ -77,7 +78,7 @@ export const VastaanottoModalParams: Record<
     title: 'vastaanotto.modaali.vastaanota-sitovasti-kk.otsikko',
     confirmLabel: 'vastaanotto.modaali.vastaanota-sitovasti-kk.vahvista',
     info: 'vastaanotto.modaali.vastaanota-sitovasti-kk.info',
-    info2: 'vastaanotto.modaali.vastaanota-sitovasti-kk.info2',
+    yps: 'vastaanotto.modaali.vastaanota-sitovasti-kk.yps',
     successMessage: 'vastaanotto.modaali.vastaanota-sitovasti-kk.onnistui',
   },
   [VastaanottoOption.VASTAANOTA_SITOVASTI_JONOTTAMATTA_KK]: {
@@ -86,6 +87,7 @@ export const VastaanottoModalParams: Record<
       'vastaanotto.modaali.vastaanota-sitovasti-jonottamatta-kk.vahvista',
     info: 'vastaanotto.modaali.vastaanota-sitovasti-jonottamatta-kk.info',
     info2: 'vastaanotto.modaali.vastaanota-sitovasti-jonottamatta-kk.info2',
+    yps: 'vastaanotto.modaali.vastaanota-sitovasti-jonottamatta-kk.yps',
     successMessage:
       'vastaanotto.modaali.vastaanota-sitovasti-jonottamatta-kk.onnistui',
   },
@@ -94,6 +96,7 @@ export const VastaanottoModalParams: Record<
     confirmLabel: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.vahvista',
     info: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.info',
     info2: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.info2',
+    yps: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.yps',
     successMessage: 'vastaanotto.modaali.vastaanota-ehdollisesti-kk.onnistui',
   },
   [VastaanottoOption.VASTAANOTA_SITOVASTI_PERU_ALEMMAT]: {

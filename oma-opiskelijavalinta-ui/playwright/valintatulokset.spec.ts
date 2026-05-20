@@ -15,6 +15,8 @@ import {
   hakemus2,
   hakemus3ToinenAste,
   hakemus4ToinenAsteAlempiaHyvaksyttyja,
+  hakukohde1Yps,
+  hakukohde2Yps,
   jonokohtaisetTulostiedot,
   jonokohtaisetTulostiedotEhdollinen,
   jonokohtaisetTulostiedotHarkinnanvarainen,
@@ -65,6 +67,12 @@ test('Näyttää varasijanumeron', async ({ page }) => {
       'Voit tulla hyväksytyksi varasijalta 11.1.2026 klo 17:00 asti.',
     ),
   ).toBeVisible();
+  // hakutoive ei YPS:n piirissä
+  await expect(
+    app1.getByText(
+      'Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.',
+    ),
+  ).toBeHidden();
   const link = app1.getByText('Lisätietoa varasijoista');
   await expect(link).toBeVisible();
   await expect(link).toHaveAttribute(
@@ -261,6 +269,35 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
   ).toBeVisible();
 });
 
+test('Ei näytä priorisoinnittoman kk-haun varasijatulokselle infoa yhden paikan säännöstä jos hakutoive ei ole yps:n piirissä', async ({
+  page,
+}) => {
+  const varasijaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      jarjestetytHakutoiveet: false,
+    },
+    hakemuksenTulokset: [hakemuksenTulosVarasijalla],
+  };
+  await fetchMockData(page, varasijaApplication);
+
+  const app1 = page.getByTestId('application-hakemus-oid-1');
+  await expect(
+    app1.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app1.getByText(
+      'Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.',
+    ),
+  ).toBeHidden();
+});
+
 test('Ei näytä priorisoinnittoman kk-haun hyväksytylle tulokselle infoa peruuntumisesta jos ei ole muu hakutoive varasijalla', async ({
   page,
 }) => {
@@ -285,11 +322,12 @@ test('Ei näytä priorisoinnittoman kk-haun hyväksytylle tulokselle infoa peruu
   ).toBeHidden();
 });
 
-test('Näyttää priorisoinnittoman kk-haun varasijalla-tulokselle infon peruuntumisesta kun toinen hakutoive on hyväksytty', async ({
+test('Näyttää priorisoinnittoman kk-haun varasijalla-tulokselle infon peruuntumisesta kun toinen hakutoive on hyväksytty ja yps voimassa', async ({
   page,
 }) => {
   const hyvaksyttyJaVarallaApplication = {
     ...hakemus1,
+    hakukohteet: [hakukohde1Yps, hakukohde2Yps],
     ohjausparametrit: {
       ...hakemus1.ohjausparametrit,
       jarjestetytHakutoiveet: false,

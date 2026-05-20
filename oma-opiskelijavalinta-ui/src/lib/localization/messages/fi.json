@@ -231,21 +231,23 @@
         "otsikko": "Vahvista opiskelupaikan vastaanotto",
         "vahvista": "Ota opiskelupaikka vastaan",
         "info": "Olet vahvistamassa opiskelupaikan vastaanottoa:",
-        "info2": "Huomioithan, että et voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätöksesi on sitova, etkä voi muuttaa sitä jälkikäteen.",
+        "yps": "Huomioithan, että et voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätöksesi on sitova, etkä voi muuttaa sitä jälkikäteen.",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       },
       "vastaanota-sitovasti-jonottamatta-kk": {
         "otsikko": "Vahvista opiskelupaikan vastaanotto",
         "vahvista": "Ota opiskelupaikka vastaan",
         "info": "Olet vahvistamassa opiskelupaikkaa:",
-        "info2": "Et jää jonottamaan ylempiä hakutoiveita varasijalta. <br></br><br></br>Ymmärrän, että en voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätökseni on sitova, enkä voi muuttaa sitä jälkikäteen.",
+        "info2": "Et jää jonottamaan ylempiä hakutoiveita varasijalta.",
+        "yps": "Ymmärrän, että en voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätökseni on sitova, enkä voi muuttaa sitä jälkikäteen.",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       },
       "vastaanota-ehdollisesti-kk": {
         "otsikko": "Vahvista opiskelupaikan vastaanotto",
         "vahvista": "Ota opiskelupaikka vastaan",
         "info": "Olet vahvistamassa opiskelupaikkaa:",
-        "info2": "Jäät jonottamaan ylempiä hakutoiveita varasijalta. <br></br><br></br>Ymmärrän, että en voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätökseni on sitova, enkä voi muuttaa sitä jälkikäteen.",
+        "info2": "Jäät jonottamaan ylempiä hakutoiveita varasijalta.",
+        "yps": "Ymmärrän, että en voi ottaa muuta samana lukukautena alkavaa korkeakoulututkintoon johtavaa opiskelupaikkaa vastaan. Päätökseni on sitova, enkä voi muuttaa sitä jälkikäteen.",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
       },
       "vastaanota-peru-alemmat": {

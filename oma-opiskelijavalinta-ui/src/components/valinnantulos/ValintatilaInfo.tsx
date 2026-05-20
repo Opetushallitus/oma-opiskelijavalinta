@@ -47,6 +47,7 @@ const getVarasijallaInfo = (
   application: Hakemus,
   kk: boolean,
   priorisoidutHakutoiveet: boolean,
+  yps: boolean | undefined,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
@@ -60,7 +61,7 @@ const getVarasijallaInfo = (
     : 'peruskoulun-jalkeisten-koulutusten-yhteishaun-valintojen-tulokset#varasijat';
   return (
     <>
-      {kk && !priorisoidutHakutoiveet && (
+      {kk && !priorisoidutHakutoiveet && yps && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('tulos.info.varalla-peruuntuu')}
         </OphTypography>
@@ -179,7 +180,6 @@ const getKkVastaanottoInfo = (
   hakemus: Hakemus,
   tulos: HakutoiveenTulos,
   yps: boolean | undefined,
-  ylempiaVaralla: boolean,
   lang: Language,
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
@@ -282,6 +282,7 @@ const getInfoText = (
           application,
           kkHaku,
           application.priorisoidutHakutoiveet,
+          YPS,
           lang,
           t,
         )}
@@ -289,7 +290,7 @@ const getInfoText = (
         isHyvaksytty(tulos.valintatila) &&
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
         !isVastaanotettu(tulos.vastaanottotila) &&
-        getKkVastaanottoInfo(application, tulos, YPS, ylempiaVaralla, lang, t)}
+        getKkVastaanottoInfo(application, tulos, YPS, lang, t)}
       {!kkHaku &&
         isHyvaksytty(tulos.valintatila) &&
         vastaanotettavissa(tulos.vastaanotettavuustila) &&
