@@ -26,11 +26,11 @@ class SupaServiceTest {
               paatettavatOpiskeluOikeudet = Some(
                 List(
                   PaatettavaOpiskeluOikeus(
-                    tunniste = "Tunniste",
+                    virtaOpiskeluOikeusId = "Tunniste",
                     organisaatioOid = "",
                     organisaatioNimi = TranslatedName(fi = "Valkoiset Lakanat Oy", sv = "", en = ""),
-                    nimi = TranslatedName(fi = "Lakana Lisensiaatti", sv = "", en = ""),
-                    koulutusKoodi = ""
+                    supaNimi = TranslatedName(fi = "Lakana Lisensiaatti", sv = "", en = ""),
+                    virtaNimi = TranslatedName("", "", "")
                   )
                 )
               ),
@@ -44,7 +44,7 @@ class SupaServiceTest {
     Assertions.assertEquals(1, oikeudet.size)
     val oikeus = oikeudet.head
     Assertions.assertEquals("Valkoiset Lakanat Oy", oikeus.organisaatioNimi.fi)
-    Assertions.assertEquals("Lakana Lisensiaatti", oikeus.nimi.fi)
+    Assertions.assertEquals("Lakana Lisensiaatti", oikeus.supaNimi.fi)
   }
 
   @Test

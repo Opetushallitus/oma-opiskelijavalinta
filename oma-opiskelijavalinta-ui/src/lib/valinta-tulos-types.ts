@@ -36,7 +36,8 @@ export type PaatettavaOpiskeluOikeus = {
   tunniste: string;
   organisaatioOid: string;
   organisaatioNimi: TranslatedName;
-  nimi: TranslatedName;
+  supaNimi: TranslatedName;
+  virtaNimi: TranslatedName;
 };
 
 export type HakutoiveenTulosDto = {
