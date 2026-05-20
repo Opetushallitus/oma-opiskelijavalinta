@@ -232,7 +232,7 @@ test('Näyttää hyväksytylle 2. asteen tulokselle vastaanottoinfon', async ({
   ).toBeVisible();
 });
 
-test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruuntumisesta jos on toinen hakutoive varasijalla', async ({
+test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruuntumisesta jos on toinen hakutoive varasijalla ja yps', async ({
   page,
 }) => {
   const varallaApplication = {
@@ -241,6 +241,7 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
       ...hakemus1.ohjausparametrit,
       jarjestetytHakutoiveet: false,
     },
+    hakukohteet: [hakukohde1Yps, hakukohde2Yps],
     hakemuksenTulokset: [
       {
         ...hakemuksenTulosVarasijalla,
@@ -267,6 +268,46 @@ test('Näyttää priorisoinnittoman kk-haun hyväksytylle tulokselle infon peruu
       'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
     ),
   ).toBeVisible();
+});
+
+test('Ei näytä priorisoinnittoman kk-haun hyväksytylle tulokselle infoa varasijojen peruuntumisesta jos hakutoive ei ole yps:n piirissä', async ({
+  page,
+}) => {
+  const varallaApplication = {
+    ...hakemus1,
+    ohjausparametrit: {
+      ...hakemus1.ohjausparametrit,
+      jarjestetytHakutoiveet: false,
+    },
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosVarasijalla,
+        hakukohdeOid: 'hakukohde-oid-1',
+      },
+      {
+        ...hakemuksenTulosHyvaksytty,
+        hakukohdeOid: 'hakukohde-oid-2',
+        valintatila: 'HYVAKSYTTY',
+        vastaanotettavuustila: 'VASTAANOTETTAVISSA_SITOVASTI',
+      },
+    ],
+  };
+  await fetchMockData(page, varallaApplication);
+  const vastaanottoinfo = page.getByTestId('vastaanottoinfo-hakukohde-oid-2');
+  await expect(
+    vastaanottoinfo.getByText('Ota opiskelupaikka vastaan'),
+  ).toBeVisible();
+  await expect(
+    vastaanottoinfo.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeHidden();
+  const tulokset = page.getByTestId('valintatilainfo-hakukohde-oid-2');
+  await expect(
+    tulokset.getByText(
+      'Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.',
+    ),
+  ).toBeHidden();
 });
 
 test('Ei näytä priorisoinnittoman kk-haun varasijatulokselle infoa yhden paikan säännöstä jos hakutoive ei ole yps:n piirissä', async ({

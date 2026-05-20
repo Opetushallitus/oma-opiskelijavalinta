@@ -198,7 +198,7 @@ const getKkVastaanottoInfo = (
           {t('vastaanotto.info.yhden-paikan-saanto')}
         </OphTypography>
       )}
-      {!hakemus.priorisoidutHakutoiveet && muitaHakutoiveitaVaralla && (
+      {!hakemus.priorisoidutHakutoiveet && yps && muitaHakutoiveitaVaralla && (
         <OphTypography sx={{ fontWeight: 'bolder' }}>
           {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
         </OphTypography>

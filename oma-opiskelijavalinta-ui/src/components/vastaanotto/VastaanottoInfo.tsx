@@ -127,11 +127,13 @@ const getInfoText = (
             {t('vastaanotto.info.yhden-paikan-saanto')}
           </OphTypography>
         )}
-        {!application.priorisoidutHakutoiveet && muitaHakutoiveitaVaralla && (
-          <OphTypography sx={{ fontWeight: 'bolder' }}>
-            {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
-          </OphTypography>
-        )}
+        {!application.priorisoidutHakutoiveet &&
+          YPS &&
+          muitaHakutoiveitaVaralla && (
+            <OphTypography sx={{ fontWeight: 'bolder' }}>
+              {t('tulos.info.hyvaksytty-muut-peruuntuvat')}
+            </OphTypography>
+          )}
         {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_EHDOLLISESTI' && (
           <OphTypography sx={{ fontWeight: 'bolder' }}>
             {t('vastaanotto.info.jonotus')}
