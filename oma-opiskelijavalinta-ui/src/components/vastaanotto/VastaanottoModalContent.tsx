@@ -5,6 +5,9 @@ import type { Hakukohde } from '@/lib/kouta-types';
 import { T } from '@tolgee/react';
 import { styled } from '@/lib/theme';
 import { HakutoiveName } from '../hakukohde/HakutoiveName';
+import { naytetaankoPeruuntuvatOpiskelupaikat } from './vastaanotto-utils';
+import { PaatettavatOikeudetInfo } from './PaatettavatOikeudetInfo';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const ModalBox = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -15,6 +18,7 @@ const ModalBox = styled(Box)(({ theme }) => ({
 export function VastaanottoModalContent({
   hakutoive,
   modalParams,
+  tulos,
 }: {
   hakutoive: Hakukohde;
   modalParams: {
@@ -23,6 +27,7 @@ export function VastaanottoModalContent({
     confirmLabel: string;
     info2?: string;
   };
+  tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
 
@@ -39,6 +44,12 @@ export function VastaanottoModalContent({
             }}
           ></T>
         </OphTypography>
+      )}
+      {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
+        <PaatettavatOikeudetInfo
+          oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          showLink={false}
+        />
       )}
     </ModalBox>
   );

@@ -5,6 +5,7 @@ import {
   VASTAANOTETTU_TILAT,
   VastaanottoTila,
   VastaanottoTilaToiminto,
+  type HakutoiveenTulos,
 } from '@/lib/valinta-tulos-types';
 import { isDefined, isNonNullish } from 'remeda';
 
@@ -163,4 +164,11 @@ export function isVastaanotettu(vastaanottotila: string | undefined): boolean {
     isNonNullish(vastaanottotila) &&
     VASTAANOTETTU_TILAT.includes(vastaanottotila as VastaanottoTila)
   );
+}
+
+export function naytetaankoPeruuntuvatOpiskelupaikat(tulos: HakutoiveenTulos): boolean {
+  return (
+    vastaanotettavissa(tulos.vastaanotettavuustila) &&
+    tulos.paatettavatOpiskeluOikeudet.length > 0
+  )
 }

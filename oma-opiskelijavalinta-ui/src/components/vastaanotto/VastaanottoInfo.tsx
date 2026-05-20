@@ -17,13 +17,17 @@ import type { Hakemus } from '@/lib/hakemus-types';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
-import { getAlemmatVastaanotot } from './vastaanotto-utils';
+import {
+  getAlemmatVastaanotot,
+  naytetaankoPeruuntuvatOpiskelupaikat,
+} from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
 import {
   getVarallaOlevatMuutToiveet,
   naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
+import { PaatettavatOikeudetInfo } from './PaatettavatOikeudetInfo';
 
 export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -107,6 +111,11 @@ const getInfoText = (
       <MultiInfoContainer>
         {getEhdollisestiVastaanottanutInfo(application, lang)}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
+        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
+          <PaatettavatOikeudetInfo
+            oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          />
+        )}
       </MultiInfoContainer>
     );
   } else {
@@ -155,6 +164,11 @@ const getInfoText = (
           />
         )}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
+        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
+          <PaatettavatOikeudetInfo
+            oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          />
+        )}
       </MultiInfoContainer>
     );
   }
