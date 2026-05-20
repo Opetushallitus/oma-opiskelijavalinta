@@ -18,7 +18,7 @@ import fi.oph.opiskelijavalinta.clients.{
   ValintaTulosServiceClient
 }
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
-import fi.oph.opiskelijavalinta.service.{OhjausparametritService, TuloskirjeService}
+import fi.oph.opiskelijavalinta.service.{OhjausparametritService, OnrService, TuloskirjeService}
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
@@ -144,6 +144,9 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val onrClient: OnrClient = Mockito.mock(classOf[OnrClient])
+
+  @MockitoBean(reset = MockReset.NONE)
+  val onrService: OnrService = Mockito.mock(classOf[OnrService])
 
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()

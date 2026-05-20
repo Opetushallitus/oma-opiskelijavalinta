@@ -431,6 +431,32 @@ test('Näyttää hauttoman hakemuksen', async ({ page }) => {
   ).toHaveCount(1);
 });
 
+test('Näyttää virheilmoituksen hakemukselle jonka rikastaminen epäonnistui', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, enrichmentFailed: true }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const app = page.getByTestId('application-hakemus-oid-1');
+  await expect(app.getByTestId('error-box')).toBeVisible();
+  await expect(
+    app.getByText('Tietojen hakemisessa on ongelmia', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    app.getByText(
+      'Hakemuksen hakemus-oid-1 tietojen hakemisessa on ongelmia. Hakemus on jätetty 18.10.2025.',
+    ),
+  ).toBeVisible();
+
+  await expect(
+    page.getByTestId('active-hakemukset').getByTestId('error-box'),
+  ).toBeHidden();
+});
+
 test('Hakemusten saavutettavuus', async ({ page }) => {
   await mockHakemuksetFetch(page);
   await mockAuthenticatedUser(page);

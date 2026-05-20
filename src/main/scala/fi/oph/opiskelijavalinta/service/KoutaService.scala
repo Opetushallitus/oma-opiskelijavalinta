@@ -25,26 +25,36 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
 
   @Cacheable(value = Array(CacheConstants.KOUTA_HAKU_CACHE_NAME), sync = true)
-  def getHaku(hakuOid: String): Option[Haku] = {
-
+  def getHaku(hakuOid: String): Haku = {
     koutaClient.getHaku(hakuOid) match {
       case Left(e) =>
         LOG.warn(s"Virhe haun tietojen hakemisessa haku-oidilla $hakuOid: ${e.getMessage}", e)
-        Option.empty
+        throw RuntimeException(s"Virhe haun tietojen hakemisessa haku-oidilla $hakuOid", e)
       case Right(o) =>
-        Option
-          .apply(mapper.readValue(o, classOf[Haku]))
+        try {
+          mapper.readValue(o, classOf[Haku])
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Virhe haun deserialisoinnissa haku-oidilla $hakuOid: ${e.getMessage}", e)
+            throw RuntimeException(s"Virhe haun deserialisoinnissa haku-oidilla $hakuOid", e)
+        }
     }
   }
 
   @Cacheable(value = Array(CacheConstants.KOUTA_HAKUKOHDE_CACHE_NAME), sync = true)
-  def getHakukohde(hakukohdeOid: String): Option[Hakukohde] = {
+  def getHakukohde(hakukohdeOid: String): Hakukohde = {
     koutaClient.getHakukohde(hakukohdeOid) match {
       case Left(e) =>
         LOG.warn(s"Virhe hakukohteen tietojen hakemusessa oidilla $hakukohdeOid: ${e.getMessage}")
-        Option.empty
+        throw RuntimeException(s"Virhe hakukohteen tietojen hakemisessa oidilla $hakukohdeOid", e)
       case Right(o) =>
-        Option.apply(mapper.readValue(o, classOf[Hakukohde]))
+        try {
+          mapper.readValue(o, classOf[Hakukohde])
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid: ${e.getMessage}", e)
+            throw RuntimeException(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid", e)
+        }
     }
   }
 

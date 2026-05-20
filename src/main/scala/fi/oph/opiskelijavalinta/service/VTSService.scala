@@ -101,6 +101,7 @@ class VTSService @Autowired (
   }
 
   def getValinnanTulokset(hakuOid: String, hakemusOid: String): Option[HakemuksenTulos] = {
+    // TODO näytä virheilmoitus hakijalle, jos valinnan tuloksia ei saatu haettua tai deserialisointi ei onnistunut
     vtsClient.getValinnanTulokset(hakuOid, hakemusOid) match {
       case Left(e) =>
         LOG.error(
@@ -108,18 +109,25 @@ class VTSService @Autowired (
         )
         Option.empty
       case Right(o) =>
-        val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
-        val enrichedHakutoiveenTulokset =
-          raw.hakutoiveet
-            .map(enrichHakutoiveenTulos)
-        Some(
-          HakemuksenTulos(
-            hakuOid = raw.hakuOid,
-            hakemusOid = raw.hakemusOid,
-            hakijaOid = raw.hakijaOid,
-            hakutoiveet = enrichedHakutoiveenTulokset
+        try {
+          val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
+          val enrichedHakutoiveenTulokset = raw.hakutoiveet.map(enrichHakutoiveenTulos)
+          Some(
+            HakemuksenTulos(
+              hakuOid = raw.hakuOid,
+              hakemusOid = raw.hakemusOid,
+              hakijaOid = raw.hakijaOid,
+              hakutoiveet = enrichedHakutoiveenTulokset
+            )
           )
-        )
+        } catch {
+          case e: Exception =>
+            LOG.error(
+              s"Virhe valinnan tulosten deserialisoinnissa, hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}",
+              e
+            )
+            Option.empty
+        }
     }
   }
 
