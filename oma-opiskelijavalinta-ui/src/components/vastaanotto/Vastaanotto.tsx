@@ -53,13 +53,18 @@ function VastaanottoBox({
       )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
         tulos.vastaanottotila !== 'EHDOLLISESTI_VASTAANOTTANUT' && (
-          <VastaanottoRadio application={application} hakutoive={hakukohde} />
+          <VastaanottoRadio
+            application={application}
+            hakutoive={hakukohde}
+            tulos={tulos}
+          />
         )}
       {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_SITOVASTI' &&
         tulos.vastaanottotila === 'EHDOLLISESTI_VASTAANOTTANUT' && (
           <VastaanottoEhdollisestaSitovaksi
             application={application}
             hakutoive={hakukohde}
+            tulos={tulos}
           />
         )}
       <IlmoittautuminenContainer

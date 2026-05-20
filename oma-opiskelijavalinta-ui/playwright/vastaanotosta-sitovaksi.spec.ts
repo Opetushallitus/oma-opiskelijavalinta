@@ -160,6 +160,69 @@ test('Näyttää peruutettavan vahvistusdialogin lähetettäessä vastaanottoa',
   ).toBeVisible();
 });
 
+test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) => {
+  /*eslint-disable @typescript-eslint/no-non-null-assertion */
+  const tulokset: Array<HakutoiveenTulosDto> = [
+    hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[0]!,
+    {
+      ...hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[1]!,
+      paatettavatOpiskeluOikeudet: [
+        {
+          tunniste: 'tunniste-1',
+          organisaatioOid: '',
+          organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
+          nimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
+        },
+        {
+          tunniste: 'tunniste-2',
+          organisaatioOid: '',
+          organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
+          nimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
+        },
+      ],
+    },
+  ];
+  await setup(page, tulokset);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+
+  await vastaanotot.getByText('Luovun jonotuksesta ja muutan').click();
+  await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
+  await expect(
+    page.getByText('Vahvista jonotuksesta luopuminen'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta luopuminen')
+      .getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta luopuminen')
+      .getByText('Valkoiset Lakanat Oy'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta luopuminen')
+      .getByText('Lakana Lisensiaatti'),
+  ).toBeVisible();
+  await expect(
+    page.getByLabel('Vahvista jonotuksesta luopuminen').getByText('Poral'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta luopuminen')
+      .getByText('Hampaiden Poraaja'),
+  ).toBeVisible();
+});
+
 test('Lähettää vastaanoton onnistuneesti', async ({ page }) => {
   await setup(page);
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');

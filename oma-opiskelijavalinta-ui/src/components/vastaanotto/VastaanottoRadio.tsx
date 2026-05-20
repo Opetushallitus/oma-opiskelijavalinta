@@ -30,6 +30,7 @@ import {
 } from './vastaanotto-utils';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { VastaanottoPeruAiemmatModalContent } from './VastaanottoPeruAlemmatModalContent';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -139,9 +140,11 @@ function determineVastaanottoOptions(
 export function VastaanottoRadio({
   hakutoive,
   application,
+  tulos,
 }: {
   hakutoive: Hakukohde;
   application: Hakemus;
+  tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
   const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
@@ -247,6 +250,7 @@ export function VastaanottoRadio({
         <VastaanottoModalContent
           modalParams={modalParams}
           hakutoive={hakutoive}
+          tulos={tulos}
         />
       ),
     });

@@ -8,8 +8,10 @@ import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 
 export function PaatettavatOikeudetInfo({
   oikeudet,
+  showLink = true,
 }: {
   oikeudet: Array<PaatettavaOpiskeluOikeus>;
+  showLink?: boolean;
 }) {
   const { t, translateEntity } = useTranslations();
 
@@ -33,7 +35,9 @@ export function PaatettavatOikeudetInfo({
           </BulletItem>
         ))}
       </BulletedList>
-      <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />
+      {showLink && (
+        <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />
+      )}
     </MultiInfoContainer>
   );
 }
