@@ -10,9 +10,12 @@ import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpis
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.context.request.RequestContextHolder
+import slick.jdbc.JdbcBackend.JdbcDatabaseDef
+import slick.jdbc.PostgresProfile.api.*
 
 @Service
-class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectMapper = new ObjectMapper()) {
+class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcDatabaseDef, mapper: ObjectMapper = new ObjectMapper()) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[SupaService]);
 
@@ -46,6 +49,7 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
               handleYosVirhe(virhe, viesti)
               List.empty
             case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
+              saveOpiskeluOikeudetToSession(hakukohdeOid, paatettavatOpiskeluOikeudet)
               paatettavatOpiskeluOikeudet
             case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
               LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
@@ -75,4 +79,15 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
     }
   }
 
+  private def saveOpiskeluOikeudetToSession(hakukohdeOid: String, oikeudet: List[PaatettavaOpiskeluOikeus]): Unit = {
+    val oikeudetJson: String = mapper.writeValueAsString(oikeudet)
+    val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
+    database.run(
+      sql"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
+      VALUES(
+        ${sessionId},
+        $hakukohdeOid,
+        $oikeudetJson::json[]
+      )""".as[String])
+  }
 }
