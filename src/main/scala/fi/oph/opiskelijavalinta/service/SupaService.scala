@@ -14,6 +14,10 @@ import org.springframework.web.context.request.RequestContextHolder
 import slick.jdbc.JdbcBackend.JdbcDatabaseDef
 import slick.jdbc.PostgresProfile.api.*
 
+import java.util.concurrent.TimeUnit
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 @Service
 class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcDatabaseDef, mapper: ObjectMapper = new ObjectMapper()) {
 
@@ -49,7 +53,7 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcD
               handleYosVirhe(virhe, viesti)
               List.empty
             case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
-              saveOpiskeluOikeudetToSession(hakukohdeOid, paatettavatOpiskeluOikeudet)
+              saveOpiskeluOikeudetToSession(hakukohdeOid, raw)
               paatettavatOpiskeluOikeudet
             case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
               LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
@@ -66,6 +70,20 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcD
     }
   }
 
+  def fetchOpiskeluOikeudetFromSession(hakukohdeOid: String): Option[List[PaatettavaOpiskeluOikeus]] = {
+    val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
+    val oikeudet = Await.result(database.run(
+      sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
+            WHERE HAKUKOHDE_OID = '$hakukohdeOid' AND SESSION_ID = '$sessionId'
+        )""".as[String]), Duration(10, TimeUnit.SECONDS))
+    if (oikeudet.isEmpty) {
+      LOG.info(s"Päätettäviä oikeuksia ei löytynyt hakutoiveelle $hakukohdeOid ja sessiolle $sessionId")
+      None
+    } else {
+      mapper.readValue(oikeudet.head, classOf[PaatettavatOpiskeluOikeudetResponse]).paatettavatOpiskeluOikeudet
+    }
+  }
+
   private def handleYosVirhe(virhe: YosVirhe, viesti: String): Unit = {
     // TODO: OPHYOS-170, mihin tämän virheen pitäisi vaikuttaa? Näytetäänkö käyttäjälle?
     virhe match {
@@ -79,15 +97,16 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcD
     }
   }
 
-  private def saveOpiskeluOikeudetToSession(hakukohdeOid: String, oikeudet: List[PaatettavaOpiskeluOikeus]): Unit = {
+  private def saveOpiskeluOikeudetToSession(hakukohdeOid: String, oikeudet: PaatettavatOpiskeluOikeudetResponse): Unit = {
     val oikeudetJson: String = mapper.writeValueAsString(oikeudet)
+    val attributes = RequestContextHolder.currentRequestAttributes()
     val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
-    database.run(
+    Await.result(database.run(
       sql"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
       VALUES(
         ${sessionId},
         $hakukohdeOid,
-        $oikeudetJson::json[]
-      )""".as[String])
+        $oikeudetJson::json
+      )""".as[String]), Duration(5, TimeUnit.SECONDS))
   }
 }
