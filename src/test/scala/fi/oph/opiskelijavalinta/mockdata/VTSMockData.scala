@@ -1,13 +1,7 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.model.{
-  HakemuksenTulos,
-  HakemuksenTulosRaw,
-  HakutoiveenTulos,
-  HakutoiveenTulosEnriched,
-  Ilmoittautumistila,
-  JonokohtainenTulostieto
-}
+import fi.oph.opiskelijavalinta.TestUtils.{PERSON_OID, HAKU_OID, HAKUKOHDE_OID, HAKEMUS_OID}
+import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched, Ilmoittautumistila, JonokohtainenTulostieto}
 
 object VTSMockData {
 
@@ -70,7 +64,7 @@ object VTSMockData {
   )
 
   val hakutoive1Hyvaksytty = HakutoiveenTulosEnriched(
-    hakukohdeOid = Some("hakukohde-oid-1"),
+    hakukohdeOid = Some(HAKUKOHDE_OID),
     hakukohdeNimi = Some("Liukumäen lisensiaatti"),
     tarjoajaOid = Some("organisaatio-oid-1"),
     tarjoajaNimi = Some("Leikkipuisto, Liukumäki"),
@@ -153,9 +147,9 @@ object VTSMockData {
   )
 
   val mockVTSResponse = HakemuksenTulos(
-    hakuOid = Some("1.2.246.562.29.00000000000000065738"),
-    hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
-    hakijaOid = Some("1.2.246.562.24.97280766274"),
+    hakuOid = Some(HAKU_OID),
+    hakemusOid = Some(HAKEMUS_OID),
+    hakijaOid = Some(PERSON_OID),
     hakutoiveet = List(hakutoive1Hyvaksytty, hakutoive2Kesken)
   )
 

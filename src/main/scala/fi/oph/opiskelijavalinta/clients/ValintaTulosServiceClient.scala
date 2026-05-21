@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.model.PaatettavaOpiskeluOikeus
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -30,7 +31,7 @@ class ValintaTulosServiceClient @Autowired (
     fetch(url)
   }
 
-  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String): Either[Throwable, String] = {
+  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String, oikeudet: List[PaatettavaOpiskeluOikeus]): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/valinta-tulos-service/auth/vastaanotto/hakemus/$hakemusOid/hakukohde/$hakukohdeOid"
     post(url, s"{\"action\": \"$vastaanotto\"}", "vastaanotto")
