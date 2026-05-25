@@ -31,10 +31,10 @@ class ValintaTulosServiceClient @Autowired (
     fetch(url)
   }
 
-  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String, oikeudet: List[PaatettavaOpiskeluOikeus]): Either[Throwable, String] = {
+  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, body: String): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/valinta-tulos-service/auth/vastaanotto/hakemus/$hakemusOid/hakukohde/$hakukohdeOid"
-    post(url, s"{\"action\": \"$vastaanotto\"}", "vastaanotto")
+    post(url, body, "vastaanotto")
   }
 
   def postIlmoittautuminen(hakemusOid: String, hakuOid: String, body: String): Either[Throwable, String] = {

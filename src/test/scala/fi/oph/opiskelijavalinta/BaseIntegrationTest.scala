@@ -2,8 +2,22 @@ package fi.oph.opiskelijavalinta
 
 import com.github.dockerjava.api.model.{ExposedPort, HostConfig, PortBinding, Ports}
 import fi.oph.opiskelijavalinta.BaseIntegrationTest.postgresPort
-import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID, PERSON_OID, objectMapper}
-import fi.oph.opiskelijavalinta.clients.{AtaruClient, KoutaClient, LokalisointiClient, OnrClient, SuoritusPalveluClient, ValintaTulosServiceClient}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  objectMapper,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID,
+  PERSON_OID
+}
+import fi.oph.opiskelijavalinta.clients.{
+  AtaruClient,
+  KoutaClient,
+  LokalisointiClient,
+  OnrClient,
+  SuoritusPalveluClient,
+  ValintaTulosServiceClient
+}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.service.{OhjausparametritService, OnrService, TuloskirjeService}
 import fi.oph.viestinvalitys.ViestinvalitysClient

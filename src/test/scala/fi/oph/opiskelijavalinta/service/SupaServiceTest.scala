@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.service
 
-import fi.oph.opiskelijavalinta.TestUtils.{HAKUKOHDE_OID, HAKU_OID, PERSON_OID, objectMapper}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.clients.SuoritusPalveluClient
 import fi.oph.opiskelijavalinta.model.YosVirhe.VIRHE_HAKUTOIVEEN_PAATTELYSSA
 import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpiskeluOikeudetResponse, TranslatedName}
@@ -13,7 +13,7 @@ import slick.jdbc.JdbcBackend.JdbcDatabaseDef
 class SupaServiceTest {
 
   val supaClient: SuoritusPalveluClient = Mockito.mock(classOf[SuoritusPalveluClient])
-  val database: JdbcDatabaseDef = Mockito.mock(classOf[JdbcDatabaseDef])
+  val database: JdbcDatabaseDef         = Mockito.mock(classOf[JdbcDatabaseDef])
 
   val service = SupaService(supaClient, database)
 

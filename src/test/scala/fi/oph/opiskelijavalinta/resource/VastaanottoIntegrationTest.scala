@@ -15,6 +15,7 @@ import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, hakukohde2, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
 import fi.oph.opiskelijavalinta.security.AuditOperation
+import fi.oph.opiskelijavalinta.service.VastaanottoRequestBody
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClientException
 import fi.oph.viestinvalitys.vastaanotto.resource.LuoViestiSuccessResponseImpl
@@ -190,7 +191,13 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
-      .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti", List.empty))
+      .when(
+        valintaTulosServiceClient.postVastaanotto(
+          HAKEMUS_OID,
+          HAKUKOHDE_OID,
+          objectMapper.writeValueAsString(VastaanottoRequestBody("VastaanotaSitovasti", List.empty))
+        )
+      )
       .thenReturn(
         Left(
           VtsBadRequestException(
@@ -259,7 +266,13 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
-      .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti", List.empty))
+      .when(
+        valintaTulosServiceClient.postVastaanotto(
+          HAKEMUS_OID,
+          HAKUKOHDE_OID,
+          objectMapper.writeValueAsString(VastaanottoRequestBody("VastaanotaSitovasti", List.empty))
+        )
+      )
       .thenReturn(Right("OK"))
     val fileName: String = "/test-translation.json"
     val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
@@ -378,7 +391,13 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
     Mockito
-      .when(valintaTulosServiceClient.postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti", List.empty))
+      .when(
+        valintaTulosServiceClient.postVastaanotto(
+          HAKEMUS_OID,
+          HAKUKOHDE_OID,
+          objectMapper.writeValueAsString(VastaanottoRequestBody("VastaanotaSitovasti", List.empty))
+        )
+      )
       .thenReturn(Right("OK"))
     val fileName: String = "/test-translation.json"
     val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString

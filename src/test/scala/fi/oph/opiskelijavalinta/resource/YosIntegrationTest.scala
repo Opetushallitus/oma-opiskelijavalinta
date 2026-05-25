@@ -1,12 +1,39 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKUKOHDE_OID_2, HAKU_OID, PERSON_OID, linkUser, objectMapper, oppijaUser, userWithoutPersonOid}
+import fi.oph.opiskelijavalinta.TestUtils.{
+  linkUser,
+  objectMapper,
+  oppijaUser,
+  userWithoutPersonOid,
+  HAKEMUS_OID,
+  HAKUKOHDE_OID,
+  HAKUKOHDE_OID_2,
+  HAKU_OID,
+  PERSON_OID
+}
 import fi.oph.opiskelijavalinta.clients.model.Oppija
-import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakuaikaPaattynytHaku, hakukohde1, hakukohde2, kaynnissaOlevaHaku}
-import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{hakukierrosPaattyyTulevaisuudessaMock, mennytTimestamp, paattynytHakukierrosMock}
+import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{
+  hakuaikaPaattynytHaku,
+  hakukohde1,
+  hakukohde2,
+  kaynnissaOlevaHaku
+}
+import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
+  hakukierrosPaattyyTulevaisuudessaMock,
+  mennytTimestamp,
+  paattynytHakukierrosMock
+}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
-import fi.oph.opiskelijavalinta.model.{HakemuksetEnriched, Hakemus, HakemusEnriched, PaatettavaOpiskeluOikeus, PaatettavatOpiskeluOikeudetResponse, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksetEnriched,
+  Hakemus,
+  HakemusEnriched,
+  PaatettavaOpiskeluOikeus,
+  PaatettavatOpiskeluOikeudetResponse,
+  TranslatedName
+}
+import fi.oph.opiskelijavalinta.service.VastaanottoRequestBody
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.vastaanotto.resource.LuoViestiSuccessResponseImpl
 import org.junit.jupiter.api.*
@@ -27,7 +54,7 @@ class YosIntegrationTest extends BaseIntegrationTest {
   def resetMocks(): Unit = {
     Mockito.reset(viestinvalitysClient, koutaClient, valintaTulosServiceClient, lokalisointiClient, supaClient)
   }
-  
+
   @Test
   def palauttaaPaatettavatOpiskeluOikeudetTulostenKanssa(): Unit = {
     Mockito
@@ -47,14 +74,27 @@ class YosIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
     Mockito
       .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(PaatettavatOpiskeluOikeudetResponse(Some(List(
-        PaatettavaOpiskeluOikeus(
-          virtaOpiskeluOikeusId = "virtaOikeusId",
-          organisaatioOid = "1.2.3.4.5",
-          organisaatioNimi = TranslatedName("Daculan AMK", "", ""),
-          virtaNimi = TranslatedName("Daculan hattu", "", ""),
-          supaNimi = TranslatedName("Hatunlierintekijän koulutus", "", ""))
-      )), None, None))))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            PaatettavatOpiskeluOikeudetResponse(
+              Some(
+                List(
+                  PaatettavaOpiskeluOikeus(
+                    virtaOpiskeluOikeusId = "virtaOikeusId",
+                    organisaatioOid = "1.2.3.4.5",
+                    organisaatioNimi = TranslatedName("Daculan AMK", "", ""),
+                    virtaNimi = TranslatedName("Daculan hattu", "", ""),
+                    supaNimi = TranslatedName("Hatunlierintekijän koulutus", "", "")
+                  )
+                )
+              ),
+              None,
+              None
+            )
+          )
+        )
+      )
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -77,7 +117,8 @@ class YosIntegrationTest extends BaseIntegrationTest {
     Assertions.assertFalse(hakutoive1.paatettavatOpiskeluOikeudet.isEmpty)
 
     val hakutoive2 = app.hakemuksenTulokset
-      .find(_.hakukohdeOid.contains("hakukohde-oid-2")).get
+      .find(_.hakukohdeOid.contains("hakukohde-oid-2"))
+      .get
     Assertions.assertEquals("KESKEN", hakutoive2.valintatila.get)
     Assertions.assertTrue(hakutoive2.paatettavatOpiskeluOikeudet.isEmpty)
   }
@@ -102,14 +143,27 @@ class YosIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
     Mockito
       .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(PaatettavatOpiskeluOikeudetResponse(Some(List(
-        PaatettavaOpiskeluOikeus(
-          virtaOpiskeluOikeusId = "virtaOikeusId",
-          organisaatioOid = "1.2.3.4.5",
-          organisaatioNimi = TranslatedName("Daculan AMK", "", ""),
-          virtaNimi = TranslatedName("Daculan hattu", "", ""),
-          supaNimi = TranslatedName("Hatunlierintekijän koulutus", "", ""))
-      )), None, None))))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            PaatettavatOpiskeluOikeudetResponse(
+              Some(
+                List(
+                  PaatettavaOpiskeluOikeus(
+                    virtaOpiskeluOikeusId = "virtaOikeusId",
+                    organisaatioOid = "1.2.3.4.5",
+                    organisaatioNimi = TranslatedName("Daculan AMK", "", ""),
+                    virtaNimi = TranslatedName("Daculan hattu", "", ""),
+                    supaNimi = TranslatedName("Hatunlierintekijän koulutus", "", "")
+                  )
+                )
+              ),
+              None,
+              None
+            )
+          )
+        )
+      )
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -137,13 +191,27 @@ class YosIntegrationTest extends BaseIntegrationTest {
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
-    
-    Mockito.verify(valintaTulosServiceClient, times(1)).postVastaanotto(HAKEMUS_OID, HAKUKOHDE_OID, "VastaanotaSitovasti", List(PaatettavaOpiskeluOikeus(
-      virtaOpiskeluOikeusId = "virtaOikeusId",
-      organisaatioOid = "1.2.3.4.5",
-      organisaatioNimi = TranslatedName("Daculan AMK", "", ""),
-      virtaNimi = TranslatedName("Daculan hattu", "", ""),
-      supaNimi = TranslatedName("Hatunlierintekijän koulutus", "", ""))))
+
+    Mockito
+      .verify(valintaTulosServiceClient, times(1))
+      .postVastaanotto(
+        HAKEMUS_OID,
+        HAKUKOHDE_OID,
+        objectMapper.writeValueAsString(
+          VastaanottoRequestBody(
+            "VastaanotaSitovasti",
+            List(
+              PaatettavaOpiskeluOikeus(
+                virtaOpiskeluOikeusId = "virtaOikeusId",
+                organisaatioOid = "1.2.3.4.5",
+                organisaatioNimi = TranslatedName("Daculan AMK", "", ""),
+                virtaNimi = TranslatedName("Daculan hattu", "", ""),
+                supaNimi = TranslatedName("Hatunlierintekijän koulutus", "", "")
+              )
+            )
+          )
+        )
+      )
   }
 
   def initProperVastaanotto(): Unit = {
@@ -181,10 +249,10 @@ class YosIntegrationTest extends BaseIntegrationTest {
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito.when(onrClient.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
     Mockito
-      .when(valintaTulosServiceClient.postVastaanotto(any(), any(), any(), any()))
+      .when(valintaTulosServiceClient.postVastaanotto(any(), any(), any()))
       .thenReturn(Right("OK"))
     val fileName: String = "/test-translation.json"
-    val text = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
+    val text             = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
     Mockito
       .when(lokalisointiClient.getLokalisaatiot(SupportedLanguage.fi))
       .thenReturn(
