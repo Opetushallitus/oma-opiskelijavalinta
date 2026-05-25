@@ -7,11 +7,11 @@ enum YosVirhe:
   case PUUTTEELLISET_PARAMETRIT
 
 case class PaatettavaOpiskeluOikeus(
-  tunniste: String,
+  virtaOpiskeluOikeusId: String,
   organisaatioOid: String,
   organisaatioNimi: TranslatedName,
-  nimi: TranslatedName,
-  koulutusKoodi: String
+  virtaNimi: TranslatedName,
+  supaNimi: TranslatedName
 )
 
 case class PaatettavatOpiskeluOikeudetResponse(
