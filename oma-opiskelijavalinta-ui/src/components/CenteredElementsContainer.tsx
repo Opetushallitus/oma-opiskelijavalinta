@@ -1,4 +1,4 @@
-import { styled } from '@/lib/theme';
+import { notDesktop, styled } from '@/lib/theme';
 import { Box } from '@mui/material';
 
 export const CenteredElementsContainer = styled(Box)(({ theme }) => ({
@@ -9,4 +9,7 @@ export const CenteredElementsContainer = styled(Box)(({ theme }) => ({
   width: 'fit-content',
   alignItems: 'center',
   marginTop: theme.spacing(8),
+  [notDesktop(theme)]: {
+    padding: theme.spacing(0, 2),
+  },
 }));

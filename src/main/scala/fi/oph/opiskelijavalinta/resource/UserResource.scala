@@ -3,7 +3,8 @@ package fi.oph.opiskelijavalinta.resource
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.service.OnrService
 import fi.oph.opiskelijavalinta.resource.ApiConstants.USER_PATH
-import fi.oph.opiskelijavalinta.security.OppijaUser
+import fi.oph.opiskelijavalinta.security.{AuditLog, OppijaUser}
+import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -17,7 +18,7 @@ class UserResource @Autowired (private val onrService: OnrService) {
   val LOG: Logger = LoggerFactory.getLogger(classOf[UserResource]);
 
   @GetMapping(path = Array(""))
-  def response: ResponseEntity[Oppija] = {
+  def response(request: HttpServletRequest): ResponseEntity[Oppija] = {
     LOG.info("Haetaan käyttäjän tiedot")
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.personOid
@@ -25,9 +26,14 @@ class UserResource @Autowired (private val onrService: OnrService) {
     val oppija                    = (personOid, hetu) match
       case (Some(personOid), _) => onrService.getPersonInfo(personOid)
       case (None, Some(hetu))   => onrService.getPersonInfoByHetu(hetu)
-      case _                    =>
-        LOG.warn("ei tunnistetta käyttäjälle, palautetaan tyhjä oppija")
-        null // TODO eidas-tunniste
+      case _                    => // TODO eidas-tunniste
+        val userAgent = AuditLog.getUserAgent(request)
+        val ipAddress = AuditLog.getInetAddress(request)
+        LOG.info(
+          s"Kirjautunut käyttäjä jolla ei ole oppijanumeroa eikä hetua. Käyttäjän attribuutit cas-oppijasta: ${principal.attributes}," +
+            s"userAgent: $userAgent, ipAddress: $ipAddress"
+        )
+        null
     ResponseEntity.ok(oppija)
   }
 }

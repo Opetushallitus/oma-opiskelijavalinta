@@ -1,7 +1,7 @@
 import '@/lib/service-global';
 import { Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { UntranslatedFullSpinner } from '@/components/FullSpinner';
-import { GenericErrorPage } from '@/components/GenericErrorPage';
+import GenericErrorPage from '@/components/GenericErrorPage';
 import React from 'react';
 import { LocalizationProvider } from '@/components/LocalizationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
