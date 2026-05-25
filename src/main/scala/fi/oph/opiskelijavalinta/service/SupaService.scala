@@ -19,7 +19,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 @Service
-class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcDatabaseDef, mapper: ObjectMapper = new ObjectMapper()) {
+class SupaService @Autowired (
+  supaClient: SuoritusPalveluClient,
+  database: JdbcDatabaseDef,
+  mapper: ObjectMapper = new ObjectMapper()
+) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[SupaService]);
 
@@ -72,10 +76,13 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcD
 
   def fetchOpiskeluOikeudetFromSession(hakukohdeOid: String): Option[List[PaatettavaOpiskeluOikeus]] = {
     val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
-    val oikeudet = Await.result(database.run(
-      sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
-            WHERE HAKUKOHDE_OID = '$hakukohdeOid' AND SESSION_ID = '$sessionId'
-        )""".as[String]), Duration(10, TimeUnit.SECONDS))
+    LOG.info(s"SessionId $sessionId")
+    val oikeudet = Await.result(
+      database.run(sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
+            WHERE HAKUKOHDE_OID = $hakukohdeOid AND SESSION_ID = $sessionId
+        """.as[String]),
+      Duration(10, TimeUnit.SECONDS)
+    )
     if (oikeudet.isEmpty) {
       LOG.info(s"Päätettäviä oikeuksia ei löytynyt hakutoiveelle $hakukohdeOid ja sessiolle $sessionId")
       None
@@ -97,16 +104,21 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, database: JdbcD
     }
   }
 
-  private def saveOpiskeluOikeudetToSession(hakukohdeOid: String, oikeudet: PaatettavatOpiskeluOikeudetResponse): Unit = {
+  private def saveOpiskeluOikeudetToSession(
+    hakukohdeOid: String,
+    oikeudet: PaatettavatOpiskeluOikeudetResponse
+  ): Unit = {
     val oikeudetJson: String = mapper.writeValueAsString(oikeudet)
-    val attributes = RequestContextHolder.currentRequestAttributes()
-    val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
-    Await.result(database.run(
-      sql"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
+    val attributes           = RequestContextHolder.currentRequestAttributes()
+    val sessionId            = RequestContextHolder.currentRequestAttributes().getSessionId
+    Await.result(
+      database.run(sql"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
       VALUES(
-        ${sessionId},
+        $sessionId,
         $hakukohdeOid,
         $oikeudetJson::json
-      )""".as[String]), Duration(5, TimeUnit.SECONDS))
+      )""".as[String]),
+      Duration(5, TimeUnit.SECONDS)
+    )
   }
 }

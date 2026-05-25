@@ -23,5 +23,3 @@ class DBConfiguration(@Value("${app.db.threads:8}") val dbThreads: Int) {
     JdbcBackend.Database.forDataSource(dataSource, None)
 
 }
-
-

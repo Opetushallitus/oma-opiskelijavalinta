@@ -1,7 +1,14 @@
 package fi.oph.opiskelijavalinta.mockdata
 
-import fi.oph.opiskelijavalinta.TestUtils.{PERSON_OID, HAKU_OID, HAKUKOHDE_OID, HAKEMUS_OID}
-import fi.oph.opiskelijavalinta.model.{HakemuksenTulos, HakemuksenTulosRaw, HakutoiveenTulos, HakutoiveenTulosEnriched, Ilmoittautumistila, JonokohtainenTulostieto}
+import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksenTulos,
+  HakemuksenTulosRaw,
+  HakutoiveenTulos,
+  HakutoiveenTulosEnriched,
+  Ilmoittautumistila,
+  JonokohtainenTulostieto
+}
 
 object VTSMockData {
 
