@@ -19,6 +19,7 @@ export type Hakemus = {
   processing: boolean;
   tuloskirjeModified?: number | null;
   enrichmentFailed?: boolean;
+  tuloksetFailed?: boolean;
 };
 
 export type Hakemukset = {

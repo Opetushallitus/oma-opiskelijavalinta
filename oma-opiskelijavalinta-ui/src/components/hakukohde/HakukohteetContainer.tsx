@@ -11,10 +11,12 @@ export function HakukohteetContainer({
   hakemus,
   hakemuksenTulokset,
   mennytHakemus = false,
+  virhe = false,
 }: {
   hakemus: Hakemus;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
   mennytHakemus?: boolean;
+  virhe?: boolean;
 }) {
   const { t } = useTranslations();
 
@@ -32,7 +34,7 @@ export function HakukohteetContainer({
         component={adjustHeaderLevel ? 'h3' : 'h4'}
         sx={{ fontWeight: 'normal', mt: 3 }}
       >
-        {hakemuksenTulokset?.length || !hakuaikaKaynnissa
+        {(hakemuksenTulokset?.length || !hakuaikaKaynnissa) && !virhe
           ? t('hakemukset.valintatilanne')
           : t('hakemukset.hakutoiveet')}
       </OphTypography>
@@ -52,7 +54,7 @@ export function HakukohteetContainer({
               prioriteetti={idx + 1}
               sijoitteluKaytossa={hakemus.sijoitteluKaytossa}
               naytaKeskenTulos={
-                isJulkaistuTulosHakemuksella || !hakuaikaKaynnissa
+                (isJulkaistuTulosHakemuksella || !hakuaikaKaynnissa) && !virhe
               }
               tulos={tulos}
               mennytHakemus={mennytHakemus}

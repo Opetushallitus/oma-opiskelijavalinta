@@ -107,7 +107,7 @@ class VTSService @Autowired (
         LOG.error(
           s"Virhe valinnan tuloksien hakemisessa, hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}"
         )
-        Option.empty
+        throw new RuntimeException("Virhe valinnan tuloksien hakemisessa", e)
       case Right(o) =>
         try {
           val raw                         = mapper.readValue(o, classOf[HakemuksenTulosRaw])
@@ -126,7 +126,7 @@ class VTSService @Autowired (
               s"Virhe valinnan tulosten deserialisoinnissa, hakuOid=$hakuOid, hakemusOid=$hakemusOid: ${e.getMessage}",
               e
             )
-            Option.empty
+            throw new RuntimeException("Virhe valinnan tulosten deserialisoinnissa", e)
         }
     }
   }
