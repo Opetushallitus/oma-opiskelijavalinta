@@ -76,7 +76,7 @@ class SupaService @Autowired (
 
   def fetchOpiskeluOikeudetFromSession(hakukohdeOid: String): Option[List[PaatettavaOpiskeluOikeus]] = {
     val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
-    LOG.info(s"SessionId $sessionId")
+    LOG.info(s"Haetaan päätettävät opiskeluoikeudet sessiosta $sessionId hakukohteelle $hakukohdeOid")
     val oikeudet = Await.result(
       database.run(sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
             WHERE HAKUKOHDE_OID = $hakukohdeOid AND SESSION_ID = $sessionId
