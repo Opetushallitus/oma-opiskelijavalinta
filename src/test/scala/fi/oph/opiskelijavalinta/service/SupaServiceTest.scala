@@ -6,8 +6,13 @@ import fi.oph.opiskelijavalinta.model.YosVirhe.VIRHE_HAKUTOIVEEN_PAATTELYSSA
 import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpiskeluOikeudetResponse, TranslatedName}
 import org.junit.jupiter.api.{Assertions, Test, TestInstance}
 import org.junit.jupiter.api.TestInstance.Lifecycle
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.web.context.request.{RequestContextHolder, ServletRequestAttributes}
 import slick.jdbc.JdbcBackend.JdbcDatabaseDef
+
+import scala.concurrent.Future
 
 @TestInstance(Lifecycle.PER_METHOD)
 class SupaServiceTest {
@@ -19,6 +24,9 @@ class SupaServiceTest {
 
   @Test
   def palauttaaPaatettavatOpiskeluOikeudet(): Unit = {
+    val request = new MockHttpServletRequest()
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request))
+    Mockito.when(database.run(any())).thenReturn(Future.successful(()))
     Mockito
       .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
       .thenReturn(
@@ -51,6 +59,8 @@ class SupaServiceTest {
 
   @Test
   def palauttaaTyhjanListanJosVastauksessaOnVirhe(): Unit = {
+    val request = new MockHttpServletRequest()
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request))
     Mockito
       .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
       .thenReturn(
