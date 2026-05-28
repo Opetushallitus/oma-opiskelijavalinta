@@ -42,6 +42,7 @@ import org.mockito.ArgumentMatchers.{any, eq}
 import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockHttpSession
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -164,10 +165,12 @@ class YosIntegrationTest extends BaseIntegrationTest {
           )
         )
       )
-    val result = mvc
+    val session = new MockHttpSession()
+    val result  = mvc
       .perform(
         MockMvcRequestBuilders
           .get(ApiConstants.HAKEMUKSET_PATH)
+          .session(session)
           .`with`(user(oppijaUser))
       )
       .andExpect(status().isOk)
@@ -186,6 +189,7 @@ class YosIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .post(s"${ApiConstants.VASTAANOTTO_PATH}/hakemus/$HAKEMUS_OID/hakukohde/$HAKUKOHDE_OID")
+          .session(session)
           .contentType(MediaType.APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(vastaanottoDTO))
           .`with`(user(oppijaUser))
