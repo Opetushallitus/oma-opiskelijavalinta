@@ -24,7 +24,13 @@ import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
   paattynytHakukierrosMock
 }
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
-import fi.oph.opiskelijavalinta.model.{HakemuksetEnriched, Hakemus, HakemusEnriched, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksetEnriched,
+  Hakemus,
+  HakemusEnriched,
+  PaatettavatOpiskeluOikeudetResponse,
+  TranslatedName
+}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -180,6 +186,19 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
+    Mockito
+      .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            PaatettavatOpiskeluOikeudetResponse(
+              paatettavatOpiskeluOikeudet = Option(List()),
+              virhe = None,
+              viesti = None
+            )
+          )
+        )
+      )
     val result = mvc
       .perform(
         MockMvcRequestBuilders

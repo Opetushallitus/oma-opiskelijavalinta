@@ -10,9 +10,20 @@ import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpis
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.context.request.RequestContextHolder
+import slick.jdbc.JdbcBackend.JdbcDatabaseDef
+import slick.jdbc.PostgresProfile.api.*
+
+import java.util.concurrent.TimeUnit
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 @Service
-class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectMapper = new ObjectMapper()) {
+class SupaService @Autowired (
+  supaClient: SuoritusPalveluClient,
+  database: JdbcDatabaseDef,
+  mapper: ObjectMapper = new ObjectMapper()
+) {
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[SupaService]);
 
@@ -46,6 +57,7 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
               handleYosVirhe(virhe, viesti)
               List.empty
             case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
+              saveOpiskeluOikeudetToSession(hakukohdeOid, raw)
               paatettavatOpiskeluOikeudet
             case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
               LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
@@ -62,6 +74,23 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
     }
   }
 
+  def fetchOpiskeluOikeudetFromSession(hakukohdeOid: String): Option[List[PaatettavaOpiskeluOikeus]] = {
+    val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
+    LOG.info(s"Haetaan päätettävät opiskeluoikeudet sessiosta $sessionId hakukohteelle $hakukohdeOid")
+    val oikeudet = Await.result(
+      database.run(sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
+            WHERE HAKUKOHDE_OID = $hakukohdeOid AND SESSION_ID = $sessionId
+        """.as[String]),
+      Duration(10, TimeUnit.SECONDS)
+    )
+    if (oikeudet.isEmpty) {
+      LOG.info(s"Päätettäviä oikeuksia ei löytynyt hakutoiveelle $hakukohdeOid ja sessiolle $sessionId")
+      None
+    } else {
+      mapper.readValue(oikeudet.head, classOf[PaatettavatOpiskeluOikeudetResponse]).paatettavatOpiskeluOikeudet
+    }
+  }
+
   private def handleYosVirhe(virhe: YosVirhe, viesti: String): Unit = {
     // TODO: OPHYOS-170, mihin tämän virheen pitäisi vaikuttaa? Näytetäänkö käyttäjälle?
     virhe match {
@@ -75,4 +104,21 @@ class SupaService @Autowired (supaClient: SuoritusPalveluClient, mapper: ObjectM
     }
   }
 
+  private def saveOpiskeluOikeudetToSession(
+    hakukohdeOid: String,
+    oikeudet: PaatettavatOpiskeluOikeudetResponse
+  ): Unit = {
+    val oikeudetJson: String = mapper.writeValueAsString(oikeudet)
+    val attributes           = RequestContextHolder.currentRequestAttributes()
+    val sessionId            = RequestContextHolder.currentRequestAttributes().getSessionId
+    Await.result(
+      database.run(sql"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
+      VALUES(
+        $sessionId,
+        $hakukohdeOid,
+        $oikeudetJson::json
+      )""".as[String]),
+      Duration(5, TimeUnit.SECONDS)
+    )
+  }
 }
