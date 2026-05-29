@@ -1,15 +1,14 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.resource.ApiConstants.HAKEMUKSET_PATH
-import fi.oph.opiskelijavalinta.model.{HakemuksetEnriched, HakemusEnriched}
-import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation, OppijaUser}
+import fi.oph.opiskelijavalinta.model.{HakemuksetEnriched, HakemusEnriched, PaatettavaOpiskeluOikeus}
+import fi.oph.opiskelijavalinta.security.{AuditLog, AuditOperation}
 import fi.oph.opiskelijavalinta.service.{AuthorizationService, HakemuksetService, VTSService}
-import fi.oph.opiskelijavalinta.util.{LogHakemus, LogUtil}
+import fi.oph.opiskelijavalinta.util.{LogHakemus, LogPaatettavatOpiskeluOikeudet, LogUtil}
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
 
 @RequestMapping(path = Array(HAKEMUKSET_PATH))
@@ -34,7 +33,12 @@ class HakemuksetResource @Autowired (
         LOG.info(s"Haetaan hakemukset${if (linkUser) " linkillä tunnistautuneelle" else ""} oppijalle: $oppilasnumero")
         hakemuksetService.getHakemukset(oppilasnumero)
     }
-    AuditLog.log(request, Map.empty, AuditOperation.HaeHakemukset, None)
+    AuditLog.log(
+      request,
+      Map.empty,
+      AuditOperation.HaeHakemukset,
+      Some(hakemukset.current.map(LogPaatettavatOpiskeluOikeudet.apply))
+    )
     if (linkUser) {
       val hakemusOid      = authorizationService.getHakemusOidFromLinkUser
       val currentFiltered = hakemukset.current
