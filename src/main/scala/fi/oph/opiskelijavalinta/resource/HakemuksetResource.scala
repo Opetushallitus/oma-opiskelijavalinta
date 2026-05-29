@@ -35,9 +35,13 @@ class HakemuksetResource @Autowired (
     }
     AuditLog.log(
       request,
-      Map.empty,
+      Map(
+        "paatettavatopiskeluoikeudet" -> hakemukset.current
+          .map(h => LogPaatettavatOpiskeluOikeudet(h).toString)
+          .foldLeft("")((a, b) => String.join("\n", a, b))
+      ),
       AuditOperation.HaeHakemukset,
-      Some(hakemukset.current.map(LogPaatettavatOpiskeluOikeudet.apply))
+      None
     )
     if (linkUser) {
       val hakemusOid      = authorizationService.getHakemusOidFromLinkUser
