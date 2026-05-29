@@ -75,6 +75,7 @@
     },
     "tilankuvaukset": {
       "hakuaika-kesken": "Hakuaika päättyy {hakuaikaPaattyy}.",
+      "hakuaika-paattyi": "Hakuaika päättyi {hakuaikaPaattyy}.",
       "valinnat-kesken": "Opiskelijavalinta on kesken. Hakuaika päättyi {hakuaikaPaattyy}.",
       "kaikki-julkaistu": "Kaikkien hakutoiveidesi valintatulokset on julkaistu."
     }
@@ -130,6 +131,10 @@
       "hyvaksytty-muut-peruuntuvat": "Kun otat opiskelupaikan vastaan, muiden hakutoiveiden varasijat peruuntuvat samalla.",
       "varalla-peruuntuu": "Tämä varasija peruuntuu, jos otat toisen hakutoiveen opiskelupaikan vastaan.",
       "kaikki-hylatty": "Valitettavasti et tällä kertaa saanut opiskelupaikkaa hakemistasi oppilaitoksista."
+    },
+    "virhe": {
+      "otsikko": "Valintatulosten hakemisessa on ongelmia",
+      "kuvaus": "Valitettavasti tietojen haku ei nyt onnistunut. Lataa sivu uudestaan. Jos ongelma toistuu, yritä myöhemmin uudestaan"
     }
   },
   "valintatapa": {

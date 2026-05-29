@@ -1,16 +1,17 @@
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
-import { useTranslations } from '@/hooks/useTranslations';
-import type { Hakemus } from '@/lib/hakemus-types';
 import { ExpandMore } from '@mui/icons-material';
-import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
-import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
-import { ophColors } from '@opetushallitus/oph-design-system';
-import { styled } from '@/lib/theme';
-import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
-import type { Haku } from '@/lib/kouta-types';
-import { FullSpinner } from '../FullSpinner';
 import { useState } from 'react';
+import { styled } from '@/lib/theme';
+import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
+import { useTranslations } from '@/hooks/useTranslations';
+import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import type { Hakemus } from '@/lib/hakemus-types';
+import type { Haku } from '@/lib/kouta-types';
+import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
+import { FullSpinner } from '../FullSpinner';
+import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { VastaanottoContainer } from '../vastaanotto/Vastaanotto';
+import { ErrorBox } from '@/components/ErrorBox';
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   '&:before': {
@@ -76,6 +77,7 @@ export function MenneetHakukohteetAccordion({
     hakemuksenTulokset: tulokset,
     isRefetching,
     refetchTulokset,
+    isError,
   } = useHakemuksenTulokset(hakemus, haku);
 
   const [tuloksetFetched, setTuloksetFetched] = useState(false);
@@ -108,16 +110,27 @@ export function MenneetHakukohteetAccordion({
           sx={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}
           aria-labelledBy={accordionSummaryId}
         >
-          <VastaanottoContainer
-            application={hakemus}
-            hakemuksenTulokset={tulokset}
-            mennytVastaanotto={true}
-          />
-          <HakukohteetContainer
-            hakemus={hakemus}
-            hakemuksenTulokset={tulokset}
-            mennytHakemus={true}
-          />
+          {isError ? (
+            <ErrorBox>
+              <OphTypography sx={{ fontWeight: 600 }}>
+                {t('tulos.virhe.otsikko')}
+              </OphTypography>
+              <OphTypography>{t('tulos.virhe.kuvaus')}</OphTypography>
+            </ErrorBox>
+          ) : (
+            <>
+              <VastaanottoContainer
+                application={hakemus}
+                hakemuksenTulokset={tulokset}
+                mennytVastaanotto={true}
+              />
+              <HakukohteetContainer
+                hakemus={hakemus}
+                hakemuksenTulokset={tulokset}
+                mennytHakemus={true}
+              />
+            </>
+          )}
         </AccordionDetails>
       )}
     </StyledAccordion>

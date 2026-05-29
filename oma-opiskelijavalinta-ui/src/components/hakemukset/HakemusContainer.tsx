@@ -1,6 +1,6 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
-import { isEmpty, isNullish, isTruthy } from 'remeda';
+import { isEmpty, isEmptyish, isNullish, isTruthy } from 'remeda';
 import { ExternalLinkButton } from '../ExternalLink';
 import { HakemusInfo } from './HakemusInfo';
 import { HakemusPaper } from './HakemusPaper';
@@ -16,12 +16,17 @@ import { hasKelaUrl, showMigriURL } from '@/lib/hakemus-service';
 import { KelaContainer } from './KelaContainer';
 import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
 import { TutustuContainer } from './TutustuContainer';
-import { HakemusStatus } from './HakemusStatus';
+import { HakemusStatus, HakuKaynnissa } from './HakemusStatus';
 import { MigriContainer } from './MigriContainer';
 import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
+import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
+import { getLanguage } from '@/lib/getLanguage';
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
+
+  if (hakemus.tuloksetFailed)
+    return <HakemusTuloksetErrorContainer hakemus={hakemus} />;
 
   if (!hakemus.haku) {
     console.error('Application must have haku associated with it!');
@@ -100,6 +105,48 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
           )}
         </>
       )}
+    </HakemusPaper>
+  );
+}
+
+function HakemusTuloksetErrorContainer({ hakemus }: { hakemus: Hakemus }) {
+  const { t, translateEntity } = useTranslations();
+  const adjustHeaderLevel = useAdjustHeaderLevel();
+  const lang = getLanguage();
+
+  return (
+    <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
+      <OphTypography variant="h3" component={adjustHeaderLevel ? 'h2' : 'h3'}>
+        {translateEntity(hakemus?.haku?.nimi)}
+      </OphTypography>
+      {hakemus.haku?.hakuaikaKaynnissa &&
+        !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika) && (
+          <HakuKaynnissa hakemus={hakemus} />
+        )}
+      {!hakemus.haku?.hakuaikaKaynnissa &&
+        !isEmptyish(hakemus?.haku?.viimeisinPaattynytHakuAika) && (
+          <OphTypography>
+            {t('hakemukset.tilankuvaukset.hakuaika-paattyi', {
+              hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+                hakemus.haku?.viimeisinPaattynytHakuAika,
+                lang,
+              ),
+            })}
+          </OphTypography>
+        )}
+      {isTruthy(hakemus.modifyLink) && (
+        <ExternalLinkButton
+          href={hakemus.modifyLink ?? ''}
+          name={t('hakemukset.nayta')}
+          variant="outlined"
+        />
+      )}
+      <HakukohteetContainer
+        hakemus={hakemus}
+        hakemuksenTulokset={hakemus.hakemuksenTulokset}
+        mennytHakemus={true}
+        virhe={true}
+      />
     </HakemusPaper>
   );
 }

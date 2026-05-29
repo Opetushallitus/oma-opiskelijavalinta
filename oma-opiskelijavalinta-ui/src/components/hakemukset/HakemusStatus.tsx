@@ -15,7 +15,7 @@ import { Divider } from '@mui/material';
 import { RowFlexBox } from '../FlexBox';
 import { EiOpiskelupaikkaaInfo } from '@/components/valinnantulos/EiOpiskelupaikkaaInfo';
 
-function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
+export function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
   const { t, getLanguage } = useTranslations();
 
   const lang = getLanguage();

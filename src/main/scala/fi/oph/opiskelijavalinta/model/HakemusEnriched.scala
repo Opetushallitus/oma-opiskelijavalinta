@@ -11,7 +11,8 @@ case class HakemusEnriched(
   processing: Boolean,
   formName: TranslatedName,
   tuloskirjeModified: Option[Long],
-  enrichmentFailed: Boolean = false
+  enrichmentFailed: Boolean = false,
+  vtsFailed: Boolean = false
 )
 
 case class HakemuksetEnriched(current: Seq[HakemusEnriched], old: Seq[HakemusEnriched])

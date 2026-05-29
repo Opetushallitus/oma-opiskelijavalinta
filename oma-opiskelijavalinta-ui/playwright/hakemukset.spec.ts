@@ -457,6 +457,52 @@ test('Näyttää virheilmoituksen hakemukselle jonka rikastaminen epäonnistui',
   ).toBeHidden();
 });
 
+test('Näyttää virheilmoituksen aktiiviselle hakemukselle jonka tulosten hakeminen epäonnistui', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, vtsFailed: true }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const app = page.getByTestId('application-hakemus-oid-1');
+  const activehakemukset = page.getByTestId('active-hakemukset');
+  await expect(activehakemukset.getByTestId('error-box')).toBeVisible();
+  await expect(
+    activehakemukset.getByText('Valintatulosten hakemisessa on ongelmia', {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    activehakemukset.getByText(
+      'Valitettavasti tietojen haku ei nyt onnistunut.',
+    ),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Hakuaika päättyy 19.10.2025 klo 13:00.'),
+  ).toBeVisible();
+  await expect(
+    activehakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveCount(1);
+  await expect(
+    app.getByText('Hurrikaaniopiston erillishaku 2025'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Meteorologi, Tornadoinen tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Hurrikaaniopisto, Hiekkalinnan kampus'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Meteorologi, Hurrikaanien tutkimislinja'),
+  ).toBeVisible();
+  await expect(
+    app.getByText('Hurrikaaniopisto, Myrskynsilmän kampus'),
+  ).toBeVisible();
+});
+
 test('Hakemusten saavutettavuus', async ({ page }) => {
   await mockHakemuksetFetch(page);
   await mockAuthenticatedUser(page);

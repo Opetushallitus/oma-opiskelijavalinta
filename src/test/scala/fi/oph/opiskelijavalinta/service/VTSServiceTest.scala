@@ -110,11 +110,11 @@ class VTSServiceTest {
   }
 
   @Test
-  def returnsNoneWhenDeserializationFails(): Unit = {
+  def throwsExceptionWhenDeserializationFails(): Unit = {
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right("invalid json"))
-    Assertions.assertTrue(vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID).isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
   }
 
   @Test

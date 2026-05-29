@@ -187,6 +187,7 @@ class HakemuksetService @Autowired (
     var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
     var hakutoiveidenTulokset: List[HakutoiveenTulosEnriched] = List.empty
     var tuloskirjeModified: Option[Long]                      = Option.empty
+    var vtsFailed                                             = false
     if (hakemus.haku != null) {
       tuloskirjeModified = tuloskirjeService.getLastModifiedTuloskirje(hakemus.haku, hakemus.oid)
       haku = Some(enrichHaku(koutaService.getHaku(hakemus.haku), hakemus))
@@ -204,10 +205,17 @@ class HakemuksetService @Autowired (
       )
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
-        // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
-        hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
-          case Some(v) => v.hakutoiveet
-          case _       => List.empty
+        try {
+          // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
+          hakutoiveidenTulokset = VTSService.getValinnanTulokset(hakemus.haku, hakemus.oid) match {
+            case Some(v) => v.hakutoiveet
+            case _       => List.empty
+          }
+        } catch {
+          case e: Exception =>
+            LOG.error(s"VTS tulosten haku epäonnistui hakemukselle ${hakemus.oid}: ${e.getMessage}", e)
+            vtsFailed = true
+            hakutoiveidenTulokset = List.empty
         }
       }
     }
@@ -221,7 +229,8 @@ class HakemuksetService @Autowired (
       hakutoiveidenTulokset,
       hakemus.processing,
       hakemus.formName,
-      tuloskirjeModified
+      tuloskirjeModified,
+      vtsFailed = vtsFailed
     )
   }
 }

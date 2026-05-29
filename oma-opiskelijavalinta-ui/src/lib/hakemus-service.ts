@@ -31,6 +31,7 @@ export type HakemusResponse = {
   hakemuksenTulokset: Array<HakutoiveenTulosDto>;
   tuloskirjeModified: number | null;
   enrichmentFailed?: boolean;
+  vtsFailed?: boolean;
 };
 
 export type HakemuksetResponse = {
@@ -64,6 +65,7 @@ function convertToHakemus(app: HakemusResponse, muokkausUrl: string): Hakemus {
       app.ohjausparametrit?.jarjestetytHakutoiveet === true,
     sijoitteluKaytossa: app.ohjausparametrit?.sijoittelu === true,
     enrichmentFailed: app.enrichmentFailed,
+    tuloksetFailed: app.vtsFailed,
     submitted: new Date(app.submitted).getTime(),
     hakemuksenTulokset: app.hakemuksenTulokset?.map((tulos) => ({
       ...tulos,
