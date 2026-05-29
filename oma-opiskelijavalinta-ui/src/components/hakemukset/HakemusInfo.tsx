@@ -44,13 +44,7 @@ function JulkaistaanJaVarasijatList({
   );
 }
 
-export function HakuMuokkausInfo({
-  hakemus,
-  haku,
-}: {
-  hakemus: Hakemus;
-  haku: Haku;
-}) {
+function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
   const { t, getLanguage } = useTranslations();
 
   const lang = getLanguage();

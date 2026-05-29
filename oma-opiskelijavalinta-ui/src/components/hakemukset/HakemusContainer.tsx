@@ -26,7 +26,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
 
   if (hakemus.tuloksetFailed)
-    return <HakemusErrorContainer hakemus={hakemus} />;
+    return <HakemusTuloksetErrorContainer hakemus={hakemus} />;
 
   if (!hakemus.haku) {
     console.error('Application must have haku associated with it!');
@@ -109,7 +109,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   );
 }
 
-export function HakemusErrorContainer({ hakemus }: { hakemus: Hakemus }) {
+function HakemusTuloksetErrorContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
   const adjustHeaderLevel = useAdjustHeaderLevel();
   const lang = getLanguage();
