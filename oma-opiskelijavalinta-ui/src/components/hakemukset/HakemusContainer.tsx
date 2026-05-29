@@ -19,7 +19,6 @@ import { TutustuContainer } from './TutustuContainer';
 import { HakemusStatus, HakuKaynnissa } from './HakemusStatus';
 import { MigriContainer } from './MigriContainer';
 import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
-import { ErrorBox } from '@/components/ErrorBox';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { getLanguage } from '@/lib/getLanguage';
 
@@ -142,12 +141,6 @@ export function HakemusErrorContainer({ hakemus }: { hakemus: Hakemus }) {
           variant="outlined"
         />
       )}
-      <ErrorBox sx={{ marginTop: '1.5rem' }}>
-        <OphTypography sx={{ fontWeight: 600 }}>
-          {t('tulos.virhe.otsikko')}
-        </OphTypography>
-        <OphTypography>{t('tulos.virhe.kuvaus')}</OphTypography>
-      </ErrorBox>
       <HakukohteetContainer
         hakemus={hakemus}
         hakemuksenTulokset={hakemus.hakemuksenTulokset}

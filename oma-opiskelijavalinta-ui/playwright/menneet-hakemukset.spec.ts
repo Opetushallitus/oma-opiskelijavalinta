@@ -96,6 +96,54 @@ test('Avaa ja sulkee hylätyn hakemuksen tiedot', async ({ page }) => {
   await expect(app.getByText('Et saanut tätä opiskelupaikkaa')).toBeHidden();
 });
 
+test('Näyttää virheen jos tulostietojen haku epäonnistuu', async ({ page }) => {
+  const pastApplication = {
+    oid: 'hakemus-oid-3',
+    secret: 'secret-3',
+    haku: {
+      oid: 'haku-oid-3',
+      nimi: { fi: 'Haahuilijoiden Hyväksytyt Haut' },
+      hakuaikaKaynnissa: false,
+      viimeisinPaattynytHakuAika: '2024-06-19T09:00:00',
+    },
+    submitted: '2024-06-18T19:00:00',
+    hakukohteet: [
+      {
+        oid: 'hakukohde-oid-4',
+        nimi: { fi: 'Samoojakoulutus' },
+        jarjestyspaikkaHierarkiaNimi: {
+          fi: 'Eräjärvi, Lappi',
+        },
+      },
+    ],
+    ohjausparametrit: {
+      hakukierrosPaattyy: 1663971212000,
+    },
+    hakemuksenTulokset: [],
+  };
+  await mockHakemuksetFetch(page, {
+    current: [],
+    old: [pastApplication],
+  });
+  await mockAuthenticatedUser(page);
+  await mockSession(page);
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-3/**',
+    async (route) => {
+      await route.fulfill({ status: 500 });
+    },
+  );
+  await page.goto('');
+  const app = page.getByTestId('past-application-hakemus-oid-3');
+  await expect(app.getByText('Haahuilijoiden Hyväksytyt Haut')).toBeVisible();
+  await app
+    .getByRole('button', { name: 'Opiskelijavalintojen tulokset' })
+    .click();
+  await expect(
+    page.getByText('Valintatulosten hakemisessa on ongelmia'),
+  ).toBeVisible();
+});
+
 test('Menneiden hakemusten saavutettavuus', async ({ page }) => {
   await setup(page);
   await expect(page.getByText('Haahuilijoiden Hyväksytyt Haut')).toBeVisible();

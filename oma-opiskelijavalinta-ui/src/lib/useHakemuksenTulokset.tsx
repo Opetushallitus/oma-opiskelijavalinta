@@ -6,7 +6,7 @@ import type { Haku } from './kouta-types';
 export const HAKEMUKSEN_TULOKSET_QUERY_KEY = 'hakemuksen-tulokset';
 
 export function useHakemuksenTulokset(hakemus: Hakemus, haku: Haku) {
-  const { refetch, data, isPending, isRefetching } = useQuery({
+  const { refetch, data, isPending, isRefetching, error, isError } = useQuery({
     queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY, hakemus.oid],
     initialData: hakemus.hakemuksenTulokset,
     queryFn: () => getValintaTulokset(hakemus.oid, haku.oid),
@@ -16,5 +16,7 @@ export function useHakemuksenTulokset(hakemus: Hakemus, haku: Haku) {
     hakemuksenTulokset: data,
     isPending,
     isRefetching,
+    error,
+    isError,
   };
 }

@@ -25,34 +25,45 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakemusOid: String,
     @Pattern(regexp = ValidationPatterns.OID_PATTERN) @PathVariable(required = true) hakuOid: String,
     request: HttpServletRequest
-  ): ResponseEntity[List[HakutoiveenTulosEnriched]] = {
+  ): ResponseEntity[List[HakutoiveenTulosEnriched]] | ResponseEntity[String] = {
     LOG.info(s"Haetaan valintatuloksia hakemuksella $hakemusOid ja haulla $hakuOid")
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
       val linkUser = authorizationService.hasLinkUserRole
-      val result   = vtsService
-        .getValinnanTulokset(hakuOid, hakemusOid)
-        .map(ht => {
-          if (linkUser) {
-            val toiveet: List[HakutoiveenTulosEnriched] =
-              ht.hakutoiveet.map(toive => vtsService.addJwtsForLinkUserIfNecessary(ht.hakijaOid.get, toive))
-            ht.copy(hakutoiveet = toiveet)
-          } else ht
-        })
-      AuditLog.log(
-        request,
-        Map(
-          "hakemusOid" -> hakemusOid,
-          "hakuOid"    -> hakuOid
-        ),
-        AuditOperation.HaeValintaTulokset,
-        None
-      )
-      LOG.info(s"Hakemukselle $hakemusOid löytyi seuraavat tulokset: ${result
-          .map(ht => ht.hakutoiveet.map(LogUtil.toValintaTulos).toString)
-          .foldLeft("")((a, b) => String.join("\n", a, b))}")
-      ResponseEntity.ok(result.get.hakutoiveet)
+      try {
+        val result = vtsService
+          .getValinnanTulokset(hakuOid, hakemusOid)
+          .map(ht => {
+            if (linkUser) {
+              val toiveet: List[HakutoiveenTulosEnriched] =
+                ht.hakutoiveet.map(toive => vtsService.addJwtsForLinkUserIfNecessary(ht.hakijaOid.get, toive))
+              ht.copy(hakutoiveet = toiveet)
+            } else ht
+          })
+        AuditLog.log(
+          request,
+          Map(
+            "hakemusOid" -> hakemusOid,
+            "hakuOid"    -> hakuOid
+          ),
+          AuditOperation.HaeValintaTulokset,
+          None
+        )
+        LOG.info(s"Hakemukselle $hakemusOid löytyi seuraavat tulokset: ${result
+            .map(ht => ht.hakutoiveet.map(LogUtil.toValintaTulos).toString)
+            .foldLeft("")((a, b) => String.join("\n", a, b))}")
+        ResponseEntity.ok(result.get.hakutoiveet)
+      } catch {
+        case e: Exception =>
+          LOG.error(
+            s"Valintatulosten hakeminen epäonnistui hakemuksella $hakemusOid ja haulla $hakuOid: ${e.getMessage}",
+            e
+          )
+          ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("tulos.virhe")
+      }
     }
   }
 }

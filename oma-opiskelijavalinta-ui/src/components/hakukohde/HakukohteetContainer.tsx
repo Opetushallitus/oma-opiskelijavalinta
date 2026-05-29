@@ -6,6 +6,7 @@ import { OphTypography } from '@opetushallitus/oph-design-system';
 import { Hakutoive } from './Hakutoive';
 import { isJulkaistuHakutoiveenTulos } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
+import { ErrorBox } from '@/components/ErrorBox';
 
 export function HakukohteetContainer({
   hakemus,
@@ -38,6 +39,14 @@ export function HakukohteetContainer({
           ? t('hakemukset.valintatilanne')
           : t('hakemukset.hakutoiveet')}
       </OphTypography>
+      {virhe && (
+        <ErrorBox>
+          <OphTypography sx={{ fontWeight: 600 }}>
+            {t('tulos.virhe.otsikko')}
+          </OphTypography>
+          <OphTypography>{t('tulos.virhe.kuvaus')}</OphTypography>
+        </ErrorBox>
+      )}
       <Box
         sx={{ width: '100%' }}
         data-test-id={`application-hakutoiveet-${hakemus.oid}`}
