@@ -4,11 +4,7 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.Constants.{
-  KOULUTUKSEN_ALKAMISKAUSI_KEVAT,
-  KOULUTUKSEN_ALKAMISKAUSI_SYKSY,
-  KOUTA_HAKU_OID_LENGTH
-}
+import fi.oph.opiskelijavalinta.Constants.KOUTA_HAKU_OID_LENGTH
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
@@ -16,7 +12,6 @@ import fi.oph.opiskelijavalinta.model.{
   HakemusEnriched,
   Haku,
   HakuEnriched,
-  Hakukohde,
   HakukohdeEnriched,
   HakutoiveenTulosEnriched,
   Ohjausparametrit
@@ -120,26 +115,6 @@ class HakemuksetService @Autowired (
     )
   }
 
-  private def enrichHakukohde(hakukohde: Option[Hakukohde]): Option[HakukohdeEnriched] = {
-    hakukohde.map(hk =>
-      HakukohdeEnriched(
-        oid = hk.oid,
-        nimi = hk.nimi,
-        jarjestyspaikkaHierarkiaNimi = hk.jarjestyspaikkaHierarkiaNimi,
-        uudenOpiskelijanUrl = hk.uudenOpiskelijanUrl,
-        yhdenPaikanSaanto = hk.yhdenPaikanSaanto,
-        koulutuksenAlkamiskausi = hk.paateltyAlkamiskausi
-          .flatMap(pa =>
-            pa.kausiUri
-              .map(s =>
-                if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
-                else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
-              )
-          )
-      )
-    )
-  }
-
   private def enrichHakemus(hakemus: Hakemus, oppijanumero: String): HakemusEnriched = {
     val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
@@ -150,7 +125,7 @@ class HakemuksetService @Autowired (
     if (hakemus.haku != null) {
       tuloskirjeModified = tuloskirjeService.getLastModifiedTuloskirje(hakemus.haku, hakemus.oid)
       haku = koutaService.getHaku(hakemus.haku).map(h => enrichHaku(h, hakemus))
-      hakukohteet = hakemus.hakukohteet.map(koutaService.getHakukohde).map(enrichHakukohde)
+      hakukohteet = hakemus.hakukohteet.map(koutaService.getEnrichedHakukohde)
       ohjausparametrit = ohjausparametritService
         .getOhjausparametritForHaku(hakemus.haku)
         .map(o => {
