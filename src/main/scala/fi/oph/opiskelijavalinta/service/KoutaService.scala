@@ -4,13 +4,17 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import fi.oph.opiskelijavalinta.Constants.{KOULUTUKSEN_ALKAMISKAUSI_KEVAT, KOULUTUKSEN_ALKAMISKAUSI_SYKSY}
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
-import fi.oph.opiskelijavalinta.model.{Haku, Hakukohde}
+import fi.oph.opiskelijavalinta.model.{Haku, Hakukohde, HakukohdeEnriched, PaateltyAlkamisAjankohta}
+import fi.oph.opiskelijavalinta.util.TimeUtils
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+
+import java.time.{LocalDateTime, ZonedDateTime}
 
 @Service
 class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = new ObjectMapper()) {
@@ -55,6 +59,50 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
             LOG.error(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid: ${e.getMessage}", e)
             throw RuntimeException(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid", e)
         }
+    }
+  }
+
+  def getEnrichedHakukohde(hakukohdeOid: String): Option[HakukohdeEnriched] = {
+    Some(getHakukohde(hakukohdeOid)).map(enrichHakukohde)
+  }
+
+  private def enrichHakukohde(hk: Hakukohde): HakukohdeEnriched = {
+    val alkupvm = hk.paateltyAlkamisajankohta.flatMap(koulutuksenAlkuPvm(_, hk.oid))
+    HakukohdeEnriched(
+      oid = hk.oid,
+      nimi = hk.nimi,
+      jarjestyspaikkaHierarkiaNimi = hk.jarjestyspaikkaHierarkiaNimi,
+      uudenOpiskelijanUrl = hk.uudenOpiskelijanUrl,
+      yhdenPaikanSaanto = hk.yhdenPaikanSaanto,
+      koulutuksenAlkamiskausi = hk.paateltyAlkamiskausi
+        .flatMap(pa =>
+          pa.kausiUri
+            .map(s =>
+              if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
+              else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
+            )
+        ),
+      koulutuksenAlkamisPvm = alkupvm
+    )
+  }
+
+  private def koulutuksenAlkuPvm(ajankohta: PaateltyAlkamisAjankohta, hakukohdeOid: String): Option[String] = {
+    (ajankohta.pvm, ajankohta.pvm.isBlank, ajankohta.henkilokohtainenSuunnitelma) match {
+      case (_, true, false) =>
+        LOG.warn(
+          s"Hakukohteelle $hakukohdeOid ei ole aseteltu päättymispäivämäärää ja se ei ole myöskään henkilökohtaisen suunnitelman mukainen"
+        )
+        None
+      case (pvm, false, true) =>
+        if (TimeUtils.isNowAfter(pvm)) {
+          Some(TimeUtils.KOUTA_DATE_FORMATTER.format(ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)))
+        } else {
+          Some(pvm)
+        }
+      case (_, true, true) =>
+        Some(TimeUtils.KOUTA_DATE_FORMATTER.format(ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)))
+      case (pvm, _, _) =>
+        Some(pvm)
     }
   }
 

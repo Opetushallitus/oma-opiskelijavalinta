@@ -117,7 +117,7 @@ class VTSServiceTest {
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right("invalid json"))
-    Assertions.assertThrows(classOf[RuntimeException], () => vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+    Assertions.assertThrows(classOf[RuntimeException], () => vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID))
   }
 
   @Test
