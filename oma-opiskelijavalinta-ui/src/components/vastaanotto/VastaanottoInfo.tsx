@@ -28,6 +28,7 @@ import {
   naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { PaatettavatOikeudetInfo } from './PaatettavatOikeudetInfo';
+import type { Hakukohde } from '@/lib/kouta-types';
 
 export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -74,10 +75,11 @@ const getInfoText = (
   t: TFnType<DefaultParamType, string, TranslationKey>,
   lang: Language,
   tulos: HakutoiveenTulos,
-  application: Hakemus,
+  hakemus: Hakemus,
+  hakutoive: Hakukohde,
 ) => {
   const config = useConfig();
-  const hakukohde = application.hakukohteet?.find(
+  const hakukohde = hakemus.hakukohteet?.find(
     (hk) => hk.oid === tulos.hakukohdeOid,
   );
   const vastaanottoPaattyy = toFormattedDateTimeStringWithLocale(
@@ -85,35 +87,35 @@ const getInfoText = (
     lang,
   );
 
-  const kkHaku = isKorkeakouluHaku(application.haku);
+  const kkHaku = isKorkeakouluHaku(hakemus.haku);
 
   const yksiAlempiVastaanotto =
     hakukohde &&
-    isToisenAsteenYhteisHaku(application.haku) &&
-    getAlemmatVastaanotot(hakukohde, application).length === 1;
+    isToisenAsteenYhteisHaku(hakemus.haku) &&
+    getAlemmatVastaanotot(hakukohde, hakemus).length === 1;
 
   const useampiAlempiVastaanotto =
     hakukohde &&
-    isToisenAsteenYhteisHaku(application.haku) &&
-    getAlemmatVastaanotot(hakukohde, application).length > 1;
+    isToisenAsteenYhteisHaku(hakemus.haku) &&
+    getAlemmatVastaanotot(hakukohde, hakemus).length > 1;
 
   const YPS = hakukohde && hakukohde.yhdenPaikanSaanto?.voimassa;
 
   const hakutoiveIdx =
-    application.hakukohteet?.findIndex((hk) => hk.oid === tulos.hakukohdeOid) ??
-    0;
+    hakemus.hakukohteet?.findIndex((hk) => hk.oid === tulos.hakukohdeOid) ?? 0;
 
   const muitaHakutoiveitaVaralla =
-    getVarallaOlevatMuutToiveet(application, tulos.hakukohdeOid).length > 0;
+    getVarallaOlevatMuutToiveet(hakemus, tulos.hakukohdeOid).length > 0;
 
   if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
     return (
       <MultiInfoContainer>
-        {getEhdollisestiVastaanottanutInfo(application, lang)}
+        {getEhdollisestiVastaanottanutInfo(hakemus, lang)}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
         {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
           <PaatettavatOikeudetInfo
             oikeudet={tulos.paatettavatOpiskeluOikeudet}
+            hakutoive={hakutoive}
           />
         )}
       </MultiInfoContainer>
@@ -123,7 +125,7 @@ const getInfoText = (
       <MultiInfoContainer
         data-test-id={`vastaanottoinfo-${tulos.hakukohdeOid}`}
       >
-        {application.priorisoidutHakutoiveet && (
+        {hakemus.priorisoidutHakutoiveet && (
           <OphTypography>
             {t('vastaanotto.info.priorisoitu', {
               hakutoiveNro: hakutoiveIdx + 1,
@@ -136,7 +138,7 @@ const getInfoText = (
             {t('vastaanotto.info.yhden-paikan-saanto')}
           </OphTypography>
         )}
-        {!application.priorisoidutHakutoiveet &&
+        {!hakemus.priorisoidutHakutoiveet &&
           YPS &&
           muitaHakutoiveitaVaralla && (
             <OphTypography sx={{ fontWeight: 'bolder' }}>
@@ -169,6 +171,7 @@ const getInfoText = (
         {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
           <PaatettavatOikeudetInfo
             oikeudet={tulos.paatettavatOpiskeluOikeudet}
+            hakutoive={hakutoive}
           />
         )}
       </MultiInfoContainer>
@@ -179,13 +182,15 @@ const getInfoText = (
 export function VastaanottoInfo({
   tulos,
   application,
+  hakutoive,
 }: {
   tulos: HakutoiveenTulos;
   application: Hakemus;
+  hakutoive: Hakukohde;
 }) {
   const { getLanguage, t } = useTranslations();
 
-  const info = getInfoText(t, getLanguage(), tulos, application);
+  const info = getInfoText(t, getLanguage(), tulos, application, hakutoive);
 
   return <InfoBox>{info}</InfoBox>;
 }

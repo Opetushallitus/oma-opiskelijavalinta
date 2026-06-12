@@ -16,11 +16,14 @@ import {
   hakemus4ToinenAsteAlempiaHyvaksyttyja,
   hakukohde1Yps,
   hakukohde2Yps,
+  hakukohde3,
   mockSession,
 } from './mocks';
 import { clone } from 'remeda';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
 import type { HakemusResponse } from '@/lib/hakemus-service';
+import { addDays, format } from 'date-fns';
+import { KOUTA_DATE_FORMAT, toFinnishDate } from '@/lib/time-utils';
 
 test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   await setup(page);
@@ -221,6 +224,7 @@ test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa jos yps ei ol
         },
         yhdenPaikanSaanto: { voimassa: false },
         uudenOpiskelijanUrl: null,
+        koulutuksenAlkamisPvm: null,
       },
     ],
   });
@@ -845,8 +849,13 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
 test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
   page,
 }) => {
+  const dateInFuture = format(
+    addDays(toFinnishDate(new Date()), 1),
+    KOUTA_DATE_FORMAT,
+  );
   const hyvaksyttyPrioKkApplication = {
     ...hakemus2,
+    hakukohteet: [{ ...hakukohde3, koulutuksenAlkamisPvm: dateInFuture }],
     hakemuksenTulokset: [
       {
         ...hakemuksenTulosHyvaksytty,
@@ -878,6 +887,7 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
   await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
   await expect(vastaanotot.getByText('Poral')).toBeVisible();
   await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(vastaanotot.getByText('Opiskeluoikeus päättyy')).toBeVisible();
 
   await vastaanotot
     .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
@@ -904,6 +914,11 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
   ).toBeVisible();
   await expect(
     page.getByLabel('Vahvista opiskelupaikan').getByText('Hampaiden Poraaja'),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista opiskelupaikan')
+      .getByText('Opiskeluoikeus päättyy'),
   ).toBeVisible();
 });
 

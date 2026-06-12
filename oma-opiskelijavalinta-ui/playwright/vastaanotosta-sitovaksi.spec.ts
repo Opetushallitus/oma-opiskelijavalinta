@@ -196,6 +196,9 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
   await expect(vastaanotot.getByText('Poral')).toBeVisible();
   await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
   await expect(vastaanotot.getByText('Poraaja', { exact: true })).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
+  ).toBeVisible();
 
   await vastaanotot.getByText('Luovun jonotuksesta ja muutan').click();
   await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
@@ -234,6 +237,11 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
     page
       .getByLabel('Vahvista jonotuksesta luopuminen')
       .getByText('Poraaja', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByLabel('Vahvista jonotuksesta')
+      .getByText('Opiskeluoikeutesi päätetään ennen uuden'),
   ).toBeVisible();
 });
 

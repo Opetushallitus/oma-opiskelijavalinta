@@ -45,6 +45,7 @@ export function VastaanottoMuutaSitovaksiModalContent({
       {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
         <PaatettavatOikeudetInfo
           oikeudet={tulos.paatettavatOpiskeluOikeudet}
+          hakutoive={hakutoive}
           showLink={false}
         />
       )}

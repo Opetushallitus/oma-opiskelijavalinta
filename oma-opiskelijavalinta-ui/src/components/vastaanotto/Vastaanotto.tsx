@@ -49,7 +49,11 @@ function VastaanottoBox({
         <EhdollisuusWarning tulos={tulos} />
       )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
-        <VastaanottoInfo tulos={tulos} application={application} />
+        <VastaanottoInfo
+          tulos={tulos}
+          application={application}
+          hakutoive={hakukohde}
+        />
       )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
         tulos.vastaanottotila !== 'EHDOLLISESTI_VASTAANOTTANUT' && (

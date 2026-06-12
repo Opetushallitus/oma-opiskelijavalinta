@@ -5,6 +5,13 @@ import { BulletedList, BulletItem } from '../BulletedList';
 import { ExternalLink } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
+import type { Hakukohde } from '@/lib/kouta-types';
+import { isNullish } from 'remeda';
+import { isDateInPast } from '@/lib/time-utils';
+import {
+  DEFAULT_DATE_FORMAT,
+  toFormattedDateTimeString,
+} from '@/lib/localization/translation-utils';
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -28,9 +35,11 @@ function PaatettavaOikeusInfo({
 
 export function PaatettavatOikeudetInfo({
   oikeudet,
+  hakutoive,
   showLink = true,
 }: {
   oikeudet: Array<PaatettavaOpiskeluOikeus>;
+  hakutoive: Hakukohde;
   showLink?: boolean;
 }) {
   const { t } = useTranslations();
@@ -38,6 +47,17 @@ export function PaatettavatOikeudetInfo({
   const config = useConfig();
 
   const yosHref = `${config.routes.yleiset.konfo}`;
+
+  const dateInfo =
+    isNullish(hakutoive.koulutuksenAlkamisPvm) ||
+    isDateInPast(hakutoive.koulutuksenAlkamisPvm)
+      ? t('vastaanotto.yos.paattyy-ei-pvm')
+      : t('vastaanotto.yos.paattyy', {
+          paattymisAika: toFormattedDateTimeString(
+            hakutoive.koulutuksenAlkamisPvm,
+            DEFAULT_DATE_FORMAT,
+          ),
+        });
 
   return (
     <MultiInfoContainer>
@@ -51,6 +71,7 @@ export function PaatettavatOikeudetInfo({
           />
         ))}
       </BulletedList>
+      <OphTypography>{dateInfo}</OphTypography>
       {showLink && (
         <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />
       )}
