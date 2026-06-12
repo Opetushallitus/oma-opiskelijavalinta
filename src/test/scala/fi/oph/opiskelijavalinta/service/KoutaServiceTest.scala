@@ -1,7 +1,7 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.Constants.KOULUTUKSEN_ALKAMISKAUSI_KEVAT
-import fi.oph.opiskelijavalinta.TestUtils.{HAKUKOHDE_OID, HAKU_OID, objectMapper}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, HAKUKOHDE_OID, HAKU_OID}
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.hakukohde1
 import fi.oph.opiskelijavalinta.model.{Haku, Hakuaika, PaateltyAlkamisAjankohta, PaateltyAlkamiskausi, TranslatedName}
@@ -101,18 +101,33 @@ class KoutaServiceTest {
 
   @Test
   def alkamisAjankohtanaKaytetaanEilistaJosHenkilokohtainenSuunnitelmaJaPvmMenneisyydessa(): Unit = {
-    Mockito.when(koutaClient.getHakukohde(HAKUKOHDE_OID)).thenReturn(
-      Right(objectMapper.writeValueAsString(hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisAjankohta("2024-01-01", true))))))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisAjankohta("2024-01-01", true)))
+          )
+        )
+      )
     val hakukohde = koutaService.getEnrichedHakukohde(HAKUKOHDE_OID)
     val yesterday = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1).format(TimeUtils.KOUTA_DATE_FORMATTER)
     assertEquals(yesterday, hakukohde.get.koulutuksenAlkamisPvm.get)
   }
 
   @Test
-  def alkamisAjankohtanaKaytetaanPaateltyaAlkamisAjankohtaaJosHenkilokohtainenSuunnitelmaJaPvmTulevaisuudessa(): Unit = {
+  def alkamisAjankohtanaKaytetaanPaateltyaAlkamisAjankohtaaJosHenkilokohtainenSuunnitelmaJaPvmTulevaisuudessa()
+    : Unit = {
     val tulevaisuus = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1).format(TimeUtils.KOUTA_DATE_FORMATTER)
-    Mockito.when(koutaClient.getHakukohde(HAKUKOHDE_OID)).thenReturn(
-      Right(objectMapper.writeValueAsString(hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisAjankohta(tulevaisuus, true))))))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisAjankohta(tulevaisuus, true)))
+          )
+        )
+      )
     val hakukohde = koutaService.getEnrichedHakukohde(HAKUKOHDE_OID)
     assertEquals(tulevaisuus, hakukohde.get.koulutuksenAlkamisPvm.get)
   }
