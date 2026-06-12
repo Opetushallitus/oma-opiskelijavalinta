@@ -253,6 +253,7 @@
       "otsikko": "Aiemmat opiskeluoikeutesi päättyvät",
       "kuvaus": "Korkeakouluopiskelijalla voi olla kerrallaan vain yksi saman tai alemman tasoiseen tutkintoon johtava opiskeluoikeus. Jos otat tämän opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:",
       "paattyy": "Opiskeluoikeus päättyy {paattymisAika}, jolloin uusi opiskeluoikeus alkaa. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
+      "paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä"
     }
   },
