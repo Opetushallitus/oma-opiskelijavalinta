@@ -147,9 +147,6 @@ class BaseIntegrationTest {
   val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
 
   @MockitoBean(reset = MockReset.NONE)
-  val onrClient: OnrClient = Mockito.mock(classOf[OnrClient])
-
-  @MockitoBean(reset = MockReset.NONE)
   val onrService: OnrService = Mockito.mock(classOf[OnrService])
 
   @MockitoBean(reset = MockReset.NONE)
