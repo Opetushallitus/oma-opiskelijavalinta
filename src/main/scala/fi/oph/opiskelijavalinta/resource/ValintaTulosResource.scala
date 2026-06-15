@@ -30,7 +30,7 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
     if (!authorizationService.hasAuthAccessToHakemus(hakemusOid)) {
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
-      val linkUser = authorizationService.hasLinkUserRole
+      val linkUser      = authorizationService.hasLinkUserRole
       val oppilasnumero = authorizationService.getPersonOid.get
       try {
         val result = vtsService
