@@ -888,6 +888,9 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
   await expect(vastaanotot.getByText('Poral')).toBeVisible();
   await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
   await expect(vastaanotot.getByText('Opiskeluoikeus päättyy')).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
 
   await vastaanotot
     .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })

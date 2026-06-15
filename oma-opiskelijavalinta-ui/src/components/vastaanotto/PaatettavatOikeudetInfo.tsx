@@ -12,6 +12,7 @@ import {
   DEFAULT_DATE_FORMAT,
   toFormattedDateTimeString,
 } from '@/lib/localization/translation-utils';
+import type { Language } from '@/lib/localization/localization-types';
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -33,6 +34,22 @@ function PaatettavaOikeusInfo({
   );
 }
 
+const LangYosLinkMap: Record<Language, string> = {
+  fi: '/fi/sivu/yhden-opiskeluoikeuden-saannos',
+  sv: '/sv/sivu/bestaemmelsen-om-en-studieraett',
+  en: '/en/sivu/the-one-study-right-rule',
+} as const;
+
+function PaatettavaOikeusInfoLink() {
+  const { t, getLanguage } = useTranslations();
+
+  const config = useConfig();
+
+  const yosHref = `${config.routes.yleiset.konfo}${LangYosLinkMap[getLanguage()]}`;
+
+  return <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />;
+}
+
 export function PaatettavatOikeudetInfo({
   oikeudet,
   hakutoive,
@@ -43,10 +60,6 @@ export function PaatettavatOikeudetInfo({
   showLink?: boolean;
 }) {
   const { t } = useTranslations();
-
-  const config = useConfig();
-
-  const yosHref = `${config.routes.yleiset.konfo}`;
 
   const dateInfo =
     isNullish(hakutoive.koulutuksenAlkamisPvm) ||
@@ -72,9 +85,7 @@ export function PaatettavatOikeudetInfo({
         ))}
       </BulletedList>
       <OphTypography>{dateInfo}</OphTypography>
-      {showLink && (
-        <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />
-      )}
+      {showLink && <PaatettavaOikeusInfoLink />}
     </MultiInfoContainer>
   );
 }
