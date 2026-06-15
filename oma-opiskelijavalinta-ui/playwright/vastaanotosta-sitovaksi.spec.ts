@@ -205,43 +205,24 @@ test('Näyttää päättyvät opiskeluoikeudet hakemuksessa', async ({ page }) =
   await expect(
     page.getByText('Vahvista jonotuksesta luopuminen'),
   ).toBeVisible();
+  const luopumisModal = page.getByLabel('Vahvista jonotuksesta luopuminen');
   await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta luopuminen')
-      .getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+    luopumisModal.getByRole('heading', {
+      name: 'Aiemmat opiskeluoikeutesi pää',
+    }),
+  ).toBeVisible();
+  await expect(luopumisModal.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(luopumisModal.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(
+    luopumisModal.getByText('Lakana', { exact: true }),
+  ).toBeVisible();
+  await expect(luopumisModal.getByText('Poral')).toBeVisible();
+  await expect(luopumisModal.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(
+    luopumisModal.getByText('Poraaja', { exact: true }),
   ).toBeVisible();
   await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta luopuminen')
-      .getByText('Valkoiset Lakanat Oy'),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta luopuminen')
-      .getByText('Lakana Lisensiaatti'),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta luopuminen')
-      .getByText('Lakana', { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByLabel('Vahvista jonotuksesta luopuminen').getByText('Poral'),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta luopuminen')
-      .getByText('Hampaiden Poraaja'),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta luopuminen')
-      .getByText('Poraaja', { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByLabel('Vahvista jonotuksesta')
-      .getByText('Opiskeluoikeutesi päätetään ennen uuden'),
+    luopumisModal.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
   ).toBeVisible();
 });
 

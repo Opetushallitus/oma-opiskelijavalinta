@@ -4,7 +4,7 @@ import fi.oph.opiskelijavalinta.Constants.KOULUTUKSEN_ALKAMISKAUSI_KEVAT
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, HAKUKOHDE_OID, HAKU_OID}
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.hakukohde1
-import fi.oph.opiskelijavalinta.model.{Haku, Hakuaika, PaateltyAlkamisAjankohta, PaateltyAlkamiskausi, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{Haku, Hakuaika, PaateltyAlkamisajankohta, PaateltyAlkamiskausi, TranslatedName}
 import fi.oph.opiskelijavalinta.util.TimeUtils
 import org.mockito.Mockito
 import org.junit.jupiter.api.*
@@ -106,7 +106,7 @@ class KoutaServiceTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisAjankohta("2024-01-01", true)))
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta("2024-01-01", true)))
           )
         )
       )
@@ -116,7 +116,7 @@ class KoutaServiceTest {
   }
 
   @Test
-  def alkamisAjankohtanaKaytetaanPaateltyaAlkamisAjankohtaaJosHenkilokohtainenSuunnitelmaJaPvmTulevaisuudessa()
+  def alkamisAjankohtanaKaytetaanPaateltyaAlkamisajankohtaaJosHenkilokohtainenSuunnitelmaJaPvmTulevaisuudessa()
     : Unit = {
     val tulevaisuus = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1).format(TimeUtils.KOUTA_DATE_FORMATTER)
     Mockito
@@ -124,7 +124,7 @@ class KoutaServiceTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisAjankohta(tulevaisuus, true)))
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(tulevaisuus, true)))
           )
         )
       )

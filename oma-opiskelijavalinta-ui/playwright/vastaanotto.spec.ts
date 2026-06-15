@@ -896,29 +896,22 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
   await expect(
     page.getByText('Vahvista opiskelupaikan vastaanotto'),
   ).toBeVisible();
+  const vastaanottoModal = page.getByLabel(
+    'Vahvista opiskelupaikan vastaanotto',
+  );
   await expect(
-    page
-      .getByLabel('Vahvista opiskelupaikan')
-      .getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+    vastaanottoModal.getByRole('heading', {
+      name: 'Aiemmat opiskeluoikeutesi pää',
+    }),
   ).toBeVisible();
   await expect(
-    page
-      .getByLabel('Vahvista opiskelupaikan')
-      .getByText('Valkoiset Lakanat Oy'),
+    vastaanottoModal.getByText('Valkoiset Lakanat Oy'),
   ).toBeVisible();
+  await expect(vastaanottoModal.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanottoModal.getByText('Poral')).toBeVisible();
+  await expect(vastaanottoModal.getByText('Hampaiden Poraaja')).toBeVisible();
   await expect(
-    page.getByLabel('Vahvista opiskelupaikan').getByText('Lakana Lisensiaatti'),
-  ).toBeVisible();
-  await expect(
-    page.getByLabel('Vahvista opiskelupaikan').getByText('Poral'),
-  ).toBeVisible();
-  await expect(
-    page.getByLabel('Vahvista opiskelupaikan').getByText('Hampaiden Poraaja'),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByLabel('Vahvista opiskelupaikan')
-      .getByText('Opiskeluoikeus päättyy'),
+    vastaanottoModal.getByText('Opiskeluoikeus päättyy'),
   ).toBeVisible();
 });
 
