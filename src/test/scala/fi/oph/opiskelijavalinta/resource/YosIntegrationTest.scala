@@ -251,7 +251,7 @@ class YosIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    Mockito.when(onrClient.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
+    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
     Mockito
       .when(valintaTulosServiceClient.postVastaanotto(any(), any(), any()))
       .thenReturn(Right("OK"))

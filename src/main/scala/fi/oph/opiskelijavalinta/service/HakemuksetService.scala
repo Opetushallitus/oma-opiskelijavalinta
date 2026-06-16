@@ -180,15 +180,16 @@ class HakemuksetService @Autowired (
           o.jarjestetytHakutoiveet
         )
       )
-      
+
       // haetaan tulokset vain ajankohtaisille hakemuksille
       if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
         try {
           // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
-          hakutoiveidenTulokset = VTSService.getValinnanTulokset(oppijanumero: String, hakemus.haku, hakemus.oid) match {
-            case Some(v) => v.hakutoiveet
-            case _       => List.empty
-          }
+          hakutoiveidenTulokset =
+            VTSService.getValinnanTulokset(oppijanumero: String, hakemus.haku, hakemus.oid) match {
+              case Some(v) => v.hakutoiveet
+              case _       => List.empty
+            }
         } catch {
           case e: Exception =>
             LOG.error(s"VTS tulosten haku epäonnistui hakemukselle ${hakemus.oid}: ${e.getMessage}", e)
