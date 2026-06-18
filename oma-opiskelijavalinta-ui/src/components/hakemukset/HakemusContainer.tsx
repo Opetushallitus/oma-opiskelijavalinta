@@ -21,6 +21,7 @@ import { MigriContainer } from './MigriContainer';
 import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { getLanguage } from '@/lib/getLanguage';
+import { PaatettavatOikeudetInfoVastaanotetulle } from '../vastaanotto/PaatettavatOikeudetInfo';
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
@@ -94,6 +95,12 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
               <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
             )}
           {showMigriURL(tulokset) && <MigriContainer tulokset={tulokset} />}
+          {onkoVastaanottoTehty(tulokset) && (
+            <PaatettavatOikeudetInfoVastaanotetulle
+              tulokset={tulokset}
+              hakemus={hakemus}
+            />
+          )}
           {onkoVastaanottoTehty(tulokset) && (
             <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}

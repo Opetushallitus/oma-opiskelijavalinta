@@ -58,6 +58,7 @@ export type HakutoiveenTulosDto = {
   showMigriURL?: boolean | null;
   migriURL?: string | null;
   paatettavatOpiskeluOikeudet: Array<PaatettavaOpiskeluOikeus>;
+  naytetytPaatettavatOpiskeluoikeudet: Array<PaatettavaOpiskeluOikeus>;
 };
 
 export type JonokohtainenTulostietoDto = {
@@ -95,7 +96,6 @@ export type HakutoiveenTulos = Omit<
   valintatila: Valintatila;
   jonokohtaisetTulostiedot: Array<JonokohtainenTulostieto>;
   ilmoittautuminen: Ilmoittautuminen;
-  paatettavatOpiskeluOikeudet: Array<PaatettavaOpiskeluOikeus>;
 };
 
 export enum VastaanottoTilaToiminto {
