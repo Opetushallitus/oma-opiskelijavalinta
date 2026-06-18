@@ -12,7 +12,7 @@ import fi.oph.opiskelijavalinta.model.{
 
 object VTSMockData {
 
-  val hakutoiveEhdollisestiHyvaksytty = HakutoiveenTulos(
+  val hakutoiveEhdollisestiHyvaksytty: HakutoiveenTulos = HakutoiveenTulos(
     hakukohdeOid = Some("hakukohde-oid-1"),
     hakukohdeNimi = Some("Liukumäen lisensiaatti"),
     tarjoajaOid = Some("organisaatio-oid-1"),
@@ -60,17 +60,18 @@ object VTSMockData {
         varasijasaannotKaytossa = Some(false)
       )
     ),
-    None
+    None,
+    List.empty
   )
 
-  val ehdollinenTulos = HakemuksenTulosRaw(
+  val ehdollinenTulos: HakemuksenTulosRaw = HakemuksenTulosRaw(
     hakuOid = Some("HAKU-OID-1"),
     hakemusOid = Some("HAKEMUS-OID-1"),
     hakijaOid = Some("HAKIJA-OID-1"),
     hakutoiveet = List(hakutoiveEhdollisestiHyvaksytty)
   )
 
-  val hakutoive1Hyvaksytty = HakutoiveenTulosEnriched(
+  val hakutoive1Hyvaksytty: HakutoiveenTulosEnriched = HakutoiveenTulosEnriched(
     hakukohdeOid = Some(HAKUKOHDE_OID),
     hakukohdeNimi = Some("Liukumäen lisensiaatti"),
     tarjoajaOid = Some("organisaatio-oid-1"),
@@ -117,10 +118,11 @@ object VTSMockData {
     ),
     None,
     None,
+    List.empty,
     List.empty
   )
 
-  val hakutoive2Kesken = HakutoiveenTulosEnriched(
+  val hakutoive2Kesken: HakutoiveenTulosEnriched = HakutoiveenTulosEnriched(
     hakukohdeOid = Some("hakukohde-oid-2"),
     hakukohdeNimi = Some("Hiekkalaatikon arkeologi"),
     tarjoajaOid = Some("organisaatio-oid-2"),
@@ -150,17 +152,18 @@ object VTSMockData {
     jonokohtaisetTulostiedot = List.empty,
     None,
     None,
+    List.empty,
     List.empty
   )
 
-  val mockVTSResponse = HakemuksenTulos(
+  val mockVTSResponse: HakemuksenTulos = HakemuksenTulos(
     hakuOid = Some(HAKU_OID),
     hakemusOid = Some(HAKEMUS_OID),
     hakijaOid = Some(PERSON_OID),
     hakutoiveet = List(hakutoive1Hyvaksytty, hakutoive2Kesken)
   )
 
-  val mockVTSKeskenResponse = HakemuksenTulos(
+  val mockVTSKeskenResponse: HakemuksenTulos = HakemuksenTulos(
     hakuOid = Some("1.2.246.562.29.00000000000000065738"),
     hakemusOid = Some("1.2.246.562.11.00000000000002954903"),
     hakijaOid = Some("1.2.246.562.24.97280766274"),
