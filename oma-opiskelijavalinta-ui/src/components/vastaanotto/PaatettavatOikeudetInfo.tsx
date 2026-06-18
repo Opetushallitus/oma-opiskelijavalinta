@@ -52,7 +52,13 @@ function PaatettavaOikeusInfoLink() {
 
   const yosHref = `${config.routes.yleiset.konfo}${LangYosLinkMap[getLanguage()]}`;
 
-  return <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />;
+  return (
+    <ExternalLink
+      href={yosHref}
+      name={t('vastaanotto.yos.linkki')}
+      underline="always"
+    />
+  );
 }
 
 export function PaatettavatOikeudetInfo({
