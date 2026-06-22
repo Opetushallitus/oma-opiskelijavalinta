@@ -66,7 +66,9 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
   await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
   await expect(vastaanotot.getByText('Poral')).toBeVisible();
   await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
-  await expect(vastaanotot.getByText('Opiskeluoikeus päättyy')).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään'),
+  ).toBeVisible();
   await expect(
     vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
   ).toBeVisible();
@@ -93,7 +95,7 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
   await expect(vastaanottoModal.getByText('Poral')).toBeVisible();
   await expect(vastaanottoModal.getByText('Hampaiden Poraaja')).toBeVisible();
   await expect(
-    vastaanottoModal.getByText('Opiskeluoikeus päättyy'),
+    vastaanottoModal.getByText('Opiskeluoikeutesi päätetään'),
   ).toBeVisible();
 });
 
@@ -176,7 +178,7 @@ test('Näyttää päättyvät opiskeluoikeudet vastaanotetussa hakemuksessa', as
   await expect(hakemus.getByText('Lakana Lisensiaatti')).toBeVisible();
   await expect(hakemus.getByText('Poral')).toBeVisible();
   await expect(hakemus.getByText('Hampaiden Poraaja')).toBeVisible();
-  await expect(hakemus.getByText('Opiskeluoikeus päättyy')).toBeVisible();
+  await expect(hakemus.getByText('Opiskeluoikeutesi päätetään')).toBeVisible();
   await expect(
     hakemus.getByRole('link', { name: 'Lisätietoja yhden' }),
   ).toBeVisible();

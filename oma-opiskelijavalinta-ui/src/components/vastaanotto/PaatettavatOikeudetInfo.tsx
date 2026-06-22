@@ -18,6 +18,7 @@ import {
 import type { Language } from '@/lib/localization/localization-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { getSitovastiVastaanotettu } from '../valinnantulos/valinnan-tulos-utils';
+import { subDays } from 'date-fns';
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -75,8 +76,12 @@ export function PaatettavatOikeudetInfo({
     isDateInPast(hakutoive.koulutuksenAlkamisPvm)
       ? t('vastaanotto.yos.paattyy-ei-pvm')
       : t('vastaanotto.yos.paattyy', {
-          paattymisAika: toFormattedDateTimeString(
+          alkamisAika: toFormattedDateTimeString(
             hakutoive.koulutuksenAlkamisPvm,
+            DEFAULT_DATE_FORMAT,
+          ),
+          paattymisAika: toFormattedDateTimeString(
+            subDays(hakutoive.koulutuksenAlkamisPvm, 1),
             DEFAULT_DATE_FORMAT,
           ),
         });
