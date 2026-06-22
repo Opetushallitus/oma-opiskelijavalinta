@@ -1,18 +1,24 @@
 import { OphTypography } from '@opetushallitus/oph-design-system';
-import type { PaatettavaOpiskeluOikeus } from '@/lib/valinta-tulos-types';
+import type {
+  HakutoiveenTulos,
+  PaatettavaOpiskeluOikeus,
+} from '@/lib/valinta-tulos-types';
 import { useTranslations } from '@/hooks/useTranslations';
 import { BulletedList, BulletItem } from '../BulletedList';
-import { ExternalLink } from '../ExternalLink';
+import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { isNullish } from 'remeda';
+import { isDefined, isNullish } from 'remeda';
 import { isDateInPast } from '@/lib/time-utils';
 import {
   DEFAULT_DATE_FORMAT,
   toFormattedDateTimeString,
 } from '@/lib/localization/translation-utils';
 import type { Language } from '@/lib/localization/localization-types';
+import type { Hakemus } from '@/lib/hakemus-types';
+import { getSitovastiVastaanotettu } from '../valinnantulos/valinnan-tulos-utils';
+import { subDays } from 'date-fns';
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -47,16 +53,20 @@ function PaatettavaOikeusInfoLink() {
 
   const yosHref = `${config.routes.yleiset.konfo}${LangYosLinkMap[getLanguage()]}`;
 
-  return <ExternalLink href={yosHref} name={t('vastaanotto.yos.linkki')} />;
+  return (
+    <ExternalLinkParagraph href={yosHref} name={t('vastaanotto.yos.linkki')} />
+  );
 }
 
 export function PaatettavatOikeudetInfo({
   oikeudet,
   hakutoive,
   showLink = true,
+  kuvausSyyAvain = 'vastaanotto.yos.kuvaus',
 }: {
   oikeudet: Array<PaatettavaOpiskeluOikeus>;
   hakutoive: Hakukohde;
+  kuvausSyyAvain?: string;
   showLink?: boolean;
 }) {
   const { t } = useTranslations();
@@ -66,8 +76,12 @@ export function PaatettavatOikeudetInfo({
     isDateInPast(hakutoive.koulutuksenAlkamisPvm)
       ? t('vastaanotto.yos.paattyy-ei-pvm')
       : t('vastaanotto.yos.paattyy', {
-          paattymisAika: toFormattedDateTimeString(
+          alkamisAika: toFormattedDateTimeString(
             hakutoive.koulutuksenAlkamisPvm,
+            DEFAULT_DATE_FORMAT,
+          ),
+          paattymisAika: toFormattedDateTimeString(
+            subDays(hakutoive.koulutuksenAlkamisPvm, 1),
             DEFAULT_DATE_FORMAT,
           ),
         });
@@ -75,7 +89,7 @@ export function PaatettavatOikeudetInfo({
   return (
     <MultiInfoContainer>
       <OphTypography variant="h5">{t('vastaanotto.yos.otsikko')}</OphTypography>
-      <OphTypography>{t('vastaanotto.yos.kuvaus')}</OphTypography>
+      <OphTypography>{t(kuvausSyyAvain)}</OphTypography>
       <BulletedList>
         {oikeudet.map((oikeus) => (
           <PaatettavaOikeusInfo
@@ -88,4 +102,31 @@ export function PaatettavatOikeudetInfo({
       {showLink && <PaatettavaOikeusInfoLink />}
     </MultiInfoContainer>
   );
+}
+
+export function PaatettavatOikeudetInfoVastaanotetulle({
+  hakemus,
+  tulokset,
+}: {
+  hakemus: Hakemus;
+  tulokset: Array<HakutoiveenTulos>;
+}) {
+  const vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
+  const hakutoive = hakemus.hakukohteet?.find(
+    (ht) => ht.oid === vastaanotettuTulos?.hakukohdeOid,
+  );
+
+  const kuvausSyyAvain = vastaanotettuTulos?.ehdollisestiHyvaksyttavissa
+    ? 'vastaanotto.yos.kuvaus-vastaanotettu-ehdollinen'
+    : 'vastaanotto.yos.kuvaus-vastaanotettu';
+
+  return isDefined(vastaanotettuTulos) &&
+    isDefined(hakutoive) &&
+    vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet.length > 0 ? (
+    <PaatettavatOikeudetInfo
+      oikeudet={vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet}
+      hakutoive={hakutoive}
+      kuvausSyyAvain={kuvausSyyAvain}
+    />
+  ) : null;
 }

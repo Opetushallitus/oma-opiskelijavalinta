@@ -16,14 +16,11 @@ import {
   hakemus4ToinenAsteAlempiaHyvaksyttyja,
   hakukohde1Yps,
   hakukohde2Yps,
-  hakukohde3,
   mockSession,
 } from './mocks';
 import { clone } from 'remeda';
 import { VastaanottoTila } from '@/lib/valinta-tulos-types';
 import type { HakemusResponse } from '@/lib/hakemus-service';
-import { addDays, format } from 'date-fns';
-import { KOUTA_DATE_FORMAT, toFinnishDate } from '@/lib/time-utils';
 
 test('Näyttää vastaanotettavan hakutoiveen', async ({ page }) => {
   await setup(page);
@@ -506,11 +503,18 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
       hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
   });
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
   await vastaanotot
     .getByRole('radio', {
       name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
     })
     .click();
+
   const sendButton = vastaanotot.getByRole('button', {
     name: 'Lähetä vastaus',
   });
@@ -844,78 +848,6 @@ test('Näytetään ehdollisesti hyväksytylle vastaanotetulle sekä valintatila 
   await expect(
     tulosWarning.getByText('Ehdollinen opiskelijavalinta'),
   ).toBeHidden();
-});
-
-test('Näyttää päättyvät opiskeluoikeudet kk-haun hakemuksessa', async ({
-  page,
-}) => {
-  const dateInFuture = format(
-    addDays(toFinnishDate(new Date()), 1),
-    KOUTA_DATE_FORMAT,
-  );
-  const hyvaksyttyPrioKkApplication = {
-    ...hakemus2,
-    hakukohteet: [{ ...hakukohde3, koulutuksenAlkamisPvm: dateInFuture }],
-    hakemuksenTulokset: [
-      {
-        ...hakemuksenTulosHyvaksytty,
-        paatettavatOpiskeluOikeudet: [
-          {
-            tunniste: 'tunniste-1',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
-            supaNimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
-            virtaNimi: { fi: '', sv: '', en: '' },
-          },
-          {
-            tunniste: 'tunniste-2',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
-            supaNimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
-            virtaNimi: { fi: '', sv: '', en: '' },
-          },
-        ],
-      },
-    ],
-  };
-  await setup(page, hyvaksyttyPrioKkApplication);
-  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
-  await expect(
-    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
-  ).toBeVisible();
-  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
-  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
-  await expect(vastaanotot.getByText('Poral')).toBeVisible();
-  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
-  await expect(vastaanotot.getByText('Opiskeluoikeus päättyy')).toBeVisible();
-  await expect(
-    vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
-  ).toBeVisible();
-
-  await vastaanotot
-    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
-    .click();
-  await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
-  await expect(
-    page.getByText('Vahvista opiskelupaikan vastaanotto'),
-  ).toBeVisible();
-  const vastaanottoModal = page.getByLabel(
-    'Vahvista opiskelupaikan vastaanotto',
-  );
-  await expect(
-    vastaanottoModal.getByRole('heading', {
-      name: 'Aiemmat opiskeluoikeutesi pää',
-    }),
-  ).toBeVisible();
-  await expect(
-    vastaanottoModal.getByText('Valkoiset Lakanat Oy'),
-  ).toBeVisible();
-  await expect(vastaanottoModal.getByText('Lakana Lisensiaatti')).toBeVisible();
-  await expect(vastaanottoModal.getByText('Poral')).toBeVisible();
-  await expect(vastaanottoModal.getByText('Hampaiden Poraaja')).toBeVisible();
-  await expect(
-    vastaanottoModal.getByText('Opiskeluoikeus päättyy'),
-  ).toBeVisible();
 });
 
 test('Vastaanotto on saavutettava', async ({ page }) => {

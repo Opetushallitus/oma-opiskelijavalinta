@@ -114,7 +114,8 @@ class VTSService @Autowired (
       jonokohtaisetTulostiedot = tulos.jonokohtaisetTulostiedot,
       kelaURL = tulos.kelaURL,
       migriURL = if (tulos.showMigriURL.getOrElse(false)) Some(migriUrl) else None,
-      paatettavatOpiskeluOikeudet = opiskeluOikeudetJotkaVastaanottoPaattaa
+      paatettavatOpiskeluOikeudet = opiskeluOikeudetJotkaVastaanottoPaattaa,
+      naytetytPaatettavatOpiskeluoikeudet = tulos.naytetytPaatettavatOpiskeluoikeudet
     )
   }
 
