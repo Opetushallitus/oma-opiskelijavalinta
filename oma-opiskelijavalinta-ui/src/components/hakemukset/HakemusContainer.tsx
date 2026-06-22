@@ -58,6 +58,8 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
       (onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []) &&
         isTruthy(hakemus.modifyLink)));
 
+  const vastaanottoTehty = onkoVastaanottoTehty(tulokset);
+
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
       <OphTypography variant="h3" component={adjustHeaderLevel ? 'h2' : 'h3'}>
@@ -93,22 +95,21 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
             hakemuksenTulokset={tulokset}
           />
           {hasKelaUrl(tulokset) && <KelaContainer tulokset={tulokset} />}
-          {onkoVastaanottoTehty(tulokset) &&
-            isKorkeakouluHaku(hakemus.haku) && (
-              <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
-            )}
+          {vastaanottoTehty && isKorkeakouluHaku(hakemus.haku) && (
+            <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
+          )}
           {showMigriURL(tulokset) && <MigriContainer tulokset={tulokset} />}
-          {onkoVastaanottoTehty(tulokset) &&
+          {vastaanottoTehty &&
             !tulokset.some(isEhdollisestiHyvaksyttyVastaanottanutSitovasti) && (
               <PaatettavatOikeudetInfoVastaanotetulle
                 tulokset={tulokset}
                 hakemus={hakemus}
               />
             )}
-          {onkoVastaanottoTehty(tulokset) && (
+          {vastaanottoTehty && (
             <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}
-          {!onkoVastaanottoTehty(tulokset) && (
+          {!vastaanottoTehty && (
             <HakukohteetContainer
               hakemus={hakemus}
               hakemuksenTulokset={tulokset}
