@@ -5,7 +5,7 @@ import type {
 } from '@/lib/valinta-tulos-types';
 import { useTranslations } from '@/hooks/useTranslations';
 import { BulletedList, BulletItem } from '../BulletedList';
-import { ExternalLink } from '../ExternalLink';
+import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import type { Hakukohde } from '@/lib/kouta-types';
@@ -53,11 +53,7 @@ function PaatettavaOikeusInfoLink() {
   const yosHref = `${config.routes.yleiset.konfo}${LangYosLinkMap[getLanguage()]}`;
 
   return (
-    <ExternalLink
-      href={yosHref}
-      name={t('vastaanotto.yos.linkki')}
-      underline="always"
-    />
+    <ExternalLinkParagraph href={yosHref} name={t('vastaanotto.yos.linkki')} />
   );
 }
 
@@ -115,13 +111,17 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
     (ht) => ht.oid === vastaanotettuTulos?.hakukohdeOid,
   );
 
+  const kuvausSyyAvain = vastaanotettuTulos?.ehdollisestiHyvaksyttavissa
+    ? 'vastaanotto.yos.kuvaus-vastaanotettu-ehdollinen'
+    : 'vastaanotto.yos.kuvaus-vastaanotettu';
+
   return isDefined(vastaanotettuTulos) &&
     isDefined(hakutoive) &&
     vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet.length > 0 ? (
     <PaatettavatOikeudetInfo
       oikeudet={vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet}
       hakutoive={hakutoive}
-      kuvausSyyAvain="vastaanotto.yos.kuvaus-vastaanotettu"
+      kuvausSyyAvain={kuvausSyyAvain}
     />
   ) : null;
 }

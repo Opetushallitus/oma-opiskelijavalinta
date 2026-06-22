@@ -32,8 +32,8 @@ type VastaanottoBoxParams = {
 function VastaanottoBox({
   hakukohde,
   tulos,
-  application,
-}: VastaanottoBoxParams & { application: Hakemus }) {
+  hakemus,
+}: VastaanottoBoxParams & { hakemus: Hakemus }) {
   const { translateEntity } = useTranslations();
 
   return (
@@ -46,19 +46,23 @@ function VastaanottoBox({
         {translateEntity(hakukohde.nimi)}
       </OphTypography>
       {isEhdollisestiHyvaksyttyVastaanottanutSitovasti(tulos) && (
-        <EhdollisuusWarning tulos={tulos} />
+        <EhdollisuusWarning
+          tulos={tulos}
+          hakemus={hakemus}
+          naytaPaatettavatJosOn={true}
+        />
       )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' && (
         <VastaanottoInfo
           tulos={tulos}
-          application={application}
+          application={hakemus}
           hakutoive={hakukohde}
         />
       )}
       {tulos.vastaanotettavuustila !== 'EI_VASTAANOTETTAVISSA' &&
         tulos.vastaanottotila !== 'EHDOLLISESTI_VASTAANOTTANUT' && (
           <VastaanottoRadio
-            application={application}
+            application={hakemus}
             hakutoive={hakukohde}
             tulos={tulos}
           />
@@ -66,13 +70,13 @@ function VastaanottoBox({
       {tulos.vastaanotettavuustila === 'VASTAANOTETTAVISSA_SITOVASTI' &&
         tulos.vastaanottotila === 'EHDOLLISESTI_VASTAANOTTANUT' && (
           <VastaanottoEhdollisestaSitovaksi
-            application={application}
+            application={hakemus}
             hakutoive={hakukohde}
             tulos={tulos}
           />
         )}
       <IlmoittautuminenContainer
-        hakemus={application}
+        hakemus={hakemus}
         hakemuksenTulos={tulos}
         hakukohde={hakukohde}
       />
@@ -118,7 +122,7 @@ export function VastaanottoContainer({
           <VastaanottoBox
             hakukohde={hakukohde}
             tulos={tulos}
-            application={application}
+            hakemus={application}
             key={`hakutoive-vastaanotto-${hakukohde.oid}`}
           />
         ) : isDefined(hakukohde) ? (

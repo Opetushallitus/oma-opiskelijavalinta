@@ -12,11 +12,33 @@ import {
   hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty,
   hakemus1,
   hakukohde1Yps,
+  hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+  hakemuksenTuloksiaYlempiVarallaAlempiVastaanotettuEhdollinen,
 } from './mocks';
 import type { HakemusResponse } from '@/lib/hakemus-service';
 import { addDays, format } from 'date-fns';
 import { KOUTA_DATE_FORMAT, toFinnishDate } from '@/lib/time-utils';
-import type { HakutoiveenTulosDto } from '@/lib/valinta-tulos-types';
+import type {
+  HakutoiveenTulosDto,
+  PaatettavaOpiskeluOikeus,
+} from '@/lib/valinta-tulos-types';
+
+const PAATETTAVAT_OPISKELUOIKEUDET: Array<PaatettavaOpiskeluOikeus> = [
+  {
+    tunniste: 'tunniste-1',
+    organisaatioOid: '',
+    organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
+    supaNimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
+    virtaNimi: { fi: 'Lakana', sv: '', en: '' },
+  },
+  {
+    tunniste: 'tunniste-2',
+    organisaatioOid: '',
+    organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
+    supaNimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
+    virtaNimi: { fi: 'Poraaja', sv: '', en: '' },
+  },
+] as const;
 
 test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
   page,
@@ -31,22 +53,7 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
     hakemuksenTulokset: [
       {
         ...hakemuksenTulosHyvaksytty,
-        paatettavatOpiskeluOikeudet: [
-          {
-            tunniste: 'tunniste-1',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
-            supaNimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
-            virtaNimi: { fi: '', sv: '', en: '' },
-          },
-          {
-            tunniste: 'tunniste-2',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
-            supaNimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
-            virtaNimi: { fi: '', sv: '', en: '' },
-          },
-        ],
+        paatettavatOpiskeluOikeudet: PAATETTAVAT_OPISKELUOIKEUDET,
       },
     ],
   };
@@ -98,22 +105,7 @@ test('Näyttää päättyvät opiskeluoikeudet kun jonotetaan ylempää', async 
     hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[0]!,
     {
       ...hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[1]!,
-      paatettavatOpiskeluOikeudet: [
-        {
-          tunniste: 'tunniste-1',
-          organisaatioOid: '',
-          organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
-          supaNimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
-          virtaNimi: { fi: 'Lakana', sv: '', en: '' },
-        },
-        {
-          tunniste: 'tunniste-2',
-          organisaatioOid: '',
-          organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
-          supaNimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
-          virtaNimi: { fi: 'Poraaja', sv: '', en: '' },
-        },
-      ],
+      paatettavatOpiskeluOikeudet: PAATETTAVAT_OPISKELUOIKEUDET,
     },
   ];
   await setup(page, { ...hakemus1, hakemuksenTulokset: tulokset });
@@ -171,22 +163,7 @@ test('Näyttää päättyvät opiskeluoikeudet vastaanotetussa hakemuksessa', as
     hakemuksenTulokset: [
       {
         ...hakemuksenTulosVastaanotettu,
-        naytetytPaatettavatOpiskeluoikeudet: [
-          {
-            tunniste: 'tunniste-1',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Valkoiset Lakanat Oy', sv: '', en: '' },
-            supaNimi: { fi: 'Lakana Lisensiaatti', sv: '', en: '' },
-            virtaNimi: { fi: '', sv: '', en: '' },
-          },
-          {
-            tunniste: 'tunniste-2',
-            organisaatioOid: '',
-            organisaatioNimi: { fi: 'Poral', sv: '', en: '' },
-            supaNimi: { fi: 'Hampaiden Poraaja', sv: '', en: '' },
-            virtaNimi: { fi: '', sv: '', en: '' },
-          },
-        ],
+        naytetytPaatettavatOpiskeluoikeudet: PAATETTAVAT_OPISKELUOIKEUDET,
       },
     ],
   };
@@ -210,6 +187,109 @@ test('Näyttää päättyvät opiskeluoikeudet vastaanotetussa hakemuksessa', as
   await expect(
     hakemus.getByRole('button', { name: 'Lähetä vastaus' }),
   ).toBeHidden();
+});
+
+test('Lähettää ehdollisen vastaanoton päätettävillä opintooikeuksilla onnistuneesti', async ({
+  page,
+}) => {
+  const tulokset =
+    hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa;
+  tulokset[1]!.paatettavatOpiskeluOikeudet = PAATETTAVAT_OPISKELUOIKEUDET;
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset: tulokset,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
+
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana', { exact: true })).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(vastaanotot.getByText('Poraaja', { exact: true })).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
+  ).toBeVisible();
+
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan sitovasti',
+    })
+    .click();
+
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+      });
+    },
+  );
+  const tuloksetResponse =
+    hakemuksenTuloksiaYlempiVarallaAlempiVastaanotettuEhdollinen;
+  tuloksetResponse[1]!.naytetytPaatettavatOpiskeluoikeudet =
+    PAATETTAVAT_OPISKELUOIKEUDET;
+
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tuloksetResponse),
+      });
+    },
+  );
+
+  await page
+    .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
+    .click();
+  //ilmoitus näkyy ja suljetaan se
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Sulje' }).click();
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeHidden();
+
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen',
+    ),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Seuraavat opiskeluoikeudet päättyvät kun olet toiminut',
+    ),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
 });
 
 async function setup(page: Page, overridableApplication?: HakemusResponse) {

@@ -503,11 +503,18 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
       hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
   });
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
   await vastaanotot
     .getByRole('radio', {
       name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
     })
     .click();
+
   const sendButton = vastaanotot.getByRole('button', {
     name: 'Lähetä vastaus',
   });

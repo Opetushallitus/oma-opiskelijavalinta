@@ -11,7 +11,10 @@ import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
-import { onKeskeneraisiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
+import {
+  isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
+  onKeskeneraisiaValinnantiloja,
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 import { hasKelaUrl, showMigriURL } from '@/lib/hakemus-service';
 import { KelaContainer } from './KelaContainer';
 import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
@@ -95,12 +98,13 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
               <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
             )}
           {showMigriURL(tulokset) && <MigriContainer tulokset={tulokset} />}
-          {onkoVastaanottoTehty(tulokset) && (
-            <PaatettavatOikeudetInfoVastaanotetulle
-              tulokset={tulokset}
-              hakemus={hakemus}
-            />
-          )}
+          {onkoVastaanottoTehty(tulokset) &&
+            !tulokset.some(isEhdollisestiHyvaksyttyVastaanottanutSitovasti) && (
+              <PaatettavatOikeudetInfoVastaanotetulle
+                tulokset={tulokset}
+                hakemus={hakemus}
+              />
+            )}
           {onkoVastaanottoTehty(tulokset) && (
             <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}

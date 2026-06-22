@@ -658,6 +658,22 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa
     if (tulokset[1]) {
       tulokset[1].vastaanotettavuustila = 'VASTAANOTETTAVISSA_EHDOLLISESTI';
       tulokset[1].vastaanottotila = VastaanottoTila.KESKEN;
+      tulokset[1].ehdollisestiHyvaksyttavissa = true;
+      tulokset[1].ehdollisenHyvaksymisenEhto = {
+        fi: 'Todistus suorituksesta X pitää toimittaa',
+      };
+    }
+    return tulokset;
+  })();
+
+export const hakemuksenTuloksiaYlempiVarallaAlempiVastaanotettuEhdollinen =
+  (() => {
+    const tulokset = clone(
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+    );
+    if (tulokset[1]) {
+      tulokset[1].vastaanotettavuustila = 'EI_VASTAANOTETTAVISSA';
+      tulokset[1].vastaanottotila = VastaanottoTila.VASTAANOTTANUT_SITOVASTI;
     }
     return tulokset;
   })();
