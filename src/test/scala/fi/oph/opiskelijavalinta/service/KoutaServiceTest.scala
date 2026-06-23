@@ -100,7 +100,7 @@ class KoutaServiceTest {
   }
 
   @Test
-  def alkamisAjankohtanaKaytetaanEilistaJosHenkilokohtainenSuunnitelmaJaPvmMenneisyydessa(): Unit = {
+  def alkamisAjankohtanaKaytetaanEilistaJosPvmMenneisyydessa(): Unit = {
     Mockito
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(
@@ -116,8 +116,23 @@ class KoutaServiceTest {
   }
 
   @Test
-  def alkamisAjankohtanaKaytetaanPaateltyaAlkamisajankohtaaJosHenkilokohtainenSuunnitelmaJaPvmTulevaisuudessa()
-    : Unit = {
+  def alkamisAjankohtanaKaytetaanAnnettuaJosPvmTulevaisuudessa(): Unit = {
+    val tulevaisuus = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1).format(TimeUtils.KOUTA_DATE_FORMATTER)
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(tulevaisuus, false)))
+          )
+        )
+      )
+    val hakukohde = koutaService.getEnrichedHakukohde(HAKUKOHDE_OID)
+    assertEquals(tulevaisuus, hakukohde.get.koulutuksenAlkamisPvm.get)
+  }
+
+  @Test
+  def alkamisAjankohtanaKaytetaanEilistäJosHenkilokohtainenSuunnitelma(): Unit = {
     val tulevaisuus = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1).format(TimeUtils.KOUTA_DATE_FORMATTER)
     Mockito
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
@@ -129,6 +144,7 @@ class KoutaServiceTest {
         )
       )
     val hakukohde = koutaService.getEnrichedHakukohde(HAKUKOHDE_OID)
-    assertEquals(tulevaisuus, hakukohde.get.koulutuksenAlkamisPvm.get)
+    val yesterday = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1).format(TimeUtils.KOUTA_DATE_FORMATTER)
+    assertEquals(yesterday, hakukohde.get.koulutuksenAlkamisPvm.get)
   }
 }

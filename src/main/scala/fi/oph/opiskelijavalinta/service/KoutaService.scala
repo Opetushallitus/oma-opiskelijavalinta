@@ -93,16 +93,14 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
           s"Hakukohteelle $hakukohdeOid ei ole aseteltu päättymispäivämäärää ja se ei ole myöskään henkilökohtaisen suunnitelman mukainen"
         )
         None
-      case (pvm, false, true) =>
+      case (pvm, false, false) =>
         if (TimeUtils.isNowAfter(pvm)) {
           Some(TimeUtils.KOUTA_DATE_FORMATTER.format(ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)))
         } else {
           Some(pvm)
         }
-      case (_, true, true) =>
+      case (_, _, true) =>
         Some(TimeUtils.KOUTA_DATE_FORMATTER.format(ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)))
-      case (pvm, _, _) =>
-        Some(pvm)
     }
   }
 
