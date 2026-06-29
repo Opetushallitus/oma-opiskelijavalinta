@@ -5,5 +5,8 @@
   "vastaanottoviesti.viesti.vastaanottanut": "{vastaus} - {paikka} - {hakutoive}",
   "vastaanottoviesti.viesti.haku": "({haku})",
   "vastaanottoviesti.viesti.ala-vastaa": "Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti.",
-  "vastaanotto.vaihtoehdot.sitova": "Otan paikan vastaan sitovasti"
+  "vastaanotto.vaihtoehdot.sitova": "Otan paikan vastaan sitovasti",
+  "vastaanottoviesti.yos.otsikko": "Aiemmat opiskeluoikeutesi päättyvät",
+  "vastaanottoviesti.yos.operaatiot.vastaanotasitovasti": "Koska otit uuden opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:",
+  "vastaanottoviesti.yos.linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä"
 }

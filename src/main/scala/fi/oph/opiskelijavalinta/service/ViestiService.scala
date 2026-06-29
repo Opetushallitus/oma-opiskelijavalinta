@@ -1,6 +1,13 @@
 package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.Constants.OPH_ORGANISAATIO_OID
+import fi.oph.opiskelijavalinta.model.PaatettavaOpiskeluOikeus
+import fi.oph.opiskelijavalinta.service.AllowedVastaanottoTilaToiminto.{
+  Peru,
+  VastaanotaEhdollisesti,
+  VastaanotaSitovasti,
+  VastaanotaSitovastiPeruAlemmat
+}
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
@@ -22,6 +29,7 @@ class ViestiService @Autowired (
   lokalisointiService: LokalisointiService,
   onrService: OnrService,
   authorizationService: AuthorizationService,
+  supaService: SupaService,
   @Autowired @Qualifier("viestinValitysClient") viestinvalitysClient: ViestinvalitysClient
 ) {
 
@@ -30,6 +38,20 @@ class ViestiService @Autowired (
 
   private val LOGGER: Logger = LoggerFactory.getLogger(classOf[ViestiService]);
 
+  private def paatettavatOpiskeluoikeudetOperaatioTranslationMap: Map[AllowedVastaanottoTilaToiminto, String] =
+    Map(
+      VastaanotaSitovasti            -> "vastaanottoviesti.yos.operaatiot.vastaanotasitovasti",
+      VastaanotaEhdollisesti         -> "vastaanottoviesti.yos.operaatiot.vastaanotaehdollisesti",
+      VastaanotaSitovastiPeruAlemmat -> "vastaanottoviesti.yos.operaatiot.vastaanotasitovastiperualemmat"
+    )
+
+  private def linkkiYosOhjeisiin: Map[SupportedLanguage, String] =
+    Map(
+      SupportedLanguage.fi -> "https://opintopolku.fi/konfo/fi/sivu/yhden-opiskeluoikeuden-saannos",
+      SupportedLanguage.en -> "https://opintopolku.fi/konfo/en/sivu/the-one-study-right-rule ",
+      SupportedLanguage.sv -> "https://opintopolku.fi/konfo/sv/sivu/bestaemmelsen-om-en-studieraett "
+    )
+
   protected def currentTime(): LocalDateTime =
     LocalDateTime.now()
 
@@ -37,7 +59,8 @@ class ViestiService @Autowired (
     hakukohdeOid: String,
     hakemusOid: String,
     hakuOid: String,
-    vastaanottoKaannosAvain: String
+    vastaanottoKaannosAvain: String,
+    vastaanottoOperaatio: AllowedVastaanottoTilaToiminto
   ): Unit = {
     try {
       val oppijanumero = authorizationService.getPersonOid.get
@@ -81,11 +104,16 @@ class ViestiService @Autowired (
         "vastaanottoviesti.viesti.haku",
         Map("haku" -> haku.nimi)
       )
+
+      val paatettavatOpiskeluoikeudet =
+        if (vastaanottoOperaatio.equals(Peru)) ""
+        else constructPaatettavatOpiskeluoikeudetSection(asiointikieli, vastaanottoOperaatio, hakukohdeOid, hakemusOid)
+
       val alaVastaa = lokalisointiService.getTranslation(asiointikieli, "vastaanottoviesti.viesti.ala-vastaa")
       val sisalto   =
-        Array(tervehdys, vastaanottaneet, vastaus, haunNimi, alaVastaa).reduceLeft((a, b) =>
-          a.concat("<br /><br />").concat(b)
-        )
+        Array(tervehdys, vastaanottaneet, vastaus, haunNimi, paatettavatOpiskeluoikeudet, alaVastaa)
+          .filter(s => s != null)
+          .reduceLeft((a, b) => a.concat("<br /><br />").concat(b))
 
       viestinvalitysClient.luoViesti(
         ViestinvalitysBuilder
@@ -119,6 +147,52 @@ class ViestiService @Autowired (
         )
         throw ViestinvalitysException("vastaanottoviesti.virhe")
     }
+  }
+
+  private def constructPaatettavatOpiskeluoikeudetSection(
+    lang: SupportedLanguage,
+    vastaanotto: AllowedVastaanottoTilaToiminto,
+    hakukohdeOid: String,
+    hakemusOid: String
+  ): String = {
+    val oikeudet = supaService.fetchOpiskeluOikeudetFromSession(hakukohdeOid).getOrElse(List.empty)
+    if (oikeudet.isEmpty) {
+      LOGGER.info(s"Ei päätettäviä opiskeluoikeuksia hakemuksella $hakemusOid hakutoiveelle $hakukohdeOid")
+      null
+    } else {
+      LOGGER.info(
+        s"Löytyi ${oikeudet.size} päätettävää opiskeluoikeutta hakemukselle $hakemusOid ja hakutoiveelle $hakukohdeOid. Lisätään ne viestiin"
+      )
+      val syySelite = lokalisointiService.getTranslation(
+        lang,
+        paatettavatOpiskeluoikeudetOperaatioTranslationMap.getOrElse(vastaanotto, "")
+      )
+      val oikeudetList = oikeudetToHtmlList(lang, oikeudet)
+      val pvmSelite    = ""
+      val linkText     = lokalisointiService.getTranslation(lang, "vastaanottoviesti.yos.linkki")
+      val link         = s"<a href=\"${linkkiYosOhjeisiin.getOrElse(lang, "")}\">$linkText</a>"
+
+      Array(
+        lokalisointiService.getTranslation(lang, "vastaanottoviesti.yos.otsikko"),
+        syySelite,
+        oikeudetList,
+        pvmSelite,
+        link
+      ).reduceLeft((a, b) => a.concat("<br /><br />").concat(b))
+    }
+  }
+
+  private def oikeudetToHtmlList(lang: SupportedLanguage, oikeudet: List[PaatettavaOpiskeluOikeus]): String = {
+    val oikeudetItems = oikeudet
+      .map(o => {
+        val virtaNimi        = lokalisointiService.translateObject(o.virtaNimi, lang)
+        val virtaNimiHtml    = if (virtaNimi.isBlank) "" else s"<br />$virtaNimi"
+        val organisaatioNimi = lokalisointiService.translateObject(o.organisaatioNimi, lang)
+        val supaNimi         = lokalisointiService.translateObject(o.supaNimi, lang)
+        s"<li>$organisaatioNimi<br />$supaNimi$virtaNimiHtml</li>"
+      })
+      .reduceLeft((a, b) => a.concat(b))
+    s"<ul>$oikeudetItems</ul>"
   }
 
 }
