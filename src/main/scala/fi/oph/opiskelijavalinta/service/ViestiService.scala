@@ -8,14 +8,15 @@ import fi.oph.opiskelijavalinta.service.AllowedVastaanottoTilaToiminto.{
   VastaanotaSitovasti,
   VastaanotaSitovastiPeruAlemmat
 }
-import fi.oph.opiskelijavalinta.util.SupportedLanguage
+import fi.oph.opiskelijavalinta.util.{SupportedLanguage, TimeUtils}
+import fi.oph.opiskelijavalinta.util.TimeUtils.isNowAfter
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.ViestinvalitysBuilder
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.stereotype.Service
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import java.util.Optional
 
 class ViestinvalitysException(message: String, cause: Throwable = null) extends RuntimeException(message, cause) {
@@ -168,7 +169,7 @@ class ViestiService @Autowired (
         paatettavatOpiskeluoikeudetOperaatioTranslationMap.getOrElse(vastaanotto, "")
       )
       val oikeudetList = oikeudetToHtmlList(lang, oikeudet)
-      val pvmSelite    = ""
+      val pvmSelite    = oikeusDateInfo(lang, hakukohdeOid)
       val linkText     = lokalisointiService.getTranslation(lang, "vastaanottoviesti.yos.linkki")
       val link         = s"<a href=\"${linkkiYosOhjeisiin.getOrElse(lang, "")}\">$linkText</a>"
 
@@ -193,6 +194,24 @@ class ViestiService @Autowired (
       })
       .reduceLeft((a, b) => a.concat(b))
     s"<ul>$oikeudetItems</ul>"
+  }
+
+  private def oikeusDateInfo(lang: SupportedLanguage, hakukohdeOid: String): String = {
+    val hakutoive = koutaService.getEnrichedHakukohde(hakukohdeOid)
+    hakutoive
+      .flatMap(ht => ht.koulutuksenAlkamisPvm)
+      .filter(pvm => !isNowAfter(pvm))
+      .map(pvm => {
+        lokalisointiService.getTranslationWithParams(
+          lang,
+          "vastaanotto.yos.paattyy",
+          Map(
+            "alkamisAika"   -> LocalDate.from(TimeUtils.KOUTA_DATE_FORMATTER.parse(pvm)),
+            "paattymisAika" -> LocalDate.from(TimeUtils.KOUTA_DATE_FORMATTER.parse(pvm)).minusDays(1)
+          )
+        )
+      })
+      .getOrElse(lokalisointiService.getTranslation(lang, "vastaanotto.yos.paattyy-ei-pvm"))
   }
 
 }

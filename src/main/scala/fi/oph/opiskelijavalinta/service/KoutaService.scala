@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.ZonedDateTime
 
 @Service
 class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = new ObjectMapper()) {

@@ -1,6 +1,5 @@
 package fi.oph.opiskelijavalinta.service
 
-import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.module.scala.DefaultScalaModule

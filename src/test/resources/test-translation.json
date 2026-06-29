@@ -8,5 +8,7 @@
   "vastaanotto.vaihtoehdot.sitova": "Otan paikan vastaan sitovasti",
   "vastaanottoviesti.yos.otsikko": "Aiemmat opiskeluoikeutesi päättyvät",
   "vastaanottoviesti.yos.operaatiot.vastaanotasitovasti": "Koska otit uuden opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:",
-  "vastaanottoviesti.yos.linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä"
+  "vastaanottoviesti.yos.linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
+  "vastaanotto.yos.paattyy": "Opiskeluoikeutesi päätetään {paattymisAika}, ennen uuden opiskeluoikeutesti alkamista {alkamisAika}. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
+  "vastaanotto.yos.paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää."
 }

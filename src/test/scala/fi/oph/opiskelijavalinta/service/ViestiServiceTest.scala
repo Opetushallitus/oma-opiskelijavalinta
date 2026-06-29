@@ -5,7 +5,7 @@ import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID,
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, kaynnissaOlevaHaku}
-import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{HakukohdeEnriched, PaatettavaOpiskeluOikeus, TranslatedName, YhdenPaikanSaanto}
 import fi.oph.opiskelijavalinta.service.AllowedVastaanottoTilaToiminto.VastaanotaSitovasti
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.viestinvalitys.ViestinvalitysClient
@@ -138,6 +138,21 @@ class ViestiServiceTest {
           )
         )
       )
+    Mockito
+      .when(koutaService.getEnrichedHakukohde(HAKUKOHDE_OID))
+      .thenReturn(
+        Some(
+          HakukohdeEnriched(
+            oid = HAKUKOHDE_OID,
+            nimi = TranslatedName("", "", ""),
+            jarjestyspaikkaHierarkiaNimi = TranslatedName("", "", ""),
+            uudenOpiskelijanUrl = None,
+            koulutuksenAlkamiskausi = None,
+            koulutuksenAlkamisPvm = Some("2026-04-12"),
+            yhdenPaikanSaanto = null
+          )
+        )
+      )
 
     viestiService.lahetaVastaanottoViesti(
       HAKUKOHDE_OID,
@@ -155,7 +170,6 @@ class ViestiServiceTest {
     Assertions.assertEquals("ruhtinas.nukettaja@nuketown.fi", vastaanottajat.get.get(0).getSahkopostiOsoite.get())
     Assertions.assertTrue(sisalto.contains("Hei Ruhtinas Nukettaja,"))
     Assertions.assertTrue(sisalto.contains("21.4.2026 klo 12:30"))
-    System.out.println(sisalto)
     Assertions.assertTrue(
       sisalto
         .contains(
@@ -167,8 +181,12 @@ class ViestiServiceTest {
         "Aiemmat opiskeluoikeutesi päättyvät<br /><br />Koska otit uuden opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:<br /><br /><ul><li>Valkoiset Lakanat Oy<br />Lakana Lisensiaatti<br />Peitto</li></ul>"
       )
     )
+    Assertions.assertTrue(
+      sisalto.contains(
+        "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää."
+      )
+    )
     Assertions.assertTrue(sisalto.contains("Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti."))
-
   }
 
   @Test
