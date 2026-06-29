@@ -26,6 +26,7 @@ class LokalisointiService @Autowired (
 ) {
 
   val zone: ZoneId                                = ZoneId.of("Europe/Helsinki")
+  val DEFAULT_DATE_FORMAT                         = DateTimeFormatter.ofPattern("d.M.yyyy")
   val DEFAULT_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'klo' HH:mm").withZone(zone)
   val SWEDISH_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'kl.' HH:mm").withZone(zone)
   val ENGLISH_DATE_TIME_FORMAT: DateTimeFormatter =
@@ -71,7 +72,7 @@ class LokalisointiService @Autowired (
 
   def translateObject(obj: Object, lang: SupportedLanguage): String = {
     obj match
-      case ld: LocalDate                  => ld.format(LANGUAGE_FORMATTER_MAP(lang))
+      case ld: LocalDate                  => ld.format(DEFAULT_DATE_FORMAT)
       case ldt: LocalDateTime             => ldt.format(LANGUAGE_FORMATTER_MAP(lang))
       case translatedName: TranslatedName => translateName(translatedName, lang)
       case o                              => o.toString
