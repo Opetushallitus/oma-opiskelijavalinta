@@ -10,23 +10,21 @@ import fi.oph.opiskelijavalinta.model.TranslatedName
 import fi.oph.opiskelijavalinta.util.TranslationUtil.translateName
 import fi.oph.opiskelijavalinta.util.TimeUtils
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
-import fi.oph.opiskelijavalinta.util.SupportedLanguage.{en, fi, sv}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, ZoneId, ZonedDateTime}
-import java.util.Locale
+import java.time.{LocalDate, LocalDateTime}
 
 @Service
-class LokalisointiService @Autowired (
+class CachedLokalisointiService @Autowired (
   lokalisointiClient: LokalisointiClient,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiService])
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[CachedLokalisointiService])
+
   mapper.registerModule(DefaultScalaModule)
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
@@ -42,13 +40,23 @@ class LokalisointiService @Autowired (
       case Right(o) => Some(JsonParser.parseString(o).getAsJsonObject)
     }
   }
+}
+
+@Service
+class LokalisointiService @Autowired (
+  cachedService: CachedLokalisointiService
+) {
+
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiService])
 
   def getTranslation(lang: SupportedLanguage, key: String): String = {
     try {
-      getTranslations(lang).fold {
-        LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
-        key
-      }(json => json.get(key).getAsString)
+      cachedService
+        .getTranslations(lang)
+        .fold {
+          LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
+          key
+        }(json => json.get(key).getAsString)
     } catch {
       case e: Throwable =>
         LOG.warn(s"Käännösavaimelle $key ei löytynyt käännöstä kielelle $lang. Palautetaan käännösavain")

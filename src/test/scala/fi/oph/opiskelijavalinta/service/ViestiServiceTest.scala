@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, Mockito}
 
-import java.time.{LocalDate, LocalDateTime, ZoneId}
+import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 
 @TestInstance(Lifecycle.PER_METHOD)
@@ -25,11 +25,12 @@ class ViestiServiceTest {
   val fileName: String         = "/test-translation.json"
   val fixedTime: LocalDateTime = LocalDateTime.of(2026, 4, 21, 12, 30, 0, 0)
   val text                     = scala.io.Source.fromInputStream(getClass.getResourceAsStream(fileName)).mkString
-  val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
+  val lokalisointiClient: LokalisointiClient           = Mockito.mock(classOf[LokalisointiClient])
+  private val cachedService: CachedLokalisointiService = CachedLokalisointiService(lokalisointiClient)
 
   val koutaService: KoutaService                 = Mockito.mock(classOf[KoutaService])
   val hakemuksetService: HakemuksetService       = Mockito.mock(classOf[HakemuksetService])
-  val lokalisointiService: LokalisointiService   = LokalisointiService(lokalisointiClient)
+  val lokalisointiService: LokalisointiService   = LokalisointiService(cachedService)
   val onrService: OnrService                     = Mockito.mock(classOf[OnrService])
   val viestinvalitysClient: ViestinvalitysClient = Mockito.mock(classOf[ViestinvalitysClient])
   val authorizationService: AuthorizationService = Mockito.mock(classOf[AuthorizationService])

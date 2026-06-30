@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
 @Service
-class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = new ObjectMapper()) {
-
+class CachedKoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = new ObjectMapper()) {
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
   mapper.registerModule(new Jdk8Module())
@@ -26,7 +25,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[CachedKoutaService]);
 
   @Cacheable(value = Array(CacheConstants.KOUTA_HAKU_CACHE_NAME), sync = true)
   def getHaku(hakuOid: String): Haku = {
@@ -49,7 +48,7 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
   def getHakukohde(hakukohdeOid: String): Hakukohde = {
     koutaClient.getHakukohde(hakukohdeOid) match {
       case Left(e) =>
-        LOG.warn(s"Virhe hakukohteen tietojen hakemusessa oidilla $hakukohdeOid: ${e.getMessage}")
+        LOG.warn(s"Virhe hakukohteen tietojen hakemisessa oidilla $hakukohdeOid: ${e.getMessage}")
         throw RuntimeException(s"Virhe hakukohteen tietojen hakemisessa oidilla $hakukohdeOid", e)
       case Right(o) =>
         try {
@@ -60,6 +59,20 @@ class KoutaService @Autowired (koutaClient: KoutaClient, mapper: ObjectMapper = 
             throw RuntimeException(s"Virhe hakukohteen deserialisoinnissa oidilla $hakukohdeOid", e)
         }
     }
+  }
+}
+
+@Service
+class KoutaService @Autowired (cachedService: CachedKoutaService) {
+
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[KoutaService]);
+
+  def getHaku(hakuOid: String): Haku = {
+    cachedService.getHaku(hakuOid)
+  }
+
+  def getHakukohde(hakukohdeOid: String): Hakukohde = {
+    cachedService.getHakukohde(hakukohdeOid)
   }
 
   def getEnrichedHakukohde(hakukohdeOid: String): Option[HakukohdeEnriched] = {

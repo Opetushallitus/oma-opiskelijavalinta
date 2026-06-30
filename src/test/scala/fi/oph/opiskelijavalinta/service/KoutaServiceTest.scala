@@ -16,9 +16,10 @@ import java.time.ZonedDateTime
 @TestInstance(Lifecycle.PER_CLASS)
 class KoutaServiceTest {
 
-  val koutaClient: KoutaClient = Mockito.mock(classOf[KoutaClient])
+  val koutaClient: KoutaClient          = Mockito.mock(classOf[KoutaClient])
+  val cachedService: CachedKoutaService = CachedKoutaService(koutaClient)
 
-  val koutaService: KoutaService = KoutaService(koutaClient)
+  val koutaService: KoutaService = KoutaService(cachedService)
 
   Mockito
     .when(koutaClient.getHaku(HAKU_OID))
