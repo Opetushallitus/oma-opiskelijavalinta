@@ -8,6 +8,7 @@ import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import fi.oph.opiskelijavalinta.model.TranslatedName
 import fi.oph.opiskelijavalinta.util.TranslationUtil.translateName
+import fi.oph.opiskelijavalinta.util.TimeUtils
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
 import fi.oph.opiskelijavalinta.util.SupportedLanguage.{en, fi, sv}
 import org.slf4j.{Logger, LoggerFactory}
@@ -24,15 +25,6 @@ class LokalisointiService @Autowired (
   lokalisointiClient: LokalisointiClient,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
-
-  val zone: ZoneId                                = ZoneId.of("Europe/Helsinki")
-  val DEFAULT_DATE_FORMAT                         = DateTimeFormatter.ofPattern("d.M.yyyy")
-  val DEFAULT_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'klo' HH:mm").withZone(zone)
-  val SWEDISH_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'kl.' HH:mm").withZone(zone)
-  val ENGLISH_DATE_TIME_FORMAT: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MMM. d, yyyy 'at' HH:mm a z").withLocale(Locale.US).withZone(zone)
-  val LANGUAGE_FORMATTER_MAP: Map[SupportedLanguage, DateTimeFormatter] =
-    Map(fi -> DEFAULT_DATE_TIME_FORMAT, sv -> SWEDISH_DATE_TIME_FORMAT, en -> ENGLISH_DATE_TIME_FORMAT)
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiService])
   mapper.registerModule(DefaultScalaModule)
@@ -72,8 +64,8 @@ class LokalisointiService @Autowired (
 
   def translateObject(obj: Object, lang: SupportedLanguage): String = {
     obj match
-      case ld: LocalDate                  => ld.format(DEFAULT_DATE_FORMAT)
-      case ldt: LocalDateTime             => ldt.format(LANGUAGE_FORMATTER_MAP(lang))
+      case ld: LocalDate                  => ld.format(TimeUtils.DEFAULT_DATE_FORMAT)
+      case ldt: LocalDateTime             => ldt.format(TimeUtils.LANGUAGE_FORMATTER_MAP(lang))
       case translatedName: TranslatedName => translateName(translatedName, lang)
       case o                              => o.toString
   }

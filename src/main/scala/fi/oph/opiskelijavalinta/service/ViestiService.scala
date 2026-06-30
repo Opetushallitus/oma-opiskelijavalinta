@@ -204,14 +204,14 @@ class ViestiService @Autowired (
       .map(pvm => {
         lokalisointiService.getTranslationWithParams(
           lang,
-          "vastaanotto.yos.paattyy",
+          "vastaanottoviesti.yos.paattyy",
           Map(
             "alkamisAika"   -> LocalDate.from(TimeUtils.KOUTA_DATE_FORMATTER.parse(pvm)),
             "paattymisAika" -> LocalDate.from(TimeUtils.KOUTA_DATE_FORMATTER.parse(pvm)).minusDays(1)
           )
         )
       })
-      .getOrElse(lokalisointiService.getTranslation(lang, "vastaanotto.yos.paattyy-ei-pvm"))
+      .getOrElse(lokalisointiService.getTranslation(lang, "vastaanottoviesti.yos.paattyy-ei-pvm"))
   }
 
 }

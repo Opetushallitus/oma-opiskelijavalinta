@@ -5,9 +5,9 @@ import fi.oph.opiskelijavalinta.TestUtils.{HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID,
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, kaynnissaOlevaHaku}
-import fi.oph.opiskelijavalinta.model.{HakukohdeEnriched, PaatettavaOpiskeluOikeus, TranslatedName, YhdenPaikanSaanto}
+import fi.oph.opiskelijavalinta.model.{HakukohdeEnriched, PaatettavaOpiskeluOikeus, TranslatedName}
 import fi.oph.opiskelijavalinta.service.AllowedVastaanottoTilaToiminto.VastaanotaSitovasti
-import fi.oph.opiskelijavalinta.util.SupportedLanguage
+import fi.oph.opiskelijavalinta.util.{SupportedLanguage, TimeUtils}
 import fi.oph.viestinvalitys.ViestinvalitysClient
 import fi.oph.viestinvalitys.vastaanotto.model.{KayttooikeusImpl, Viesti}
 import fi.oph.viestinvalitys.vastaanotto.resource.LuoViestiSuccessResponseImpl
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.{ArgumentCaptor, Mockito}
 
-import java.time.{LocalDateTime, ZoneId}
+import java.time.{LocalDate, LocalDateTime, ZoneId}
 import java.util.UUID
 
 @TestInstance(Lifecycle.PER_METHOD)
@@ -58,14 +58,6 @@ class ViestiServiceTest {
     Mockito
       .when(hakemuksetService.getHakemusEmailAndLang(PERSON_OID, HAKEMUS_OID))
       .thenReturn(("testi.testinen@example.org", "fi"))
-    Mockito
-      .when(viestinvalitysClient.luoViesti(any()))
-      .thenReturn(
-        LuoViestiSuccessResponseImpl(
-          UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-          UUID.fromString("5b4501ec-3298-4064-8868-262b55fdce9a")
-        )
-      )
 
     viestiService.lahetaVastaanottoViesti(
       HAKUKOHDE_OID,
@@ -115,14 +107,6 @@ class ViestiServiceTest {
       .when(hakemuksetService.getHakemusEmailAndLang(PERSON_OID, HAKEMUS_OID))
       .thenReturn(("ruhtinas.nukettaja@nuketown.fi", "fi"))
     Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Ruhtinas", "Nukettaja"))
-    Mockito
-      .when(viestinvalitysClient.luoViesti(any()))
-      .thenReturn(
-        LuoViestiSuccessResponseImpl(
-          UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-          UUID.fromString("5b4501ec-3298-4064-8868-262b55fdce9a")
-        )
-      )
     Mockito
       .when(supaService.fetchOpiskeluOikeudetFromSession(HAKUKOHDE_OID))
       .thenReturn(
@@ -184,6 +168,87 @@ class ViestiServiceTest {
     Assertions.assertTrue(
       sisalto.contains(
         "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää."
+      )
+    )
+    Assertions.assertTrue(sisalto.contains("Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti."))
+  }
+
+  @Test
+  def sisaltaaPaatettavatOpiskeluOikeudetOsionAlkamisaikaTulevaisuudessa(): Unit = {
+    initMocks
+    Mockito
+      .when(lokalisointiClient.getLokalisaatiot(SupportedLanguage.fi))
+      .thenReturn(
+        Right(text)
+      )
+    Mockito
+      .when(hakemuksetService.getHakemusEmailAndLang(PERSON_OID, HAKEMUS_OID))
+      .thenReturn(("ruhtinas.nukettaja@nuketown.fi", "fi"))
+    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Ruhtinas", "Nukettaja"))
+    Mockito
+      .when(supaService.fetchOpiskeluOikeudetFromSession(HAKUKOHDE_OID))
+      .thenReturn(
+        Some(
+          List(
+            PaatettavaOpiskeluOikeus(
+              virtaOpiskeluOikeusId = "Tunniste",
+              organisaatioOid = "",
+              organisaatioNimi = TranslatedName(fi = "Valkoiset Lakanat Oy", sv = "", en = ""),
+              supaNimi = TranslatedName(fi = "Lakana Lisensiaatti", sv = "", en = ""),
+              virtaNimi = TranslatedName("Peitto", "", "")
+            )
+          )
+        )
+      )
+    val aloitusAika    = LocalDate.now().plusDays(2).format(TimeUtils.KOUTA_DATE_FORMATTER)
+    val aloittamisAika = LocalDate.now().plusDays(2).format(TimeUtils.DEFAULT_DATE_FORMAT)
+    val paattymisAika  = LocalDate.now().plusDays(1).format(TimeUtils.DEFAULT_DATE_FORMAT)
+    Mockito
+      .when(koutaService.getEnrichedHakukohde(HAKUKOHDE_OID))
+      .thenReturn(
+        Some(
+          HakukohdeEnriched(
+            oid = HAKUKOHDE_OID,
+            nimi = TranslatedName("", "", ""),
+            jarjestyspaikkaHierarkiaNimi = TranslatedName("", "", ""),
+            uudenOpiskelijanUrl = None,
+            koulutuksenAlkamiskausi = None,
+            koulutuksenAlkamisPvm = Some(aloitusAika),
+            yhdenPaikanSaanto = null
+          )
+        )
+      )
+
+    viestiService.lahetaVastaanottoViesti(
+      HAKUKOHDE_OID,
+      HAKEMUS_OID,
+      HAKU_OID,
+      "vastaanotto.vaihtoehdot.sitova",
+      VastaanotaSitovasti
+    )
+    val captor = ArgumentCaptor.forClass(classOf[fi.oph.viestinvalitys.vastaanotto.model.Viesti])
+    Mockito.verify(viestinvalitysClient).luoViesti(captor.capture())
+    val sentMessage    = captor.getValue
+    val sisalto        = sentMessage.getSisalto.get()
+    val vastaanottajat = sentMessage.getVastaanottajat
+    Assertions.assertEquals(1, vastaanottajat.get.size())
+    Assertions.assertEquals("ruhtinas.nukettaja@nuketown.fi", vastaanottajat.get.get(0).getSahkopostiOsoite.get())
+    Assertions.assertTrue(sisalto.contains("Hei Ruhtinas Nukettaja,"))
+    Assertions.assertTrue(sisalto.contains("21.4.2026 klo 12:30"))
+    Assertions.assertTrue(
+      sisalto
+        .contains(
+          "vastauksesi:<br /><br />Otan paikan vastaan sitovasti - Leikkipuisto, Liukumäki - Liukumäen lisensiaatti<br /><br />(Leikkipuiston jatkuva haku)"
+        )
+    )
+    Assertions.assertTrue(
+      sisalto.contains(
+        "Aiemmat opiskeluoikeutesi päättyvät<br /><br />Koska otit uuden opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:<br /><br /><ul><li>Valkoiset Lakanat Oy<br />Lakana Lisensiaatti<br />Peitto</li></ul>"
+      )
+    )
+    Assertions.assertTrue(
+      sisalto.contains(
+        s"Opiskeluoikeutesi päätetään $paattymisAika, ennen uuden opiskeluoikeutesti alkamista $aloittamisAika. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää."
       )
     )
     Assertions.assertTrue(sisalto.contains("Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti."))
