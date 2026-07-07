@@ -126,6 +126,22 @@ export function getVarallaOlevatYlemmatToiveet(
     .filter(isNonNullish);
 }
 
+export function getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia(
+  application: Hakemus,
+  hakutoive: Hakukohde,
+): Array<HakutoiveenTulos> {
+  const indexOfHakutoive = application.hakemuksenTulokset.findIndex(
+    (ht) => ht.hakukohdeOid === hakutoive.oid,
+  );
+  return application.hakemuksenTulokset
+    .slice(0, indexOfHakutoive)
+    .filter(
+      (ht) =>
+        ht.valintatila === Valintatila.VARALLA &&
+        ht.paatettavatOpiskeluOikeudet.length > 0,
+    );
+}
+
 export function getAlemmatVastaanotot(
   hakutoive: Hakukohde,
   application: Hakemus,
@@ -169,9 +185,11 @@ export function isVastaanotettu(vastaanottotila: string | undefined): boolean {
   );
 }
 
-export function naytetaankoPeruuntuvatOpiskelupaikat(tulos: HakutoiveenTulos): boolean {
+export function naytetaankoPeruuntuvatOpiskelupaikat(
+  tulos: HakutoiveenTulos,
+): boolean {
   return (
     vastaanotettavissa(tulos.vastaanotettavuustila) &&
     tulos.paatettavatOpiskeluOikeudet.length > 0
-  )
+  );
 }

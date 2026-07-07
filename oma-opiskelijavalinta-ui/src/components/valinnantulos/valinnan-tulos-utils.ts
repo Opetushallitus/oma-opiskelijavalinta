@@ -344,3 +344,11 @@ export function getSitovastiVastaanotettu(
     (ht) => ht.vastaanottotila == VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
   );
 }
+
+export function getEhdollisestiVastaanotettu(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+): HakutoiveenTulos | undefined {
+  return hakemuksenTulokset.find(
+    (ht) => ht.vastaanottotila == VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT,
+  );
+}

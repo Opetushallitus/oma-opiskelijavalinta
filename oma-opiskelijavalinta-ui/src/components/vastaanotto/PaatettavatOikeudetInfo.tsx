@@ -9,7 +9,7 @@ import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { isDefined, isNullish } from 'remeda';
+import { isDefined, isNonNullish, isNullish } from 'remeda';
 import { isDateInPast } from '@/lib/time-utils';
 import {
   DEFAULT_DATE_FORMAT,
@@ -17,8 +17,12 @@ import {
 } from '@/lib/localization/translation-utils';
 import type { Language } from '@/lib/localization/localization-types';
 import type { Hakemus } from '@/lib/hakemus-types';
-import { getSitovastiVastaanotettu } from '../valinnantulos/valinnan-tulos-utils';
+import {
+  getEhdollisestiVastaanotettu,
+  getSitovastiVastaanotettu,
+} from '../valinnantulos/valinnan-tulos-utils';
 import { subDays } from 'date-fns';
+import { getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia } from './vastaanotto-utils';
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -63,11 +67,13 @@ export function PaatettavatOikeudetInfo({
   hakutoive,
   showLink = true,
   kuvausSyyAvain = 'vastaanotto.yos.kuvaus',
+  varaSijojenOikeudetChild,
 }: {
   oikeudet: Array<PaatettavaOpiskeluOikeus>;
   hakutoive: Hakukohde;
   kuvausSyyAvain?: string;
   showLink?: boolean;
+  varaSijojenOikeudetChild?: React.ReactNode;
 }) {
   const { t } = useTranslations();
 
@@ -88,18 +94,87 @@ export function PaatettavatOikeudetInfo({
 
   return (
     <MultiInfoContainer>
-      <OphTypography variant="h5">{t('vastaanotto.yos.otsikko')}</OphTypography>
-      <OphTypography>{t(kuvausSyyAvain)}</OphTypography>
-      <BulletedList>
-        {oikeudet.map((oikeus) => (
-          <PaatettavaOikeusInfo
-            key={`paatettava-oikeus-${oikeus.organisaatioOid ?? oikeus.tunniste}`}
-            oikeus={oikeus}
-          />
-        ))}
-      </BulletedList>
+      {oikeudet.length > 0 && (
+        <>
+          <OphTypography variant="h5">
+            {t('vastaanotto.yos.otsikko')}
+          </OphTypography>
+          <OphTypography>{t(kuvausSyyAvain)}</OphTypography>
+          <BulletedList>
+            {oikeudet.map((oikeus) => (
+              <PaatettavaOikeusInfo
+                key={`paatettava-oikeus-${oikeus.organisaatioOid ?? oikeus.tunniste}`}
+                oikeus={oikeus}
+              />
+            ))}
+          </BulletedList>
+        </>
+      )}
+      {isDefined(varaSijojenOikeudetChild) && varaSijojenOikeudetChild}
       <OphTypography>{dateInfo}</OphTypography>
       {showLink && <PaatettavaOikeusInfoLink />}
+    </MultiInfoContainer>
+  );
+}
+
+type HakukohdePaatettavatOikeudet = {
+  orderNumber: number;
+  hakukohde?: Hakukohde;
+  oikeudet: Array<PaatettavaOpiskeluOikeus>;
+};
+
+export function VarasijoillaOlevatPaatettavatOikeudet({
+  hakemus,
+  varallaOlevat,
+}: {
+  hakemus: Hakemus;
+  varallaOlevat: Array<HakutoiveenTulos>;
+}) {
+  const { t, translateEntity } = useTranslations();
+
+  const hakukohdeOikeudetList: Array<HakukohdePaatettavatOikeudet> =
+    varallaOlevat.map((v) => {
+      const indexOfHakutoive = hakemus.hakemuksenTulokset.findIndex(
+        (ht) => ht.hakukohdeOid === v.hakukohdeOid,
+      );
+      const hakukohde = hakemus.hakukohteet?.at(indexOfHakutoive);
+      if (!hakukohde) {
+        console.warn(
+          `Ei löydetty ${indexOfHakutoive} hakutoivetta hakemuksen tiedoista!`,
+        );
+      }
+      return {
+        orderNumber: indexOfHakutoive + 1,
+        hakukohde,
+        oikeudet: v.paatettavatOpiskeluOikeudet,
+      };
+    });
+
+  return (
+    <MultiInfoContainer>
+      <OphTypography variant="h5">
+        {t('vastaanotto.yos.varasijat.otsikko')}
+      </OphTypography>
+      {hakukohdeOikeudetList.map((ho) => (
+        <MultiInfoContainer
+          key={`hakutoiveen-varalla-olevien-oikeudet-${ho.orderNumber}`}
+        >
+          {isDefined(ho.hakukohde) && (
+            <OphTypography sx={{ fontWeight: 'bolder' }}>
+              {`${t('hakutoive.hakutoive-numerolla', { nro: ho.orderNumber })} ${translateEntity(ho.hakukohde.jarjestyspaikkaHierarkiaNimi)}. ${translateEntity(ho.hakukohde.nimi)}`}
+            </OphTypography>
+          )}
+          <OphTypography>{t('vastaanotto.yos.varasijat.kuvaus')}</OphTypography>
+          <BulletedList>
+            {ho.oikeudet.map((oikeus) => (
+              <PaatettavaOikeusInfo
+                key={`paatettava-oikeus-varasija-${oikeus.organisaatioOid ?? oikeus.tunniste}`}
+                oikeus={oikeus}
+              />
+            ))}
+          </BulletedList>
+        </MultiInfoContainer>
+      ))}
     </MultiInfoContainer>
   );
 }
@@ -111,10 +186,24 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
   hakemus: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
 }) {
-  const vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
+  let vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
+  const sitovastiVastaanotettu = isNonNullish(vastaanotettuTulos);
+
+  if (isNullish(vastaanotettuTulos)) {
+    vastaanotettuTulos = getEhdollisestiVastaanotettu(tulokset);
+  }
+
   const hakutoive = hakemus.hakukohteet?.find(
     (ht) => ht.oid === vastaanotettuTulos?.hakukohdeOid,
   );
+
+  const varallaOlevat =
+    !sitovastiVastaanotettu && isNonNullish(hakutoive)
+      ? getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia(
+          hakemus,
+          hakutoive,
+        )
+      : [];
 
   const kuvausSyyAvain = vastaanotettuTulos?.ehdollisestiHyvaksyttavissa
     ? 'vastaanotto.yos.kuvaus-vastaanotettu-ehdollinen'
@@ -122,11 +211,22 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
 
   return isDefined(vastaanotettuTulos) &&
     isDefined(hakutoive) &&
-    vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet.length > 0 ? (
-    <PaatettavatOikeudetInfo
-      oikeudet={vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet}
-      hakutoive={hakutoive}
-      kuvausSyyAvain={kuvausSyyAvain}
-    />
+    (vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet.length > 0 ||
+      varallaOlevat.length > 0) ? (
+    <MultiInfoContainer>
+      <PaatettavatOikeudetInfo
+        oikeudet={vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet}
+        hakutoive={hakutoive}
+        kuvausSyyAvain={kuvausSyyAvain}
+        varaSijojenOikeudetChild={
+          varallaOlevat.length > 0 ? (
+            <VarasijoillaOlevatPaatettavatOikeudet
+              hakemus={hakemus}
+              varallaOlevat={varallaOlevat}
+            />
+          ) : null
+        }
+      />
+    </MultiInfoContainer>
   ) : null;
 }
