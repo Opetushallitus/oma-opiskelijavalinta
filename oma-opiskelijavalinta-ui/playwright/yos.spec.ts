@@ -18,10 +18,12 @@ import {
 import type { HakemusResponse } from '@/lib/hakemus-service';
 import { addDays, format } from 'date-fns';
 import { KOUTA_DATE_FORMAT, toFinnishDate } from '@/lib/time-utils';
-import type {
-  HakutoiveenTulosDto,
-  PaatettavaOpiskeluOikeus,
+import {
+  type HakutoiveenTulosDto,
+  type PaatettavaOpiskeluOikeus,
 } from '@/lib/valinta-tulos-types';
+
+/*eslint-disable @typescript-eslint/no-non-null-assertion */
 
 const PAATETTAVAT_OPISKELUOIKEUDET: Array<PaatettavaOpiskeluOikeus> = [
   {
@@ -39,6 +41,29 @@ const PAATETTAVAT_OPISKELUOIKEUDET: Array<PaatettavaOpiskeluOikeus> = [
     virtaNimi: { fi: 'Poraaja', sv: '', en: '' },
   },
 ] as const;
+
+const PAATETTAVAT_OPISKELUOIKEUDET_VARASIJALLA: Array<PaatettavaOpiskeluOikeus> =
+  [
+    {
+      tunniste: 'tunniste-3',
+      organisaatioOid: '',
+      organisaatioNimi: {
+        fi: 'Hervannan Purkanpurijoiden AMK',
+        sv: '',
+        en: '',
+      },
+      supaNimi: { fi: 'Hammashygienisti', sv: '', en: '' },
+      virtaNimi: { fi: '', sv: '', en: '' },
+    },
+    PAATETTAVAT_OPISKELUOIKEUDET[0]!,
+    {
+      tunniste: 'tunniste-4',
+      organisaatioOid: '',
+      organisaatioNimi: { fi: 'Rotamon rotevat rotat', sv: '', en: '' },
+      supaNimi: { fi: 'Eläinlääketieteen lisensiaatti', sv: '', en: '' },
+      virtaNimi: { fi: '', sv: '', en: '' },
+    },
+  ];
 
 test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
   page,
@@ -102,7 +127,6 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
 test('Näyttää päättyvät opiskeluoikeudet kun jonotetaan ylempää', async ({
   page,
 }) => {
-  /*eslint-disable @typescript-eslint/no-non-null-assertion */
   const tulokset: Array<HakutoiveenTulosDto> = [
     hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty[0]!,
     {
@@ -291,6 +315,55 @@ test('Lähettää ehdollisen vastaanoton päätettävillä opintooikeuksilla onn
   ).toBeVisible();
   await expect(
     vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
+});
+
+test('Varasijoilla olevat päätettävät opiskeluoikeudet näytetään', async ({
+  page,
+}) => {
+  const tulokset = hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty;
+  tulokset[0]!.paatettavatOpiskeluOikeudet =
+    PAATETTAVAT_OPISKELUOIKEUDET_VARASIJALLA;
+  tulokset[1]!.paatettavatOpiskeluOikeudet = PAATETTAVAT_OPISKELUOIKEUDET;
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset: tulokset,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByText('Valkoiset Lakanat Oy').first(),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Lakana Lisensiaatti').first(),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Lakana', { exact: true }).first(),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(vastaanotot.getByText('Poraaja', { exact: true })).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Varasijoihin liittyvät pää' }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Hakutoive 1: Hurrikaaniopisto'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Hervannan Purkanpurijoiden AMK'),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Hammashygienisti')).toBeVisible();
+  await expect(vastaanotot.getByText('Rotamon rotevat rotat')).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Eläinlääketieteen lisensiaatti'),
   ).toBeVisible();
 });
 

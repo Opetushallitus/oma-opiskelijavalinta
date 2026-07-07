@@ -9,7 +9,7 @@ import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { isDefined, isNonNullish, isNullish } from 'remeda';
+import { isDefined, isNullish } from 'remeda';
 import { isDateInPast } from '@/lib/time-utils';
 import {
   DEFAULT_DATE_FORMAT,
@@ -17,12 +17,8 @@ import {
 } from '@/lib/localization/translation-utils';
 import type { Language } from '@/lib/localization/localization-types';
 import type { Hakemus } from '@/lib/hakemus-types';
-import {
-  getEhdollisestiVastaanotettu,
-  getSitovastiVastaanotettu,
-} from '../valinnantulos/valinnan-tulos-utils';
+import { getSitovastiVastaanotettu } from '../valinnantulos/valinnan-tulos-utils';
 import { subDays } from 'date-fns';
-import { getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia } from './vastaanotto-utils';
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -186,24 +182,11 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
   hakemus: Hakemus;
   tulokset: Array<HakutoiveenTulos>;
 }) {
-  let vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
-  const sitovastiVastaanotettu = isNonNullish(vastaanotettuTulos);
-
-  if (isNullish(vastaanotettuTulos)) {
-    vastaanotettuTulos = getEhdollisestiVastaanotettu(tulokset);
-  }
+  const vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
 
   const hakutoive = hakemus.hakukohteet?.find(
     (ht) => ht.oid === vastaanotettuTulos?.hakukohdeOid,
   );
-
-  const varallaOlevat =
-    !sitovastiVastaanotettu && isNonNullish(hakutoive)
-      ? getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia(
-          hakemus,
-          hakutoive,
-        )
-      : [];
 
   const kuvausSyyAvain = vastaanotettuTulos?.ehdollisestiHyvaksyttavissa
     ? 'vastaanotto.yos.kuvaus-vastaanotettu-ehdollinen'
@@ -211,21 +194,12 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
 
   return isDefined(vastaanotettuTulos) &&
     isDefined(hakutoive) &&
-    (vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet.length > 0 ||
-      varallaOlevat.length > 0) ? (
+    vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet.length > 0 ? (
     <MultiInfoContainer>
       <PaatettavatOikeudetInfo
         oikeudet={vastaanotettuTulos.naytetytPaatettavatOpiskeluoikeudet}
         hakutoive={hakutoive}
         kuvausSyyAvain={kuvausSyyAvain}
-        varaSijojenOikeudetChild={
-          varallaOlevat.length > 0 ? (
-            <VarasijoillaOlevatPaatettavatOikeudet
-              hakemus={hakemus}
-              varallaOlevat={varallaOlevat}
-            />
-          ) : null
-        }
       />
     </MultiInfoContainer>
   ) : null;

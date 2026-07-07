@@ -19,6 +19,7 @@ import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import {
   getAlemmatVastaanotot,
+  getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia,
   naytetaankoPeruuntuvatOpiskelupaikat,
 } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
@@ -27,8 +28,12 @@ import {
   getVarallaOlevatMuutToiveet,
   naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { PaatettavatOikeudetInfo } from './PaatettavatOikeudetInfo';
+import {
+  PaatettavatOikeudetInfo,
+  VarasijoillaOlevatPaatettavatOikeudet,
+} from './PaatettavatOikeudetInfo';
 import type { Hakukohde } from '@/lib/kouta-types';
+import { isNonNullish } from 'remeda';
 
 export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -107,6 +112,14 @@ const getInfoText = (
   const muitaHakutoiveitaVaralla =
     getVarallaOlevatMuutToiveet(hakemus, tulos.hakukohdeOid).length > 0;
 
+  const varallaOlevatPaatettavat =
+    muitaHakutoiveitaVaralla && isNonNullish(hakutoive)
+      ? getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia(
+          hakemus,
+          hakutoive,
+        )
+      : [];
+
   if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
     return (
       <MultiInfoContainer>
@@ -116,6 +129,14 @@ const getInfoText = (
           <PaatettavatOikeudetInfo
             oikeudet={tulos.paatettavatOpiskeluOikeudet}
             hakutoive={hakutoive}
+            varaSijojenOikeudetChild={
+              varallaOlevatPaatettavat.length > 0 ? (
+                <VarasijoillaOlevatPaatettavatOikeudet
+                  hakemus={hakemus}
+                  varallaOlevat={varallaOlevatPaatettavat}
+                />
+              ) : null
+            }
           />
         )}
       </MultiInfoContainer>
@@ -172,6 +193,14 @@ const getInfoText = (
           <PaatettavatOikeudetInfo
             oikeudet={tulos.paatettavatOpiskeluOikeudet}
             hakutoive={hakutoive}
+            varaSijojenOikeudetChild={
+              varallaOlevatPaatettavat.length > 0 ? (
+                <VarasijoillaOlevatPaatettavatOikeudet
+                  hakemus={hakemus}
+                  varallaOlevat={varallaOlevatPaatettavat}
+                />
+              ) : null
+            }
           />
         )}
       </MultiInfoContainer>
