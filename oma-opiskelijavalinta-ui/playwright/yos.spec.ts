@@ -367,6 +367,147 @@ test('Varasijoilla olevat päätettävät opiskeluoikeudet näytetään', async 
   ).toBeVisible();
 });
 
+test('Lähettää ehdollisen vastaanoton päätettävillä opintooikeuksilla onnistuneesti joilla on varasijoja', async ({
+  page,
+}) => {
+  const tulokset =
+    hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa;
+  tulokset[0]!.paatettavatOpiskeluOikeudet =
+    PAATETTAVAT_OPISKELUOIKEUDET_VARASIJALLA;
+  tulokset[1]!.paatettavatOpiskeluOikeudet = PAATETTAVAT_OPISKELUOIKEUDET;
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset: tulokset,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByText('Valkoiset Lakanat Oy').first(),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Lakana Lisensiaatti').first(),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Lakana', { exact: true }).first(),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(vastaanotot.getByText('Poraaja', { exact: true })).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Varasijoihin liittyvät pää' }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Hakutoive 1: Hurrikaaniopisto'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Hervannan Purkanpurijoiden AMK'),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Hammashygienisti')).toBeVisible();
+  await expect(vastaanotot.getByText('Rotamon rotevat rotat')).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Eläinlääketieteen lisensiaatti'),
+  ).toBeVisible();
+
+  await vastaanotot
+    .getByRole('radio', {
+      name: 'Otan tämän opiskelupaikan vastaan sitovasti',
+    })
+    .click();
+
+  const sendButton = vastaanotot.getByRole('button', {
+    name: 'Lähetä vastaus',
+  });
+  await sendButton.click();
+  await page.route(
+    '**/api/vastaanotto/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+      });
+    },
+  );
+  const tuloksetResponse =
+    hakemuksenTuloksiaYlempiVarallaAlempiVastaanotettuEhdollinen;
+  tuloksetResponse[1]!.naytetytPaatettavatOpiskeluoikeudet =
+    PAATETTAVAT_OPISKELUOIKEUDET;
+
+  await page.route(
+    '**/api/valintatulos/hakemus/hakemus-oid-1/**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tuloksetResponse),
+      });
+    },
+  );
+
+  await page
+    .getByRole('button', { name: 'Ota opiskelupaikka vastaan' })
+    .click();
+  //ilmoitus näkyy ja suljetaan se
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Sulje' }).click();
+  await expect(
+    page.getByText('Opiskelupaikka vastaanotettu onnistuneesti'),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }),
+  ).toBeHidden();
+
+  await expect(
+    vastaanotot.getByText(
+      'Huomioithan, että opiskelijavalintasi on ehdollinen',
+    ),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Poral')).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Seuraavat opiskeluoikeudet päättyvät kun olet toiminut',
+    ),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Varasijoihin liittyvät pää' }),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Hakutoive 1: Hurrikaaniopisto'),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Hervannan Purkanpurijoiden AMK'),
+  ).toBeHidden();
+  await expect(vastaanotot.getByText('Hammashygienisti')).toBeHidden();
+  await expect(vastaanotot.getByText('Rotamon rotevat rotat')).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Eläinlääketieteen lisensiaatti'),
+  ).toBeHidden();
+});
+
 async function setup(page: Page, overridableApplication?: HakemusResponse) {
   const hyvaksyttyApplication = overridableApplication ?? {
     ...hakemus2,
