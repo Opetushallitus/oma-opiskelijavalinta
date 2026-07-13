@@ -367,6 +367,52 @@ test('Varasijoilla olevat päätettävät opiskeluoikeudet näytetään', async 
   ).toBeVisible();
 });
 
+test('Varasijoilla olevat päätettävät opiskeluoikeudet näytetään vaikka vastaanotettavalla ei niitä olisikaan', async ({
+  page,
+}) => {
+  const tulokset = hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty;
+  tulokset[0]!.paatettavatOpiskeluOikeudet =
+    PAATETTAVAT_OPISKELUOIKEUDET_VARASIJALLA;
+  await setup(page, {
+    ...hakemus1,
+    hakemuksenTulokset: tulokset,
+  });
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeHidden();
+
+  await expect(vastaanotot.getByText('Poral')).toBeHidden();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeHidden();
+  await expect(vastaanotot.getByText('Poraaja', { exact: true })).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
+  ).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Varasijoihin liittyvät pää' }),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Hakutoive 1: Hurrikaaniopisto'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Hervannan Purkanpurijoiden AMK'),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Hammashygienisti')).toBeVisible();
+  await expect(vastaanotot.getByText('Rotamon rotevat rotat')).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Eläinlääketieteen lisensiaatti'),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Valkoiset Lakanat Oy')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana Lisensiaatti')).toBeVisible();
+  await expect(vastaanotot.getByText('Lakana', { exact: true })).toBeVisible();
+
+  await expect(
+    vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
+});
+
 test('Lähettää ehdollisen vastaanoton päätettävillä opintooikeuksilla onnistuneesti joilla on varasijoja', async ({
   page,
 }) => {

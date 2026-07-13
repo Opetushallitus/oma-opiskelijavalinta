@@ -56,6 +56,28 @@ export const getEhdollisestiVastaanottanutInfo = (
   );
 };
 
+function paatettavatInfo(
+  tulos: HakutoiveenTulos,
+  hakutoive: Hakukohde,
+  varallaOlevatPaatettavat: Array<HakutoiveenTulos>,
+  hakemus: Hakemus,
+): React.ReactNode {
+  return (
+    <PaatettavatOikeudetInfo
+      oikeudet={tulos.paatettavatOpiskeluOikeudet}
+      hakutoive={hakutoive}
+      varaSijojenOikeudetChild={
+        varallaOlevatPaatettavat.length > 0 ? (
+          <VarasijoillaOlevatPaatettavatOikeudet
+            hakemus={hakemus}
+            varallaOlevat={varallaOlevatPaatettavat}
+          />
+        ) : null
+      }
+    />
+  );
+}
+
 export const getVastaanottoPaattyyInfo = (
   vastaanottoPaattyy: string,
   kkHaku: boolean,
@@ -125,20 +147,9 @@ const getInfoText = (
       <MultiInfoContainer>
         {getEhdollisestiVastaanottanutInfo(hakemus, lang)}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
-        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
-          <PaatettavatOikeudetInfo
-            oikeudet={tulos.paatettavatOpiskeluOikeudet}
-            hakutoive={hakutoive}
-            varaSijojenOikeudetChild={
-              varallaOlevatPaatettavat.length > 0 ? (
-                <VarasijoillaOlevatPaatettavatOikeudet
-                  hakemus={hakemus}
-                  varallaOlevat={varallaOlevatPaatettavat}
-                />
-              ) : null
-            }
-          />
-        )}
+        {(naytetaankoPeruuntuvatOpiskelupaikat(tulos) ||
+          varallaOlevatPaatettavat.length > 0) &&
+          paatettavatInfo(tulos, hakutoive, varallaOlevatPaatettavat, hakemus)}
       </MultiInfoContainer>
     );
   } else {
@@ -189,20 +200,9 @@ const getInfoText = (
           />
         )}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
-        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
-          <PaatettavatOikeudetInfo
-            oikeudet={tulos.paatettavatOpiskeluOikeudet}
-            hakutoive={hakutoive}
-            varaSijojenOikeudetChild={
-              varallaOlevatPaatettavat.length > 0 ? (
-                <VarasijoillaOlevatPaatettavatOikeudet
-                  hakemus={hakemus}
-                  varallaOlevat={varallaOlevatPaatettavat}
-                />
-              ) : null
-            }
-          />
-        )}
+        {(naytetaankoPeruuntuvatOpiskelupaikat(tulos) ||
+          varallaOlevatPaatettavat.length > 0) &&
+          paatettavatInfo(tulos, hakutoive, varallaOlevatPaatettavat, hakemus)}
       </MultiInfoContainer>
     );
   }

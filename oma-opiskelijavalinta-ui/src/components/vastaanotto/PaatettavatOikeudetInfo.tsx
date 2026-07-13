@@ -9,7 +9,7 @@ import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { isDefined, isNullish } from 'remeda';
+import { isDefined, isNonNull, isNullish } from 'remeda';
 import { isDateInPast } from '@/lib/time-utils';
 import {
   DEFAULT_DATE_FORMAT,
@@ -129,22 +129,26 @@ export function VarasijoillaOlevatPaatettavatOikeudet({
   const { t, translateEntity } = useTranslations();
 
   const hakukohdeOikeudetList: Array<HakukohdePaatettavatOikeudet> =
-    varallaOlevat.map((v) => {
-      const indexOfHakutoive = hakemus.hakemuksenTulokset.findIndex(
-        (ht) => ht.hakukohdeOid === v.hakukohdeOid,
-      );
-      const hakukohde = hakemus.hakukohteet?.at(indexOfHakutoive);
-      if (!hakukohde) {
-        console.warn(
-          `Ei löydetty ${indexOfHakutoive} hakutoivetta hakemuksen tiedoista!`,
+    varallaOlevat
+      .map((v) => {
+        const indexOfHakutoive = hakemus.hakukohteet?.findIndex(
+          (ht) => ht.oid === v.hakukohdeOid,
         );
-      }
-      return {
-        orderNumber: indexOfHakutoive + 1,
-        hakukohde,
-        oikeudet: v.paatettavatOpiskeluOikeudet,
-      };
-    });
+        if (isNullish(indexOfHakutoive) || indexOfHakutoive < 0) {
+          console.warn(
+            `Ei löydetty ${indexOfHakutoive} hakutoivetta hakemuksen tiedoista!`,
+          );
+          return null;
+        } else {
+          const hakukohde = hakemus.hakukohteet?.at(indexOfHakutoive);
+          return {
+            orderNumber: indexOfHakutoive + 1,
+            hakukohde,
+            oikeudet: v.paatettavatOpiskeluOikeudet,
+          };
+        }
+      })
+      .filter(isNonNull);
 
   return (
     <MultiInfoContainer>
