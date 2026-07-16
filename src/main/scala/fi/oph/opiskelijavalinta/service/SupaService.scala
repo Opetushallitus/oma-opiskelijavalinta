@@ -48,20 +48,20 @@ class SupaService @Autowired (
         LOG.error(
           s"Virhe päättyvien opiskeluoikeuksien hakemisessa, hakijaOid=$hakijaOid, hakuOid=$hakuOid, hakukohdeOid=$hakukohdeOid: ${e.getMessage}"
         )
-        List.empty
+        throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa", e)
       case Right(o) =>
         try {
           val raw = mapper.readValue(o, classOf[PaatettavatOpiskeluOikeudetResponse])
           raw match {
             case PaatettavatOpiskeluOikeudetResponse(_, Some(virhe), Some(viesti)) =>
-              handleYosVirhe(virhe, viesti)
-              List.empty
+              logYosVirhe(virhe, viesti)
+              throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
             case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
               saveOpiskeluOikeudetToSession(hakukohdeOid, raw)
               paatettavatOpiskeluOikeudet
             case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
               LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
-              List.empty
+              throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
           }
         } catch {
           case e: Exception =>
@@ -69,7 +69,7 @@ class SupaService @Autowired (
               "Päättyvien opiskeluoikeuksien deserialisointi epäonnistui hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid",
               e
             )
-            List.empty
+            throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
         }
     }
   }
@@ -91,8 +91,7 @@ class SupaService @Autowired (
     }
   }
 
-  private def handleYosVirhe(virhe: YosVirhe, viesti: String): Unit = {
-    // TODO: OPHYOS-170, mihin tämän virheen pitäisi vaikuttaa? Näytetäänkö käyttäjälle?
+  private def logYosVirhe(virhe: YosVirhe, viesti: String): Unit = {
     virhe match {
       case YosVirhe.VIRHE_HAKUTOIVEEN_PAATTELYSSA =>
         LOG.error(s"Virhe tapahtunut päätellessä kuuluuko hakutoive YOS piiriin, virhe $virhe, viesti $viesti")
@@ -100,7 +99,6 @@ class SupaService @Autowired (
         LOG.error(s"Virhe tapahtunut hakiessa päätettäviä opiskeluoikeuksia, virhe $virhe, viesti $viesti")
       case _ =>
         LOG.error(s"Virhe tapahtunut rajapinta kutsussa, virhe $virhe, viesti $viesti")
-      // TODO OPHYOS-170: pitäisikö tässä lentää poikkeus?
     }
   }
 

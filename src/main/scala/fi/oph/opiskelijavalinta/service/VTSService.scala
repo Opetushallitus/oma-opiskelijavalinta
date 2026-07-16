@@ -89,11 +89,18 @@ class VTSService @Autowired (
         }
       }
 
-    val opiskeluOikeudetJotkaVastaanottoPaattaa =
-      (vastaanotettavissa(tulos) || varasijalla(tulos), tulos.hakukohdeOid) match {
+    var yosCheckFailed                                                          = false
+    var opiskeluOikeudetJotkaVastaanottoPaattaa: List[PaatettavaOpiskeluOikeus] = List.empty
+    try {
+      opiskeluOikeudetJotkaVastaanottoPaattaa = (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
         case (true, Some(hakukohdeOid)) => supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
         case (_, _)                     => List.empty
       }
+    } catch {
+      case e: Exception =>
+        LOG.error(s"Päätettävien opiskeluoikeuksien haku epäonnistui: ${e.getMessage}", e)
+        yosCheckFailed = true
+    }
 
     HakutoiveenTulosEnriched(
       hakukohdeOid = tulos.hakukohdeOid,
@@ -119,7 +126,8 @@ class VTSService @Autowired (
       kelaURL = tulos.kelaURL,
       migriURL = if (tulos.showMigriURL.getOrElse(false)) Some(migriUrl) else None,
       paatettavatOpiskeluOikeudet = opiskeluOikeudetJotkaVastaanottoPaattaa,
-      naytetytPaatettavatOpiskeluoikeudet = tulos.naytetytPaatettavatOpiskeluoikeudet
+      naytetytPaatettavatOpiskeluoikeudet = tulos.naytetytPaatettavatOpiskeluoikeudet,
+      yosEnrichmentFailed = yosCheckFailed
     )
   }
 

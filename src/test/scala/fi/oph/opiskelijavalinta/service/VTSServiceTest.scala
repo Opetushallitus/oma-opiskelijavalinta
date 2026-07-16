@@ -180,6 +180,32 @@ class VTSServiceTest {
     val oikeus = tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.head
     Assertions.assertEquals("NukeTehdas", oikeus.organisaatioNimi.fi)
     Assertions.assertEquals("Räjäyttäjä", oikeus.supaNimi.fi)
+    Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosEnrichmentFailed)
   }
 
+  @Test
+  def palauttaaTiedonJosPaatettavienOpiskeluoikeuksienHakuEpaonnistui(): Unit = {
+    Mockito
+      .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            ehdollinenTulos.copy(hakutoiveet =
+              List(
+                hakutoiveEhdollisestiHyvaksytty.copy(
+                  hakukohdeOid = Some(HAKUKOHDE_OID),
+                  ehdollisestiHyvaksyttavissa = Some(false)
+                )
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(mockSupaService.haePaattyvatOpiskeluOikeudet(HAKIJA_OID, HAKU_OID, HAKUKOHDE_OID))
+      .thenThrow(RuntimeException())
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
+    Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
+    Assertions.assertEquals(true, tulos.get.hakutoiveet.head.yosEnrichmentFailed)
+  }
 }
