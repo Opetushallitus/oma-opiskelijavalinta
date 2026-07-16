@@ -32,6 +32,14 @@ export const VASTAANOTETTU_TILAT = [
   VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
 ];
 
+export type PaatettavaOpiskeluOikeus = {
+  tunniste: string;
+  organisaatioOid: string;
+  organisaatioNimi: TranslatedName;
+  supaNimi: TranslatedName;
+  virtaNimi: TranslatedName;
+};
+
 export type HakutoiveenTulosDto = {
   hakukohdeOid: string;
   julkaistavissa: boolean;
@@ -49,6 +57,8 @@ export type HakutoiveenTulosDto = {
   kelaURL: string | null;
   showMigriURL?: boolean | null;
   migriURL?: string | null;
+  paatettavatOpiskeluOikeudet: Array<PaatettavaOpiskeluOikeus>;
+  naytetytPaatettavatOpiskeluoikeudet: Array<PaatettavaOpiskeluOikeus>;
 };
 
 export type JonokohtainenTulostietoDto = {

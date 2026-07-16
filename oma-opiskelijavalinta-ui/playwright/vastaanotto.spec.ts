@@ -61,6 +61,9 @@ test('Näyttää priorisoidussa kk-haun vastaanottovaihtoehdossa sitovasti-tekst
   ).toBeVisible();
   await expect(vastaanotot.getByText('Hyväksytty')).toBeVisible();
   await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeHidden();
+  await expect(
     vastaanotot.getByText('Otan tämän opiskelupaikan vastaan sitovasti'),
   ).toBeVisible();
 });
@@ -218,6 +221,7 @@ test('Ei näytä yhden paikan sääntö -infoa vahvistusdialogissa jos yps ei ol
         },
         yhdenPaikanSaanto: { voimassa: false },
         uudenOpiskelijanUrl: null,
+        koulutuksenAlkamisPvm: null,
       },
     ],
   });
@@ -499,11 +503,18 @@ test('Lähettää ehdollisen vastaanoton onnistuneesti', async ({ page }) => {
       hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
   });
   const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+  await expect(
+    vastaanotot.getByText('Ehdollinen opiskelijavalinta'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByText('Todistus suorituksesta X pit'),
+  ).toBeVisible();
   await vastaanotot
     .getByRole('radio', {
       name: 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan',
     })
     .click();
+
   const sendButton = vastaanotot.getByRole('button', {
     name: 'Lähetä vastaus',
   });

@@ -1,6 +1,5 @@
 package fi.oph.opiskelijavalinta.service
 
-import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -9,32 +8,23 @@ import fi.oph.opiskelijavalinta.clients.LokalisointiClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import fi.oph.opiskelijavalinta.model.TranslatedName
 import fi.oph.opiskelijavalinta.util.TranslationUtil.translateName
+import fi.oph.opiskelijavalinta.util.TimeUtils
 import fi.oph.opiskelijavalinta.util.SupportedLanguage
-import fi.oph.opiskelijavalinta.util.SupportedLanguage.{en, fi, sv}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, ZoneId, ZonedDateTime}
-import java.util.Locale
+import java.time.{LocalDate, LocalDateTime}
 
 @Service
-class LokalisointiService @Autowired (
+class CachedLokalisointiService @Autowired (
   lokalisointiClient: LokalisointiClient,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
 
-  val zone: ZoneId                                = ZoneId.of("Europe/Helsinki")
-  val DEFAULT_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'klo' HH:mm").withZone(zone)
-  val SWEDISH_DATE_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.yyyy 'kl.' HH:mm").withZone(zone)
-  val ENGLISH_DATE_TIME_FORMAT: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MMM. d, yyyy 'at' HH:mm a z").withLocale(Locale.US).withZone(zone)
-  val LANGUAGE_FORMATTER_MAP: Map[SupportedLanguage, DateTimeFormatter] =
-    Map(fi -> DEFAULT_DATE_TIME_FORMAT, sv -> SWEDISH_DATE_TIME_FORMAT, en -> ENGLISH_DATE_TIME_FORMAT)
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[CachedLokalisointiService])
 
-  private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiService])
   mapper.registerModule(DefaultScalaModule)
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
@@ -50,13 +40,23 @@ class LokalisointiService @Autowired (
       case Right(o) => Some(JsonParser.parseString(o).getAsJsonObject)
     }
   }
+}
+
+@Service
+class LokalisointiService @Autowired (
+  cachedService: CachedLokalisointiService
+) {
+
+  private val LOG: Logger = LoggerFactory.getLogger(classOf[LokalisointiService])
 
   def getTranslation(lang: SupportedLanguage, key: String): String = {
     try {
-      getTranslations(lang).fold {
-        LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
-        key
-      }(json => json.get(key).getAsString)
+      cachedService
+        .getTranslations(lang)
+        .fold {
+          LOG.warn(s"Käännöstiedostoa ei saanut ladattua kielelle $lang. Palautetaan käännösavain.")
+          key
+        }(json => json.get(key).getAsString)
     } catch {
       case e: Throwable =>
         LOG.warn(s"Käännösavaimelle $key ei löytynyt käännöstä kielelle $lang. Palautetaan käännösavain")
@@ -72,8 +72,8 @@ class LokalisointiService @Autowired (
 
   def translateObject(obj: Object, lang: SupportedLanguage): String = {
     obj match
-      case ld: LocalDate                  => ld.format(LANGUAGE_FORMATTER_MAP(lang))
-      case ldt: LocalDateTime             => ldt.format(LANGUAGE_FORMATTER_MAP(lang))
+      case ld: LocalDate                  => ld.format(TimeUtils.DEFAULT_DATE_FORMAT)
+      case ldt: LocalDateTime             => ldt.format(TimeUtils.LANGUAGE_FORMATTER_MAP(lang))
       case translatedName: TranslatedName => translateName(translatedName, lang)
       case o                              => o.toString
   }

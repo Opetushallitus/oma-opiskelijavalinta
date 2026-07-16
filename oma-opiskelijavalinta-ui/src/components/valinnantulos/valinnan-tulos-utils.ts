@@ -2,6 +2,7 @@ import {
   type HakutoiveenTulos,
   type JonokohtainenTulostieto,
   Valintatila,
+  VastaanottoTila,
 } from '@/lib/valinta-tulos-types';
 import { type BadgeColor, BadgeColorKey } from '@/components/StatusBadgeChip';
 import {
@@ -333,5 +334,21 @@ export function kaikkiHakutoiveetHylatty(
     hakemuksenTulokset.filter(
       (ht) => ht.valintatila && ht.valintatila === Valintatila.HYLATTY,
     ).length === hakemuksenTulokset.length
+  );
+}
+
+export function getSitovastiVastaanotettu(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+): HakutoiveenTulos | undefined {
+  return hakemuksenTulokset.find(
+    (ht) => ht.vastaanottotila == VastaanottoTila.VASTAANOTTANUT_SITOVASTI,
+  );
+}
+
+export function getEhdollisestiVastaanotettu(
+  hakemuksenTulokset: Array<HakutoiveenTulos>,
+): HakutoiveenTulos | undefined {
+  return hakemuksenTulokset.find(
+    (ht) => ht.vastaanottotila == VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT,
   );
 }

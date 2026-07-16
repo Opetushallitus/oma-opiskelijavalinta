@@ -16,4 +16,5 @@ export type Hakukohde = {
   uudenOpiskelijanUrl: TranslatedName | null;
   yhdenPaikanSaanto: { voimassa: boolean };
   koulutuksenAlkamiskausi?: 'kausi_k' | 'kausi_s' | null;
+  koulutuksenAlkamisPvm: string | null;
 };

@@ -5,6 +5,7 @@ import {
   VASTAANOTETTU_TILAT,
   VastaanottoTila,
   VastaanottoTilaToiminto,
+  type HakutoiveenTulos,
 } from '@/lib/valinta-tulos-types';
 import { isDefined, isNonNullish } from 'remeda';
 
@@ -125,6 +126,22 @@ export function getVarallaOlevatYlemmatToiveet(
     .filter(isNonNullish);
 }
 
+export function getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia(
+  application: Hakemus,
+  hakutoive: Hakukohde,
+): Array<HakutoiveenTulos> {
+  const indexOfHakutoive = application.hakemuksenTulokset.findIndex(
+    (ht) => ht.hakukohdeOid === hakutoive.oid,
+  );
+  return application.hakemuksenTulokset
+    .slice(0, indexOfHakutoive)
+    .filter(
+      (ht) =>
+        ht.valintatila === Valintatila.VARALLA &&
+        ht.paatettavatOpiskeluOikeudet.length > 0,
+    );
+}
+
 export function getAlemmatVastaanotot(
   hakutoive: Hakukohde,
   application: Hakemus,
@@ -165,5 +182,14 @@ export function isVastaanotettu(vastaanottotila: string | undefined): boolean {
   return (
     isNonNullish(vastaanottotila) &&
     VASTAANOTETTU_TILAT.includes(vastaanottotila as VastaanottoTila)
+  );
+}
+
+export function naytetaankoPeruuntuvatOpiskelupaikat(
+  tulos: HakutoiveenTulos,
+): boolean {
+  return (
+    vastaanotettavissa(tulos.vastaanotettavuustila) &&
+    tulos.paatettavatOpiskeluOikeudet.length > 0
   );
 }

@@ -24,7 +24,13 @@ import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
   paattynytHakukierrosMock
 }
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
-import fi.oph.opiskelijavalinta.model.{HakemuksetEnriched, Hakemus, HakemusEnriched, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{
+  HakemuksetEnriched,
+  Hakemus,
+  HakemusEnriched,
+  PaatettavatOpiskeluOikeudetResponse,
+  TranslatedName
+}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -33,6 +39,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class HakemuksetIntegrationTest extends BaseIntegrationTest {
+
+  @BeforeEach
+  def init(): Unit = {
+    Mockito.reset(koutaClient, valintaTulosServiceClient, ohjausparametritService)
+    Mockito
+      .when(koutaClient.getHaku(HAKU_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
+    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock)
+  }
 
   @Test
   def get401ResponseFromUnauthenticatedUser(): Unit = {
@@ -46,18 +67,10 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsApplicationsOfUser(): Unit = {
-    Mockito.reset(valintaTulosServiceClient)
     Mockito
       .when(koutaClient.getHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(hakuaikaPaattynytHaku)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
 
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock)
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -79,7 +92,6 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsNoApplicationsForUserWhoHasNoPersonOid(): Unit = {
-    Mockito.reset(valintaTulosServiceClient)
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -135,16 +147,6 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
           )
         )
       )
-    Mockito
-      .when(koutaClient.getHaku(HAKU_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    Mockito.when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID)).thenReturn(paattynytHakukierrosMock)
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -166,20 +168,24 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
   @Test
   def returnsPublishedVTSResultsForApplications(): Unit = {
     Mockito
-      .when(koutaClient.getHaku(HAKU_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
+    Mockito
+      .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            PaatettavatOpiskeluOikeudetResponse(
+              paatettavatOpiskeluOikeudet = Option(List()),
+              virhe = None,
+              viesti = None
+            )
+          )
+        )
+      )
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -210,15 +216,6 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsUnpublishedKeskenVTSResults(): Unit = {
-    Mockito
-      .when(koutaClient.getHaku(HAKU_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
-    Mockito
-      .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
-      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
     Mockito
       .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
       .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
@@ -276,9 +273,9 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals("Playground search", app.haku.get.nimi.en)
     Assertions.assertEquals("Samma på svenska", app.haku.get.nimi.sv)
     val hakukohteet = app.hakukohteet.toSeq
-    Assertions.assertEquals("1.2.246.562.29.00000000000000065738", hakukohteet(0).oid)
-    Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet(0).nimi.fi)
-    Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet(0).jarjestyspaikkaHierarkiaNimi.fi)
+    Assertions.assertEquals("1.2.246.562.29.00000000000000065738", hakukohteet.head.oid)
+    Assertions.assertEquals("Liukumäen lisensiaatti", hakukohteet.head.nimi.fi)
+    Assertions.assertEquals("Leikkipuisto, Liukumäki", hakukohteet.head.jarjestyspaikkaHierarkiaNimi.fi)
     Assertions.assertEquals("1.2.246.562.29.00000000000000065739", hakukohteet(1).oid)
     Assertions.assertEquals("Hiekkalaatikon arkeologi", hakukohteet(1).nimi.fi)
     Assertions.assertEquals("Leikkipuisto, Hiekkalaatikko", hakukohteet(1).jarjestyspaikkaHierarkiaNimi.fi)

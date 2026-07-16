@@ -36,7 +36,9 @@ case class HakutoiveenTulosEnriched(
   ilmoittautumisenAikaleima: Option[String],
   jonokohtaisetTulostiedot: List[JonokohtainenTulostieto],
   kelaURL: Option[String],
-  migriURL: Option[String]
+  migriURL: Option[String],
+  paatettavatOpiskeluOikeudet: List[PaatettavaOpiskeluOikeus],
+  naytetytPaatettavatOpiskeluoikeudet: List[PaatettavaOpiskeluOikeus]
 )
 
 case class HakutoiveenTulos(
@@ -63,7 +65,8 @@ case class HakutoiveenTulos(
   showMigriURL: Option[Boolean],
   ilmoittautumisenAikaleima: Option[String],
   jonokohtaisetTulostiedot: List[JonokohtainenTulostieto],
-  kelaURL: Option[String]
+  kelaURL: Option[String],
+  naytetytPaatettavatOpiskeluoikeudet: List[PaatettavaOpiskeluOikeus]
 )
 
 case class Ilmoittautumistapa(
