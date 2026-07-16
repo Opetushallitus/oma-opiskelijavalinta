@@ -127,7 +127,7 @@ class VTSService @Autowired (
       migriURL = if (tulos.showMigriURL.getOrElse(false)) Some(migriUrl) else None,
       paatettavatOpiskeluOikeudet = opiskeluOikeudetJotkaVastaanottoPaattaa,
       naytetytPaatettavatOpiskeluoikeudet = tulos.naytetytPaatettavatOpiskeluoikeudet,
-      yosEnrichmentFailed = yosCheckFailed
+      yosCheckFailed = yosCheckFailed
     )
   }
 

@@ -180,7 +180,7 @@ class VTSServiceTest {
     val oikeus = tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.head
     Assertions.assertEquals("NukeTehdas", oikeus.organisaatioNimi.fi)
     Assertions.assertEquals("Räjäyttäjä", oikeus.supaNimi.fi)
-    Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosEnrichmentFailed)
+    Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosCheckFailed)
   }
 
   @Test
@@ -206,6 +206,6 @@ class VTSServiceTest {
       .thenThrow(RuntimeException())
     val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
-    Assertions.assertEquals(true, tulos.get.hakutoiveet.head.yosEnrichmentFailed)
+    Assertions.assertEquals(true, tulos.get.hakutoiveet.head.yosCheckFailed)
   }
 }

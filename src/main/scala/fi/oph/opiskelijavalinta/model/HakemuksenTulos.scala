@@ -39,7 +39,7 @@ case class HakutoiveenTulosEnriched(
   migriURL: Option[String],
   paatettavatOpiskeluOikeudet: List[PaatettavaOpiskeluOikeus],
   naytetytPaatettavatOpiskeluoikeudet: List[PaatettavaOpiskeluOikeus],
-  yosEnrichmentFailed: Boolean = false
+  yosCheckFailed: Boolean = false
 )
 
 case class HakutoiveenTulos(
