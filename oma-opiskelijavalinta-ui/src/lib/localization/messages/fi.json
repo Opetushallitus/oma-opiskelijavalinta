@@ -86,6 +86,7 @@
     "haitari-nimi": "Opiskelijavalintojen tulokset haulle {haku}'"
   },
   "hakutoive": {
+    "hakutoive-numerolla": "Hakutoive {nro}:",
     "tila": {
       "kesken": "Opiskelijavalinta kesken",
       "hyvaksytty": "Hyväksytty",
@@ -271,7 +272,11 @@
       "kuvaus-vastaanotettu-ehdollinen": "Seuraavat opiskeluoikeudet päättyvät kun olet toiminut yllä olevan opiskelijavalinnan ehdon mukaisesti:",
       "paattyy": "Opiskeluoikeutesi päätetään {paattymisAika}, ennen uuden opiskeluoikeutesti alkamista {alkamisAika}. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
-      "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä"
+      "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
+      "varasijat": {
+        "otsikko": "Varasijoihin liittyvät päättyvät opiskeluoikeudet",
+        "kuvaus": "Jos tulet hyväksytyksi varasijalta, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:"
+      }
     }
   },
   "kela": {

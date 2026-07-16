@@ -19,6 +19,7 @@ import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import {
   getAlemmatVastaanotot,
+  getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia,
   naytetaankoPeruuntuvatOpiskelupaikat,
 } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
@@ -27,8 +28,12 @@ import {
   getVarallaOlevatMuutToiveet,
   naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
-import { PaatettavatOikeudetInfo } from './PaatettavatOikeudetInfo';
+import {
+  PaatettavatOikeudetInfo,
+  VarasijoillaOlevatPaatettavatOikeudet,
+} from './PaatettavatOikeudetInfo';
 import type { Hakukohde } from '@/lib/kouta-types';
+import { isNonNullish } from 'remeda';
 
 export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -50,6 +55,28 @@ export const getEhdollisestiVastaanottanutInfo = (
     </OphTypography>
   );
 };
+
+function paatettavatInfo(
+  tulos: HakutoiveenTulos,
+  hakutoive: Hakukohde,
+  varallaOlevatPaatettavat: Array<HakutoiveenTulos>,
+  hakemus: Hakemus,
+): React.ReactNode {
+  return (
+    <PaatettavatOikeudetInfo
+      oikeudet={tulos.paatettavatOpiskeluOikeudet}
+      hakutoive={hakutoive}
+      varaSijojenOikeudetChild={
+        varallaOlevatPaatettavat.length > 0 ? (
+          <VarasijoillaOlevatPaatettavatOikeudet
+            hakemus={hakemus}
+            varallaOlevat={varallaOlevatPaatettavat}
+          />
+        ) : null
+      }
+    />
+  );
+}
 
 export const getVastaanottoPaattyyInfo = (
   vastaanottoPaattyy: string,
@@ -107,17 +134,22 @@ const getInfoText = (
   const muitaHakutoiveitaVaralla =
     getVarallaOlevatMuutToiveet(hakemus, tulos.hakukohdeOid).length > 0;
 
+  const varallaOlevatPaatettavat =
+    muitaHakutoiveitaVaralla && isNonNullish(hakutoive)
+      ? getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia(
+          hakemus,
+          hakutoive,
+        )
+      : [];
+
   if (tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT) {
     return (
       <MultiInfoContainer>
         {getEhdollisestiVastaanottanutInfo(hakemus, lang)}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
-        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
-          <PaatettavatOikeudetInfo
-            oikeudet={tulos.paatettavatOpiskeluOikeudet}
-            hakutoive={hakutoive}
-          />
-        )}
+        {(naytetaankoPeruuntuvatOpiskelupaikat(tulos) ||
+          varallaOlevatPaatettavat.length > 0) &&
+          paatettavatInfo(tulos, hakutoive, varallaOlevatPaatettavat, hakemus)}
       </MultiInfoContainer>
     );
   } else {
@@ -168,12 +200,9 @@ const getInfoText = (
           />
         )}
         {naytetaankoEhdollisuus(tulos) && getEhdollisuusInfo(tulos, lang, t)}
-        {naytetaankoPeruuntuvatOpiskelupaikat(tulos) && (
-          <PaatettavatOikeudetInfo
-            oikeudet={tulos.paatettavatOpiskeluOikeudet}
-            hakutoive={hakutoive}
-          />
-        )}
+        {(naytetaankoPeruuntuvatOpiskelupaikat(tulos) ||
+          varallaOlevatPaatettavat.length > 0) &&
+          paatettavatInfo(tulos, hakutoive, varallaOlevatPaatettavat, hakemus)}
       </MultiInfoContainer>
     );
   }

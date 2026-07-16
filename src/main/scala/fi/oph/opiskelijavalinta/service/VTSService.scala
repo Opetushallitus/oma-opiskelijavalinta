@@ -64,6 +64,9 @@ class VTSService @Autowired (
     VASTAANOTETTAVAT_TILAT.contains(tulos.vastaanotettavuustila.getOrElse(""))
   }
 
+  private def varasijalla(tulos: HakutoiveenTulos): Boolean =
+    tulos.valintatila.exists("VARALLA".equals(_))
+
   private def enrichHakutoiveenTulos(
     tulos: HakutoiveenTulos,
     hakijaOid: String,
@@ -86,10 +89,11 @@ class VTSService @Autowired (
         }
       }
 
-    val opiskeluOikeudetJotkaVastaanottoPaattaa = (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
-      case (true, Some(hakukohdeOid)) => supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
-      case (_, _)                     => List.empty
-    }
+    val opiskeluOikeudetJotkaVastaanottoPaattaa =
+      (vastaanotettavissa(tulos) || varasijalla(tulos), tulos.hakukohdeOid) match {
+        case (true, Some(hakukohdeOid)) => supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
+        case (_, _)                     => List.empty
+      }
 
     HakutoiveenTulosEnriched(
       hakukohdeOid = tulos.hakukohdeOid,
