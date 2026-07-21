@@ -29,6 +29,7 @@ import {
   naytetaankoEhdollisuus,
 } from '@/components/valinnantulos/valinnan-tulos-utils';
 import {
+  PaatettavatOikeudetError,
   PaatettavatOikeudetInfo,
   VarasijoillaOlevatPaatettavatOikeudet,
 } from './PaatettavatOikeudetInfo';
@@ -96,6 +97,20 @@ export const getVastaanottoPaattyyInfo = (
       />
     </OphTypography>
   );
+};
+
+export const getPaatettavatOpiskeluoikeudetInfo = (
+  tulos: HakutoiveenTulos,
+  hakutoive: Hakukohde,
+) => {
+  return naytetaankoPeruuntuvatOpiskelupaikat(tulos) ? (
+    <PaatettavatOikeudetInfo
+      oikeudet={tulos.paatettavatOpiskeluOikeudet}
+      hakutoive={hakutoive}
+    />
+  ) : tulos.yosCheckFailed ? (
+    <PaatettavatOikeudetError />
+  ) : null;
 };
 
 const getInfoText = (

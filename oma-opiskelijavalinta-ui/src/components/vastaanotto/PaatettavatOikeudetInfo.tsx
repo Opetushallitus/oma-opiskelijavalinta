@@ -72,7 +72,6 @@ export function PaatettavatOikeudetInfo({
   varaSijojenOikeudetChild?: React.ReactNode;
 }) {
   const { t } = useTranslations();
-
   const dateInfo =
     isNullish(hakutoive.koulutuksenAlkamisPvm) ||
     isDateInPast(hakutoive.koulutuksenAlkamisPvm)
@@ -113,6 +112,17 @@ export function PaatettavatOikeudetInfo({
   );
 }
 
+export function PaatettavatOikeudetError() {
+  const { t } = useTranslations();
+  return (
+    <MultiInfoContainer>
+      <OphTypography variant="h5">{t('vastaanotto.yos.otsikko')}</OphTypography>
+      <OphTypography>{t('vastaanotto.yos.virhe')}</OphTypography>
+      <PaatettavaOikeusInfoLink />
+    </MultiInfoContainer>
+  );
+}
+
 type HakukohdePaatettavatOikeudet = {
   orderNumber: number;
   hakukohde?: Hakukohde;
@@ -120,9 +130,9 @@ type HakukohdePaatettavatOikeudet = {
 };
 
 export function VarasijoillaOlevatPaatettavatOikeudet({
-  hakemus,
-  varallaOlevat,
-}: {
+                                                        hakemus,
+                                                        varallaOlevat,
+                                                      }: {
   hakemus: Hakemus;
   varallaOlevat: Array<HakutoiveenTulos>;
 }) {
@@ -179,6 +189,7 @@ export function VarasijoillaOlevatPaatettavatOikeudet({
   );
 }
 
+
 export function PaatettavatOikeudetInfoVastaanotetulle({
   hakemus,
   tulokset,
@@ -187,7 +198,6 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
   tulokset: Array<HakutoiveenTulos>;
 }) {
   const vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
-
   const hakutoive = hakemus.hakukohteet?.find(
     (ht) => ht.oid === vastaanotettuTulos?.hakukohdeOid,
   );
@@ -206,5 +216,7 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
         kuvausSyyAvain={kuvausSyyAvain}
       />
     </MultiInfoContainer>
+    ) : isDefined(vastaanotettuTulos) && vastaanotettuTulos.yosCheckFailed ? (
+      <PaatettavatOikeudetError />
   ) : null;
 }
