@@ -21,6 +21,7 @@ import {
   getAlemmatVastaanotot,
   getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia,
   naytetaankoPeruuntuvatOpiskelupaikat,
+  naytetaankoYosVirhe,
 } from './vastaanotto-utils';
 import { MultiInfoContainer } from '@/components/MultiInfoContainer';
 import { getEhdollisuusInfo } from '@/components/valinnantulos/ValintatilaInfo';
@@ -165,6 +166,7 @@ const getInfoText = (
         {(naytetaankoPeruuntuvatOpiskelupaikat(tulos) ||
           varallaOlevatPaatettavat.length > 0) &&
           paatettavatInfo(tulos, hakutoive, varallaOlevatPaatettavat, hakemus)}
+        {naytetaankoYosVirhe(tulos) && <PaatettavatOikeudetError />}
       </MultiInfoContainer>
     );
   } else {
@@ -218,6 +220,7 @@ const getInfoText = (
         {(naytetaankoPeruuntuvatOpiskelupaikat(tulos) ||
           varallaOlevatPaatettavat.length > 0) &&
           paatettavatInfo(tulos, hakutoive, varallaOlevatPaatettavat, hakemus)}
+        {naytetaankoYosVirhe(tulos) && <PaatettavatOikeudetError />}
       </MultiInfoContainer>
     );
   }
