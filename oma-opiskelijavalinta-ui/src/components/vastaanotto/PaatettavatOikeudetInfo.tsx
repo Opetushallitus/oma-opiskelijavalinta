@@ -1,4 +1,4 @@
-import { OphTypography } from '@opetushallitus/oph-design-system';
+import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import type {
   HakutoiveenTulos,
   PaatettavaOpiskeluOikeus,
@@ -19,6 +19,13 @@ import type { Language } from '@/lib/localization/localization-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { getSitovastiVastaanotettu } from '../valinnantulos/valinnan-tulos-utils';
 import { subDays } from 'date-fns';
+import ErrorIcon from '@mui/icons-material/Error';
+import { styled } from '@/lib/theme';
+import { Box } from '@mui/material';
+
+const RedErrorIcon = styled(ErrorIcon)(() => ({
+  color: ophColors.orange3,
+}));
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -117,7 +124,10 @@ export function PaatettavatOikeudetError() {
   return (
     <MultiInfoContainer>
       <OphTypography variant="h5">{t('vastaanotto.yos.otsikko')}</OphTypography>
-      <OphTypography>{t('vastaanotto.yos.virhe')}</OphTypography>
+      <Box display="flex" alignItems="center" gap={1}>
+        <RedErrorIcon />
+        <OphTypography>{t('vastaanotto.yos.virhe')}</OphTypography>
+      </Box>
       <PaatettavaOikeusInfoLink />
     </MultiInfoContainer>
   );
