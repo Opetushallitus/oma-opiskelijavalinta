@@ -100,20 +100,6 @@ export const getVastaanottoPaattyyInfo = (
   );
 };
 
-export const getPaatettavatOpiskeluoikeudetInfo = (
-  tulos: HakutoiveenTulos,
-  hakutoive: Hakukohde,
-) => {
-  return naytetaankoPeruuntuvatOpiskelupaikat(tulos) ? (
-    <PaatettavatOikeudetInfo
-      oikeudet={tulos.paatettavatOpiskeluOikeudet}
-      hakutoive={hakutoive}
-    />
-  ) : tulos.yosCheckFailed ? (
-    <PaatettavatOikeudetError />
-  ) : null;
-};
-
 const getInfoText = (
   t: TFnType<DefaultParamType, string, TranslationKey>,
   lang: Language,
