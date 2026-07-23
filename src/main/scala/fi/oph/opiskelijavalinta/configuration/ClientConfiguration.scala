@@ -69,7 +69,7 @@ class ClientConfiguration(timeouts: ClientTimeoutProperties) {
     @Autowired @Qualifier("supaCasClient") supaCasClient: CasClient,
     httpExecutionContext: ExecutionContext
   ): SuoritusPalveluClient = {
-    new SuoritusPalveluClient(supaCasClient, httpExecutionContext, timeouts.vts)
+    new SuoritusPalveluClient(supaCasClient, httpExecutionContext, timeouts.supa)
   }
 
   @Bean
