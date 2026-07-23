@@ -177,6 +177,7 @@ export const hakemus3ToinenAste: HakemusResponse = {
       kelaURL: null,
       paatettavatOpiskeluOikeudet: [],
       naytetytPaatettavatOpiskeluoikeudet: [],
+      yosCheckFailed: false,
     },
   ],
   processing: false,
@@ -261,6 +262,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       kelaURL: null,
       paatettavatOpiskeluOikeudet: [],
       naytetytPaatettavatOpiskeluoikeudet: [],
+      yosCheckFailed: false,
     },
     {
       hakukohdeOid: 'hakukohde-oid-5',
@@ -287,6 +289,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       kelaURL: null,
       paatettavatOpiskeluOikeudet: [],
       naytetytPaatettavatOpiskeluoikeudet: [],
+      yosCheckFailed: false,
     },
     {
       hakukohdeOid: 'hakukohde-oid-6',
@@ -313,6 +316,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       kelaURL: null,
       paatettavatOpiskeluOikeudet: [],
       naytetytPaatettavatOpiskeluoikeudet: [],
+      yosCheckFailed: false,
     },
   ],
   processing: false,
@@ -401,6 +405,7 @@ export const hakemuksenTulosVarasijalla: HakutoiveenTulosDto = {
   kelaURL: null,
   paatettavatOpiskeluOikeudet: [],
   naytetytPaatettavatOpiskeluoikeudet: [],
+  yosCheckFailed: false,
 };
 
 export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
@@ -437,6 +442,7 @@ export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
   kelaURL: null,
   paatettavatOpiskeluOikeudet: [],
   naytetytPaatettavatOpiskeluoikeudet: [],
+  yosCheckFailed: false,
 };
 
 export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
@@ -464,6 +470,7 @@ export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
   kelaURL: null,
   paatettavatOpiskeluOikeudet: [],
   naytetytPaatettavatOpiskeluoikeudet: [],
+  yosCheckFailed: false,
 };
 
 export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
@@ -500,6 +507,7 @@ export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
   kelaURL: null,
   paatettavatOpiskeluOikeudet: [],
   naytetytPaatettavatOpiskeluoikeudet: [],
+  yosCheckFailed: false,
 };
 
 export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
@@ -536,6 +544,7 @@ export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
   kelaURL: null,
   paatettavatOpiskeluOikeudet: [],
   naytetytPaatettavatOpiskeluoikeudet: [],
+  yosCheckFailed: false,
 };
 
 export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
@@ -562,6 +571,7 @@ export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
   kelaURL: null,
   paatettavatOpiskeluOikeudet: [],
   naytetytPaatettavatOpiskeluoikeudet: [],
+  yosCheckFailed: false,
 };
 
 export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
@@ -594,6 +604,7 @@ export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
     kelaURL: null,
     paatettavatOpiskeluOikeudet: [],
     naytetytPaatettavatOpiskeluoikeudet: [],
+    yosCheckFailed: false,
   };
 
 export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenTulosDto> =
@@ -623,6 +634,7 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenT
       kelaURL: null,
       paatettavatOpiskeluOikeudet: [],
       naytetytPaatettavatOpiskeluoikeudet: [],
+      yosCheckFailed: false,
     },
     {
       hakukohdeOid: 'hakukohde-oid-2',
@@ -649,6 +661,7 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenT
       kelaURL: null,
       paatettavatOpiskeluOikeudet: [],
       naytetytPaatettavatOpiskeluoikeudet: [],
+      yosCheckFailed: false,
     },
   ];
 

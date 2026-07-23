@@ -567,3 +567,96 @@ async function setup(page: Page, overridableApplication?: HakemusResponse) {
   await mockSession(page);
   await page.goto('');
 }
+
+test('Näyttää yos-tarkistuksen virheen kk-haun vastaanotossa mutta ei modaalissa', async ({
+  page,
+}) => {
+  const dateInFuture = format(
+    addDays(toFinnishDate(new Date()), 1),
+    KOUTA_DATE_FORMAT,
+  );
+  const yosVirheApplication = {
+    ...hakemus2,
+    hakukohteet: [{ ...hakukohde3, koulutuksenAlkamisPvm: dateInFuture }],
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosHyvaksytty,
+        paatettavatOpiskeluOikeudet: [],
+        yosCheckFailed: true,
+      },
+    ],
+  };
+  await setup(page, yosVirheApplication);
+  const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-2');
+  await expect(
+    vastaanotot.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(vastaanotot.getByText('Hampaiden Poraaja')).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeutesi päätetään'),
+  ).toBeHidden();
+  await expect(
+    vastaanotot.getByText('Opiskeluoikeuksien hakemisessa on ongelmia.'),
+  ).toBeVisible();
+  await expect(
+    vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
+
+  await vastaanotot
+    .getByRole('radio', { name: 'Otan tämän opiskelupaikan' })
+    .click();
+  await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
+  await expect(
+    page.getByText('Vahvista opiskelupaikan vastaanotto'),
+  ).toBeVisible();
+  const vastaanottoModal = page.getByLabel(
+    'Vahvista opiskelupaikan vastaanotto',
+  );
+  await expect(
+    vastaanottoModal.getByRole('heading', {
+      name: 'Aiemmat opiskeluoikeutesi pää',
+    }),
+  ).toBeHidden();
+  await expect(
+    vastaanottoModal.getByText('Opiskeluoikeutesi päätetään'),
+  ).toBeHidden();
+  await expect(
+    vastaanottoModal.getByText('Opiskeluoikeuksien hakemisessa on ongelmia.'),
+  ).toBeHidden();
+  await expect(
+    vastaanottoModal.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeHidden();
+});
+
+test('Näyttää yos-tarkistuksen virheen vastaanotetussa hakemuksessa', async ({
+  page,
+}) => {
+  const dateInFuture = format(
+    addDays(toFinnishDate(new Date()), 1),
+    KOUTA_DATE_FORMAT,
+  );
+  const hyvaksyttyPrioKkApplicationYosError = {
+    ...hakemus2,
+    hakukohteet: [{ ...hakukohde1Yps, koulutuksenAlkamisPvm: dateInFuture }],
+    hakemuksenTulokset: [
+      {
+        ...hakemuksenTulosVastaanotettu,
+        naytetytPaatettavatOpiskeluoikeudet: [],
+        yosCheckFailed: true,
+      },
+    ],
+  };
+  await setup(page, hyvaksyttyPrioKkApplicationYosError);
+  const hakemus = page.getByTestId('application-hakemus-oid-2');
+  await expect(
+    hakemus.getByRole('heading', { name: 'Aiemmat opiskeluoikeutesi pää' }),
+  ).toBeVisible();
+  await expect(hakemus.getByText('Hampaiden Poraaja')).toBeHidden();
+  await expect(hakemus.getByText('Opiskeluoikeutesi päätetään')).toBeHidden();
+  await expect(
+    hakemus.getByText('Opiskeluoikeuksien hakemisessa on ongelmia.'),
+  ).toBeVisible();
+  await expect(
+    hakemus.getByRole('link', { name: 'Lisätietoja yhden' }),
+  ).toBeVisible();
+});

@@ -1,4 +1,4 @@
-import { OphTypography } from '@opetushallitus/oph-design-system';
+import { ophColors, OphTypography } from '@opetushallitus/oph-design-system';
 import type {
   HakutoiveenTulos,
   PaatettavaOpiskeluOikeus,
@@ -19,6 +19,13 @@ import type { Language } from '@/lib/localization/localization-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { getSitovastiVastaanotettu } from '../valinnantulos/valinnan-tulos-utils';
 import { subDays } from 'date-fns';
+import ErrorIcon from '@mui/icons-material/Error';
+import { styled } from '@/lib/theme';
+import { Box } from '@mui/material';
+
+const RedErrorIcon = styled(ErrorIcon)(() => ({
+  color: ophColors.orange3,
+}));
 
 function PaatettavaOikeusInfo({
   oikeus,
@@ -72,7 +79,6 @@ export function PaatettavatOikeudetInfo({
   varaSijojenOikeudetChild?: React.ReactNode;
 }) {
   const { t } = useTranslations();
-
   const dateInfo =
     isNullish(hakutoive.koulutuksenAlkamisPvm) ||
     isDateInPast(hakutoive.koulutuksenAlkamisPvm)
@@ -113,6 +119,20 @@ export function PaatettavatOikeudetInfo({
   );
 }
 
+export function PaatettavatOikeudetError() {
+  const { t } = useTranslations();
+  return (
+    <MultiInfoContainer>
+      <OphTypography variant="h5">{t('vastaanotto.yos.otsikko')}</OphTypography>
+      <Box display="flex" alignItems="center" gap={1}>
+        <RedErrorIcon />
+        <OphTypography>{t('vastaanotto.yos.virhe')}</OphTypography>
+      </Box>
+      <PaatettavaOikeusInfoLink />
+    </MultiInfoContainer>
+  );
+}
+
 type HakukohdePaatettavatOikeudet = {
   orderNumber: number;
   hakukohde?: Hakukohde;
@@ -120,9 +140,9 @@ type HakukohdePaatettavatOikeudet = {
 };
 
 export function VarasijoillaOlevatPaatettavatOikeudet({
-  hakemus,
-  varallaOlevat,
-}: {
+                                                        hakemus,
+                                                        varallaOlevat,
+                                                      }: {
   hakemus: Hakemus;
   varallaOlevat: Array<HakutoiveenTulos>;
 }) {
@@ -179,6 +199,7 @@ export function VarasijoillaOlevatPaatettavatOikeudet({
   );
 }
 
+
 export function PaatettavatOikeudetInfoVastaanotetulle({
   hakemus,
   tulokset,
@@ -187,7 +208,6 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
   tulokset: Array<HakutoiveenTulos>;
 }) {
   const vastaanotettuTulos = getSitovastiVastaanotettu(tulokset);
-
   const hakutoive = hakemus.hakukohteet?.find(
     (ht) => ht.oid === vastaanotettuTulos?.hakukohdeOid,
   );
@@ -206,5 +226,7 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
         kuvausSyyAvain={kuvausSyyAvain}
       />
     </MultiInfoContainer>
+    ) : isDefined(vastaanotettuTulos) && vastaanotettuTulos.yosCheckFailed ? (
+      <PaatettavatOikeudetError />
   ) : null;
 }
