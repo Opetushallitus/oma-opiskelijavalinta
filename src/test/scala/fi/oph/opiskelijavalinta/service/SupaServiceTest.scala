@@ -58,7 +58,7 @@ class SupaServiceTest {
   }
 
   @Test
-  def palauttaaTyhjanListanJosVastauksessaOnVirhe(): Unit = {
+  def heittaaPoikkeuksenJosVastauksessaOnVirhe(): Unit = {
     val request = new MockHttpServletRequest()
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request))
     Mockito
@@ -74,7 +74,10 @@ class SupaServiceTest {
           )
         )
       )
-    Assertions.assertTrue(service.haePaattyvatOpiskeluOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID).isEmpty)
+    Assertions.assertThrows(
+      classOf[RuntimeException],
+      () => service.haePaattyvatOpiskeluOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID)
+    )
   }
 
 }

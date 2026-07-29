@@ -59,6 +59,7 @@ export type HakutoiveenTulosDto = {
   migriURL?: string | null;
   paatettavatOpiskeluOikeudet: Array<PaatettavaOpiskeluOikeus>;
   naytetytPaatettavatOpiskeluoikeudet: Array<PaatettavaOpiskeluOikeus>;
+  yosCheckFailed: boolean;
 };
 
 export type JonokohtainenTulostietoDto = {

@@ -38,7 +38,8 @@ case class HakutoiveenTulosEnriched(
   kelaURL: Option[String],
   migriURL: Option[String],
   paatettavatOpiskeluOikeudet: List[PaatettavaOpiskeluOikeus],
-  naytetytPaatettavatOpiskeluoikeudet: List[PaatettavaOpiskeluOikeus]
+  naytetytPaatettavatOpiskeluoikeudet: List[PaatettavaOpiskeluOikeus],
+  yosCheckFailed: Boolean = false
 )
 
 case class HakutoiveenTulos(
