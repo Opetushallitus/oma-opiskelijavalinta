@@ -4,12 +4,15 @@ case class YhdenPaikanSaanto(voimassa: Boolean)
 
 case class PaateltyAlkamiskausi(kausiUri: Option[String])
 
+case class PaateltyAlkamisajankohta(pvm: String, henkilokohtainenSuunnitelma: Boolean)
+
 case class Hakukohde(
   oid: String,
   nimi: TranslatedName,
   jarjestyspaikkaHierarkiaNimi: TranslatedName,
   uudenOpiskelijanUrl: Option[TranslatedName],
   paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
+  paateltyAlkamisajankohta: Option[PaateltyAlkamisajankohta],
   yhdenPaikanSaanto: YhdenPaikanSaanto = YhdenPaikanSaanto(false)
 )
 
@@ -18,6 +21,7 @@ case class HakukohdeEnriched(
   nimi: TranslatedName,
   jarjestyspaikkaHierarkiaNimi: TranslatedName,
   uudenOpiskelijanUrl: Option[TranslatedName],
-  yhdenPaikanSaanto: YhdenPaikanSaanto = YhdenPaikanSaanto(false),
-  koulutuksenAlkamiskausi: Option[String]
+  koulutuksenAlkamiskausi: Option[String],
+  koulutuksenAlkamisPvm: Option[String],
+  yhdenPaikanSaanto: YhdenPaikanSaanto = YhdenPaikanSaanto(false)
 )

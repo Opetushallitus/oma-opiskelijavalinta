@@ -86,6 +86,7 @@
     "haitari-nimi": "Opiskelijavalintojen tulokset haulle {haku}'"
   },
   "hakutoive": {
+    "hakutoive-numerolla": "Hakutoive {nro}:",
     "tila": {
       "kesken": "Opiskelijavalinta kesken",
       "hyvaksytty": "Hyväksytty",
@@ -262,6 +263,19 @@
         "info-alemmat-toiveet": "Seuraavat aiemmin vastaanottamasi opiskelupaikat perutaan samalla:",
         "info-alempi-toive": "Seuraava aiemmin vastaanottamasi opiskelupaikka perutaan samalla:",
         "onnistui": "Opiskelupaikka vastaanotettu onnistuneesti."
+      }
+    },
+    "yos": {
+      "otsikko": "Aiemmat opiskeluoikeutesi päättyvät",
+      "kuvaus": "Korkeakouluopiskelijalla voi olla kerrallaan vain yksi saman tai alemman tasoiseen tutkintoon johtava opiskeluoikeus. Jos otat tämän opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:",
+      "kuvaus-vastaanotettu": "Koska otit uuden opiskelupaikan vastaan, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:",
+      "kuvaus-vastaanotettu-ehdollinen": "Seuraavat opiskeluoikeudet päättyvät kun olet toiminut yllä olevan opiskelijavalinnan ehdon mukaisesti:",
+      "paattyy": "Opiskeluoikeutesi päätetään {paattymisAika}, ennen uuden opiskeluoikeutesti alkamista {alkamisAika}. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
+      "paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
+      "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
+      "varasijat": {
+        "otsikko": "Varasijoihin liittyvät päättyvät opiskeluoikeudet",
+        "kuvaus": "Jos tulet hyväksytyksi varasijalta, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:"
       }
     }
   },

@@ -30,4 +30,5 @@ class ClientTimeoutProperties {
   var oppijanTunnistus: Int = 30
   var koodisto: Int         = 120
   var lokalisointi: Int     = 5
+  var supa: Int             = 60
 }

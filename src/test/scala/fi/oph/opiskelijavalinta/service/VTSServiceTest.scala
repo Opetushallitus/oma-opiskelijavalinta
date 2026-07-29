@@ -1,6 +1,6 @@
 package fi.oph.opiskelijavalinta.service
 
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, PERSON_OID}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, HAKUKOHDE_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.clients.ValintaTulosServiceClient
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{
   ehdollinenTulos,
@@ -8,11 +8,11 @@ import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{
   hakutoiveEhdollisestiHyvaksytty
 }
 import fi.oph.opiskelijavalinta.model.{
-  HakutoiveenTulosEnriched,
   Ilmoittautumistapa,
   Ilmoittautumistila,
   KoodistoKoodi,
   KoodistoMetadata,
+  PaatettavaOpiskeluOikeus,
   TranslatedName
 }
 import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
@@ -25,13 +25,15 @@ class VTSServiceTest {
 
   val vtsClient: ValintaTulosServiceClient = Mockito.mock(classOf[ValintaTulosServiceClient])
 
+  val HAKIJA_OID  = "HAKIJA_OID-1"
   val HAKU_OID    = "HAKU-OID-1"
   val HAKEMUS_OID = "HAKEMUS-OID-1"
 
   val mockKoodistoService: KoodistoService = Mockito.mock(classOf[KoodistoService])
+  val mockSupaService: SupaService         = Mockito.mock(classOf[SupaService])
   val migriToken: MigriJsonWebToken        = Mockito.mock(classOf[MigriJsonWebToken])
   val oiliToken: OiliJsonWebToken          = Mockito.mock(classOf[OiliJsonWebToken])
-  val vtsService                           = VTSService(vtsClient, mockKoodistoService, migriToken, oiliToken)
+  val vtsService = VTSService(vtsClient, mockKoodistoService, mockSupaService, migriToken, oiliToken)
 
   @Test
   def returnsEhdollisuudenSyyFromKoodisto(): Unit = {
@@ -58,7 +60,7 @@ class VTSServiceTest {
           )
         )
       )
-    val tulos = vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID)
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Assertions.assertFalse(tulos.isEmpty)
     Assertions.assertFalse(tulos.get.hakutoiveet.isEmpty)
     val hakutoiveenTulosEnriched = tulos.get.hakutoiveet.head
@@ -91,7 +93,8 @@ class VTSServiceTest {
         )
       )
     Mockito.verifyNoInteractions(mockKoodistoService)
-    val tulos = vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID)
+    Mockito.verifyNoInteractions(mockSupaService)
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Assertions.assertFalse(tulos.isEmpty)
     Assertions.assertFalse(tulos.get.hakutoiveet.isEmpty)
     val hakutoiveenTulosEnriched = tulos.get.hakutoiveet.head
@@ -114,7 +117,10 @@ class VTSServiceTest {
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right("invalid json"))
-    Assertions.assertThrows(classOf[RuntimeException], () => vtsService.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+    Assertions.assertThrows(
+      classOf[RuntimeException],
+      () => vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
+    )
   }
 
   @Test
@@ -136,6 +142,44 @@ class VTSServiceTest {
     )
     Assertions.assertEquals("/oili?token=OILI_TOKEN", tulos.ilmoittautumistila.get.ilmoittautumistapa.get.url.get)
     Mockito.verifyNoInteractions(migriToken)
+  }
+
+  @Test
+  def palauttaaPaatettavatOpiskeluOikeudetTulokselleJokaOnVastaanotettavissa(): Unit = {
+    Mockito
+      .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            ehdollinenTulos.copy(hakutoiveet =
+              List(
+                hakutoiveEhdollisestiHyvaksytty.copy(
+                  hakukohdeOid = Some(HAKUKOHDE_OID),
+                  ehdollisestiHyvaksyttavissa = Some(false)
+                )
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(mockSupaService.haePaattyvatOpiskeluOikeudet(HAKIJA_OID, HAKU_OID, HAKUKOHDE_OID))
+      .thenReturn(
+        List(
+          PaatettavaOpiskeluOikeus(
+            virtaOpiskeluOikeusId = "nuke-tunniste",
+            organisaatioOid = "",
+            organisaatioNimi = TranslatedName("NukeTehdas", "", ""),
+            supaNimi = TranslatedName("Räjäyttäjä", "", ""),
+            virtaNimi = TranslatedName("", "", "")
+          )
+        )
+      )
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
+    Assertions.assertEquals(1, tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.size)
+    val oikeus = tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.head
+    Assertions.assertEquals("NukeTehdas", oikeus.organisaatioNimi.fi)
+    Assertions.assertEquals("Räjäyttäjä", oikeus.supaNimi.fi)
   }
 
 }

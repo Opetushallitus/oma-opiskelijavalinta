@@ -11,7 +11,10 @@ import { FullSpinner } from '../FullSpinner';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { HakukohteetContainer } from '../hakukohde/HakukohteetContainer';
 import { HakukohteetAccordion } from '../hakukohde/HakukohteetAccordion';
-import { onKeskeneraisiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
+import {
+  isEhdollisestiHyvaksyttyVastaanottanutSitovasti,
+  onKeskeneraisiaValinnantiloja,
+} from '@/components/valinnantulos/valinnan-tulos-utils';
 import { hasKelaUrl, showMigriURL } from '@/lib/hakemus-service';
 import { KelaContainer } from './KelaContainer';
 import { isJatkuvaTaiJoustavaHaku, isKorkeakouluHaku } from '@/lib/kouta-utils';
@@ -21,6 +24,7 @@ import { MigriContainer } from './MigriContainer';
 import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { getLanguage } from '@/lib/getLanguage';
+import { PaatettavatOikeudetInfoVastaanotetulle } from '../vastaanotto/PaatettavatOikeudetInfo';
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
@@ -53,6 +57,8 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
     (isEmpty(tulokset) ||
       (onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? []) &&
         isTruthy(hakemus.modifyLink)));
+
+  const vastaanottoTehty = onkoVastaanottoTehty(tulokset);
 
   return (
     <HakemusPaper tabIndex={0} data-test-id={`application-${hakemus.oid}`}>
@@ -89,15 +95,21 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
             hakemuksenTulokset={tulokset}
           />
           {hasKelaUrl(tulokset) && <KelaContainer tulokset={tulokset} />}
-          {onkoVastaanottoTehty(tulokset) &&
-            isKorkeakouluHaku(hakemus.haku) && (
-              <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
-            )}
+          {vastaanottoTehty && isKorkeakouluHaku(hakemus.haku) && (
+            <TutustuContainer tulokset={tulokset} hakemus={hakemus} />
+          )}
           {showMigriURL(tulokset) && <MigriContainer tulokset={tulokset} />}
-          {onkoVastaanottoTehty(tulokset) && (
+          {vastaanottoTehty &&
+            !tulokset.some(isEhdollisestiHyvaksyttyVastaanottanutSitovasti) && (
+              <PaatettavatOikeudetInfoVastaanotetulle
+                tulokset={tulokset}
+                hakemus={hakemus}
+              />
+            )}
+          {vastaanottoTehty && (
             <HakukohteetAccordion hakemus={hakemus} tulokset={tulokset} />
           )}
-          {!onkoVastaanottoTehty(tulokset) && (
+          {!vastaanottoTehty && (
             <HakukohteetContainer
               hakemus={hakemus}
               hakemuksenTulokset={tulokset}

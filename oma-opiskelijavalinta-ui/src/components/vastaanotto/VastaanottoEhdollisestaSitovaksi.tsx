@@ -16,7 +16,10 @@ import { useNotifications } from '../NotificationProvider';
 import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 import { VastaanottoMuutaSitovaksiModalContent } from './VastaanottoMuutaSitovaksiModalContent';
-import { VastaanottoTilaToiminto } from '@/lib/valinta-tulos-types';
+import {
+  VastaanottoTilaToiminto,
+  type HakutoiveenTulos,
+} from '@/lib/valinta-tulos-types';
 import {
   getVarallaOlevatYlemmatToiveet,
   VastaanottoOption,
@@ -43,9 +46,11 @@ const InputContainer = styled(Box)(({ theme }) => ({
 export function VastaanottoEhdollisestaSitovaksi({
   hakutoive,
   application,
+  tulos,
 }: {
   hakutoive: Hakukohde;
   application: Hakemus;
+  tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
   const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
@@ -121,6 +126,7 @@ export function VastaanottoEhdollisestaSitovaksi({
             application,
             hakutoive,
           )}
+          tulos={tulos}
         />
       ),
     });

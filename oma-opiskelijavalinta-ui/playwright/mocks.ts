@@ -8,7 +8,7 @@ import {
   VastaanottoTila,
   type HakutoiveenTulosDto,
 } from '@/lib/valinta-tulos-types';
-import type { Haku } from '@/lib/kouta-types';
+import type { Haku, Hakukohde } from '@/lib/kouta-types';
 
 export const mockSession = async (page: Page) => {
   await page.route('**/api/session', async (route) => {
@@ -46,6 +46,7 @@ export const hakemus1: HakemusResponse = {
         en: 'linktostudyplace.fi',
       },
       yhdenPaikanSaanto: { voimassa: false },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
     {
       oid: 'hakukohde-oid-2',
@@ -55,6 +56,7 @@ export const hakemus1: HakemusResponse = {
       },
       uudenOpiskelijanUrl: null,
       yhdenPaikanSaanto: { voimassa: false },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
   ],
   ohjausparametrit: {
@@ -73,6 +75,17 @@ export const hakemus1: HakemusResponse = {
   tuloskirjeModified: null,
 };
 
+export const hakukohde3: Hakukohde = {
+  oid: 'hakukohde-oid-3',
+  nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
+  jarjestyspaikkaHierarkiaNimi: {
+    fi: 'Tsunamiopisto, Merenpohjan kampus',
+  },
+  yhdenPaikanSaanto: { voimassa: true },
+  uudenOpiskelijanUrl: null,
+  koulutuksenAlkamisPvm: '2025-06-06',
+};
+
 export const hakemus2: HakemusResponse = {
   oid: 'hakemus-oid-2',
   secret: 'secret-2',
@@ -85,17 +98,7 @@ export const hakemus2: HakemusResponse = {
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
   },
   submitted: '2025-06-18T19:00:00',
-  hakukohteet: [
-    {
-      oid: 'hakukohde-oid-3',
-      nimi: { fi: 'Meteorologi, Hyökyaaltojen tutkimislinja' },
-      jarjestyspaikkaHierarkiaNimi: {
-        fi: 'Tsunamiopisto, Merenpohjan kampus',
-      },
-      yhdenPaikanSaanto: { voimassa: true },
-      uudenOpiskelijanUrl: null,
-    },
-  ],
+  hakukohteet: [hakukohde3],
   ohjausparametrit: {
     hakukierrosPaattyy: 1763971212000,
   },
@@ -142,6 +145,7 @@ export const hakemus3ToinenAste: HakemusResponse = {
       yhdenPaikanSaanto: {
         voimassa: false,
       },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
   ],
   ohjausparametrit: {
@@ -171,6 +175,8 @@ export const hakemus3ToinenAste: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
+      naytetytPaatettavatOpiskeluoikeudet: [],
     },
   ],
   processing: false,
@@ -198,6 +204,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       yhdenPaikanSaanto: {
         voimassa: false,
       },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
     {
       oid: 'hakukohde-oid-5',
@@ -209,6 +216,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       yhdenPaikanSaanto: {
         voimassa: false,
       },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
     {
       oid: 'hakukohde-oid-6',
@@ -220,6 +228,7 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       yhdenPaikanSaanto: {
         voimassa: false,
       },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
   ],
   ohjausparametrit: {
@@ -250,6 +259,8 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
+      naytetytPaatettavatOpiskeluoikeudet: [],
     },
     {
       hakukohdeOid: 'hakukohde-oid-5',
@@ -274,6 +285,8 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
+      naytetytPaatettavatOpiskeluoikeudet: [],
     },
     {
       hakukohdeOid: 'hakukohde-oid-6',
@@ -298,6 +311,8 @@ export const hakemus4ToinenAsteAlempiaHyvaksyttyja: HakemusResponse = {
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
+      naytetytPaatettavatOpiskeluoikeudet: [],
     },
   ],
   processing: false,
@@ -326,6 +341,7 @@ export const hakemus5JatkuvaHaku: HakemusResponse = {
       yhdenPaikanSaanto: {
         voimassa: false,
       },
+      koulutuksenAlkamisPvm: '2025-06-06',
     },
   ],
   ohjausparametrit: {
@@ -383,6 +399,8 @@ export const hakemuksenTulosVarasijalla: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
+  naytetytPaatettavatOpiskeluoikeudet: [],
 };
 
 export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
@@ -417,6 +435,8 @@ export const hakemuksenTulosVastaanotettu: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
+  naytetytPaatettavatOpiskeluoikeudet: [],
 };
 
 export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
@@ -442,6 +462,8 @@ export const hakemuksenTulosHyvaksytty: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
+  naytetytPaatettavatOpiskeluoikeudet: [],
 };
 
 export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
@@ -476,6 +498,8 @@ export const hakemuksenTulosHylatty: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
+  naytetytPaatettavatOpiskeluoikeudet: [],
 };
 
 export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
@@ -510,6 +534,8 @@ export const hakemuksenTulosPeruuntunut: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
+  naytetytPaatettavatOpiskeluoikeudet: [],
 };
 
 export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
@@ -534,6 +560,8 @@ export const hakemuksenTulosPeruuntunutEiKuvausta: HakutoiveenTulosDto = {
   ],
   ilmoittautumisenAikaleima: null,
   kelaURL: null,
+  paatettavatOpiskeluOikeudet: [],
+  naytetytPaatettavatOpiskeluoikeudet: [],
 };
 
 export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
@@ -564,6 +592,8 @@ export const hakemuksenTulosHyvaksyttyVastaanottoPerunut: HakutoiveenTulosDto =
     ],
     ilmoittautumisenAikaleima: null,
     kelaURL: null,
+    paatettavatOpiskeluOikeudet: [],
+    naytetytPaatettavatOpiskeluoikeudet: [],
   };
 
 export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenTulosDto> =
@@ -591,6 +621,8 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenT
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
+      naytetytPaatettavatOpiskeluoikeudet: [],
     },
     {
       hakukohdeOid: 'hakukohde-oid-2',
@@ -615,6 +647,8 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiHyvaksytty: Array<HakutoiveenT
       ],
       ilmoittautumisenAikaleima: null,
       kelaURL: null,
+      paatettavatOpiskeluOikeudet: [],
+      naytetytPaatettavatOpiskeluoikeudet: [],
     },
   ];
 
@@ -624,6 +658,22 @@ export const hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa
     if (tulokset[1]) {
       tulokset[1].vastaanotettavuustila = 'VASTAANOTETTAVISSA_EHDOLLISESTI';
       tulokset[1].vastaanottotila = VastaanottoTila.KESKEN;
+      tulokset[1].ehdollisestiHyvaksyttavissa = true;
+      tulokset[1].ehdollisenHyvaksymisenEhto = {
+        fi: 'Todistus suorituksesta X pitää toimittaa',
+      };
+    }
+    return tulokset;
+  })();
+
+export const hakemuksenTuloksiaYlempiVarallaAlempiVastaanotettuEhdollinen =
+  (() => {
+    const tulokset = clone(
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa,
+    );
+    if (tulokset[1]) {
+      tulokset[1].vastaanotettavuustila = 'EI_VASTAANOTETTAVISSA';
+      tulokset[1].vastaanottotila = VastaanottoTila.VASTAANOTTANUT_SITOVASTI;
     }
     return tulokset;
   })();
@@ -753,6 +803,7 @@ export const hakukohde1Yps = {
     en: 'linktostudyplace.fi',
   },
   yhdenPaikanSaanto: { voimassa: true },
+  koulutuksenAlkamisPvm: '2025-06-06',
 };
 
 export const hakukohde2Yps = {
@@ -763,4 +814,5 @@ export const hakukohde2Yps = {
   },
   uudenOpiskelijanUrl: null,
   yhdenPaikanSaanto: { voimassa: true },
+  koulutuksenAlkamisPvm: '2025-06-06',
 };
