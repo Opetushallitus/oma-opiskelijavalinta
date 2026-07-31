@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.clients
 
+import fi.oph.opiskelijavalinta.model.PaatettavaOpiskeluOikeus
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
@@ -30,10 +31,10 @@ class ValintaTulosServiceClient @Autowired (
     fetch(url)
   }
 
-  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, vastaanotto: String): Either[Throwable, String] = {
+  def postVastaanotto(hakemusOid: String, hakukohdeOid: String, body: String): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/valinta-tulos-service/auth/vastaanotto/hakemus/$hakemusOid/hakukohde/$hakukohdeOid"
-    post(url, s"{\"action\": \"$vastaanotto\"}", "vastaanotto")
+    post(url, body, "vastaanotto")
   }
 
   def postIlmoittautuminen(hakemusOid: String, hakuOid: String, body: String): Either[Throwable, String] = {
@@ -88,7 +89,7 @@ class ValintaTulosServiceClient @Autowired (
           LOG.error(
             s"Valintatulosten haku valintatulospalvelusta epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
-          Left(new RuntimeException("Failed to fetch applications: " + r.getResponseBody()))
+          Left(new RuntimeException("Valintatulosten haku valintatulospalvelusta epäonnistui: " + r.getResponseBody()))
       }
       Await.result(result, Duration(timeoutSeconds, TimeUnit.SECONDS))
     } catch {

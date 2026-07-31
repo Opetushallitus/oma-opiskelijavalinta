@@ -1,9 +1,9 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKU_OID}
+import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{mockVTSKeskenResponse, mockVTSResponse}
-import fi.oph.opiskelijavalinta.model.{Hakemus, HakutoiveenTulos}
+import fi.oph.opiskelijavalinta.model.{Hakemus, HakutoiveenTulos, PaatettavatOpiskeluOikeudetResponse}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
@@ -43,6 +43,19 @@ class ValintaTulosIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
+    Mockito
+      .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            PaatettavatOpiskeluOikeudetResponse(
+              paatettavatOpiskeluOikeudet = Option(List()),
+              virhe = None,
+              viesti = None
+            )
+          )
+        )
+      )
     val result = mvc
       .perform(
         MockMvcRequestBuilders
@@ -53,7 +66,7 @@ class ValintaTulosIntegrationTest extends BaseIntegrationTest {
       .andReturn()
     val tulokset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[Array[HakutoiveenTulos]]).toSeq
     Assertions.assertEquals(2, tulokset.length)
-    Assertions.assertEquals("hakukohde-oid-1", tulokset(0).hakukohdeOid.get)
+    Assertions.assertEquals(HAKUKOHDE_OID, tulokset.head.hakukohdeOid.get)
   }
 
   @Test

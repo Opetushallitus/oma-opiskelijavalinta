@@ -16,7 +16,9 @@ class LokalisointiServiceTest {
 
   private val client: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
 
-  private val service: LokalisointiService = LokalisointiService(client)
+  private val cachedService: CachedLokalisointiService = CachedLokalisointiService(client)
+
+  private val service: LokalisointiService = LokalisointiService(cachedService)
 
   private val fileName: String = "/test-translation.json";
 

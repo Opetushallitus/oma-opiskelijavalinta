@@ -78,7 +78,8 @@ class VastaanottoResource @Autowired (
           hakukohdeOid,
           hakemusOid,
           vastaanottoDto.hakuOid,
-          vastaanottoDto.vastaanottoKaannosAvain
+          vastaanottoDto.vastaanottoKaannosAvain,
+          AllowedVastaanottoTilaToiminto.valueOf(vastaanottoDto.vastaanotto)
         )
         AuditLog.log(
           request,

@@ -15,6 +15,7 @@ import fi.oph.opiskelijavalinta.clients.{
   KoutaClient,
   LokalisointiClient,
   OnrClient,
+  SuoritusPalveluClient,
   ValintaTulosServiceClient
 }
 import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
@@ -146,10 +147,10 @@ class BaseIntegrationTest {
   val lokalisointiClient: LokalisointiClient = Mockito.mock(classOf[LokalisointiClient])
 
   @MockitoBean(reset = MockReset.NONE)
-  val onrClient: OnrClient = Mockito.mock(classOf[OnrClient])
+  val onrService: OnrService = Mockito.mock(classOf[OnrService])
 
   @MockitoBean(reset = MockReset.NONE)
-  val onrService: OnrService = Mockito.mock(classOf[OnrService])
+  val supaClient: SuoritusPalveluClient = Mockito.mock(classOf[SuoritusPalveluClient])
 
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()
