@@ -273,6 +273,7 @@
       "paattyy": "Opiskeluoikeutesi päätetään {paattymisAika}, ennen uuden opiskeluoikeutesti alkamista {alkamisAika}. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
+      "virhe": "Opiskeluoikeuksien hakemisessa on ongelmia. Valitettavasti tietojen haku ei nyt onnistunut.",
       "varasijat": {
         "otsikko": "Varasijoihin liittyvät päättyvät opiskeluoikeudet",
         "kuvaus": "Jos tulet hyväksytyksi varasijalta, seuraavat voimassa olevat opiskeluoikeutesi päättyvät:"

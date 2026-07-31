@@ -193,3 +193,9 @@ export function naytetaankoPeruuntuvatOpiskelupaikat(
     tulos.paatettavatOpiskeluOikeudet.length > 0
   );
 }
+
+export function naytetaankoYosVirhe(tulos: HakutoiveenTulos): boolean {
+  return (
+    vastaanotettavissa(tulos.vastaanotettavuustila) && tulos.yosCheckFailed
+  );
+}
