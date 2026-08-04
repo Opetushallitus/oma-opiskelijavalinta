@@ -16,10 +16,12 @@ import fi.oph.opiskelijavalinta.model.{
   PaatettavaOpiskeluOikeus
 }
 import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
-import fi.oph.opiskelijavalinta.util.TranslationUtil
+import fi.oph.opiskelijavalinta.util.{TimeUtils, TranslationUtil}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.stereotype.Service
+
+import java.time.LocalDateTime
 
 enum AllowedIlmoittautumisTila:
   case LASNA_KOKO_LUKUVUOSI, LASNA
@@ -36,6 +38,7 @@ class VTSService @Autowired (
   vtsClient: ValintaTulosServiceClient,
   koodistoService: KoodistoService,
   supaService: SupaService,
+  koutaService: KoutaService,
   migriToken: MigriJsonWebToken,
   oiliToken: OiliJsonWebToken,
   mapper: ObjectMapper = new ObjectMapper()
@@ -45,6 +48,10 @@ class VTSService @Autowired (
   val migriUrl: String = null
 
   private val VASTAANOTETTAVAT_TILAT = List("VASTAANOTETTAVISSA_SITOVASTI", "VASTAANOTETTAVISSA_EHDOLLISESTI")
+
+  private val YOS_HAUN_AIKAISIN_HAKUAJAN_ALKU: LocalDateTime =
+    LocalDateTime.of(2026, 8, 1, 0, 0, 0)
+  private val YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI: Int = 2027
 
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
@@ -66,6 +73,22 @@ class VTSService @Autowired (
 
   private def varasijalla(tulos: HakutoiveenTulos): Boolean =
     tulos.valintatila.exists("VARALLA".equals(_))
+
+  private def kuluuYosPiiriin(hakuOid: String, hakukohdeOid: String): Boolean = {
+    val haku                   = koutaService.getHaku(hakuOid)
+    val varhaisinHakuaikaAlkaa = haku.hakuajat
+      .map(hakuaika => LocalDateTime.parse(hakuaika.alkaa, TimeUtils.KOUTA_DATETIME_FORMATTER))
+      .min
+
+    if (varhaisinHakuaikaAlkaa.isBefore(YOS_HAUN_AIKAISIN_HAKUAJAN_ALKU)) {
+      false
+    } else {
+      val hakukohde               = koutaService.getHakukohde(hakukohdeOid)
+      val koulutuksenAlkamisvuosi =
+        hakukohde.paateltyAlkamisajankohta.map(ajankohta => TimeUtils.parseKoutaDate(ajankohta.pvm).getYear)
+      koulutuksenAlkamisvuosi.exists(_ >= YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI)
+    }
+  }
 
   private def enrichHakutoiveenTulos(
     tulos: HakutoiveenTulos,
@@ -91,15 +114,17 @@ class VTSService @Autowired (
 
     var yosCheckFailed                                                          = false
     var opiskeluOikeudetJotkaVastaanottoPaattaa: List[PaatettavaOpiskeluOikeus] = List.empty
-    try {
-      opiskeluOikeudetJotkaVastaanottoPaattaa = (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
-        case (true, Some(hakukohdeOid)) => supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
-        case (_, _)                     => List.empty
-      }
-    } catch {
-      case e: Exception =>
-        LOG.error(s"Päätettävien opiskeluoikeuksien haku epäonnistui: ${e.getMessage}", e)
-        yosCheckFailed = true
+    (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
+      case (true, Some(hakukohdeOid)) if kuluuYosPiiriin(hakuOid, hakukohdeOid) =>
+        try {
+          opiskeluOikeudetJotkaVastaanottoPaattaa =
+            supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
+        } catch {
+          case e: Exception =>
+            LOG.error(s"Päätettävien opiskeluoikeuksien haku epäonnistui: ${e.getMessage}", e)
+            yosCheckFailed = true
+        }
+      case (_, _) => ()
     }
 
     HakutoiveenTulosEnriched(

@@ -48,6 +48,13 @@ object TimeUtils {
       val time = LocalDateTime.parse(timeStr, KOUTA_DATETIME_FORMATTER)
       now.isAfter(time)
     }
+  }
 
+  def parseKoutaDate(timeStr: String): LocalDate = {
+    if (timeStr.length.equals(KOUTA_DATE_PATTERN.length)) {
+      LocalDate.parse(timeStr, KOUTA_DATE_FORMATTER)
+    } else {
+      LocalDateTime.parse(timeStr, KOUTA_DATETIME_FORMATTER).toLocalDate
+    }
   }
 }

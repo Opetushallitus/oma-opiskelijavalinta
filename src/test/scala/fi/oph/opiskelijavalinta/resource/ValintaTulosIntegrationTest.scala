@@ -2,6 +2,7 @@ package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, oppijaUser, HAKEMUS_OID, HAKUKOHDE_OID, HAKU_OID, PERSON_OID}
+import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{hakukohde1, kaynnissaOlevaHaku}
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{mockVTSKeskenResponse, mockVTSResponse}
 import fi.oph.opiskelijavalinta.model.{Hakemus, HakutoiveenTulos, PaatettavatOpiskeluOikeudetResponse}
 import org.junit.jupiter.api.*
@@ -40,6 +41,12 @@ class ValintaTulosIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def returnsOnlyPublishedResults(): Unit = {
+    Mockito
+      .when(koutaClient.getHaku(HAKU_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
+    Mockito
+      .when(koutaClient.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(Right(objectMapper.writeValueAsString(hakukohde1)))
     Mockito
       .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(mockVTSResponse)))
