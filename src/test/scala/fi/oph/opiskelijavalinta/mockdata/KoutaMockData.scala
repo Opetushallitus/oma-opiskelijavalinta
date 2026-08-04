@@ -39,7 +39,7 @@ object KoutaMockData {
     TranslatedName("Leikkipuisto, Liukumäki", "", ""),
     None,
     Some(PaateltyAlkamiskausi(kausiUri = Some(KOULUTUKSEN_ALKAMISKAUSI_KEVAT))),
-    Some(PaateltyAlkamisajankohta(pvm = "2029-01-01", henkilokohtainenSuunnitelma = false))
+    Some(PaateltyAlkamisajankohta(pvm = Some("2029-01-01"), henkilokohtainenSuunnitelma = false))
   )
 
   val hakukohde2: Hakukohde = Hakukohde(

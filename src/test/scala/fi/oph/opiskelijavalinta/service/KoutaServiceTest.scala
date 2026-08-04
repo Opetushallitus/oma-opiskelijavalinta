@@ -107,7 +107,7 @@ class KoutaServiceTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta("2024-01-01", true)))
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(Some("2024-01-01"), true)))
           )
         )
       )
@@ -124,7 +124,7 @@ class KoutaServiceTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(tulevaisuus, false)))
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(Some(tulevaisuus), false)))
           )
         )
       )
@@ -140,7 +140,7 @@ class KoutaServiceTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(tulevaisuus, true)))
+            hakukohde1.copy(paateltyAlkamisajankohta = Some(PaateltyAlkamisajankohta(Some(tulevaisuus), true)))
           )
         )
       )

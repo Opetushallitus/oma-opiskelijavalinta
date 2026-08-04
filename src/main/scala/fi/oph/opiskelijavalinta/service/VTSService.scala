@@ -85,7 +85,9 @@ class VTSService @Autowired (
     } else {
       val hakukohde               = koutaService.getHakukohde(hakukohdeOid)
       val koulutuksenAlkamisvuosi =
-        hakukohde.paateltyAlkamisajankohta.map(ajankohta => TimeUtils.parseKoutaDate(ajankohta.pvm).getYear)
+        hakukohde.paateltyAlkamisajankohta.flatMap(ajankohta =>
+          ajankohta.pvm.map(TimeUtils.parseKoutaDate).map(_.getYear)
+        )
       koulutuksenAlkamisvuosi.exists(_ >= YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI)
     }
   }

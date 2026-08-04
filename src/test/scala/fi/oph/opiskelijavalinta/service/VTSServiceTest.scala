@@ -56,7 +56,7 @@ class VTSServiceTest {
     TranslatedName("Leikkipuisto, Liukumäki", "", ""),
     None,
     Some(PaateltyAlkamiskausi(kausiUri = Some("kausi_k"))),
-    Some(PaateltyAlkamisajankohta(pvm = "2027-01-01", henkilokohtainenSuunnitelma = false))
+    Some(PaateltyAlkamisajankohta(pvm = Some("2027-01-01"), henkilokohtainenSuunnitelma = false))
   )
 
   val hakuEiYosPiirissa: Haku = hakuYosPiirissa.copy(
