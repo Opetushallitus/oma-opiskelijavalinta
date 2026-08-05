@@ -41,7 +41,8 @@ class VTSService @Autowired (
   koutaService: KoutaService,
   migriToken: MigriJsonWebToken,
   oiliToken: OiliJsonWebToken,
-  mapper: ObjectMapper = new ObjectMapper()
+  mapper: ObjectMapper = new ObjectMapper(),
+  @Value("${yos.voimassaolo-check-enabled:true}") yosVoimassaoloAikarajatKaytossa: Boolean = true
 ) {
 
   @Value("${migri.url}")
@@ -75,20 +76,24 @@ class VTSService @Autowired (
     tulos.valintatila.exists("VARALLA".equals(_))
 
   private def kuuluuYosPiiriin(hakuOid: String, hakukohdeOid: String): Boolean = {
-    val haku                   = koutaService.getHaku(hakuOid)
-    val varhaisinHakuaikaAlkaa = haku.hakuajat
-      .map(hakuaika => LocalDateTime.parse(hakuaika.alkaa, TimeUtils.KOUTA_DATETIME_FORMATTER))
-      .min
+    if (yosVoimassaoloAikarajatKaytossa) {
+      val haku                   = koutaService.getHaku(hakuOid)
+      val varhaisinHakuaikaAlkaa = haku.hakuajat
+        .map(hakuaika => LocalDateTime.parse(hakuaika.alkaa, TimeUtils.KOUTA_DATETIME_FORMATTER))
+        .min
 
-    if (varhaisinHakuaikaAlkaa.isBefore(YOS_HAUN_AIKAISIN_HAKUAJAN_ALKU)) {
-      false
+      if (varhaisinHakuaikaAlkaa.isBefore(YOS_HAUN_AIKAISIN_HAKUAJAN_ALKU)) {
+        false
+      } else {
+        val hakukohde               = koutaService.getHakukohde(hakukohdeOid)
+        val koulutuksenAlkamisvuosi =
+          hakukohde.paateltyAlkamisajankohta.flatMap(ajankohta =>
+            ajankohta.pvm.map(TimeUtils.parseKoutaDate).map(_.getYear)
+          )
+        koulutuksenAlkamisvuosi.exists(_ >= YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI)
+      }
     } else {
-      val hakukohde               = koutaService.getHakukohde(hakukohdeOid)
-      val koulutuksenAlkamisvuosi =
-        hakukohde.paateltyAlkamisajankohta.flatMap(ajankohta =>
-          ajankohta.pvm.map(TimeUtils.parseKoutaDate).map(_.getYear)
-        )
-      koulutuksenAlkamisvuosi.exists(_ >= YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI)
+      true
     }
   }
 

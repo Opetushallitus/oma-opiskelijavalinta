@@ -40,7 +40,15 @@ class VTSServiceTest {
   val migriToken: MigriJsonWebToken        = Mockito.mock(classOf[MigriJsonWebToken])
   val oiliToken: OiliJsonWebToken          = Mockito.mock(classOf[OiliJsonWebToken])
   val vtsService                           =
-    VTSService(vtsClient, mockKoodistoService, mockSupaService, mockKoutaService, migriToken, oiliToken)
+    VTSService(
+      vtsClient,
+      mockKoodistoService,
+      mockSupaService,
+      mockKoutaService,
+      migriToken,
+      oiliToken,
+      yosVoimassaoloAikarajatKaytossa = true
+    )
 
   val hakuYosPiirissa: Haku = Haku(
     HAKU_OID,

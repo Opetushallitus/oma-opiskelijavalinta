@@ -61,3 +61,6 @@ spring:
   session:
     jdbc:
         cleanup-cron: 0 * * * * *
+
+yos:
+  voimassaolo-check-enabled: {{oma_opiskelijavalinta_yos_voimassaolo_check_enabled | default('true')}}
