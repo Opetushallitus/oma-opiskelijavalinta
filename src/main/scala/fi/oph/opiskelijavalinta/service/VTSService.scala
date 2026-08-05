@@ -74,7 +74,7 @@ class VTSService @Autowired (
   private def varasijalla(tulos: HakutoiveenTulos): Boolean =
     tulos.valintatila.exists("VARALLA".equals(_))
 
-  private def kuluuYosPiiriin(hakuOid: String, hakukohdeOid: String): Boolean = {
+  private def kuuluuYosPiiriin(hakuOid: String, hakukohdeOid: String): Boolean = {
     val haku                   = koutaService.getHaku(hakuOid)
     val varhaisinHakuaikaAlkaa = haku.hakuajat
       .map(hakuaika => LocalDateTime.parse(hakuaika.alkaa, TimeUtils.KOUTA_DATETIME_FORMATTER))
@@ -117,7 +117,7 @@ class VTSService @Autowired (
     var yosCheckFailed                                                          = false
     var opiskeluOikeudetJotkaVastaanottoPaattaa: List[PaatettavaOpiskeluOikeus] = List.empty
     (vastaanotettavissa(tulos), tulos.hakukohdeOid) match {
-      case (true, Some(hakukohdeOid)) if kuluuYosPiiriin(hakuOid, hakukohdeOid) =>
+      case (true, Some(hakukohdeOid)) if kuuluuYosPiiriin(hakuOid, hakukohdeOid) =>
         try {
           opiskeluOikeudetJotkaVastaanottoPaattaa =
             supaService.haePaattyvatOpiskeluOikeudet(hakijaOid, hakuOid, hakukohdeOid)
