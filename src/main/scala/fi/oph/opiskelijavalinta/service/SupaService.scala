@@ -80,6 +80,7 @@ class SupaService @Autowired (
     val oikeudet = Await.result(
       database.run(sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
             WHERE HAKUKOHDE_OID = $hakukohdeOid AND SESSION_ID = $sessionId
+            ORDER BY ID DESC
         """.as[String]),
       Duration(10, TimeUnit.SECONDS)
     )
