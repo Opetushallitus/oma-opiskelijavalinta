@@ -22,7 +22,7 @@ object KoutaMockData {
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
     "haunkohdejoukko_20",
     "hakutapa_01",
-    Seq(Hakuaika("2024-11-19T09:32:01", koutaFormatFutureDate))
+    Seq(Hakuaika("2026-08-01T00:00:00", koutaFormatFutureDate))
   )
 
   val hakuaikaPaattynytHaku: Haku = Haku(
@@ -39,7 +39,7 @@ object KoutaMockData {
     TranslatedName("Leikkipuisto, Liukumäki", "", ""),
     None,
     Some(PaateltyAlkamiskausi(kausiUri = Some(KOULUTUKSEN_ALKAMISKAUSI_KEVAT))),
-    Some(PaateltyAlkamisajankohta(pvm = "2029-01-01", henkilokohtainenSuunnitelma = false))
+    Some(PaateltyAlkamisajankohta(pvm = Some("2029-01-01"), henkilokohtainenSuunnitelma = false))
   )
 
   val hakukohde2: Hakukohde = Hakukohde(

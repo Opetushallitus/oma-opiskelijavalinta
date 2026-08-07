@@ -4,7 +4,7 @@ case class YhdenPaikanSaanto(voimassa: Boolean)
 
 case class PaateltyAlkamiskausi(kausiUri: Option[String])
 
-case class PaateltyAlkamisajankohta(pvm: String, henkilokohtainenSuunnitelma: Boolean)
+case class PaateltyAlkamisajankohta(pvm: Option[String], henkilokohtainenSuunnitelma: Boolean)
 
 case class Hakukohde(
   oid: String,

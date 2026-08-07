@@ -62,3 +62,6 @@ app:
   db:
     threads: 2
 
+yos:
+  voimassaolo-check-enabled: true
+

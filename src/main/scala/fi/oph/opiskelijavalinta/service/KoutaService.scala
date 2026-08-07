@@ -100,19 +100,19 @@ class KoutaService @Autowired (cachedService: CachedKoutaService) {
   }
 
   private def koulutuksenAlkuPvm(ajankohta: PaateltyAlkamisajankohta, hakukohdeOid: String): Option[String] = {
-    (ajankohta.pvm, ajankohta.pvm.isBlank, ajankohta.henkilokohtainenSuunnitelma) match {
-      case (_, true, false) =>
+    (ajankohta.pvm, ajankohta.henkilokohtainenSuunnitelma) match {
+      case (None, false) =>
         LOG.warn(
           s"Hakukohteelle $hakukohdeOid ei ole aseteltu päättymispäivämäärää ja se ei ole myöskään henkilökohtaisen suunnitelman mukainen"
         )
         None
-      case (pvm, false, false) =>
+      case (Some(pvm), false) =>
         if (TimeUtils.isNowAfter(pvm)) {
           Some(TimeUtils.KOUTA_DATE_FORMATTER.format(ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)))
         } else {
           Some(pvm)
         }
-      case (_, _, true) =>
+      case (_, true) =>
         Some(TimeUtils.KOUTA_DATE_FORMATTER.format(ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)))
     }
   }
