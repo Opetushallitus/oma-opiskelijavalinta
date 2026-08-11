@@ -6,12 +6,12 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.SuoritusPalveluClient
+import fi.oph.opiskelijavalinta.util.DBUtil.runBlocking
 import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpiskeluOikeudetResponse, YosVirhe}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.context.request.RequestContextHolder
-import slick.jdbc.JdbcBackend.JdbcDatabaseDef
 import slick.jdbc.PostgresProfile.api.*
 
 import java.util.concurrent.TimeUnit
@@ -21,7 +21,7 @@ import scala.concurrent.duration.Duration
 @Service
 class SupaService @Autowired (
   supaClient: SuoritusPalveluClient,
-  database: JdbcDatabaseDef,
+  database: Database,
   mapper: ObjectMapper = new ObjectMapper()
 ) {
 
@@ -110,14 +110,13 @@ class SupaService @Autowired (
     val oikeudetJson: String = mapper.writeValueAsString(oikeudet)
     val attributes           = RequestContextHolder.currentRequestAttributes()
     val sessionId            = RequestContextHolder.currentRequestAttributes().getSessionId
-    Await.result(
-      database.run(sql"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
+
+    val sql: DBIO[_] = sqlu"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
       VALUES(
         $sessionId,
         $hakukohdeOid,
         $oikeudetJson::json
-      )""".as[String]),
-      Duration(5, TimeUnit.SECONDS)
-    )
+      )"""
+    database.runBlocking(sql, Duration(5, TimeUnit.SECONDS))
   }
 }

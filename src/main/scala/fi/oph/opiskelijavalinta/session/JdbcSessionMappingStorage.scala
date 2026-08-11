@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.session
 
+import fi.oph.opiskelijavalinta.util.DBUtil.runBlocking
 import jakarta.servlet.http.HttpSession
 import org.apereo.cas.client.session.SessionMappingStorage
 import org.slf4j.LoggerFactory
@@ -37,7 +38,7 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
   def removeBySessionById(sessionId: String): Unit = {
     LOG.debug(s"Poistetaan sessiomappaus session id:llä $sessionId")
     val sql = sqlu"""DELETE FROM #$mappingTableName WHERE session_id = $sessionId"""
-    Await.result(db.run(sql), Duration(10, TimeUnit.SECONDS))
+    db.runBlocking(sql, Duration(10, TimeUnit.SECONDS))
   }
 
   @Override
@@ -45,7 +46,7 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
     LOG.debug(s"Lisätään sessiomappaus, mappingId: $mappingId, sessionId: ${session.getId}")
     val sql =
       sqlu"""INSERT INTO #$mappingTableName (mapped_ticket_id, session_id) VALUES ($mappingId, ${session.getId}) ON CONFLICT (mapped_ticket_id) DO NOTHING"""
-    Await.result(db.run(sql), Duration(10, TimeUnit.SECONDS))
+    db.runBlocking(sql, Duration(10, TimeUnit.SECONDS))
   }
 
 }
