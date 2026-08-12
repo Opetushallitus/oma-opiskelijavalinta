@@ -10,7 +10,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.{RequestContextHolder, ServletRequestAttributes}
-import slick.jdbc.JdbcBackend.JdbcDatabaseDef
+import slick.jdbc.PostgresProfile.api.Database
 
 import scala.concurrent.Future
 
@@ -18,7 +18,7 @@ import scala.concurrent.Future
 class SupaServiceTest {
 
   val supaClient: SuoritusPalveluClient = Mockito.mock(classOf[SuoritusPalveluClient])
-  val database: JdbcDatabaseDef         = Mockito.mock(classOf[JdbcDatabaseDef])
+  val database: Database                = Mockito.mock(classOf[Database])
 
   val service = SupaService(supaClient, database)
 
