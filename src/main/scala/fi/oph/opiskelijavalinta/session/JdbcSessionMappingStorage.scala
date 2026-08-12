@@ -8,8 +8,8 @@ import org.springframework.session.{Session, SessionRepository}
 import slick.jdbc.PostgresProfile.api.*
 
 import java.util.concurrent.TimeUnit
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
 
 class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], db: Database)(implicit
   ec: ExecutionContext
@@ -25,7 +25,7 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
     LOG.debug(s"Poistetaan sessiomappaus cas tiketillä $mappingId")
     val query =
       sql"""SELECT session_id FROM #$mappingTableName WHERE mapped_ticket_id = $mappingId""".as[String].headOption
-    val sessionIdOpt = Await.result(db.run(query), Duration(10, TimeUnit.SECONDS))
+    val sessionIdOpt = db.runBlocking(query, Duration(10, TimeUnit.SECONDS))
     LOG.debug(s"Löytyi poistettava sessio $sessionIdOpt")
     sessionIdOpt.foreach { sessionId =>
       LOG.debug(s"Poistetaan sessio $sessionId")

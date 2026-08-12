@@ -6,8 +6,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import fi.oph.opiskelijavalinta.clients.SuoritusPalveluClient
-import fi.oph.opiskelijavalinta.util.DBUtil.runBlocking
 import fi.oph.opiskelijavalinta.model.{PaatettavaOpiskeluOikeus, PaatettavatOpiskeluOikeudetResponse, YosVirhe}
+import fi.oph.opiskelijavalinta.util.DBUtil.runBlocking
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -15,7 +15,6 @@ import org.springframework.web.context.request.RequestContextHolder
 import slick.jdbc.PostgresProfile.api.*
 
 import java.util.concurrent.TimeUnit
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 @Service
@@ -77,13 +76,10 @@ class SupaService @Autowired (
   def fetchOpiskeluOikeudetFromSession(hakukohdeOid: String): Option[List[PaatettavaOpiskeluOikeus]] = {
     val sessionId = RequestContextHolder.currentRequestAttributes().getSessionId
     LOG.info(s"Haetaan päätettävät opiskeluoikeudet sessiosta $sessionId hakukohteelle $hakukohdeOid")
-    val oikeudet = Await.result(
-      database.run(sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
-            WHERE HAKUKOHDE_OID = $hakukohdeOid AND SESSION_ID = $sessionId
-            ORDER BY ID DESC
-        """.as[String]),
-      Duration(10, TimeUnit.SECONDS)
-    )
+    val query = sql"""SELECT PAATETTAVAT_OIKEUDET FROM PAATETTAVAT_OPISKELUOIKEUDET
+                      WHERE HAKUKOHDE_OID = $hakukohdeOid AND SESSION_ID = $sessionId
+                      ORDER BY ID DESC""".as[String]
+    val oikeudet = database.runBlocking(query, Duration(10, TimeUnit.SECONDS))
     if (oikeudet.isEmpty) {
       LOG.info(s"Päätettäviä oikeuksia ei löytynyt hakutoiveelle $hakukohdeOid ja sessiolle $sessionId")
       None
@@ -111,7 +107,7 @@ class SupaService @Autowired (
     val attributes           = RequestContextHolder.currentRequestAttributes()
     val sessionId            = RequestContextHolder.currentRequestAttributes().getSessionId
 
-    val sql: DBIO[_] = sqlu"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
+    val sql = sqlu"""INSERT INTO PAATETTAVAT_OPISKELUOIKEUDET(SESSION_ID, HAKUKOHDE_OID, PAATETTAVAT_OIKEUDET)
       VALUES(
         $sessionId,
         $hakukohdeOid,
