@@ -6,6 +6,9 @@
     "peruuta": "Peruuta",
     "logout": "Kirjaudu ulos"
   },
+  "saavutettavuus": {
+    "linkki-uusi-ikkuna-oletus-loppuosa": ". Linkki aukeaa uuteen ikkunaan."
+  },
   "logout": {
     "otsikko": "Olet kirjautunut ulos",
     "info": "Sinut on kirjattu ulos palvelusta.",
@@ -60,6 +63,7 @@
     "nayta": "Näytä hakemus",
     "tutustu": "Tutustu uuteen opiskelupaikkaasi",
     "tutustu-linkki": "Tietoa opiskelupaikasta uudelle opiskelijalle",
+    "tutustu-linkki-title": "Tämä linkki vie oppilaitoksen uuden opiskelijan ohjeisiin",
     "info": {
       "lahettanyt": "Olet täyttänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen.",
@@ -282,16 +286,20 @@
   },
   "kela": {
     "otsake": "Tee opintotukihakemus",
-    "linkki": "Siirry Kelan asiointipalveluun"
+    "linkki": "Siirry Kelan asiointipalveluun",
+    "linkki-title": "Tämä linkki vie Kelan asiointipalveluun"
   },
   "migri": {
     "otsake": "Voit nyt hakea oleskelulupaa",
     "ohjeet": "Katso ensin ohjeet oleskeluluvan hakemiseen: ",
     "ohjelinkki": "opas opiskelijoille",
+    "ohjelinkki-title": "Tämä linkki vie Maahanmuuttoviraston palveluun",
     "oppilasnumero": "Kansallinen oppilasnumerosi annetaan automaattisesti oleskelulupahakemuksessasi tämän linkin kautta:",
-    "hae": "Hae oleskelulupaa"
+    "hae": "Hae oleskelulupaa",
+    "hae-title": "Tämä linkki vie Maahanmuuttoviraston palveluun"
   },
   "tuloskirje": "Tuloskirje {pvm}",
+  "tuloskirje-saavutettava": "Lataa tuloskirje {pvm}",
   "vastaanottoviesti": {
     "virhe": "Vastaanoton vahvistusviestin lähetys epäonnistui",
     "otsikko": "Opintopolku: Vastauksesi on vastaanotettu",
