@@ -33,6 +33,7 @@ import fi.oph.opiskelijavalinta.model.{
   PaatettavatOpiskeluOikeudetResponse,
   TranslatedName
 }
+import fi.oph.opiskelijavalinta.util.TimeUtils
 import fi.oph.opiskelijavalinta.security.{MigriJWT, MigriJsonWebToken}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
@@ -42,6 +43,8 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import pdi.jwt.{Jwt, JwtAlgorithm}
+
+import java.time.ZonedDateTime
 
 class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
@@ -360,6 +363,77 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
     Assertions.assertEquals(MASTER_OID, decoded.hakijaOid)
     Assertions.assertTrue(decoded.expires > System.currentTimeMillis())
+  }
+
+  @Test
+  def doesNotCallVTSIfApplicationPaymentIsPending(): Unit = {
+    val pastDate   = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)
+    val futureDate = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1)
+    Mockito.reset(ataruClient)
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                HAKEMUS_OID,
+                HAKU_OID,
+                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                Some("awaiting"),
+                Some(futureDate),
+                Some("100"),
+                None,
+                TranslatedName("LinkkiLomake", "Samma på svenska", "Linkform"),
+                None,
+                None,
+                None,
+                None
+              ),
+              Hakemus(
+                "1.23.4.5",
+                null,
+                List.empty,
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                Some("overdue"),
+                Some(pastDate),
+                Some("100"),
+                None,
+                TranslatedName("WanhaLomake", "Gamla form", "Oldform"),
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.HAKEMUKSET_PATH)
+          .`with`(user(oppijaUser))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    val hakemukset = objectMapper.readValue(result.getResponse.getContentAsString, classOf[HakemuksetEnriched])
+    Assertions.assertEquals(2, hakemukset.current.length)
+    Assertions.assertEquals(0, hakemukset.old.length)
+    val app = hakemukset.current.head
+    assertHakemus(app)
+    Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
+    Mockito.verifyNoInteractions(valintaTulosServiceClient)
   }
 
   private def assertHakemus(app: HakemusEnriched): Unit = {

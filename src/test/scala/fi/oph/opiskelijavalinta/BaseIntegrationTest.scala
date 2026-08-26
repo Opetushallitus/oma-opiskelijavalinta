@@ -163,21 +163,7 @@ class BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                Option.empty,
-                Option.empty,
-                None,
-                None
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )
@@ -187,6 +173,23 @@ class BaseIntegrationTest {
     postgres.stop()
   }
 
+  val mockHakemus: Hakemus = Hakemus(
+    HAKEMUS_OID,
+    HAKU_OID,
+    List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
+    "secret1",
+    "2025-11-19T09:32:01.886Z",
+    false,
+    None,
+    None,
+    None,
+    None,
+    TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
+    Option.empty,
+    Option.empty,
+    Some("testi.kayttaja@example.org"),
+    Some("fi")
+  )
   var capturedOutput: CapturedOutput = null
   var outputLength                   = 0;
 

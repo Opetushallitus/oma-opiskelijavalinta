@@ -14,6 +14,7 @@ import fi.oph.opiskelijavalinta.model.{
   HakuEnriched,
   HakukohdeEnriched,
   HakutoiveenTulosEnriched,
+  Maksutila,
   Ohjausparametrit
 }
 import org.slf4j.{Logger, LoggerFactory}
@@ -146,6 +147,13 @@ class HakemuksetService @Autowired (
     hakemus.haku.isDefined && now >= hakemus.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
+  private def odottaaHakemusmaksua(hakemus: Hakemus) = {
+    hakemus.paymentState.exists(status =>
+      status == Maksutila.awaiting.toString ||
+        status == Maksutila.overdue.toString
+    )
+  }
+
   private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
     HakuEnriched(
       haku.oid,
@@ -181,8 +189,8 @@ class HakemuksetService @Autowired (
         )
       )
 
-      // haetaan tulokset vain ajankohtaisille hakemuksille
-      if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
+      // haetaan tulokset vain ajankohtaisille hakemuksille, ei haeta tuloksia jos hakemusmaksu puuttuu
+      if (isAjankohtainenHaullinenHakemus(ohjausparametrit) && !odottaaHakemusmaksua(hakemus)) {
         try {
           // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
           hakutoiveidenTulokset =
