@@ -224,21 +224,7 @@ class YosIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                Some("testi.kayttaja@example.org"),
-                Some("fi")
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )

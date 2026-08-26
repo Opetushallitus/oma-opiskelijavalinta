@@ -60,6 +60,10 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,
+                None,
+                None,
+                None,
+                None,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 None,
                 None,
@@ -86,21 +90,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, "hakukohde-oid-2"),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                None,
-                None
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )
@@ -123,21 +113,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, "hakukohde-oid-2"),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                None,
-                None
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )

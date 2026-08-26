@@ -1,7 +1,10 @@
 package fi.oph.opiskelijavalinta.model
 
 import com.fasterxml.jackson.annotation.{JsonKey, JsonProperty}
-import fi.oph.opiskelijavalinta.model.Haku
+import java.time.ZonedDateTime
+
+enum Maksutila:
+  case awaiting, notRequired, OkByProxy, overdue, paid
 
 case class Hakemus(
   oid: String,
@@ -10,6 +13,10 @@ case class Hakemus(
   secret: String,
   submitted: String,
   processing: Boolean,
+  paymentState: Option[String],
+  paymentDueDate: Option[ZonedDateTime],
+  paymentSum: Option[String],
+  paymentReason: Option[String],
   @JsonProperty("form-name") formName: TranslatedName,
   hakuaikaIsOn: Option[Boolean],
   hakuaikaEnds: Option[Long],
