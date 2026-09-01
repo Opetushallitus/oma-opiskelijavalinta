@@ -6,7 +6,7 @@ import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.model.{OppijanTunnistusVerification, OppijantunnistusMetadata}
 import fi.oph.opiskelijavalinta.security.LinkAuthenticationProvider
 import fi.oph.opiskelijavalinta.service.{LinkVerificationService, OnrService}
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.{BeforeEach, Test}
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.bean.`override`.mockito.{MockReset, MockitoBean}
@@ -17,6 +17,11 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val verificationService: LinkVerificationService = Mockito.mock(classOf[LinkVerificationService])
+
+  @BeforeEach
+  def resetMocks(): Unit = {
+    Mockito.reset(onrService)
+  }
 
   @Test
   def returnsForbiddenForInvalidToken(): Unit = {

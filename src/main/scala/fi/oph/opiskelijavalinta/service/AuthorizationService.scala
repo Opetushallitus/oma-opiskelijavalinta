@@ -71,4 +71,10 @@ class AuthorizationService @Autowired (hakemuksetService: HakemuksetService) {
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     principal.attributes.get("masterOid")
   }
+
+  def getMasterOidOrPersonOid: Option[String] =
+    getMasterOidForUser.orElse {
+      LOG.info("Istunnosta puuttuu master-oid, käytetään personOid-attribuuttia")
+      getPersonOid
+    }
 }

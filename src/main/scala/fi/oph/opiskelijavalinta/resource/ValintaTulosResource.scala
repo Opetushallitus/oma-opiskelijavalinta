@@ -37,7 +37,7 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
           .getValinnanTulokset(oppilasnumero, hakuOid, hakemusOid)
           .map(ht => {
             if (linkUser) {
-              val masterOid = authorizationService.getMasterOidForUser.getOrElse(oppilasnumero)
+              val masterOid                               = authorizationService.getMasterOidOrPersonOid.get
               val toiveet: List[HakutoiveenTulosEnriched] =
                 ht.hakutoiveet.map(toive => vtsService.addJwtsForLinkUserIfNecessary(masterOid, toive))
               ht.copy(hakutoiveet = toiveet)

@@ -45,7 +45,7 @@ class HakemuksetResource @Autowired (
     )
     if (linkUser) {
       val hakemusOid      = authorizationService.getHakemusOidFromLinkUser
-      val masterOid       = authorizationService.getMasterOidForUser.getOrElse(personOid.get)
+      val masterOid       = authorizationService.getMasterOidOrPersonOid.get
       val currentFiltered = hakemukset.current
         .filter(h => h.oid.equals(hakemusOid.getOrElse("")))
         .map(h => mapTuloksetWithJwtsForLinkUser(h, masterOid))
