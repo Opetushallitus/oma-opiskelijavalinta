@@ -13,7 +13,7 @@ import fi.oph.opiskelijavalinta.security.{
   OiliJsonWebToken,
   OppijaUserDetails
 }
-import fi.oph.opiskelijavalinta.service.LinkVerificationService
+import fi.oph.opiskelijavalinta.service.{LinkVerificationService, OnrService}
 import fi.oph.viestinvalitys.{ClientBuilder, ViestinvalitysClient}
 import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import jakarta.servlet.{Filter, FilterChain, ServletRequest, ServletResponse}
@@ -325,9 +325,10 @@ class SecurityConfiguration {
 
   @Bean
   def linkAuthenticationProvider(
-    linkVerificationService: LinkVerificationService
+    linkVerificationService: LinkVerificationService,
+    onrService: OnrService
   ): LinkAuthenticationProvider =
-    new LinkAuthenticationProvider(linkVerificationService)
+    new LinkAuthenticationProvider(linkVerificationService, onrService)
 
   @Bean
   def ticketValidator(environment: Environment): TicketValidator =

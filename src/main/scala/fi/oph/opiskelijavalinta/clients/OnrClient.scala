@@ -25,7 +25,14 @@ class OnrClient @Autowired (
     val requestBuilder = new RequestBuilder().setMethod("GET").setUrl(url)
     try {
       val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(timeouts.onr, TimeUnit.SECONDS))
-      Right(response.getResponseBody)
+      if response.getStatusCode == 200 then
+        LOG.debug(s"Oppijan henkilötiedot haettu onnistunesti")
+        Right(response.getResponseBody())
+      else
+        val msg =
+          s"HTTP ${response.getStatusCode}: ${response.getStatusText} - ${response.getResponseBody}"
+        LOG.error(s"Virhe oppijan henkilötietojen hakemisessa: $msg")
+        Left(RuntimeException(msg))
     } catch {
       case e: Throwable =>
         LOG.error(s"Virhe haettaessa henkilötietoja osoitteesta $url: ${e.getMessage}", e)

@@ -1,7 +1,6 @@
 package fi.oph.opiskelijavalinta.security
 
-import fi.oph.opiskelijavalinta.security.Authorities
-import fi.oph.opiskelijavalinta.service.LinkVerificationService
+import fi.oph.opiskelijavalinta.service.{LinkVerificationService, OnrService}
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -15,7 +14,7 @@ class LinkAuthenticationException(message: String, cause: Throwable = null)
   def this(message: String) = this(message, null)
 }
 
-class LinkAuthenticationProvider(linkVerificationService: LinkVerificationService)
+class LinkAuthenticationProvider(linkVerificationService: LinkVerificationService, onrService: OnrService)
     extends org.springframework.security.authentication.AuthenticationProvider {
 
   private val LOG = org.slf4j.LoggerFactory.getLogger(classOf[LinkAuthenticationProvider])
@@ -46,12 +45,26 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     val personOid = meta.personOid.getOrElse(
       throw new LinkAuthenticationException("oppijan oid puuttuu kirjautumistokenin metadatasta")
     )
+
+    val personInfo =
+      try {
+        onrService.getPersonInfo(personOid)
+      } catch {
+        case e: Exception =>
+          LOG.warn(s"Oppijan tietojen haku epäonnistui: $personOid", e)
+          throw new RuntimeException(
+            "oppijan tietojen hakeminen epäonnistui linkkikirjautuneelle",
+            e
+          )
+      }
+
     val hakemusOid = meta.hakemusOid
 
     val attrs = Map(
       "personOid"  -> personOid,
       "hakemusOid" -> hakemusOid,
-      "hakuOid"    -> meta.hakuOid.getOrElse("")
+      "hakuOid"    -> meta.hakuOid.getOrElse(""),
+      "masterOid"  -> personInfo.oppijanumero
     )
 
     val principal = new OppijaUser(
