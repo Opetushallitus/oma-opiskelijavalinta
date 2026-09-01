@@ -11,9 +11,9 @@ import org.mockito.Mockito
 class OnrServiceTest {
 
   val onrClient: OnrClient = Mockito.mock(classOf[OnrClient])
-  val service: OnrService = OnrService(onrClient, objectMapper)
+  val service: OnrService  = OnrService(onrClient, objectMapper)
 
-  val OID = "1.2.246.562.24.12345678901"
+  val OID  = "1.2.246.562.24.12345678901"
   val HETU = "010190-123A"
 
   val oppija = Oppija(
@@ -25,7 +25,8 @@ class OnrServiceTest {
 
   @Test
   def returnsPersonInfoWhenSuccessful(): Unit = {
-    Mockito.when(onrClient.getPersonInfo(OID))
+    Mockito
+      .when(onrClient.getPersonInfo(OID))
       .thenReturn(Right(objectMapper.writeValueAsString(oppija)))
 
     val result = service.getPersonInfo(OID)
@@ -35,7 +36,8 @@ class OnrServiceTest {
 
   @Test
   def throwsWhenClientFails(): Unit = {
-    Mockito.when(onrClient.getPersonInfo(OID))
+    Mockito
+      .when(onrClient.getPersonInfo(OID))
       .thenReturn(Left(RuntimeException("verkkovirhe")))
 
     val exception = Assertions.assertThrows(
@@ -51,7 +53,8 @@ class OnrServiceTest {
 
   @Test
   def throwsWhenDeserializationFails(): Unit = {
-    Mockito.when(onrClient.getPersonInfo(OID))
+    Mockito
+      .when(onrClient.getPersonInfo(OID))
       .thenReturn(Right("invalid json"))
 
     val exception = Assertions.assertThrows(
@@ -66,7 +69,8 @@ class OnrServiceTest {
 
   @Test
   def returnsPersonInfoByHetuWhenSuccessful(): Unit = {
-    Mockito.when(onrClient.getPersonInfoByHetu(HETU))
+    Mockito
+      .when(onrClient.getPersonInfoByHetu(HETU))
       .thenReturn(Right(objectMapper.writeValueAsString(oppija)))
 
     val result = service.getPersonInfoByHetu(HETU)
@@ -76,7 +80,8 @@ class OnrServiceTest {
 
   @Test
   def throwsWhenClientFailsByHetu(): Unit = {
-    Mockito.when(onrClient.getPersonInfoByHetu(HETU))
+    Mockito
+      .when(onrClient.getPersonInfoByHetu(HETU))
       .thenReturn(Left(RuntimeException("verkkovirhe")))
 
     val exception = Assertions.assertThrows(
@@ -92,7 +97,8 @@ class OnrServiceTest {
 
   @Test
   def throwsWhenDeserializationFailsByHetu(): Unit = {
-    Mockito.when(onrClient.getPersonInfoByHetu(HETU))
+    Mockito
+      .when(onrClient.getPersonInfoByHetu(HETU))
       .thenReturn(Right("invalid json"))
 
     val exception = Assertions.assertThrows(
