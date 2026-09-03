@@ -1,14 +1,11 @@
 package fi.oph.opiskelijavalinta.resource
 
 import fi.oph.opiskelijavalinta.BaseIntegrationTest
-import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.clients.model.Oppija
 import fi.oph.opiskelijavalinta.model.{OppijanTunnistusVerification, OppijantunnistusMetadata}
-import fi.oph.opiskelijavalinta.security.LinkAuthenticationProvider
 import fi.oph.opiskelijavalinta.service.{LinkVerificationService, OnrService}
 import org.junit.jupiter.api.{BeforeEach, Test}
 import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.bean.`override`.mockito.{MockReset, MockitoBean}
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*

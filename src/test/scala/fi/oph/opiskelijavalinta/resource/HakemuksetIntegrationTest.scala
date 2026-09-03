@@ -10,6 +10,7 @@ import fi.oph.opiskelijavalinta.TestUtils.{
   HAKUKOHDE_OID,
   HAKUKOHDE_OID_2,
   HAKU_OID,
+  MASTER_OID,
   PERSON_OID
 }
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.{
@@ -25,20 +26,27 @@ import fi.oph.opiskelijavalinta.mockdata.OhjausparametritMockData.{
 }
 import fi.oph.opiskelijavalinta.mockdata.VTSMockData.*
 import fi.oph.opiskelijavalinta.model.{
+  HakemuksenTulos,
   HakemuksetEnriched,
   Hakemus,
   HakemusEnriched,
   PaatettavatOpiskeluOikeudetResponse,
   TranslatedName
 }
+import fi.oph.opiskelijavalinta.security.{MigriJWT, MigriJsonWebToken}
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.fail
 import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import pdi.jwt.{Jwt, JwtAlgorithm}
 
 class HakemuksetIntegrationTest extends BaseIntegrationTest {
+
+  @Autowired
+  private var migriToken: MigriJsonWebToken = _
 
   @BeforeEach
   def init(): Unit = {
@@ -264,6 +272,94 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     assertHakemus(app)
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
     Assertions.assertEquals(2, app.hakemuksenTulokset.size)
+  }
+
+  @Test
+  def returnsMigriJwtWithMasterOidForLinkUser(): Unit = {
+    Mockito
+      .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
+      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(
+              Hakemus(
+                HAKEMUS_OID,
+                HAKU_OID,
+                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
+                "secret1",
+                "2025-11-19T09:32:01.886Z",
+                false,
+                TranslatedName("LinkkiLomake", "Samma på svenska", "Linkform"),
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(valintaTulosServiceClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            HakemuksenTulos(
+              hakuOid = Some(HAKU_OID),
+              hakemusOid = Some(HAKEMUS_OID),
+              hakijaOid = Some(PERSON_OID),
+              hakutoiveet = List(hakutoive1Hyvaksytty.copy(showMigriURL = Some(true)), hakutoive2Kesken)
+            )
+          )
+        )
+      )
+    Mockito
+      .when(supaClient.getPaattyvatOpintoOikeudet(PERSON_OID, HAKU_OID, HAKUKOHDE_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            PaatettavatOpiskeluOikeudetResponse(
+              paatettavatOpiskeluOikeudet = Option(List()),
+              virhe = None,
+              viesti = None
+            )
+          )
+        )
+      )
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.HAKEMUKSET_PATH)
+          .`with`(user(linkUser))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    val hakemukset =
+      objectMapper.readValue(
+        result.getResponse.getContentAsString,
+        classOf[HakemuksetEnriched]
+      )
+
+    val hakutoive = hakemukset.current.head.hakemuksenTulokset.head
+
+    val migriUrl = hakutoive.migriURL.get
+    val jwt      = migriUrl.split("\\?token=").last
+
+    val payload = Jwt
+      .decode(jwt, migriToken.secret, Seq(JwtAlgorithm.HS256))
+      .get
+
+    val decoded = objectMapper.readValue(
+      payload.content,
+      classOf[MigriJWT]
+    )
+
+    Assertions.assertEquals(MASTER_OID, decoded.hakijaOid)
+    Assertions.assertTrue(decoded.expires > System.currentTimeMillis())
   }
 
   private def assertHakemus(app: HakemusEnriched): Unit = {

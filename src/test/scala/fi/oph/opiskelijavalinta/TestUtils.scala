@@ -12,6 +12,7 @@ import java.util
 object TestUtils {
 
   val PERSON_OID = "1.2.246.562.24.83491118298"
+  val MASTER_OID = "1.2.246.562.24.83491118299"
 
   final val HAKEMUS_OID = "1.2.246.562.11.00000000000002121541"
 
@@ -42,7 +43,7 @@ object TestUtils {
     new OppijaUser(Map.empty[String, String], username = "testuser2", authorities = authorities)
 
   val linkUser: OppijaUser =
-    val attributes  = Map("personOid" -> PERSON_OID, "hakemusOid" -> HAKEMUS_OID)
+    val attributes  = Map("personOid" -> PERSON_OID, "hakemusOid" -> HAKEMUS_OID, "masterOid" -> MASTER_OID)
     val authorities = util.ArrayList[SimpleGrantedAuthority]
     authorities.add(new SimpleGrantedAuthority(Authorities.ROLE_LINK_USER))
     new OppijaUser(attributes, username = "linkuser", authorities = authorities)
