@@ -188,7 +188,6 @@ class HakemuksetService @Autowired (
           o.jarjestetytHakutoiveet
         )
       )
-
       // haetaan tulokset vain ajankohtaisille hakemuksille, ei haeta tuloksia jos hakemusmaksu puuttuu
       if (isAjankohtainenHaullinenHakemus(ohjausparametrit) && !odottaaHakemusmaksua(hakemus)) {
         try {
