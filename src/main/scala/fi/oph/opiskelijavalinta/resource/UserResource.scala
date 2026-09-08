@@ -23,7 +23,7 @@ class UserResource @Autowired (private val onrService: OnrService) {
     val principal: OppijaUser = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[OppijaUser]
     val personOid: Option[String] = principal.personOid
     val hetu: Option[String]      = principal.hetu
-    val oppija                    = (personOid, hetu) match
+    val oppija: Option[Oppija]    = (personOid, hetu) match
       case (Some(personOid), _) => onrService.getPersonInfo(personOid)
       case (None, Some(hetu))   => onrService.getPersonInfoByHetu(hetu)
       case _                    => // TODO eidas-tunniste
@@ -33,7 +33,9 @@ class UserResource @Autowired (private val onrService: OnrService) {
           s"Kirjautunut käyttäjä jolla ei ole oppijanumeroa eikä hetua. Käyttäjän attribuutit cas-oppijasta: ${principal.attributes}," +
             s"userAgent: $userAgent, ipAddress: $ipAddress"
         )
-        null
-    ResponseEntity.ok(oppija)
+        None
+    oppija match
+      case Some(o) => ResponseEntity.ok(o)
+      case None    => ResponseEntity.noContent().build[Oppija]()
   }
 }
