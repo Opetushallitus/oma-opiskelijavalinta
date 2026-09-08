@@ -53,7 +53,16 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
   @BeforeEach
   def init(): Unit = {
-    Mockito.reset(koutaClient, valintaTulosServiceClient, ohjausparametritService)
+    Mockito.reset(ataruClient, koutaClient, valintaTulosServiceClient, ohjausparametritService)
+    Mockito
+      .when(ataruClient.getHakemukset(PERSON_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            Array(mockHakemus)
+          )
+        )
+      )
     Mockito
       .when(koutaClient.getHaku(HAKU_OID))
       .thenReturn(Right(objectMapper.writeValueAsString(kaynnissaOlevaHaku)))
