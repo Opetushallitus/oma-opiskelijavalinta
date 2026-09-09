@@ -30,6 +30,7 @@ import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
   Hakemus,
   HakemusEnriched,
+  Maksutila,
   PaatettavatOpiskeluOikeudetResponse,
   TranslatedName
 }
@@ -148,6 +149,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 None,
                 None,
                 None,
+                None,
                 TranslatedName("LinkkiLomake", "Samma på svenska", "Linkform"),
                 None,
                 None,
@@ -161,6 +163,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,
+                None,
                 None,
                 None,
                 None,
@@ -316,6 +319,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 None,
                 None,
                 None,
+                None,
                 TranslatedName("LinkkiLomake", "Samma på svenska", "Linkform"),
                 None,
                 None,
@@ -388,8 +392,8 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
 
   @Test
   def doesNotCallVTSIfApplicationPaymentIsPending(): Unit = {
-    val pastDate   = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1)
-    val futureDate = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1)
+    val pastDateStr   = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).minusDays(1).toString
+    val futureDateStr = ZonedDateTime.now(TimeUtils.ZONE_FINLAND).plusDays(1).toString
     Mockito.reset(ataruClient)
     Mockito
       .when(ataruClient.getHakemukset(PERSON_OID))
@@ -404,9 +408,10 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,
-                Some("awaiting"),
-                Some(futureDate),
+                Some(Maksutila.awaiting),
+                Some(futureDateStr),
                 Some("100"),
+                None,
                 None,
                 TranslatedName("LinkkiLomake", "Samma på svenska", "Linkform"),
                 None,
@@ -421,9 +426,10 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,
-                Some("overdue"),
-                Some(pastDate),
+                Some(Maksutila.overdue),
+                Some(pastDateStr),
                 Some("100"),
+                None,
                 None,
                 TranslatedName("WanhaLomake", "Gamla form", "Oldform"),
                 None,

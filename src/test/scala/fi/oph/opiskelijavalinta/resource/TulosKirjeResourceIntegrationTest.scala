@@ -64,6 +64,7 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
                 None,
                 None,
                 None,
+                None,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 None,
                 None,

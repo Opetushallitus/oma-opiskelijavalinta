@@ -148,10 +148,10 @@ class HakemuksetService @Autowired (
   }
 
   private def odottaaHakemusmaksua(hakemus: Hakemus) = {
-    hakemus.paymentState.exists(status =>
-      status == Maksutila.awaiting.toString ||
-        status == Maksutila.overdue.toString
-    )
+    hakemus.paymentState.exists {
+      case Maksutila.awaiting | Maksutila.overdue => true
+      case _                                      => false
+    }
   }
 
   private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
