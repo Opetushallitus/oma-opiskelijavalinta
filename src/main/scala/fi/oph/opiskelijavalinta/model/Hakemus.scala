@@ -4,7 +4,20 @@ import com.fasterxml.jackson.annotation.{JsonKey, JsonProperty}
 import java.time.ZonedDateTime
 
 enum Maksutila:
-  case awaiting, notRequired, OkByProxy, overdue, paid
+  @JsonProperty("awaiting")
+  case awaiting
+
+  @JsonProperty("not-required")
+  case notRequired
+
+  @JsonProperty("ok-by-proxy")
+  case OkByProxy
+
+  @JsonProperty("overdue")
+  case overdue
+
+  @JsonProperty("paid")
+  case paid
 
 case class Hakemus(
   oid: String,
@@ -13,11 +26,12 @@ case class Hakemus(
   secret: String,
   submitted: String,
   processing: Boolean,
-  @JsonProperty("payment-state") paymentState: Option[String],
-  @JsonProperty("payment-due-date") paymentDueDate: Option[ZonedDateTime],
-  @JsonProperty("payment-sum") paymentSum: Option[String],
-  @JsonProperty("payment-reason") paymentReason: Option[String],
-  @JsonProperty("form-name") formName: TranslatedName,
+  paymentState: Option[Maksutila],
+  paymentDueDate: Option[String],
+  paymentSum: Option[String],
+  paymentReason: Option[String],
+  paymentLink: Option[String],
+  formName: TranslatedName,
   hakuaikaIsOn: Option[Boolean],
   hakuaikaEnds: Option[Long],
   email: Option[String],
