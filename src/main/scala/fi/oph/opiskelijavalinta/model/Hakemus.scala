@@ -1,23 +1,8 @@
 package fi.oph.opiskelijavalinta.model
 
-import com.fasterxml.jackson.annotation.{JsonKey, JsonProperty}
+import fi.oph.opiskelijavalinta.model.{Hakemus, Maksutila, TranslatedName}
+
 import java.time.ZonedDateTime
-
-enum Maksutila:
-  @JsonProperty("awaiting")
-  case awaiting
-
-  @JsonProperty("not-required")
-  case notRequired
-
-  @JsonProperty("ok-by-proxy")
-  case OkByProxy
-
-  @JsonProperty("overdue")
-  case overdue
-
-  @JsonProperty("paid")
-  case paid
 
 case class Hakemus(
   oid: String,
