@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.service
 
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -15,6 +16,7 @@ import fi.oph.opiskelijavalinta.model.{
   HakukohdeEnriched,
   HakutoiveenTulosEnriched,
   Maksutila,
+  MaksutilaDeserializer,
   Ohjausparametrit
 }
 import org.slf4j.{Logger, LoggerFactory}
@@ -30,7 +32,7 @@ class HakemuksetService @Autowired (
   ohjausparametritService: OhjausparametritService,
   VTSService: VTSService,
   tuloskirjeService: TuloskirjeService,
-  mapper: ObjectMapper = new ObjectMapper()
+  val mapper: ObjectMapper = new ObjectMapper()
 ) {
 
   mapper.registerModule(DefaultScalaModule)
@@ -39,6 +41,10 @@ class HakemuksetService @Autowired (
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
+  // hakemusmaksun tilan deserialisointi
+  val maksutilaModule = new SimpleModule()
+  maksutilaModule.addDeserializer(classOf[Maksutila], new MaksutilaDeserializer())
+  mapper.registerModule(maksutilaModule)
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[HakemuksetService]);
 
