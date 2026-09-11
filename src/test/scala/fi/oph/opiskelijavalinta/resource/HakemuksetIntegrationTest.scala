@@ -462,7 +462,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
     Mockito.verifyNoInteractions(valintaTulosServiceClient)
   }
-  
+
   @Test
   def unknownPaymentStateDoesNotPreventReturningApplication(): Unit = {
     Mockito
