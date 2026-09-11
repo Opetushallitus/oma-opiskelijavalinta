@@ -462,64 +462,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertTrue(app.ohjausparametrit.get.hakukierrosPaattyy.get > System.currentTimeMillis())
     Mockito.verifyNoInteractions(valintaTulosServiceClient)
   }
-
-  @Test
-  def unknownPaymentStateDoesNotPreventReturningApplication(): Unit = {
-    Mockito
-      .when(ohjausparametritService.getOhjausparametritForHaku(HAKU_OID))
-      .thenReturn(hakukierrosPaattyyTulevaisuudessaMock)
-    Mockito
-      .when(ataruClient.getHakemukset(PERSON_OID))
-      .thenReturn(
-        Right(
-          s"""
-             [
-               {
-                 "oid": "$HAKEMUS_OID",
-                 "haku": "$HAKU_OID",
-                 "hakukohteet": ["$HAKUKOHDE_OID", "$HAKUKOHDE_OID_2"],
-                 "secret": "secret1",
-                 "submitted": "2025-11-19T09:32:01.886Z",
-                 "processing": false,
-                 "paymentState": "unknown-state",
-                 "paymentDueDate": null,
-                 "paymentSum": null,
-                 "paymentReason": null,
-                 "paymentLink": null,
-                 "formName": {
-                   "fi": "LinkkiLomake",
-                   "sv": "Samma på svenska",
-                   "en": "Linkform"
-                 },
-                 "hakuaikaIsOn": null,
-                 "hakuaikaEnds": null,
-                 "email": null,
-                 "asiointikieli": "fi"
-               }
-             ]
-           """
-        )
-      )
-
-    val result = mvc
-      .perform(
-        MockMvcRequestBuilders
-          .get(ApiConstants.HAKEMUKSET_PATH)
-          .`with`(user(oppijaUser))
-      )
-      .andExpect(status().isOk)
-      .andReturn()
-
-    val hakemukset =
-      objectMapper.readValue(
-        result.getResponse.getContentAsString,
-        classOf[HakemuksetEnriched]
-      )
-
-    Assertions.assertEquals(1, hakemukset.current.length)
-    Assertions.assertEquals(HAKEMUS_OID, hakemukset.current.head.oid)
-  }
-
+  
   @Test
   def unknownPaymentStateDoesNotPreventReturningApplication(): Unit = {
     Mockito
