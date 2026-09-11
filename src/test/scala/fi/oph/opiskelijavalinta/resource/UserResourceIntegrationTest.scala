@@ -42,6 +42,38 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       authorities = authorities
     )
 
+  private def userWithoutPersonOidJaHetuaMuttaNimitiedoilla: OppijaUser =
+    new OppijaUser(
+      Map("firstName" -> "Etu", "familyName" -> "Suku", "dateOfBirth" -> "1990-05-17"),
+      username = "eidas-oppija",
+      authorities = authorities
+    )
+
+  private def userWithPersonOidJaNimitiedoilla: OppijaUser =
+    new OppijaUser(
+      Map("personOid" -> PERSON_OID, "firstName" -> "Etu", "familyName" -> "Suku", "dateOfBirth" -> "1990-05-17"),
+      personOid = Some(PERSON_OID),
+      username = "oppija",
+      authorities = authorities
+    )
+
+  private def userWithHetuJaNimitiedoilla: OppijaUser =
+    new OppijaUser(
+      // personName voi tulla cas-oppijalta kahdennettuna puolipisteellä eroteltuna
+      Map("personName" -> "Testihenkilö 010108;Testihenkilö 010108"),
+      hetu = Some(HETU),
+      username = "hetu-oppija",
+      authorities = authorities
+    )
+
+  private def userWithHetuJaDisplayNamella: OppijaUser =
+    new OppijaUser(
+      Map("displayName" -> "Etu Suku", "personName" -> "Suku Etu;Suku Etu"),
+      hetu = Some(HETU),
+      username = "hetu-oppija",
+      authorities = authorities
+    )
+
   @Test
   def palauttaa200JaOppijanKunOnrLoytaaTiedot(): Unit = {
     val oppija = Oppija(PERSON_OID, "2020-01-01", "Testi", "Testinen")
@@ -101,5 +133,80 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isNoContent)
 
     Mockito.verifyNoInteractions(onrService)
+  }
+
+  @Test
+  def palauttaa200JaNimitiedotAttribuuteistaKunKayttajallaEiOleOppijanumeroaEikaHetua(): Unit = {
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithoutPersonOidJaHetuaMuttaNimitiedoilla))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "1990-05-17", kutsumanimi = "Etu", sukunimi = "Suku"),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
+    Mockito.verifyNoInteractions(onrService)
+  }
+
+  @Test
+  def palauttaa200JaNimitiedotAttribuuteistaKunOnrEiLoydaOppijaaOppijanumerolla(): Unit = {
+    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithPersonOidJaNimitiedoilla))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "1990-05-17", kutsumanimi = "Etu", sukunimi = "Suku"),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
+  }
+
+  @Test
+  def palauttaa200JaKokoNimenAttribuuteistaKunOnrEiLoydaOppijaaHetulla(): Unit = {
+    Mockito.when(onrService.getPersonInfoByHetu(HETU)).thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithHetuJaNimitiedoilla))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Testihenkilö 010108", sukunimi = ""),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
+  }
+
+  @Test
+  def kayttaaDisplayNameaKunSekaDisplayNameEttaPersonNameOvatAttribuuteissa(): Unit = {
+    Mockito.when(onrService.getPersonInfoByHetu(HETU)).thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithHetuJaDisplayNamella))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu Suku", sukunimi = ""),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
   }
 }
