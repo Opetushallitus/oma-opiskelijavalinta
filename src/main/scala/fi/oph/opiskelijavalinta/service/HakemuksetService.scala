@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.service
 
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,13 +15,13 @@ import fi.oph.opiskelijavalinta.model.{
   HakuEnriched,
   HakukohdeEnriched,
   HakutoiveenTulosEnriched,
+  Maksutila,
+  MaksutilaDeserializer,
   Ohjausparametrit
 }
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-
-import java.util.Date
 
 @Service
 class HakemuksetService @Autowired (
@@ -29,7 +30,7 @@ class HakemuksetService @Autowired (
   ohjausparametritService: OhjausparametritService,
   VTSService: VTSService,
   tuloskirjeService: TuloskirjeService,
-  mapper: ObjectMapper = new ObjectMapper()
+  val mapper: ObjectMapper = new ObjectMapper()
 ) {
 
   mapper.registerModule(DefaultScalaModule)
@@ -38,6 +39,10 @@ class HakemuksetService @Autowired (
   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
   mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
+  // hakemusmaksun tilan deserialisointi
+  val maksutilaModule = new SimpleModule()
+  maksutilaModule.addDeserializer(classOf[Maksutila], new MaksutilaDeserializer())
+  mapper.registerModule(maksutilaModule)
 
   private val LOG: Logger = LoggerFactory.getLogger(classOf[HakemuksetService]);
 
@@ -146,6 +151,13 @@ class HakemuksetService @Autowired (
     hakemus.haku.isDefined && now >= hakemus.ohjausparametrit.flatMap(o => o.hakukierrosPaattyy).getOrElse(0L)
   }
 
+  private def odottaaHakemusmaksua(hakemus: Hakemus) = {
+    hakemus.paymentState.exists {
+      case Maksutila.awaiting | Maksutila.overdue => true
+      case _                                      => false
+    }
+  }
+
   private def enrichHaku(haku: Haku, hakemus: Hakemus): HakuEnriched = {
     HakuEnriched(
       haku.oid,
@@ -158,7 +170,6 @@ class HakemuksetService @Autowired (
   }
 
   private def enrichHakemus(hakemus: Hakemus, oppijanumero: String): HakemusEnriched = {
-    val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
     var hakukohteet: List[HakukohdeEnriched]                  = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
@@ -180,9 +191,8 @@ class HakemuksetService @Autowired (
           o.jarjestetytHakutoiveet
         )
       )
-
-      // haetaan tulokset vain ajankohtaisille hakemuksille
-      if (isAjankohtainenHaullinenHakemus(ohjausparametrit)) {
+      // haetaan tulokset vain ajankohtaisille hakemuksille, ei haeta tuloksia jos hakemusmaksu puuttuu
+      if (isAjankohtainenHaullinenHakemus(ohjausparametrit) && !odottaaHakemusmaksua(hakemus)) {
         try {
           // luotetaan siihen että VTSService palauttaa vain sellaiset hakutoiveen tulokset jotka voi näyttää
           hakutoiveidenTulokset =

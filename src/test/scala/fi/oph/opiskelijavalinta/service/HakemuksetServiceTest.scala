@@ -2,7 +2,7 @@ package fi.oph.opiskelijavalinta.service
 
 import fi.oph.opiskelijavalinta.TestUtils.objectMapper
 import fi.oph.opiskelijavalinta.clients.AtaruClient
-import fi.oph.opiskelijavalinta.model.{Hakemus, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{Hakemus, Maksutila, TranslatedName}
 import org.mockito.Mockito
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
@@ -71,6 +71,11 @@ class HakemuksetServiceTest {
                 "secret-1",
                 "2025-02-02T19:32:01Z",
                 false,
+                None,
+                None,
+                None,
+                None,
+                None,
                 TranslatedName("Hajuton lomake", null, null),
                 None,
                 None,
@@ -99,6 +104,109 @@ class HakemuksetServiceTest {
     Assertions.assertThrows(classOf[RuntimeException], () => service.getHakemusOids(OPPIJA_NUMERO))
   }
 
+  @Test
+  def deserializesPaymentStateFromAtaruJson(): Unit = {
+    val json =
+      """
+        [
+          {
+            "oid": "application-oid-1",
+            "haku": null,
+            "hakukohteet": [],
+            "secret": "secret",
+            "submitted": "2025-02-02T19:32:01Z",
+            "processing": false,
+            "paymentState": "not-required",
+            "paymentDueDate": null,
+            "paymentSum": null,
+            "paymentReason": "eu-citizen",
+            "paymentLink": null,
+            "formName": {
+              "fi": "Lomake",
+              "sv": null,
+              "en": null
+            },
+            "hakuaikaIsOn": null,
+            "hakuaikaEnds": null,
+            "email": "test@example.com",
+            "asiointikieli": "fi"
+          },
+          {
+            "oid": "application-oid-2",
+            "haku": null,
+            "hakukohteet": [],
+            "secret": "secret",
+            "submitted": "2025-02-02T19:32:01Z",
+            "processing": false,
+            "paymentState": "ok-by-proxy",
+            "paymentDueDate": null,
+            "paymentSum": null,
+            "paymentReason": null,
+            "paymentLink": null,
+            "formName": {
+              "fi": "Lomake",
+              "sv": null,
+              "en": null
+            },
+            "hakuaikaIsOn": null,
+            "hakuaikaEnds": null,
+            "email": "test@example.com",
+            "asiointikieli": "fi"
+          }
+        ]
+      """
+
+    val applications =
+      service.mapper.readValue(json, classOf[Array[Hakemus]])
+
+    Assertions.assertEquals(2, applications.length)
+
+    val notRequired = applications.find(_.oid == "application-oid-1").get
+    Assertions.assertEquals(Some(Maksutila.notRequired), notRequired.paymentState)
+    Assertions.assertEquals(Some("eu-citizen"), notRequired.paymentReason)
+
+    val okByProxy = applications.find(_.oid == "application-oid-2").get
+    Assertions.assertEquals(Some(Maksutila.OkByProxy), okByProxy.paymentState)
+  }
+
+  @Test
+  def deserializesUnknownPaymentStateAsNone(): Unit = {
+    val json =
+      """
+        [
+          {
+            "oid": "application-oid-1",
+            "haku": null,
+            "hakukohteet": [],
+            "secret": "secret",
+            "submitted": "2025-02-02T19:32:01Z",
+            "processing": false,
+            "paymentState": "unknown-state",
+            "paymentDueDate": null,
+            "paymentSum": null,
+            "paymentReason": null,
+            "paymentLink": null,
+            "formName": {
+              "fi": "Lomake",
+              "sv": null,
+              "en": null
+            },
+            "hakuaikaIsOn": null,
+            "hakuaikaEnds": null,
+            "email": "test@example.com",
+            "asiointikieli": "fi"
+          }
+        ]
+      """
+
+    val applications =
+      service.mapper.readValue(json, classOf[Array[Hakemus]])
+
+    Assertions.assertEquals(1, applications.length)
+    Assertions.assertEquals("application-oid-1", applications.head.oid)
+    Assertions.assertEquals(None, applications.head.paymentState)
+  }
+
   private def hautonHakemus(processing: Boolean) = {
     Right(
       objectMapper.writeValueAsString(
@@ -110,6 +218,11 @@ class HakemuksetServiceTest {
             "secret-1",
             "2025-02-02T19:32:01Z",
             processing,
+            None,
+            None,
+            None,
+            None,
+            None,
             TranslatedName("Hajuton lomake", null, null),
             None,
             None,
