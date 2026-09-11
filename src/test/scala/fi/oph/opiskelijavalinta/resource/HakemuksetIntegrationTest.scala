@@ -519,7 +519,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(1, hakemukset.current.length)
     Assertions.assertEquals(HAKEMUS_OID, hakemukset.current.head.oid)
   }
-  
+
   @Test
   def unknownPaymentStateDoesNotPreventReturningApplication(): Unit = {
     Mockito
@@ -576,7 +576,7 @@ class HakemuksetIntegrationTest extends BaseIntegrationTest {
     Assertions.assertEquals(1, hakemukset.current.length)
     Assertions.assertEquals(HAKEMUS_OID, hakemukset.current.head.oid)
   }
-  
+
   private def assertHakemus(app: HakemusEnriched): Unit = {
     Assertions.assertEquals(HAKEMUS_OID, app.oid)
     Assertions.assertEquals("1.2.246.562.29.00000000000000038404", app.haku.get.oid)
