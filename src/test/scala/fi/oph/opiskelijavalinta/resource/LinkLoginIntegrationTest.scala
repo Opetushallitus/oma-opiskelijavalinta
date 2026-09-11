@@ -117,7 +117,7 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
       )
     Mockito
       .when(onrService.getPersonInfo("1.2.246.562.24.12345678901"))
-      .thenReturn(Oppija("1.2.246.562.24.12345678901", "2020-01-01", "Testi", "Testinen"))
+      .thenReturn(Some(Oppija("1.2.246.562.24.12345678901", "2020-01-01", "Testi", "Testinen")))
     mvc
       .perform(
         MockMvcRequestBuilders

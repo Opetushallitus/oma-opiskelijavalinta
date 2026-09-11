@@ -65,8 +65,10 @@ class ViestiService @Autowired (
   ): Unit = {
     try {
       val oppijanumero = authorizationService.getPersonOid.get
-      val oppija       = onrService.getPersonInfo(oppijanumero)
-      val nimi         = Seq(
+      val oppija       = onrService
+        .getPersonInfo(oppijanumero)
+        .getOrElse(throw RuntimeException(s"Oppijaa ei löytynyt oppijanumerorekisteristä: $oppijanumero"))
+      val nimi = Seq(
         Option(oppija.kutsumanimi).getOrElse(""),
         Option(oppija.sukunimi).getOrElse("")
       ).mkString(" ").trim

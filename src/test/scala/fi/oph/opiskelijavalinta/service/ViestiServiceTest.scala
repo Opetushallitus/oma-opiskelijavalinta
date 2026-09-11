@@ -107,7 +107,9 @@ class ViestiServiceTest {
     Mockito
       .when(hakemuksetService.getHakemusEmailAndLang(PERSON_OID, HAKEMUS_OID))
       .thenReturn(("ruhtinas.nukettaja@nuketown.fi", "fi"))
-    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Ruhtinas", "Nukettaja"))
+    Mockito
+      .when(onrService.getPersonInfo(PERSON_OID))
+      .thenReturn(Some(Oppija(PERSON_OID, "010190", "Ruhtinas", "Nukettaja")))
     Mockito
       .when(supaService.fetchOpiskeluOikeudetFromSession(HAKUKOHDE_OID))
       .thenReturn(
@@ -185,7 +187,9 @@ class ViestiServiceTest {
     Mockito
       .when(hakemuksetService.getHakemusEmailAndLang(PERSON_OID, HAKEMUS_OID))
       .thenReturn(("ruhtinas.nukettaja@nuketown.fi", "fi"))
-    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Ruhtinas", "Nukettaja"))
+    Mockito
+      .when(onrService.getPersonInfo(PERSON_OID))
+      .thenReturn(Some(Oppija(PERSON_OID, "010190", "Ruhtinas", "Nukettaja")))
     Mockito
       .when(supaService.fetchOpiskeluOikeudetFromSession(HAKUKOHDE_OID))
       .thenReturn(
@@ -332,7 +336,9 @@ class ViestiServiceTest {
     Mockito
       .when(koutaService.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(hakukohde1)
-    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
+    Mockito
+      .when(onrService.getPersonInfo(PERSON_OID))
+      .thenReturn(Some(Oppija(PERSON_OID, "010190", "Testi", "Testinen")))
     Mockito.when(supaService.fetchOpiskeluOikeudetFromSession(HAKUKOHDE_OID)).thenReturn(None)
     Mockito
       .when(viestinvalitysClient.luoViesti(any()))

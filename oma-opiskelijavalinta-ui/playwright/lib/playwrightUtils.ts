@@ -21,6 +21,14 @@ export const mockAuthenticatedUser = async (page: Page) => {
   });
 };
 
+// Käyttäjä joka on kirjautunut mutta jolla ei ole oppijanumeroa eikä hetua (esim. eidas-tunnistautunut),
+// jolloin backend palauttaa /api/user -kutsuun 204 No Content
+export const mockAuthenticatedUserWithoutOppijanumero = async (page: Page) => {
+  await page.route('**/api/user', async (route) => {
+    await route.fulfill({ status: 204 });
+  });
+};
+
 export async function mockHakemuksetFetch(
   page: Page,
   hakemukset?: {
