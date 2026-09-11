@@ -66,6 +66,14 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       authorities = authorities
     )
 
+  private def userWithHetuJaDisplayNamella: OppijaUser =
+    new OppijaUser(
+      Map("displayName" -> "Etu Suku", "personName" -> "Suku Etu;Suku Etu"),
+      hetu = Some(HETU),
+      username = "hetu-oppija",
+      authorities = authorities
+    )
+
   @Test
   def palauttaa200JaOppijanKunOnrLoytaaTiedot(): Unit = {
     val oppija = Oppija(PERSON_OID, "2020-01-01", "Testi", "Testinen")
@@ -179,6 +187,25 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
 
     Assertions.assertEquals(
       Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Testihenkilö 010108", sukunimi = ""),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
+  }
+
+  @Test
+  def kayttaaDisplayNameaKunSekaDisplayNameEttaPersonNameOvatAttribuuteissa(): Unit = {
+    Mockito.when(onrService.getPersonInfoByHetu(HETU)).thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithHetuJaDisplayNamella))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu Suku", sukunimi = ""),
       objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
     )
   }
