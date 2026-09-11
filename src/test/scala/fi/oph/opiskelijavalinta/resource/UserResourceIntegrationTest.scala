@@ -44,16 +44,24 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
 
   private def userWithoutPersonOidJaHetuaMuttaNimitiedoilla: OppijaUser =
     new OppijaUser(
-      Map("firstName" -> "Etu", "familyName" -> "Suku"),
+      Map("firstName" -> "Etu", "familyName" -> "Suku", "dateOfBirth" -> "1990-05-17"),
       username = "eidas-oppija",
       authorities = authorities
     )
 
   private def userWithPersonOidJaNimitiedoilla: OppijaUser =
     new OppijaUser(
-      Map("personOid" -> PERSON_OID, "firstName" -> "Etu", "familyName" -> "Suku"),
+      Map("personOid" -> PERSON_OID, "firstName" -> "Etu", "familyName" -> "Suku", "dateOfBirth" -> "1990-05-17"),
       personOid = Some(PERSON_OID),
       username = "oppija",
+      authorities = authorities
+    )
+
+  private def userWithHetuJaNimitiedoilla: OppijaUser =
+    new OppijaUser(
+      Map("displayName" -> "Etu Suku"),
+      hetu = Some(HETU),
+      username = "hetu-oppija",
       authorities = authorities
     )
 
@@ -130,7 +138,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .andReturn()
 
     Assertions.assertEquals(
-      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu", sukunimi = "Suku"),
+      Oppija(oppijanumero = "", syntymaaika = "1990-05-17", kutsumanimi = "Etu", sukunimi = "Suku"),
       objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
     )
     Mockito.verifyNoInteractions(onrService)
@@ -150,7 +158,26 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .andReturn()
 
     Assertions.assertEquals(
-      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu", sukunimi = "Suku"),
+      Oppija(oppijanumero = "", syntymaaika = "1990-05-17", kutsumanimi = "Etu", sukunimi = "Suku"),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
+  }
+
+  @Test
+  def palauttaa200JaKokoNimenAttribuuteistaKunOnrEiLoydaOppijaaHetulla(): Unit = {
+    Mockito.when(onrService.getPersonInfoByHetu(HETU)).thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithHetuJaNimitiedoilla))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu Suku", sukunimi = ""),
       objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
     )
   }

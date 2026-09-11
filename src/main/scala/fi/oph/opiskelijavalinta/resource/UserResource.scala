@@ -40,22 +40,28 @@ class UserResource @Autowired (private val onrService: OnrService) {
       case None    => ResponseEntity.noContent().build[Oppija]()
   }
 
-  // Suomi.fi-tunnistautumisessa (mm. eidas-tunniste) nimitiedot saadaan cas-oppijan välittämistä
-  // tunnistautumisattribuuteista, vaikka oppijaa ei löytyisikään oppijanumerorekisteristä.
+  // Suomi.fi-tunnistautumisessa nimitiedot saadaan cas-oppijan välittämistä tunnistautumisattribuuteista,
+  // vaikka oppijaa ei löytyisikään oppijanumerorekisteristä (esim. eidas-tunnistautunut, tai hetullinen
+  // käyttäjä joka ei vielä ole ehtinyt oppijanumerorekisteriin, kun ei ole täyttänyt hakemusta).
+  // Eidas-tunnistautuneella nimi- ja syntymäaikatiedot ovat attribuuteissa firstName/familyName/dateOfBirth,
+  // kotimaisella suomi.fi-tunnistautuneella koko nimi on attribuutissa displayName.
   private def oppijaAttribuuteista(attributes: OppijaAttributes): Option[Oppija] = {
-    val etunimi  = attributes.get("firstName")
-    val sukunimi = attributes.get("familyName")
+    val etunimi     = attributes.get("firstName")
+    val sukunimi    = attributes.get("familyName")
+    val syntymaaika = attributes.get("dateOfBirth")
+    val kokoNimi    = attributes.get("displayName")
     LOG.info(
-      s"Yritetään muodostaa oppija attribuuteista, etunimi: $etunimi, sukunimi: $sukunimi, kaikki attribuutit: $attributes"
+      s"Yritetään muodostaa oppija attribuuteista, etunimi: $etunimi, sukunimi: $sukunimi, " +
+        s"syntymäaika: $syntymaaika, koko nimi: $kokoNimi, kaikki attribuutit: $attributes"
     )
-    (etunimi, sukunimi) match
-      case (None, None) => None
-      case _            =>
+    (etunimi, sukunimi, kokoNimi) match
+      case (None, None, None) => None
+      case _                  =>
         Some(
           Oppija(
             oppijanumero = "",
-            syntymaaika = "",
-            kutsumanimi = etunimi.getOrElse(""),
+            syntymaaika = syntymaaika.getOrElse(""),
+            kutsumanimi = etunimi.orElse(kokoNimi).getOrElse(""),
             sukunimi = sukunimi.getOrElse("")
           )
         )
