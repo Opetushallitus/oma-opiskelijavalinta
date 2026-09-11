@@ -59,7 +59,8 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
 
   private def userWithHetuJaNimitiedoilla: OppijaUser =
     new OppijaUser(
-      Map("displayName" -> "Etu Suku"),
+      // personName voi tulla cas-oppijalta kahdennettuna puolipisteellä eroteltuna
+      Map("personName" -> "Testihenkilö 010108;Testihenkilö 010108"),
       hetu = Some(HETU),
       username = "hetu-oppija",
       authorities = authorities
@@ -177,7 +178,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .andReturn()
 
     Assertions.assertEquals(
-      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu Suku", sukunimi = ""),
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Testihenkilö 010108", sukunimi = ""),
       objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
     )
   }

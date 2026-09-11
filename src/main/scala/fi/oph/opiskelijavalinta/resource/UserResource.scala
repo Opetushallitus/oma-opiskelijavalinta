@@ -44,12 +44,14 @@ class UserResource @Autowired (private val onrService: OnrService) {
   // vaikka oppijaa ei löytyisikään oppijanumerorekisteristä (esim. eidas-tunnistautunut, tai hetullinen
   // käyttäjä joka ei vielä ole ehtinyt oppijanumerorekisteriin, kun ei ole täyttänyt hakemusta).
   // Eidas-tunnistautuneella nimi- ja syntymäaikatiedot ovat attribuuteissa firstName/familyName/dateOfBirth,
-  // kotimaisella suomi.fi-tunnistautuneella koko nimi on attribuutissa displayName.
+  // kotimaisella suomi.fi-tunnistautuneella koko nimi on attribuutissa personName (cas-oppija mappaa sen
+  // cn-attribuutista). personName voi tulla perillä kahdennettuna puolipisteellä eroteltuna
+  // (esim. "Testihenkilö 010108;Testihenkilö 010108"), joten otetaan siitä vain ensimmäinen osa.
   private def oppijaAttribuuteista(attributes: OppijaAttributes): Option[Oppija] = {
     val etunimi     = attributes.get("firstName")
     val sukunimi    = attributes.get("familyName")
     val syntymaaika = attributes.get("dateOfBirth")
-    val kokoNimi    = attributes.get("displayName")
+    val kokoNimi    = attributes.get("personName").map(_.split(";").head.trim)
     LOG.info(
       s"Yritetään muodostaa oppija attribuuteista, etunimi: $etunimi, sukunimi: $sukunimi, " +
         s"syntymäaika: $syntymaaika, koko nimi: $kokoNimi, kaikki attribuutit: $attributes"
