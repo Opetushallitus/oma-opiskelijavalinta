@@ -42,6 +42,21 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       authorities = authorities
     )
 
+  private def userWithoutPersonOidJaHetuaMuttaNimitiedoilla: OppijaUser =
+    new OppijaUser(
+      Map("firstName" -> "Etu", "familyName" -> "Suku"),
+      username = "eidas-oppija",
+      authorities = authorities
+    )
+
+  private def userWithPersonOidJaNimitiedoilla: OppijaUser =
+    new OppijaUser(
+      Map("personOid" -> PERSON_OID, "firstName" -> "Etu", "familyName" -> "Suku"),
+      personOid = Some(PERSON_OID),
+      username = "oppija",
+      authorities = authorities
+    )
+
   @Test
   def palauttaa200JaOppijanKunOnrLoytaaTiedot(): Unit = {
     val oppija = Oppija(PERSON_OID, "2020-01-01", "Testi", "Testinen")
@@ -101,5 +116,42 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .andExpect(status().isNoContent)
 
     Mockito.verifyNoInteractions(onrService)
+  }
+
+  @Test
+  def palauttaa200JaNimitiedotAttribuuteistaKunKayttajallaEiOleOppijanumeroaEikaHetua(): Unit = {
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithoutPersonOidJaHetuaMuttaNimitiedoilla))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu", sukunimi = "Suku"),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
+    Mockito.verifyNoInteractions(onrService)
+  }
+
+  @Test
+  def palauttaa200JaNimitiedotAttribuuteistaKunOnrEiLoydaOppijaaOppijanumerolla(): Unit = {
+    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(None)
+
+    val result = mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(ApiConstants.USER_PATH)
+          .`with`(user(userWithPersonOidJaNimitiedoilla))
+      )
+      .andExpect(status().isOk)
+      .andReturn()
+
+    Assertions.assertEquals(
+      Oppija(oppijanumero = "", syntymaaika = "", kutsumanimi = "Etu", sukunimi = "Suku"),
+      objectMapper.readValue(result.getResponse.getContentAsString, classOf[Oppija])
+    )
   }
 }
