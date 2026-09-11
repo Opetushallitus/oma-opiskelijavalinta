@@ -1,9 +1,5 @@
 package fi.oph.opiskelijavalinta.model
 
-import fi.oph.opiskelijavalinta.model.{Hakemus, Maksutila, TranslatedName}
-
-import java.time.ZonedDateTime
-
 case class Hakemus(
   oid: String,
   haku: String,

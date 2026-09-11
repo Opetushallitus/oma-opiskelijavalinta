@@ -23,8 +23,6 @@ import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
-import java.util.Date
-
 @Service
 class HakemuksetService @Autowired (
   ataruClient: AtaruClient,
@@ -172,7 +170,6 @@ class HakemuksetService @Autowired (
   }
 
   private def enrichHakemus(hakemus: Hakemus, oppijanumero: String): HakemusEnriched = {
-    val now                                                   = new Date()
     var haku: Option[HakuEnriched]                            = Option.empty
     var hakukohteet: List[HakukohdeEnriched]                  = List.empty
     var ohjausparametrit: Option[Ohjausparametrit]            = Option.empty
