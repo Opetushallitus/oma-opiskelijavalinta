@@ -21,13 +21,16 @@ class OnrClient @Autowired (
 
   val LOG: Logger = LoggerFactory.getLogger(classOf[OnrClient])
 
-  private def fetch(url: String): Either[Throwable, String] = {
+  private def fetch(url: String): Either[Throwable, Option[String]] = {
     val requestBuilder = new RequestBuilder().setMethod("GET").setUrl(url)
     try {
       val response = Await.result(oauth2Client.executeRequest(requestBuilder), Duration(timeouts.onr, TimeUnit.SECONDS))
       if response.getStatusCode == 200 then
         LOG.debug(s"Oppijan henkilötiedot haettu onnistunesti")
-        Right(response.getResponseBody())
+        Right(Some(response.getResponseBody()))
+      else if response.getStatusCode == 404 then
+        // 404 = oppijaa ei löytynyt; ei virhe. Kutsuja lokittaa tämän kontekstin kanssa.
+        Right(None)
       else
         val msg =
           s"HTTP ${response.getStatusCode}: ${response.getStatusText} - ${response.getResponseBody}"
@@ -40,12 +43,12 @@ class OnrClient @Autowired (
     }
   }
 
-  def getPersonInfo(oid: String): Either[Throwable, String] = {
+  def getPersonInfo(oid: String): Either[Throwable, Option[String]] = {
     LOG.info(s"Haetaan käyttäjän tiedot onr:sta oppijanumerolla $oid")
     fetch(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/$oid/master")
   }
 
-  def getPersonInfoByHetu(hetu: String): Either[Throwable, String] = {
+  def getPersonInfoByHetu(hetu: String): Either[Throwable, Option[String]] = {
     LOG.info(s"Haetaan käyttäjän tiedot onr:sta hetulla $hetu")
     fetch(s"https://$virkailijaHost/oppijanumerorekisteri-service/henkilo/hetu=$hetu")
   }
