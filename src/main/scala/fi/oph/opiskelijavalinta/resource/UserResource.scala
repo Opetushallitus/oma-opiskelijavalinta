@@ -56,10 +56,6 @@ class UserResource @Autowired (private val onrService: OnrService) {
     val sukunimi    = attributes.get("familyName")
     val syntymaaika = attributes.get("dateOfBirth")
     val kokoNimi    = attributes.get("displayName").orElse(attributes.get("personName")).map(siivoaNimi)
-    LOG.info(
-      s"Yritetään muodostaa oppija attribuuteista, etunimi: $etunimi, sukunimi: $sukunimi, " +
-        s"syntymäaika: $syntymaaika, koko nimi: $kokoNimi, kaikki attribuutit: $attributes"
-    )
     (etunimi, sukunimi, kokoNimi) match
       case (None, None, None) => None
       case _                  =>
