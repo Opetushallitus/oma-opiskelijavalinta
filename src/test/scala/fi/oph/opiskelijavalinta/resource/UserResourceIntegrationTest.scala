@@ -42,14 +42,14 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       authorities = authorities
     )
 
-  private def userWithoutPersonOidJaHetuaMuttaNimitiedoilla: OppijaUser =
+  private def eidasUserWithNameAttributes: OppijaUser =
     new OppijaUser(
       Map("firstName" -> "Etu", "familyName" -> "Suku", "dateOfBirth" -> "1990-05-17"),
       username = "eidas-oppija",
       authorities = authorities
     )
 
-  private def userWithPersonOidJaNimitiedoilla: OppijaUser =
+  private def userWithPersonOidAndNameAttributes: OppijaUser =
     new OppijaUser(
       Map("personOid" -> PERSON_OID, "firstName" -> "Etu", "familyName" -> "Suku", "dateOfBirth" -> "1990-05-17"),
       personOid = Some(PERSON_OID),
@@ -57,7 +57,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       authorities = authorities
     )
 
-  private def userWithHetuJaNimitiedoilla: OppijaUser =
+  private def userWithHetuAndPersonNameAttribute: OppijaUser =
     new OppijaUser(
       // personName voi tulla cas-oppijalta kahdennettuna puolipisteellä eroteltuna
       Map("personName" -> "Testihenkilö 010108;Testihenkilö 010108"),
@@ -66,7 +66,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       authorities = authorities
     )
 
-  private def userWithHetuJaDisplayNamella: OppijaUser =
+  private def userWithHetuAndDisplayNameAttribute: OppijaUser =
     new OppijaUser(
       Map("displayName" -> "Etu Suku", "personName" -> "Suku Etu;Suku Etu"),
       hetu = Some(HETU),
@@ -141,7 +141,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .get(ApiConstants.USER_PATH)
-          .`with`(user(userWithoutPersonOidJaHetuaMuttaNimitiedoilla))
+          .`with`(user(eidasUserWithNameAttributes))
       )
       .andExpect(status().isOk)
       .andReturn()
@@ -161,7 +161,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .get(ApiConstants.USER_PATH)
-          .`with`(user(userWithPersonOidJaNimitiedoilla))
+          .`with`(user(userWithPersonOidAndNameAttributes))
       )
       .andExpect(status().isOk)
       .andReturn()
@@ -180,7 +180,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .get(ApiConstants.USER_PATH)
-          .`with`(user(userWithHetuJaNimitiedoilla))
+          .`with`(user(userWithHetuAndPersonNameAttribute))
       )
       .andExpect(status().isOk)
       .andReturn()
@@ -199,7 +199,7 @@ class UserResourceIntegrationTest extends BaseIntegrationTest {
       .perform(
         MockMvcRequestBuilders
           .get(ApiConstants.USER_PATH)
-          .`with`(user(userWithHetuJaDisplayNamella))
+          .`with`(user(userWithHetuAndDisplayNameAttribute))
       )
       .andExpect(status().isOk)
       .andReturn()
