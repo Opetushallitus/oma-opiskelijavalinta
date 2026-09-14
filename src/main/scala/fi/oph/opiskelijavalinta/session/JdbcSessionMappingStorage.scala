@@ -1,5 +1,6 @@
 package fi.oph.opiskelijavalinta.session
 
+import fi.oph.opiskelijavalinta.util.DBUtil.runBlocking
 import jakarta.servlet.http.HttpSession
 import org.apereo.cas.client.session.SessionMappingStorage
 import org.slf4j.LoggerFactory
@@ -7,8 +8,8 @@ import org.springframework.session.{Session, SessionRepository}
 import slick.jdbc.PostgresProfile.api.*
 
 import java.util.concurrent.TimeUnit
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
 
 class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], db: Database)(implicit
   ec: ExecutionContext
@@ -24,7 +25,7 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
     LOG.debug(s"Poistetaan sessiomappaus cas tiketillä $mappingId")
     val query =
       sql"""SELECT session_id FROM #$mappingTableName WHERE mapped_ticket_id = $mappingId""".as[String].headOption
-    val sessionIdOpt = Await.result(db.run(query), Duration(10, TimeUnit.SECONDS))
+    val sessionIdOpt = db.runBlocking(query, Duration(10, TimeUnit.SECONDS))
     LOG.debug(s"Löytyi poistettava sessio $sessionIdOpt")
     sessionIdOpt.foreach { sessionId =>
       LOG.debug(s"Poistetaan sessio $sessionId")
@@ -37,7 +38,7 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
   def removeBySessionById(sessionId: String): Unit = {
     LOG.debug(s"Poistetaan sessiomappaus session id:llä $sessionId")
     val sql = sqlu"""DELETE FROM #$mappingTableName WHERE session_id = $sessionId"""
-    Await.result(db.run(sql), Duration(10, TimeUnit.SECONDS))
+    db.runBlocking(sql, Duration(10, TimeUnit.SECONDS))
   }
 
   @Override
@@ -45,7 +46,7 @@ class JdbcSessionMappingStorage(sessionRepository: SessionRepository[Session], d
     LOG.debug(s"Lisätään sessiomappaus, mappingId: $mappingId, sessionId: ${session.getId}")
     val sql =
       sqlu"""INSERT INTO #$mappingTableName (mapped_ticket_id, session_id) VALUES ($mappingId, ${session.getId}) ON CONFLICT (mapped_ticket_id) DO NOTHING"""
-    Await.result(db.run(sql), Duration(10, TimeUnit.SECONDS))
+    db.runBlocking(sql, Duration(10, TimeUnit.SECONDS))
   }
 
 }
