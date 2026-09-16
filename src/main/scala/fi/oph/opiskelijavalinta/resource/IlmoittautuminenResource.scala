@@ -27,10 +27,8 @@ class IlmoittautuminenResource @Autowired (vtsService: VTSService, authorization
       ResponseEntity.status(HttpStatus.FORBIDDEN).build
     } else {
       val result = vtsService.doIlmoittautuminen(
-        authorizationService.getPersonOid.get,
         hakemusOid,
         hakukohdeOid,
-        ilmoittautuminen.hakuOid,
         ilmoittautuminen.ilmoittautumisTila
       )
       AuditLog.log(
