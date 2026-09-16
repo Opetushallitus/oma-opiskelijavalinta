@@ -30,7 +30,7 @@ class HakemuksetService @Autowired (
   ohjausparametritService: OhjausparametritService,
   VTSService: VTSService,
   tuloskirjeService: TuloskirjeService,
-  val mapper: ObjectMapper = new ObjectMapper()
+  mapper: ObjectMapper = new ObjectMapper()
 ) {
 
   mapper.registerModule(DefaultScalaModule)

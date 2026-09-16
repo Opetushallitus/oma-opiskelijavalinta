@@ -15,7 +15,7 @@ class MaksutilaDeserializer extends JsonDeserializer[Maksutila]:
     p.getText match
       case "awaiting"     => Maksutila.awaiting
       case "not-required" => Maksutila.notRequired
-      case "ok-by-proxy"  => Maksutila.OkByProxy
+      case "ok-by-proxy"  => Maksutila.okByProxy
       case "overdue"      => Maksutila.overdue
       case "paid"         => Maksutila.paid
       case other          =>
@@ -25,6 +25,6 @@ class MaksutilaDeserializer extends JsonDeserializer[Maksutila]:
 enum Maksutila:
   case awaiting
   case notRequired
-  case OkByProxy
+  case okByProxy
   case overdue
   case paid

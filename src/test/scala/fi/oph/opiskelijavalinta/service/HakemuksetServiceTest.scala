@@ -157,7 +157,7 @@ class HakemuksetServiceTest {
       """
 
     val applications =
-      service.mapper.readValue(json, classOf[Array[Hakemus]])
+      objectMapper.readValue(json, classOf[Array[Hakemus]])
 
     Assertions.assertEquals(2, applications.length)
 
@@ -166,7 +166,7 @@ class HakemuksetServiceTest {
     Assertions.assertEquals(Some("eu-citizen"), notRequired.paymentReason)
 
     val okByProxy = applications.find(_.oid == "application-oid-2").get
-    Assertions.assertEquals(Some(Maksutila.OkByProxy), okByProxy.paymentState)
+    Assertions.assertEquals(Some(Maksutila.okByProxy), okByProxy.paymentState)
   }
 
   @Test
@@ -200,7 +200,7 @@ class HakemuksetServiceTest {
       """
 
     val applications =
-      service.mapper.readValue(json, classOf[Array[Hakemus]])
+      objectMapper.readValue(json, classOf[Array[Hakemus]])
 
     Assertions.assertEquals(1, applications.length)
     Assertions.assertEquals("application-oid-1", applications.head.oid)

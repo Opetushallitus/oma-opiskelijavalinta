@@ -1,9 +1,11 @@
 package fi.oph.opiskelijavalinta
 
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import fi.oph.opiskelijavalinta.model.{Maksutila, MaksutilaDeserializer}
 import fi.oph.opiskelijavalinta.security.{Authorities, OppijaUser}
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
@@ -29,6 +31,9 @@ object TestUtils {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
     mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
+    val maksutilaModule = new SimpleModule()
+    maksutilaModule.addDeserializer(classOf[Maksutila], new MaksutilaDeserializer())
+    mapper.registerModule(maksutilaModule)
     mapper
 
   val oppijaUser: OppijaUser =
