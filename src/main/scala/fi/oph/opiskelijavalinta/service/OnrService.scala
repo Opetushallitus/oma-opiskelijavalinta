@@ -27,21 +27,27 @@ class OnrService @Autowired (
     }
   }
 
-  def getPersonInfo(oid: String): Oppija = {
+  def getPersonInfo(oid: String): Option[Oppija] = {
     onrClient.getPersonInfo(oid) match {
       case Left(e) =>
         LOG.error(s"Henkilötietojen haku epäonnistui oppijanumerolla $oid: ${e.getMessage}", e)
         throw RuntimeException(s"Henkilötietojen haku epäonnistui oppijanumerolla $oid", e)
-      case Right(raw) => deserialize(raw, s"oid=$oid")
+      case Right(None) =>
+        LOG.info(s"Oppijaa ei löytynyt oppijanumerorekisteristä oppijanumerolla $oid")
+        None
+      case Right(Some(raw)) => Some(deserialize(raw, s"oid=$oid"))
     }
   }
 
-  def getPersonInfoByHetu(hetu: String): Oppija = {
+  def getPersonInfoByHetu(hetu: String): Option[Oppija] = {
     onrClient.getPersonInfoByHetu(hetu) match {
       case Left(e) =>
         LOG.error(s"Henkilötietojen haku epäonnistui hetulla: ${e.getMessage}", e)
         throw RuntimeException(s"Henkilötietojen haku epäonnistui hetulla", e)
-      case Right(raw) => deserialize(raw, "hetu")
+      case Right(None) =>
+        LOG.info(s"Oppijaa ei löytynyt oppijanumerorekisteristä hetulla")
+        None
+      case Right(Some(raw)) => Some(deserialize(raw, "hetu"))
     }
   }
 }

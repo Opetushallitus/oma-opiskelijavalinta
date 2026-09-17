@@ -389,7 +389,9 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(koutaClient.getHakukohde(HAKUKOHDE_OID_2))
       .thenReturn(Right(objectMapper.writeValueAsString(hakukohde2)))
-    Mockito.when(onrService.getPersonInfo(PERSON_OID)).thenReturn(Oppija(PERSON_OID, "010190", "Testi", "Testinen"))
+    Mockito
+      .when(onrService.getPersonInfo(PERSON_OID))
+      .thenReturn(Some(Oppija(PERSON_OID, "010190", "Testi", "Testinen")))
     Mockito
       .when(
         valintaTulosServiceClient.postVastaanotto(

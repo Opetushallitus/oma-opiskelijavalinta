@@ -58,13 +58,19 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
           )
       }
 
+    val masterOid = personInfo
+      .map(_.oppijanumero)
+      .getOrElse(
+        throw new LinkAuthenticationException(s"oppijaa ei löytynyt oppijanumerorekisteristä oidilla $personOid")
+      )
+
     val hakemusOid = meta.hakemusOid
 
     val attrs = Map(
       "personOid"  -> personOid,
       "hakemusOid" -> hakemusOid,
       "hakuOid"    -> meta.hakuOid.getOrElse(""),
-      "masterOid"  -> personInfo.oppijanumero
+      "masterOid"  -> masterOid
     )
 
     val principal = new OppijaUser(

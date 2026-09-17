@@ -27,11 +27,11 @@ class OnrServiceTest {
   def returnsPersonInfoWhenSuccessful(): Unit = {
     Mockito
       .when(onrClient.getPersonInfo(OID))
-      .thenReturn(Right(objectMapper.writeValueAsString(oppija)))
+      .thenReturn(Right(Some(objectMapper.writeValueAsString(oppija))))
 
     val result = service.getPersonInfo(OID)
 
-    Assertions.assertEquals(oppija, result)
+    Assertions.assertEquals(Some(oppija), result)
   }
 
   @Test
@@ -55,7 +55,7 @@ class OnrServiceTest {
   def throwsWhenDeserializationFails(): Unit = {
     Mockito
       .when(onrClient.getPersonInfo(OID))
-      .thenReturn(Right("invalid json"))
+      .thenReturn(Right(Some("invalid json")))
 
     val exception = Assertions.assertThrows(
       classOf[RuntimeException],
@@ -68,14 +68,25 @@ class OnrServiceTest {
   }
 
   @Test
+  def returnsNoneWhenPersonNotFound(): Unit = {
+    Mockito
+      .when(onrClient.getPersonInfo(OID))
+      .thenReturn(Right(None))
+
+    val result = service.getPersonInfo(OID)
+
+    Assertions.assertEquals(None, result)
+  }
+
+  @Test
   def returnsPersonInfoByHetuWhenSuccessful(): Unit = {
     Mockito
       .when(onrClient.getPersonInfoByHetu(HETU))
-      .thenReturn(Right(objectMapper.writeValueAsString(oppija)))
+      .thenReturn(Right(Some(objectMapper.writeValueAsString(oppija))))
 
     val result = service.getPersonInfoByHetu(HETU)
 
-    Assertions.assertEquals(oppija, result)
+    Assertions.assertEquals(Some(oppija), result)
   }
 
   @Test
@@ -99,7 +110,7 @@ class OnrServiceTest {
   def throwsWhenDeserializationFailsByHetu(): Unit = {
     Mockito
       .when(onrClient.getPersonInfoByHetu(HETU))
-      .thenReturn(Right("invalid json"))
+      .thenReturn(Right(Some("invalid json")))
 
     val exception = Assertions.assertThrows(
       classOf[RuntimeException],
@@ -109,5 +120,16 @@ class OnrServiceTest {
     Assertions.assertTrue(
       exception.getMessage.contains("Henkilötietojen deserialisointi epäonnistui")
     )
+  }
+
+  @Test
+  def returnsNoneWhenPersonNotFoundByHetu(): Unit = {
+    Mockito
+      .when(onrClient.getPersonInfoByHetu(HETU))
+      .thenReturn(Right(None))
+
+    val result = service.getPersonInfoByHetu(HETU)
+
+    Assertions.assertEquals(None, result)
   }
 }
