@@ -94,11 +94,10 @@ class VastaanottoResource @Autowired (
       } catch {
         case e: VtsBadRequestException =>
           LOG.error(
-            "Vastaanoton tallentaminen epäonnistui, hakemusOid: {}, hakukohdeOid: {}, virhe: {}",
+            "Vastaanoton tallentaminen epäonnistui (bad request), hakemusOid: {}, hakukohdeOid: {}, virhe: {}",
             hakemusOid,
             hakukohdeOid,
             e.getMessage,
-            e
           )
           ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -113,7 +112,7 @@ class VastaanottoResource @Autowired (
             "Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}",
             hakemusOid,
             hakukohdeOid,
-            e
+            e.getMessage
           )
           ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
