@@ -32,6 +32,8 @@ class ValintaTulosResource @Autowired (vtsService: VTSService, authorizationServ
     } else {
       val linkUser      = authorizationService.hasLinkUserRole
       val oppilasnumero = authorizationService.getPersonOid.get
+      // HUOM! tällä hetkellä tätä apia kutsutaan vain hakemuksille joilla on jo valinnan tulos tai menneille hakemuksille
+      // jos apia joskus tullaan käyttämään hakemuksille joiden hakemusmaksu voi olla maksamatta tai erääntynyt, pitää lisätä tarkistus ettei tässä tilanteessa tehdä vts-kutsua
       try {
         val result = vtsService
           .getValinnanTulokset(oppilasnumero, hakuOid, hakemusOid)
