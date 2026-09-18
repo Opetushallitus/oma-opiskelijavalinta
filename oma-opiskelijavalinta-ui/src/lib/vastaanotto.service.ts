@@ -57,14 +57,12 @@ export async function doVastaanotto(
 async function postIlmoittautuminen(
   hakemusOid: string,
   hakukohdeOid: string,
-  hakuOid: string,
   ilmoittautumisTila: 'LASNA' | 'LASNA_KOKO_LUKUVUOSI',
 ) {
   const config = await getConfiguration();
   return await client.post<string>(
     `${config.routes.ilmoittautuminen}/hakemus/${hakemusOid}/hakukohde/${hakukohdeOid}`,
     {
-      hakuOid,
       ilmoittautumisTila,
     },
   );
@@ -73,7 +71,6 @@ async function postIlmoittautuminen(
 export async function doIlmoittautuminen(
   hakemusOid: string,
   hakukohdeOid: string,
-  hakuOid: string,
   kevatIlmoittautuminen: boolean,
 ): Promise<string> {
   const ilmoittautumisTila = kevatIlmoittautuminen
@@ -82,7 +79,6 @@ export async function doIlmoittautuminen(
   const response = await postIlmoittautuminen(
     hakemusOid,
     hakukohdeOid,
-    hakuOid,
     ilmoittautumisTila,
   );
   return response.data;

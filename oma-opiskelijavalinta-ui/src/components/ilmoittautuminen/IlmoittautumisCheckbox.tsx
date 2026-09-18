@@ -51,14 +51,9 @@ export function IlmoittautumisCheckbox({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!application.haku) {
-        console.error('Hakemukselle ei löydy hakua!');
-        return;
-      }
       await doIlmoittautuminen(
         application.oid,
         hakutoive.oid,
-        application.haku?.oid,
         kevatIlmoittautuminen,
       );
       hideConfirmation();
