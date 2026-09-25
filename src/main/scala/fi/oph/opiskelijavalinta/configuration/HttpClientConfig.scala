@@ -17,6 +17,7 @@ class HttpClientConfig(httpClientProperties: HttpClientProperties) {
       .setConnectTimeout(java.time.Duration.ofSeconds(10))
       .setRequestTimeout(java.time.Duration.ofSeconds(30)) // perälauta, yksittäiset clientit säädetään erikseen
       .setMaxRedirects(5)
+      .setHttp2Enabled(false)
       .build()
 
     new DefaultAsyncHttpClient(config)
