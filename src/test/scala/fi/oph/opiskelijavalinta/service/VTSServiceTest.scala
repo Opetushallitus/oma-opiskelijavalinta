@@ -256,6 +256,96 @@ class VTSServiceTest {
   }
 
   @Test
+  def eiKutsuSupaaJosHaunKohdejoukonTarkenneOnHakemusmaksullinenKaksoistutkinto(): Unit = {
+    Mockito
+      .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            ehdollinenTulos.copy(hakutoiveet =
+              List(
+                hakutoiveEhdollisestiHyvaksytty.copy(
+                  hakukohdeOid = Some(HAKUKOHDE_OID),
+                  ehdollisestiHyvaksyttavissa = Some(false)
+                )
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(mockKoutaService.getHaku(HAKU_OID))
+      .thenReturn(
+        hakuYosPiirissa.copy(kohdejoukonTarkenneKoodiUri = Some("haunkohdejoukontarkenne_11#1"))
+      )
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
+    Mockito.verifyNoInteractions(mockSupaService)
+    Mockito.verify(mockKoutaService, Mockito.never()).getHakukohde(HAKUKOHDE_OID)
+    Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
+    Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosCheckFailed)
+  }
+
+  @Test
+  def eiKutsuSupaaJosHaunKohdejoukonTarkenneOnErasmusMundus(): Unit = {
+    Mockito
+      .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            ehdollinenTulos.copy(hakutoiveet =
+              List(
+                hakutoiveEhdollisestiHyvaksytty.copy(
+                  hakukohdeOid = Some(HAKUKOHDE_OID),
+                  ehdollisestiHyvaksyttavissa = Some(false)
+                )
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(mockKoutaService.getHaku(HAKU_OID))
+      .thenReturn(
+        hakuYosPiirissa.copy(kohdejoukonTarkenneKoodiUri = Some("haunkohdejoukontarkenne_010#1"))
+      )
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
+    Mockito.verifyNoInteractions(mockSupaService)
+    Mockito.verify(mockKoutaService, Mockito.never()).getHakukohde(HAKUKOHDE_OID)
+    Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
+    Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosCheckFailed)
+  }
+
+  @Test
+  def eiKutsuSupaaJosHaunKohdejoukonTarkenneOnJatkotutkinto(): Unit = {
+    Mockito
+      .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
+      .thenReturn(
+        Right(
+          objectMapper.writeValueAsString(
+            ehdollinenTulos.copy(hakutoiveet =
+              List(
+                hakutoiveEhdollisestiHyvaksytty.copy(
+                  hakukohdeOid = Some(HAKUKOHDE_OID),
+                  ehdollisestiHyvaksyttavissa = Some(false)
+                )
+              )
+            )
+          )
+        )
+      )
+    Mockito
+      .when(mockKoutaService.getHaku(HAKU_OID))
+      .thenReturn(
+        hakuYosPiirissa.copy(kohdejoukonTarkenneKoodiUri = Some("haunkohdejoukontarkenne_3#1"))
+      )
+    val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
+    Mockito.verifyNoInteractions(mockSupaService)
+    Mockito.verify(mockKoutaService, Mockito.never()).getHakukohde(HAKUKOHDE_OID)
+    Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
+    Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosCheckFailed)
+  }
+
+  @Test
   def eiKutsuSupaaJosHakuaikaAlkaaEnnenElokuuta2026(): Unit = {
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))

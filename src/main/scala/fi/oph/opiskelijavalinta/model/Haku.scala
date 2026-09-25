@@ -13,7 +13,8 @@ case class Haku(
   nimi: TranslatedName,
   hakutapaKoodiUri: String,
   kohdejoukkoKoodiUri: String,
-  hakuajat: Seq[Hakuaika]
+  hakuajat: Seq[Hakuaika],
+  kohdejoukonTarkenneKoodiUri: Option[String] = None
 )
 
 case class HakuEnriched(
