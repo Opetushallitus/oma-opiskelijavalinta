@@ -89,6 +89,11 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
                 "secret1",
                 "2025-11-19T09:32:01.886Z",
                 false,
+                None,
+                None,
+                None,
+                None,
+                None,
                 TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
                 None,
                 None,
@@ -122,21 +127,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                "haku-oid-1",
-                List("hakukohde-oid-1", "hakukohde-oid-2"),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                None,
-                None
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )
@@ -163,21 +154,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                Some("testi.kayttaja@example.org"),
-                Some("fi")
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )
@@ -238,21 +215,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                Some("testi.kayttaja@example.org"),
-                Some("fi")
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )
@@ -362,21 +325,7 @@ class VastaanottoIntegrationTest extends BaseIntegrationTest {
       .thenReturn(
         Right(
           objectMapper.writeValueAsString(
-            Array(
-              Hakemus(
-                HAKEMUS_OID,
-                HAKU_OID,
-                List(HAKUKOHDE_OID, HAKUKOHDE_OID_2),
-                "secret1",
-                "2025-11-19T09:32:01.886Z",
-                false,
-                TranslatedName("Leikkilomake", "Samma på svenska", "Playform"),
-                None,
-                None,
-                Some("testi.kayttaja@example.org"),
-                Some("fi")
-              )
-            )
+            Array(mockHakemus)
           )
         )
       )

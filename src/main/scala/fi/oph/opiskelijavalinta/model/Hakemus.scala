@@ -1,8 +1,5 @@
 package fi.oph.opiskelijavalinta.model
 
-import com.fasterxml.jackson.annotation.{JsonKey, JsonProperty}
-import fi.oph.opiskelijavalinta.model.Haku
-
 case class Hakemus(
   oid: String,
   haku: String,
@@ -10,7 +7,12 @@ case class Hakemus(
   secret: String,
   submitted: String,
   processing: Boolean,
-  @JsonProperty("form-name") formName: TranslatedName,
+  paymentState: Option[Maksutila],
+  paymentDueDate: Option[String],
+  paymentSum: Option[String],
+  paymentReason: Option[String],
+  paymentLink: Option[String],
+  formName: TranslatedName,
   hakuaikaIsOn: Option[Boolean],
   hakuaikaEnds: Option[Long],
   email: Option[String],
