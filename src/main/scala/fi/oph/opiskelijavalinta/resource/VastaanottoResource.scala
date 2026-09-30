@@ -97,7 +97,7 @@ class VastaanottoResource @Autowired (
             "Vastaanoton tallentaminen epäonnistui (bad request), hakemusOid: {}, hakukohdeOid: {}, virhe: {}",
             hakemusOid,
             hakukohdeOid,
-            e.getMessage,
+            e.getMessage
           )
           ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
