@@ -226,7 +226,7 @@ class VTSService @Autowired (
       mapper.writeValueAsString(VastaanottoRequestBody(vastaanotto.toString, oikeudet.getOrElse(List.empty)))
     vtsClient.postVastaanotto(hakemusOid, hakukohdeOid, requestBody) match {
       case Left(e: VtsBadRequestException) =>
-        LOG.error(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}", e)
+        LOG.warn(s"Vastaanotto hylättiin hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}")
         throw e
       case Left(e) =>
         LOG.error(s"Virhe vastaanotossa hakemukselle $hakemusOid, hakukohteelle $hakukohdeOid: ${e.getMessage}", e)

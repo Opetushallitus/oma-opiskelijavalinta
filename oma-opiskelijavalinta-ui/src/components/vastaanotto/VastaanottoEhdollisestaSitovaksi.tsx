@@ -6,16 +6,13 @@ import {
 } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useState } from 'react';
-import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
-import { useMutation } from '@tanstack/react-query';
-import { useNotifications } from '../NotificationProvider';
-import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
 
 import { VastaanottoMuutaSitovaksiModalContent } from './VastaanottoMuutaSitovaksiModalContent';
+import { useVastaanottoMutation } from './useVastaanottoMutation';
 import {
   VastaanottoTilaToiminto,
   type HakutoiveenTulos,
@@ -53,56 +50,23 @@ export function VastaanottoEhdollisestaSitovaksi({
   tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
-  const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
+  const { showConfirmation } = useGlobalConfirmationModal();
   const [checked, setChecked] = useState<boolean>(false);
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
-  const { showNotification } = useNotifications();
+
+  const mutation = useVastaanottoMutation({
+    hakemus: application,
+    hakukohdeOid: hakutoive.oid,
+    toiminto: VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
+    kaannosAvain:
+      VastaanottoOptionToKaannosAvain[VastaanottoOption.VASTAANOTA_SITOVASTI],
+    successMessage: 'vastaanotto.modaali.muuta-sitovaksi.onnistui',
+  });
 
   if (!application.haku) {
     console.error('Haku must be defined for vastaanotto!');
     return;
   }
-  const { refetchTulokset } = useHakemuksenTulokset(
-    application,
-    application.haku,
-  );
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      await doVastaanotto(
-        application.oid,
-        hakutoive.oid,
-        VastaanottoTilaToiminto.VASTAANOTA_SITOVASTI,
-        application.haku?.oid ?? '',
-        VastaanottoOptionToKaannosAvain[VastaanottoOption.VASTAANOTA_SITOVASTI],
-      );
-      hideConfirmation();
-    },
-    onSuccess: () => {
-      showNotification({
-        message: t('vastaanotto.modaali.muuta-sitovaksi.onnistui'),
-        type: 'success',
-      });
-      refetchTulokset();
-    },
-    onError: (error) => {
-      console.error(error);
-      if (error.message === 'vastaanottoviesti.virhe') {
-        showNotification({
-          message: t(error.message),
-          type: 'error',
-          duration: null,
-        });
-        refetchTulokset();
-      } else {
-        showNotification({
-          message: t('vastaanotto.virhe.yleinen'),
-          type: 'error',
-          duration: null,
-        });
-      }
-    },
-  });
 
   const setSitovaksiChecked = () => {
     setChecked(!checked);

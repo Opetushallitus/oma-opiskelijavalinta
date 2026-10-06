@@ -56,7 +56,7 @@ class ValintaTulosServiceClient @Autowired (
           LOG.debug(s"$operation tehty onnistuneesti")
           Right(r.getResponseBody())
         case r if r.getStatusCode == 400 =>
-          LOG.error(
+          LOG.warn(
             s"$operation epäonnistui: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
           )
           Left(VtsBadRequestException(r.getResponseBody))

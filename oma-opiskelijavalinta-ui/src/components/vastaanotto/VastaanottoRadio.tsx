@@ -7,18 +7,11 @@ import {
 import { useTranslations } from '@/hooks/useTranslations';
 import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
-import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
 import { VastaanottoModalContent } from './VastaanottoModalContent';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNotifications } from '../NotificationProvider';
-import {
-  HAKEMUKSEN_TULOKSET_QUERY_KEY,
-  useHakemuksenTulokset,
-} from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
   getAlemmatVastaanotot,
@@ -30,6 +23,7 @@ import {
 } from './vastaanotto-utils';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { VastaanottoPeruAiemmatModalContent } from './VastaanottoPeruAlemmatModalContent';
+import { useVastaanottoMutation } from './useVastaanottoMutation';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const InputContainer = styled(Box)(({ theme }) => ({
@@ -147,11 +141,9 @@ export function VastaanottoRadio({
   tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
-  const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
+  const { showConfirmation } = useGlobalConfirmationModal();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
-  const { showNotification } = useNotifications();
-  const queryClient = useQueryClient();
 
   const vastaanottoOptions = determineVastaanottoOptions(
     t,
@@ -159,69 +151,19 @@ export function VastaanottoRadio({
     hakutoive,
   );
 
+  const valittuVastaanotto = selectedVastaanotto as VastaanottoOption;
+  const mutation = useVastaanottoMutation({
+    hakemus: application,
+    hakukohdeOid: hakutoive.oid,
+    toiminto: VastaanottoOptionToToiminto[valittuVastaanotto],
+    kaannosAvain: VastaanottoOptionToKaannosAvain[valittuVastaanotto],
+    successMessage: VastaanottoModalParams[valittuVastaanotto]?.successMessage,
+  });
+
   if (!application.haku) {
     console.error('Haku must be defined for vastaanotto!');
     return;
   }
-  const { refetchTulokset } = useHakemuksenTulokset(
-    application,
-    application.haku,
-  );
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      await doVastaanotto(
-        application.oid,
-        hakutoive.oid,
-        VastaanottoOptionToToiminto[selectedVastaanotto as VastaanottoOption],
-        application.haku?.oid ?? '',
-        VastaanottoOptionToKaannosAvain[
-          selectedVastaanotto as VastaanottoOption
-        ],
-      );
-      hideConfirmation();
-    },
-    onSuccess: () => {
-      showNotification({
-        message: t(
-          VastaanottoModalParams[selectedVastaanotto as VastaanottoOption]
-            .successMessage,
-        ),
-        type: 'success',
-      });
-      refetchTulokset();
-      queryClient.invalidateQueries({
-        queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
-      });
-    },
-    onError: (error) => {
-      console.error(error);
-      if (error.message === 'vastaanotto.virhe.ei-vastaanotettavissa') {
-        showNotification({
-          message: t(error.message),
-          type: 'error',
-          duration: null,
-        });
-        refetchTulokset();
-        queryClient.invalidateQueries({
-          queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
-        });
-      } else if (error.message === 'vastaanottoviesti.virhe') {
-        showNotification({
-          message: t(error.message),
-          type: 'error',
-          duration: null,
-        });
-        refetchTulokset();
-      } else {
-        showNotification({
-          message: t('vastaanotto.virhe.yleinen'),
-          type: 'error',
-          duration: null,
-        });
-      }
-    },
-  });
 
   const selectVastaanOtto = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedVastaanotto(event.target.value);
