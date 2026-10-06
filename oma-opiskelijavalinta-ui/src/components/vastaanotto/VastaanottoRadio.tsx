@@ -7,22 +7,14 @@ import {
 import { useTranslations } from '@/hooks/useTranslations';
 import { isEmptyish } from 'remeda';
 import { useState, type ChangeEvent } from 'react';
-import { doVastaanotto } from '@/lib/vastaanotto.service';
 import { styled } from '@/lib/theme';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
 import { VastaanottoModalContent } from './VastaanottoModalContent';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNotifications } from '../NotificationProvider';
-import {
-  HAKEMUKSEN_TULOKSET_QUERY_KEY,
-  useHakemuksenTulokset,
-} from '@/lib/useHakemuksenTulokset';
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
   getAlemmatVastaanotot,
-  getVastaanottoVirheAvain,
   hasAlemmatVastaanotot,
   VastaanottoModalParams,
   VastaanottoOption,
@@ -31,6 +23,7 @@ import {
 } from './vastaanotto-utils';
 import { isKorkeakouluHaku, isToisenAsteenYhteisHaku } from '@/lib/kouta-utils';
 import { VastaanottoPeruAiemmatModalContent } from './VastaanottoPeruAlemmatModalContent';
+import { useVastaanottoMutation } from './useVastaanottoMutation';
 import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 
 const InputContainer = styled(Box)(({ theme }) => ({
@@ -148,11 +141,9 @@ export function VastaanottoRadio({
   tulos: HakutoiveenTulos;
 }) {
   const { t } = useTranslations();
-  const { showConfirmation, hideConfirmation } = useGlobalConfirmationModal();
+  const { showConfirmation } = useGlobalConfirmationModal();
   const [selectedVastaanotto, setSelectedVastaanotto] = useState<string>('');
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
-  const { showNotification } = useNotifications();
-  const queryClient = useQueryClient();
 
   const vastaanottoOptions = determineVastaanottoOptions(
     t,
@@ -160,54 +151,19 @@ export function VastaanottoRadio({
     hakutoive,
   );
 
+  const valittuVastaanotto = selectedVastaanotto as VastaanottoOption;
+  const mutation = useVastaanottoMutation({
+    hakemus: application,
+    hakukohdeOid: hakutoive.oid,
+    toiminto: VastaanottoOptionToToiminto[valittuVastaanotto],
+    kaannosAvain: VastaanottoOptionToKaannosAvain[valittuVastaanotto],
+    successMessage: VastaanottoModalParams[valittuVastaanotto]?.successMessage,
+  });
+
   if (!application.haku) {
     console.error('Haku must be defined for vastaanotto!');
     return;
   }
-  const { refetchTulokset } = useHakemuksenTulokset(
-    application,
-    application.haku,
-  );
-
-  const mutation = useMutation({
-    mutationFn: async () => {
-      await doVastaanotto(
-        application.oid,
-        hakutoive.oid,
-        VastaanottoOptionToToiminto[selectedVastaanotto as VastaanottoOption],
-        application.haku?.oid ?? '',
-        VastaanottoOptionToKaannosAvain[
-          selectedVastaanotto as VastaanottoOption
-        ],
-      );
-      hideConfirmation();
-    },
-    onSuccess: () => {
-      showNotification({
-        message: t(
-          VastaanottoModalParams[selectedVastaanotto as VastaanottoOption]
-            .successMessage,
-        ),
-        type: 'success',
-      });
-    },
-    onError: (error) => {
-      console.error(error);
-      showNotification({
-        message: t(getVastaanottoVirheAvain(error)),
-        type: 'error',
-        duration: null,
-      });
-    },
-    // Vastaanotto on voinut tallentua, vaikka vastaus epäonnistuisi (esim. aikakatkaisu),
-    // joten tulokset haetaan aina uudelleen, ettei vastaanottoa yritetä turhaan uudestaan.
-    onSettled: () => {
-      refetchTulokset();
-      queryClient.invalidateQueries({
-        queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
-      });
-    },
-  });
 
   const selectVastaanOtto = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedVastaanotto(event.target.value);
