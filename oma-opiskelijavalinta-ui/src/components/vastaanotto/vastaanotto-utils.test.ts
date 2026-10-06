@@ -3,6 +3,7 @@ import {
   getVarallaOlevatYlemmatToiveet,
   getAlemmatVastaanotot,
   hasAlemmatVastaanotot,
+  getVastaanottoVirheAvain,
 } from './vastaanotto-utils';
 import type { Hakemus } from '@/lib/hakemus-types';
 import type { Hakukohde } from '@/lib/kouta-types';
@@ -229,5 +230,24 @@ describe('getAlemmatVastaanotot', () => {
 
     expect(getAlemmatVastaanotot(hakukohde, application)).toHaveLength(0);
     expect(hasAlemmatVastaanotot(hakukohde, application)).toBe(false);
+  });
+});
+
+describe('getVastaanottoVirheAvain', () => {
+  it('palauttaa tunnetun virheavaimen sellaisenaan', () => {
+    expect(
+      getVastaanottoVirheAvain(
+        new Error('vastaanotto.virhe.ei-vastaanotettavissa'),
+      ),
+    ).toBe('vastaanotto.virhe.ei-vastaanotettavissa');
+    expect(getVastaanottoVirheAvain(new Error('vastaanottoviesti.virhe'))).toBe(
+      'vastaanottoviesti.virhe',
+    );
+  });
+
+  it('palauttaa yleisen virheavaimen tuntemattomalle virheelle', () => {
+    expect(getVastaanottoVirheAvain(new Error('Gateway Timeout'))).toBe(
+      'vastaanotto.virhe.yleinen',
+    );
   });
 });

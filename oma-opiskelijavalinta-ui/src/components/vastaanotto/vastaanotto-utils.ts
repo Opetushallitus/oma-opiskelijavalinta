@@ -199,3 +199,14 @@ export function naytetaankoYosVirhe(tulos: HakutoiveenTulos): boolean {
     vastaanotettavissa(tulos.vastaanotettavuustila) && tulos.yosCheckFailed
   );
 }
+
+const VASTAANOTON_TUNNETUT_VIRHEAVAIMET = [
+  'vastaanotto.virhe.ei-vastaanotettavissa',
+  'vastaanottoviesti.virhe',
+];
+
+export function getVastaanottoVirheAvain(error: Error): string {
+  return VASTAANOTON_TUNNETUT_VIRHEAVAIMET.includes(error.message)
+    ? error.message
+    : 'vastaanotto.virhe.yleinen';
+}

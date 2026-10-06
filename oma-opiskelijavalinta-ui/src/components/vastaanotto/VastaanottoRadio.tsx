@@ -22,6 +22,7 @@ import {
 import type { DefaultParamType, TFnType, TranslationKey } from '@tolgee/react';
 import {
   getAlemmatVastaanotot,
+  getVastaanottoVirheAvain,
   hasAlemmatVastaanotot,
   VastaanottoModalParams,
   VastaanottoOption,
@@ -189,37 +190,22 @@ export function VastaanottoRadio({
         ),
         type: 'success',
       });
+    },
+    onError: (error) => {
+      console.error(error);
+      showNotification({
+        message: t(getVastaanottoVirheAvain(error)),
+        type: 'error',
+        duration: null,
+      });
+    },
+    // Vastaanotto on voinut tallentua, vaikka vastaus epäonnistuisi (esim. aikakatkaisu),
+    // joten tulokset haetaan aina uudelleen, ettei vastaanottoa yritetä turhaan uudestaan.
+    onSettled: () => {
       refetchTulokset();
       queryClient.invalidateQueries({
         queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
       });
-    },
-    onError: (error) => {
-      console.error(error);
-      if (error.message === 'vastaanotto.virhe.ei-vastaanotettavissa') {
-        showNotification({
-          message: t(error.message),
-          type: 'error',
-          duration: null,
-        });
-        refetchTulokset();
-        queryClient.invalidateQueries({
-          queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
-        });
-      } else if (error.message === 'vastaanottoviesti.virhe') {
-        showNotification({
-          message: t(error.message),
-          type: 'error',
-          duration: null,
-        });
-        refetchTulokset();
-      } else {
-        showNotification({
-          message: t('vastaanotto.virhe.yleinen'),
-          type: 'error',
-          duration: null,
-        });
-      }
     },
   });
 

@@ -11,9 +11,12 @@ import { styled } from '@/lib/theme';
 import type { Hakukohde } from '@/lib/kouta-types';
 import type { Hakemus } from '@/lib/hakemus-types';
 import { useGlobalConfirmationModal } from '../ConfirmationModal';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotifications } from '../NotificationProvider';
-import { useHakemuksenTulokset } from '@/lib/useHakemuksenTulokset';
+import {
+  HAKEMUKSEN_TULOKSET_QUERY_KEY,
+  useHakemuksenTulokset,
+} from '@/lib/useHakemuksenTulokset';
 
 import { VastaanottoMuutaSitovaksiModalContent } from './VastaanottoMuutaSitovaksiModalContent';
 import {
@@ -22,6 +25,7 @@ import {
 } from '@/lib/valinta-tulos-types';
 import {
   getVarallaOlevatYlemmatToiveet,
+  getVastaanottoVirheAvain,
   VastaanottoOption,
   VastaanottoOptionToKaannosAvain,
 } from './vastaanotto-utils';
@@ -57,6 +61,7 @@ export function VastaanottoEhdollisestaSitovaksi({
   const [checked, setChecked] = useState<boolean>(false);
   const [showSelectionError, setShowSelectionError] = useState<boolean>(false);
   const { showNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   if (!application.haku) {
     console.error('Haku must be defined for vastaanotto!');
@@ -83,24 +88,22 @@ export function VastaanottoEhdollisestaSitovaksi({
         message: t('vastaanotto.modaali.muuta-sitovaksi.onnistui'),
         type: 'success',
       });
-      refetchTulokset();
     },
     onError: (error) => {
       console.error(error);
-      if (error.message === 'vastaanottoviesti.virhe') {
-        showNotification({
-          message: t(error.message),
-          type: 'error',
-          duration: null,
-        });
-        refetchTulokset();
-      } else {
-        showNotification({
-          message: t('vastaanotto.virhe.yleinen'),
-          type: 'error',
-          duration: null,
-        });
-      }
+      showNotification({
+        message: t(getVastaanottoVirheAvain(error)),
+        type: 'error',
+        duration: null,
+      });
+    },
+    // Vastaanotto on voinut tallentua, vaikka vastaus epäonnistuisi (esim. aikakatkaisu),
+    // joten tulokset haetaan aina uudelleen, ettei vastaanottoa yritetä turhaan uudestaan.
+    onSettled: () => {
+      refetchTulokset();
+      queryClient.invalidateQueries({
+        queryKey: [HAKEMUKSEN_TULOKSET_QUERY_KEY],
+      });
     },
   });
 
