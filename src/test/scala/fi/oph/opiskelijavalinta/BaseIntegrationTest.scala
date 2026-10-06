@@ -191,6 +191,7 @@ class BaseIntegrationTest {
     Some("testi.kayttaja@example.org"),
     Some("fi")
   )
+
   var capturedOutput: CapturedOutput = null
   var outputLength                   = 0;
 

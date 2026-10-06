@@ -29,7 +29,7 @@ enum AllowedIlmoittautumisTila:
 enum AllowedVastaanottoTilaToiminto:
   case Peru, VastaanotaSitovasti, VastaanotaSitovastiPeruAlemmat, VastaanotaEhdollisesti
 
-case class IlmoittautuminenRequestBody(hakukohdeOid: String, tila: String, muokkaaja: String, selite: String)
+case class IlmoittautuminenRequestBody(tila: String, selite: String)
 
 case class VastaanottoRequestBody(action: String, paatettavatOpiskeluOikeudet: List[PaatettavaOpiskeluOikeus])
 
@@ -238,17 +238,23 @@ class VTSService @Autowired (
     }
   }
 
+  /**
+   * Ilmoittautumisen muokkaajaa ei anneta, vaan valinta-tulos-service päättelee sen hakemukselta.
+   * Näin muokkaajaksi ei päädy henkilön master-oidia silloin, kun hakemukseen liittyy jokin sen
+   * duplikaateista.
+   */
   def doIlmoittautuminen(
-    oppijanumero: String,
     hakemusOid: String,
     hakukohdeOid: String,
-    hakuOid: String,
     ilmoittautumisTila: AllowedIlmoittautumisTila
   ): Option[String] = {
     val requestBody = mapper.writeValueAsString(
-      IlmoittautuminenRequestBody(hakukohdeOid, ilmoittautumisTila.toString, oppijanumero, "oma-opiskelijavalinta")
+      IlmoittautuminenRequestBody(ilmoittautumisTila.toString, "oma-opiskelijavalinta")
     )
-    vtsClient.postIlmoittautuminen(hakemusOid, hakuOid, requestBody) match {
+    vtsClient.postIlmoittautuminen(hakemusOid, hakukohdeOid, requestBody) match {
+      case Left(e: VtsBadRequestException) =>
+        LOG.error(s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}", e)
+        throw e
       case Left(e) =>
         LOG.error(s"Virhe ilmoittautumisessa hakemukselle $hakemusOid, hakukohde $hakukohdeOid: ${e.getMessage}", e)
         throw RuntimeException(
