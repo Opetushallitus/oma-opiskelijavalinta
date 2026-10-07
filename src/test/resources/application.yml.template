@@ -16,6 +16,9 @@ migri:
 oili:
   key: PLACEHOLDER
 
+viestinvalityspalvelu:
+  url: PLACEHOLDER
+
 logging:
   level:
     root: INFO
