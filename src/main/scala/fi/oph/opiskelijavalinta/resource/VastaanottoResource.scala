@@ -93,7 +93,7 @@ class VastaanottoResource @Autowired (
         ResponseEntity.ok(result.get)
       } catch {
         case e: VtsBadRequestException =>
-          LOG.error(
+          LOG.warn(
             "Vastaanoton tallentaminen epäonnistui (bad request), hakemusOid: {}, hakukohdeOid: {}, virhe: {}",
             hakemusOid,
             hakukohdeOid,
