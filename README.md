@@ -15,6 +15,9 @@ Aseta tarvittavien muuttujien arvot haluamasi testiympäristön salaisuuksista.
 
 1. Käynnistä lokaali sovellus ajamalla luokka fi.oph.suorituspalvelu.DevApp. Käynnistyksen
    yhteydessä käynnistetään myös postgres-kanta
+   - TAI VAIHTOEHTOISESTI Käynnistä postgres-kanta erikseen komennolla
+   `docker run --name oma-opiskelijavalinta-postgres -e POSTGRES_USER=app -e POSTGRES_PASSWORD=app -e POSTGRES_DB=test -p 55455:5432 -d postgres:17` 
+   ja käynnistä fi.oph.suorituspalvelu.DevApp ympäristömuuttujalla NO_DB=true
 2. Mene osoitteeseen: https://localhost:8555/oma-opiskelijavalinta/swagger (uudelleenohjaa kirjautumiseen untuvan cas:iin), kaikkia kutsuja
    pitäisi pystyä kokeilemaan esimerkkiparametreilla
 3. Järjestelmän tilaa voi seurata kannasta (salasana on "app"): psql -U app --host localhost --port 55455 -d omaopiskelijavalinta
