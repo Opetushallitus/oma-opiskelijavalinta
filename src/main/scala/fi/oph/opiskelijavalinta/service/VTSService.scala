@@ -9,6 +9,7 @@ import fi.oph.opiskelijavalinta.clients.{ValintaTulosServiceClient, VtsBadReques
 import fi.oph.opiskelijavalinta.model.{
   HakemuksenTulos,
   HakemuksenTulosRaw,
+  Haku,
   HakutoiveenTulos,
   HakutoiveenTulosEnriched,
   Ilmoittautumistapa,
@@ -54,6 +55,20 @@ class VTSService @Autowired (
     LocalDateTime.of(2026, 8, 1, 0, 0, 0)
   private val YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI: Int = 2027
 
+  // Yhden opiskeluoikeuden säännön (YOS) ulkopuolelle laissa nimenomaisesti rajatut kohdejoukon tarkenteet:
+  // yliopistojen jatkotutkinnot sekä kansainvälisenä yhteistyönä järjestettävät yhteis- ja kaksoistutkinnot
+  // (mm. Erasmus Mundus ja hakemusmaksulliset kv-kaksoistutkinto-ohjelmat).
+  private val YOS_POIKKEUKSENA_OLEVAT_KOHDEJOUKON_TARKENTEET = Set(
+    "haunkohdejoukontarkenne_3",
+    "haunkohdejoukontarkenne_010",
+    "haunkohdejoukontarkenne_11"
+  )
+
+  private def onYosSaannonPoikkeus(haku: Haku): Boolean =
+    haku.kohdejoukonTarkenneKoodiUri.exists(tarkenne =>
+      YOS_POIKKEUKSENA_OLEVAT_KOHDEJOUKON_TARKENTEET.exists(poikkeus => tarkenne.startsWith(poikkeus + "#"))
+    )
+
   mapper.registerModule(DefaultScalaModule)
   mapper.registerModule(new JavaTimeModule())
   mapper.registerModule(new Jdk8Module())
@@ -77,20 +92,24 @@ class VTSService @Autowired (
 
   private def kuuluuYosPiiriin(hakuOid: String, hakukohdeOid: String): Boolean = {
     if (yosVoimassaoloAikarajatKaytossa) {
-      val haku                   = koutaService.getHaku(hakuOid)
-      val varhaisinHakuaikaAlkaa = haku.hakuajat
-        .map(hakuaika => LocalDateTime.parse(hakuaika.alkaa, TimeUtils.KOUTA_DATETIME_FORMATTER))
-        .min
-
-      if (varhaisinHakuaikaAlkaa.isBefore(YOS_HAUN_AIKAISIN_HAKUAJAN_ALKU)) {
+      val haku = koutaService.getHaku(hakuOid)
+      if (onYosSaannonPoikkeus(haku)) {
         false
       } else {
-        val hakukohde               = koutaService.getHakukohde(hakukohdeOid)
-        val koulutuksenAlkamisvuosi =
-          hakukohde.paateltyAlkamisajankohta.flatMap(ajankohta =>
-            ajankohta.pvm.map(TimeUtils.parseKoutaDate).map(_.getYear)
-          )
-        koulutuksenAlkamisvuosi.exists(_ >= YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI)
+        val varhaisinHakuaikaAlkaa = haku.hakuajat
+          .map(hakuaika => LocalDateTime.parse(hakuaika.alkaa, TimeUtils.KOUTA_DATETIME_FORMATTER))
+          .min
+
+        if (varhaisinHakuaikaAlkaa.isBefore(YOS_HAUN_AIKAISIN_HAKUAJAN_ALKU)) {
+          false
+        } else {
+          val hakukohde               = koutaService.getHakukohde(hakukohdeOid)
+          val koulutuksenAlkamisvuosi =
+            hakukohde.paateltyAlkamisajankohta.flatMap(ajankohta =>
+              ajankohta.pvm.map(TimeUtils.parseKoutaDate).map(_.getYear)
+            )
+          koulutuksenAlkamisvuosi.exists(_ >= YOS_KOULUTUKSEN_AIKAISIN_ALKAMISVUOSI)
+        }
       }
     } else {
       true
