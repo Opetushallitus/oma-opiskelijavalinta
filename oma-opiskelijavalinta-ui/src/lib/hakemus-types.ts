@@ -8,7 +8,6 @@ export type Hakemus = {
   hakukohteet?: Array<Hakukohde>;
   modifyLink?: string | null;
   hakukierrosPaattyy?: number | null;
-  varasijatayttoPaattyy?: number | null;
   valintaTuloksetJulkaistaanHakijoilleAlkaa?: number | null;
   valintaTuloksetJulkaistaanHakijoillePaattyy?: number | null;
   submitted: number;
