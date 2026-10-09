@@ -108,7 +108,7 @@ export function MenneetHakukohteetAccordion({
       {!isRefetching && (
         <AccordionDetails
           sx={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}
-          aria-labelledBy={accordionSummaryId}
+          aria-labelledby={accordionSummaryId}
         >
           {isError ? (
             <ErrorBox>
