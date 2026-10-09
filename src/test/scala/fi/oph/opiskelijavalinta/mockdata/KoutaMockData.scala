@@ -6,6 +6,7 @@ import fi.oph.opiskelijavalinta.model.{
   Haku,
   Hakuaika,
   Hakukohde,
+  Metadata,
   PaateltyAlkamisajankohta,
   PaateltyAlkamiskausi,
   TranslatedName
@@ -22,7 +23,8 @@ object KoutaMockData {
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
     "haunkohdejoukko_20",
     "hakutapa_01",
-    Seq(Hakuaika("2026-08-01T00:00:00", koutaFormatFutureDate))
+    Seq(Hakuaika("2026-08-01T00:00:00", koutaFormatFutureDate)),
+    None
   )
 
   val hakuaikaPaattynytHaku: Haku = Haku(
@@ -30,7 +32,8 @@ object KoutaMockData {
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
     "haunkohdejoukko_20",
     "hakutapa_01",
-    Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"))
+    Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01")),
+    Some(Metadata(Some("2024-11-21T09:00")))
   )
 
   val hakukohde1: Hakukohde = Hakukohde(
