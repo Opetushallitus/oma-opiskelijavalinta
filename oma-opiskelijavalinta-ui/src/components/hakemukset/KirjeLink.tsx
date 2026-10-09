@@ -20,6 +20,7 @@ export function KirjeLink({ hakemus }: { hakemus: Hakemus }) {
     <ExternalLink
       href={`${config.routes.tuloskirje}/${hakemus.haku?.oid}/hakemus/${hakemus.oid}`}
       name={t('tuloskirje', { pvm: kirjeModified })}
+      accessibleName={t('tuloskirje-saavutettava', { pvm: kirjeModified })}
     />
   );
 }
