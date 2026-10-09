@@ -28,7 +28,7 @@ export const ExternalLinkButton = ({
       target="_blank"
       aria-label={
         accessibleName ??
-        `${name}${t('saavutettavuus.linkki-uusi-ikkuna-oletus-loppuosa')}`
+        `${name} ${t('saavutettavuus.linkki-uusi-ikkuna-oletus-loppuosa')}`
       }
       title={title ?? name}
     >
@@ -52,7 +52,7 @@ export const ExternalLink = ({
       target="_blank"
       aria-label={
         accessibleName ??
-        `${name}${t('saavutettavuus.linkki-uusi-ikkuna-oletus-loppuosa')}`
+        `${name} ${t('saavutettavuus.linkki-uusi-ikkuna-oletus-loppuosa')}`
       }
       title={title ?? name}
     >
@@ -78,7 +78,7 @@ export const ExternalLinkParagraph = ({
       sx={{ color: 'inherit', textDecorationColor: 'currentColor' }}
       aria-label={
         accessibleName ??
-        `${name}${t('saavutettavuus.linkki-uusi-ikkuna-oletus-loppuosa')}`
+        `${name} ${t('saavutettavuus.linkki-uusi-ikkuna-oletus-loppuosa')}`
       }
       title={title ?? name}
     >
