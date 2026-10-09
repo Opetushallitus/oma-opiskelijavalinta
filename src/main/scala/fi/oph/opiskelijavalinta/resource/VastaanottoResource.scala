@@ -112,7 +112,7 @@ class VastaanottoResource @Autowired (
             "Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}",
             hakemusOid,
             hakukohdeOid,
-            e.getMessage
+            e
           )
           ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)

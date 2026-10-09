@@ -49,25 +49,33 @@ class SupaService @Autowired (
         )
         throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa", e)
       case Right(o) =>
-        try {
-          val raw = mapper.readValue(o, classOf[PaatettavatOpiskeluOikeudetResponse])
-          raw match {
-            case PaatettavatOpiskeluOikeudetResponse(_, Some(virhe), Some(viesti)) =>
-              logYosVirhe(virhe, viesti)
-              throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
-            case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
-              saveOpiskeluOikeudetToSession(hakukohdeOid, raw)
-              paatettavatOpiskeluOikeudet
-            case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
-              LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
-              throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
+        val raw =
+          try mapper.readValue(o, classOf[PaatettavatOpiskeluOikeudetResponse])
+          catch {
+            case e: Exception =>
+              LOG.error(
+                s"Päättyvien opiskeluoikeuksien deserialisointi epäonnistui hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid",
+                e
+              )
+              throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa", e)
           }
-        } catch {
-          case e: Exception =>
-            LOG.error(
-              "Päättyvien opiskeluoikeuksien deserialisointi epäonnistui hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid",
-              e
-            )
+        raw match {
+          case PaatettavatOpiskeluOikeudetResponse(_, Some(virhe), Some(viesti)) =>
+            logYosVirhe(virhe, viesti)
+            throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
+          case PaatettavatOpiskeluOikeudetResponse(Some(paatettavatOpiskeluOikeudet), _, _) =>
+            try saveOpiskeluOikeudetToSession(hakukohdeOid, raw)
+            catch {
+              case e: Exception =>
+                LOG.error(
+                  s"Päättyvien opiskeluoikeuksien tallentaminen sessioon epäonnistui hakijalle $hakijaOid, haulle $hakuOid, hakukohteelle $hakukohdeOid",
+                  e
+                )
+                throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa", e)
+            }
+            paatettavatOpiskeluOikeudet
+          case PaatettavatOpiskeluOikeudetResponse(_, _, _) =>
+            LOG.error(s"Opiskeluoikeuden päättelysta on palautunut vääränlainen vastaus, $raw")
             throw new RuntimeException("Virhe päättyvien opiskeluoikeuksien hakemisessa")
         }
     }

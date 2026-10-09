@@ -114,7 +114,7 @@ class TulosKirjeResource @Autowired (
       }
     } catch {
       case ex: LinkAuthenticationException =>
-        LOG.error(s"Virhe tuloskirjeen latauksessa, token: $token", ex.getMessage)
+        LOG.error(s"Autentikointivirhe tuloskirjeen latauksessa, token: $token", ex)
         val linkErrorUrl = s"https://$hostOppija/oma-opiskelijavalinta/link-error"
         new RedirectView(linkErrorUrl)
       case e: Exception =>
