@@ -32,6 +32,7 @@ export const hakemus1: HakemusResponse = {
     viimeisinPaattynytHakuAika: 1760868000000,
     hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
+    varasijatayttoPaattyy: '2026-05-22T00:00',
   },
   submitted: '2025-10-18T16:00:00',
   hakukohteet: [
@@ -63,7 +64,6 @@ export const hakemus1: HakemusResponse = {
     hakukierrosPaattyy: 1763471212000,
     jarjestetytHakutoiveet: true,
     valintaTuloksetJulkaistaanHakijoilleAlkaa: 1779271212000,
-    varasijatayttoPaattyy: 1779471212000,
   },
   hakemuksenTulokset: [],
   processing: false,
@@ -127,6 +127,7 @@ export const JATKUVA_HAKU: Haku = {
   hakuaikaKaynnissa: true,
   hakutapaKoodiUri: 'hakutapa_03',
   kohdejoukkoKoodiUri: 'haunkohdejoukko_23',
+  varasijatayttoPaattyy: '2026-01-27T01:46',
 };
 
 export const hakemus3ToinenAste: HakemusResponse = {
@@ -353,7 +354,6 @@ export const hakemus5JatkuvaHaku: HakemusResponse = {
     jarjestetytHakutoiveet: false,
     valintaTuloksetJulkaistaanHakijoilleAlkaa: 1769271212000,
     valintaTuloksetJulkaistaanHakijoillePaattyy: 1769371212000,
-    varasijatayttoPaattyy: 1769471212000,
   },
   hakemuksenTulokset: [],
   formName: {

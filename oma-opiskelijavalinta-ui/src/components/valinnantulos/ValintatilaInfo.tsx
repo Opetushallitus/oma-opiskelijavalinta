@@ -52,7 +52,7 @@ const getVarasijallaInfo = (
   t: TFnType<DefaultParamType, string, TranslationKey>,
 ) => {
   const varasijatayttoPaattyy = toFormattedDateTimeStringWithLocale(
-    application.varasijatayttoPaattyy,
+    application?.haku?.varasijatayttoPaattyy,
     lang,
   );
   const config = useConfig();

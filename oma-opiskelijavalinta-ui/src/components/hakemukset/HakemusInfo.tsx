@@ -54,7 +54,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
   );
 
   const varasijatPaattyy = toFormattedDateTimeString(
-    hakemus.varasijatayttoPaattyy,
+    hakemus?.haku?.varasijatayttoPaattyy,
     DEFAULT_DATE_FORMAT,
   );
   const tuloksetJulkaistaan = isTruthy(

@@ -42,7 +42,7 @@ export const getEhdollisestiVastaanottanutInfo = (
   lang: Language,
 ) => {
   const varasijatayttoPaattyy = toFormattedDateTimeStringWithLocale(
-    application.varasijatayttoPaattyy,
+    application?.haku?.varasijatayttoPaattyy,
     lang,
   );
   return (

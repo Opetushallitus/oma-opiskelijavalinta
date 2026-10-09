@@ -7,6 +7,7 @@ export type Haku = {
   viimeisinPaattynytHakuAika?: number;
   kohdejoukkoKoodiUri: string;
   hakutapaKoodiUri: string;
+  varasijatayttoPaattyy?: string;
 };
 
 export type Hakukohde = {

@@ -165,7 +165,8 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaIsOn.getOrElse(false),
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
-      haku.hakutapaKoodiUri
+      haku.hakutapaKoodiUri,
+      haku.metadata.flatMap(metadata => metadata.varasijatayttoPaattyy)
     )
   }
 
