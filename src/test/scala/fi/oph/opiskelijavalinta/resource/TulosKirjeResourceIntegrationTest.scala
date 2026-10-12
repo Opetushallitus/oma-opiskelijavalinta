@@ -156,19 +156,36 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def redirectsToLinkErrorPageWhenVerificationFails(): Unit = {
+  def redirectsToLinkErrorPageWhenTokenNotFound(): Unit = {
     Mockito
-      .when(verificationService.verify("invalid-token"))
+      .when(verificationService.verify("unknown-token"))
       .thenReturn(None)
 
     mvc
       .perform(
         MockMvcRequestBuilders
-          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token")
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/unknown-token")
       )
       .andExpect(status().is3xxRedirection)
       .andExpect(
         redirectedUrlPattern("**/oma-opiskelijavalinta/link-error")
+      )
+  }
+
+  @Test
+  def redirectsToErrorPageWhenVerificationFails(): Unit = {
+    Mockito
+      .when(verificationService.verify("verification-error-token"))
+      .thenThrow(new RuntimeException("Kirjautumistokenin verifiointi epäonnistui"))
+
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/verification-error-token")
+      )
+      .andExpect(status().is3xxRedirection)
+      .andExpect(
+        redirectedUrlPattern("**/oma-opiskelijavalinta/error")
       )
   }
 

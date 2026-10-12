@@ -46,7 +46,7 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsForbiddenForFailedVerification(): Unit = {
+  def returnsForbiddenForUnknownToken(): Unit = {
     Mockito.reset(onrService)
     Mockito
       .when(verificationService.verify("invalid-token"))
@@ -60,6 +60,24 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
       )
       .andExpect(status().isForbidden)
       .andExpect(jsonPath("$.error").value("invalid_or_expired_token"))
+    Mockito.verifyNoInteractions(onrService)
+  }
+
+  @Test
+  def returnsInternalServerErrorIfVerificationFails(): Unit = {
+    Mockito.reset(onrService)
+    Mockito
+      .when(verificationService.verify("verification-error-token"))
+      .thenThrow(new RuntimeException("Kirjautumistokenin verifiointi epäonnistui"))
+
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .post("/api/link-login")
+          .param("token", "verification-error-token")
+      )
+      .andExpect(status().isInternalServerError)
+      .andExpect(jsonPath("$.error").value("login_error"))
     Mockito.verifyNoInteractions(onrService)
   }
 

@@ -17,7 +17,7 @@ class LinkVerificationServiceTest {
   def returnsVerificationWhenSuccessful(): Unit = {
     Mockito
       .when(oppijanTunnistusClient.verifyToken(TOKEN))
-      .thenReturn(Right("""{"exists": true, "valid": true}"""))
+      .thenReturn(Right(Some("""{"exists": true, "valid": true}""")))
     val result = service.verify(TOKEN)
     Assertions.assertTrue(result.isDefined)
     Assertions.assertTrue(result.get.exists)
@@ -25,20 +25,27 @@ class LinkVerificationServiceTest {
   }
 
   @Test
-  def returnsNoneWhenClientFails(): Unit = {
+  def returnsNoneWhenTokenNotFound(): Unit = {
     Mockito
       .when(oppijanTunnistusClient.verifyToken(TOKEN))
-      .thenReturn(Left(RuntimeException("verkkovirhe")))
+      .thenReturn(Right(None))
     val result = service.verify(TOKEN)
     Assertions.assertTrue(result.isEmpty)
   }
 
   @Test
-  def returnsNoneWhenDeserializationFails(): Unit = {
+  def throwsWhenClientFails(): Unit = {
     Mockito
       .when(oppijanTunnistusClient.verifyToken(TOKEN))
-      .thenReturn(Right("invalid json"))
-    val result = service.verify(TOKEN)
-    Assertions.assertTrue(result.isEmpty)
+      .thenReturn(Left(RuntimeException("verkkovirhe")))
+    Assertions.assertThrows(classOf[RuntimeException], () => service.verify(TOKEN))
+  }
+
+  @Test
+  def throwsWhenDeserializationFails(): Unit = {
+    Mockito
+      .when(oppijanTunnistusClient.verifyToken(TOKEN))
+      .thenReturn(Right(Some("invalid json")))
+    Assertions.assertThrows(classOf[RuntimeException], () => service.verify(TOKEN))
   }
 }
