@@ -68,3 +68,5 @@ app:
 yos:
   voimassaolo-check-enabled: true
 
+viestinvalityspalvelu:
+  url: https://viestinvalitys.untuvaopintopolku.fi

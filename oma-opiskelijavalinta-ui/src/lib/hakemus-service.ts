@@ -14,7 +14,6 @@ type Ohjausparametrit = {
   hakukierrosPaattyy?: number | null;
   valintaTuloksetJulkaistaanHakijoilleAlkaa?: number | null;
   valintaTuloksetJulkaistaanHakijoillePaattyy?: number | null;
-  varasijatayttoPaattyy?: number | null;
   sijoittelu?: boolean;
   jarjestetytHakutoiveet?: boolean;
 };
@@ -49,7 +48,6 @@ async function fetchHakemukset() {
 function convertToHakemus(app: HakemusResponse, muokkausUrl: string): Hakemus {
   const modifyLink = app.secret ? `${muokkausUrl}=${app.secret}` : null;
   const hakukierrosPaattyy = app.ohjausparametrit?.hakukierrosPaattyy;
-  const varasijatayttoPaattyy = app.ohjausparametrit?.varasijatayttoPaattyy;
   const valintaTuloksetJulkaistaanHakijoilleAlkaa =
     app.ohjausparametrit?.valintaTuloksetJulkaistaanHakijoilleAlkaa;
   const valintaTuloksetJulkaistaanHakijoillePaattyy =
@@ -58,7 +56,6 @@ function convertToHakemus(app: HakemusResponse, muokkausUrl: string): Hakemus {
     ...app,
     modifyLink,
     hakukierrosPaattyy,
-    varasijatayttoPaattyy,
     valintaTuloksetJulkaistaanHakijoilleAlkaa,
     valintaTuloksetJulkaistaanHakijoillePaattyy,
     priorisoidutHakutoiveet:
