@@ -61,7 +61,7 @@ class LinkLoginController(
 
     } catch {
       case ex: LinkAuthenticationException =>
-        LOG.warn("Virhe linkkikirjautumisessa: {}", ex.getMessage)
+        LOG.warn("Autentikaatiovirhe linkkikirjautumisessa: {}", ex.getMessage)
         SecurityContextHolder.clearContext()
         ResponseEntity
           .status(HttpStatus.FORBIDDEN)
