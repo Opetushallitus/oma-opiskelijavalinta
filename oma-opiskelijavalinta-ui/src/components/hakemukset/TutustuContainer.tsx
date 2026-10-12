@@ -60,6 +60,7 @@ export function TutustuContainer({
         variant="outlined"
         href={tutustuUrl}
         name={t('hakemukset.tutustu-linkki')}
+        title={t('hakemukset.tutustu-linkki-title')}
       />
     </StyledBox>
   ) : null;
