@@ -134,12 +134,10 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("invalid-token"))
       .thenReturn(
-        Some(
-          OppijanTunnistusVerification(
-            exists = false,
-            valid = false,
-            metadata = None
-          )
+        OppijanTunnistusVerification(
+          exists = false,
+          valid = false,
+          metadata = None
         )
       )
 
@@ -155,19 +153,49 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def redirectsToLinkErrorPageWhenVerificationFails(): Unit = {
+  def redirectsToLinkErrorPageWhenExpiredToken(): Unit = {
+    // Oppijan-tunnistus palauttaa vanhentuneelle tokenille exists = true, valid = false ja metadatan mukana.
     Mockito
-      .when(verificationService.verify("invalid-token"))
-      .thenReturn(None)
+      .when(verificationService.verify("expired-token"))
+      .thenReturn(
+        OppijanTunnistusVerification(
+          exists = true,
+          valid = false,
+          metadata = Some(
+            OppijantunnistusMetadata(
+              hakemusOid = HAKEMUS_OID,
+              personOid = None,
+              hakuOid = Some(HAKU_OID)
+            )
+          )
+        )
+      )
 
     mvc
       .perform(
         MockMvcRequestBuilders
-          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/invalid-token")
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/expired-token")
       )
       .andExpect(status().is3xxRedirection)
       .andExpect(
         redirectedUrlPattern("**/oma-opiskelijavalinta/link-error")
+      )
+  }
+
+  @Test
+  def redirectsToErrorPageWhenVerificationFails(): Unit = {
+    Mockito
+      .when(verificationService.verify("verification-error-token"))
+      .thenThrow(new RuntimeException("Kirjautumistokenin verifiointi epäonnistui"))
+
+    mvc
+      .perform(
+        MockMvcRequestBuilders
+          .get(s"${ApiConstants.TULOSKIRJE_PATH}/token/verification-error-token")
+      )
+      .andExpect(status().is3xxRedirection)
+      .andExpect(
+        redirectedUrlPattern("**/oma-opiskelijavalinta/error")
       )
   }
 
@@ -177,16 +205,14 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("valid-token"))
       .thenReturn(
-        Some(
-          OppijanTunnistusVerification(
-            exists = true,
-            valid = true,
-            metadata = Some(
-              OppijantunnistusMetadata(
-                hakemusOid = HAKEMUS_OID,
-                personOid = None,
-                hakuOid = Some(HAKU_OID)
-              )
+        OppijanTunnistusVerification(
+          exists = true,
+          valid = true,
+          metadata = Some(
+            OppijantunnistusMetadata(
+              hakemusOid = HAKEMUS_OID,
+              personOid = None,
+              hakuOid = Some(HAKU_OID)
             )
           )
         )
@@ -212,16 +238,14 @@ class TulosKirjeResourceIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("valid-token"))
       .thenReturn(
-        Some(
-          OppijanTunnistusVerification(
-            exists = true,
-            valid = true,
-            metadata = Some(
-              OppijantunnistusMetadata(
-                hakemusOid = HAKEMUS_OID,
-                personOid = None,
-                hakuOid = Some(HAKU_OID)
-              )
+        OppijanTunnistusVerification(
+          exists = true,
+          valid = true,
+          metadata = Some(
+            OppijantunnistusMetadata(
+              hakemusOid = HAKEMUS_OID,
+              personOid = None,
+              hakuOid = Some(HAKU_OID)
             )
           )
         )

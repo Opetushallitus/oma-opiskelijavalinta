@@ -61,13 +61,13 @@ class LinkLoginController(
 
     } catch {
       case ex: LinkAuthenticationException =>
-        LOG.warn("Virhe linkkikirjautumisessa: {}", ex.getMessage)
+        LOG.warn("Autentikaatiovirhe linkkikirjautumisessa: {}", ex.getMessage)
         SecurityContextHolder.clearContext()
         ResponseEntity
           .status(HttpStatus.FORBIDDEN)
           .body(Map("error" -> "invalid_or_expired_token"))
       case e: Exception =>
-        LOG.warn("Virhe linkkikirjautumisessa: {}", e.getMessage)
+        LOG.error("Virhe linkkikirjautumisessa", e)
         SecurityContextHolder.clearContext()
         ResponseEntity
           .status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -40,6 +40,8 @@ class OppijanTunnistusClient @Autowired (
         case r if r.getStatusCode == 200 =>
           LOG.debug("Oppijan-tunnistus token verifioitiin")
           Right(r.getResponseBody())
+        // Oppijan-tunnistus vastaa tuntemattomaan ja vanhentuneeseen tokeniin 200:lla ja kertoo tilan
+        // vastauksen exists- ja valid-kentissä, joten kaikki muut statuskoodit ovat palveluvirheitä.
         case r =>
           LOG.error(
             s"Virhe oppijan-tunnistus tokenin verifioinnissa: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"
