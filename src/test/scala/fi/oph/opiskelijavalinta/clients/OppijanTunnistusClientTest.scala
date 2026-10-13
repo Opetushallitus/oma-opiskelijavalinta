@@ -33,26 +33,20 @@ class OppijanTunnistusClientTest {
   def returnsResponseBodyOn200(): Unit = {
     val client = clientReturning(response(200, """{"exists":true,"valid":true}"""))
 
-    Assertions.assertEquals(Right(Some("""{"exists":true,"valid":true}""")), client.verifyToken(TOKEN))
-  }
-
-  @Test
-  def returnsRightWithNoneOn404(): Unit = {
-    val client = clientReturning(response(404, """{"error":"not found"}"""))
-
-    Assertions.assertEquals(Right(None), client.verifyToken(TOKEN))
-  }
-
-  @Test
-  def returnsRightWithNoneOn400(): Unit = {
-    val client = clientReturning(response(400, """{"error":"invalid token"}"""))
-
-    Assertions.assertEquals(Right(None), client.verifyToken(TOKEN))
+    Assertions.assertEquals(Right("""{"exists":true,"valid":true}"""), client.verifyToken(TOKEN))
   }
 
   @Test
   def returnsLeftOnUnauthorized(): Unit = {
     val client = clientReturning(response(401, "unauthorized"))
+
+    Assertions.assertTrue(client.verifyToken(TOKEN).isLeft)
+  }
+
+  @Test
+  def returnsLeftOnNotFound(): Unit = {
+    // 404 = väärä osoite, ei tuntematon token; oppijan-tunnistus vastaa tuntemattomaankin tokeniin 200:lla.
+    val client = clientReturning(response(404, """{"error":"not found"}"""))
 
     Assertions.assertTrue(client.verifyToken(TOKEN).isLeft)
   }

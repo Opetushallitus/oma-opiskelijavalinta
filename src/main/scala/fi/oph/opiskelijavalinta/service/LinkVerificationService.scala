@@ -21,26 +21,25 @@ class LinkVerificationService @Autowired (
   private val LOG: Logger = LoggerFactory.getLogger(classOf[LinkVerificationService])
 
   /**
-   * Palauttaa None jos tokenia ei ole olemassa. Heittää RuntimeExceptionin jos oppijan-tunnistuksen kutsu tai
-   * vastauksen käsittely epäonnistuu, jotta palveluvirhe ei näyttäydy kutsujalle virheellisenä tokenina.
+   * Heittää RuntimeExceptionin jos oppijan-tunnistuksen kutsu tai vastauksen käsittely epäonnistuu, jotta
+   * palveluvirhe ei näyttäydy kutsujalle virheellisenä tokenina. Tuntematon ja vanhentunut token eivät ole virheitä,
+   * vaan ne näkyvät palautuvan vastauksen exists- ja valid-kentissä.
    */
-  def verify(token: String): Option[OppijanTunnistusVerification] = {
+  def verify(token: String): OppijanTunnistusVerification = {
 
-    oppijanTunnistusClient.verifyToken(token) match {
+    val raw = oppijanTunnistusClient.verifyToken(token) match {
       case Left(e) =>
         LOG.error(s"Verifiointi epäonnistui tokenille $token: ${e.getMessage}", e)
         throw RuntimeException("Kirjautumistokenin verifiointi epäonnistui", e)
-      case Right(None) =>
-        LOG.info("Oppijan-tunnistus ei tunnistanut kirjautumistokenia")
-        Option.empty
-      case Right(Some(o)) =>
-        try {
-          Option.apply(mapper.readValue(o, classOf[OppijanTunnistusVerification]))
-        } catch {
-          case e: Exception =>
-            LOG.error(s"Tokenin deserialisointi epäonnistui tokenille $token: ${e.getMessage}", e)
-            throw RuntimeException("Kirjautumistokenin deserialisointi epäonnistui", e)
-        }
+      case Right(o) => o
+    }
+
+    try {
+      mapper.readValue(raw, classOf[OppijanTunnistusVerification])
+    } catch {
+      case e: Exception =>
+        LOG.error(s"Tokenin deserialisointi epäonnistui tokenille $token: ${e.getMessage}", e)
+        throw RuntimeException("Kirjautumistokenin deserialisointi epäonnistui", e)
     }
   }
 }

@@ -23,13 +23,13 @@ class OppijanTunnistusClient @Autowired (
   @Value("${host.virkailija}")
   val opintopolku_virkailija_domain: String = null
 
-  def verifyToken(token: String): Either[Throwable, Option[String]] = {
+  def verifyToken(token: String): Either[Throwable, String] = {
     val url =
       s"https://$opintopolku_virkailija_domain/oppijan-tunnistus/api/v1/token/$token"
     fetch(url)
   }
 
-  private def fetch(url: String): Either[Throwable, Option[String]] = {
+  private def fetch(url: String): Either[Throwable, String] = {
     val req = new RequestBuilder()
       .setMethod("GET")
       .setHeader("Content-Type", "application/json")
@@ -39,12 +39,9 @@ class OppijanTunnistusClient @Autowired (
       val result = asScala(oppijanTunnistusCasClient.execute(req)).map {
         case r if r.getStatusCode == 200 =>
           LOG.debug("Oppijan-tunnistus token verifioitiin")
-          Right(Some(r.getResponseBody()))
-        case r if r.getStatusCode == 404 || r.getStatusCode == 400 =>
-          // 404 = tokenia ei ole olemassa, 400 = token ei ole kelvollisen muotoinen. Kumpikaan ei ole palveluvirhe,
-          // vaan kutsuja tulkitsee nämä virheelliseksi tokeniksi. 401/403/5xx sen sijaan ovat meidän vikamme.
-          LOG.warn(s"Oppijan-tunnistus ei tunnistanut tokenia: ${r.getStatusCode} ${r.getStatusText}")
-          Right(None)
+          Right(r.getResponseBody())
+        // Oppijan-tunnistus vastaa tuntemattomaan ja vanhentuneeseen tokeniin 200:lla ja kertoo tilan
+        // vastauksen exists- ja valid-kentissä, joten kaikki muut statuskoodit ovat palveluvirheitä.
         case r =>
           LOG.error(
             s"Virhe oppijan-tunnistus tokenin verifioinnissa: ${r.getStatusCode} ${r.getStatusText} ${r.getResponseBody()}"

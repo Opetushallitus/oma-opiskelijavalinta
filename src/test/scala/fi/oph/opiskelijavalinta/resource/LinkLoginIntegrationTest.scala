@@ -25,12 +25,10 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("invalid-token"))
       .thenReturn(
-        Some(
-          OppijanTunnistusVerification(
-            exists = false,
-            valid = false,
-            metadata = None
-          )
+        OppijanTunnistusVerification(
+          exists = false,
+          valid = false,
+          metadata = None
         )
       )
 
@@ -46,17 +44,30 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  def returnsForbiddenForUnknownToken(): Unit = {
+  def returnsForbiddenForExpiredToken(): Unit = {
     Mockito.reset(onrService)
+    // Oppijan-tunnistus palauttaa vanhentuneelle tokenille exists = true, valid = false ja metadatan mukana.
     Mockito
-      .when(verificationService.verify("invalid-token"))
-      .thenReturn(None)
+      .when(verificationService.verify("expired-token"))
+      .thenReturn(
+        OppijanTunnistusVerification(
+          exists = true,
+          valid = false,
+          metadata = Some(
+            OppijantunnistusMetadata(
+              hakemusOid = "1.2.246.562.11.00000000001",
+              personOid = Some("1.2.246.562.24.12345678901"),
+              hakuOid = Some("1.2.246.562.29.00000000001")
+            )
+          )
+        )
+      )
 
     mvc
       .perform(
         MockMvcRequestBuilders
           .post("/api/link-login")
-          .param("token", "invalid-token")
+          .param("token", "expired-token")
       )
       .andExpect(status().isForbidden)
       .andExpect(jsonPath("$.error").value("invalid_or_expired_token"))
@@ -87,16 +98,14 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("valid-token"))
       .thenReturn(
-        Some(
-          OppijanTunnistusVerification(
-            exists = true,
-            valid = true,
-            metadata = Some(
-              OppijantunnistusMetadata(
-                hakemusOid = "1.2.246.562.11.00000000001",
-                personOid = Some("1.2.246.562.24.12345678901"),
-                hakuOid = Some("1.2.246.562.29.00000000001")
-              )
+        OppijanTunnistusVerification(
+          exists = true,
+          valid = true,
+          metadata = Some(
+            OppijantunnistusMetadata(
+              hakemusOid = "1.2.246.562.11.00000000001",
+              personOid = Some("1.2.246.562.24.12345678901"),
+              hakuOid = Some("1.2.246.562.29.00000000001")
             )
           )
         )
@@ -119,16 +128,14 @@ class LinkLoginIntegrationTest extends BaseIntegrationTest {
     Mockito
       .when(verificationService.verify("valid-token"))
       .thenReturn(
-        Some(
-          OppijanTunnistusVerification(
-            exists = true,
-            valid = true,
-            metadata = Some(
-              OppijantunnistusMetadata(
-                hakemusOid = "1.2.246.562.11.00000000001",
-                personOid = Some("1.2.246.562.24.12345678901"),
-                hakuOid = Some("1.2.246.562.29.00000000001")
-              )
+        OppijanTunnistusVerification(
+          exists = true,
+          valid = true,
+          metadata = Some(
+            OppijantunnistusMetadata(
+              hakemusOid = "1.2.246.562.11.00000000001",
+              personOid = Some("1.2.246.562.24.12345678901"),
+              hakuOid = Some("1.2.246.562.29.00000000001")
             )
           )
         )

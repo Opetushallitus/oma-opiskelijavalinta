@@ -71,11 +71,7 @@ class TulosKirjeResource @Autowired (
         .body("tuloskirjeen latauksesta puuttui kirjautumistoken")
     }
     try {
-      val verification = linkVerificationService
-        .verify(token)
-        .getOrElse(
-          throw new LinkAuthenticationException("tuloskirjeen kirjautumistokenin data puuttuu")
-        )
+      val verification = linkVerificationService.verify(token)
 
       if (!verification.exists || !verification.valid) {
         throw new LinkAuthenticationException(
