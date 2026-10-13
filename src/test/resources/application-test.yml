@@ -47,6 +47,3 @@ spring:
     password: app
   flyway:
     baseline-on-migrate: true
-
-yos:
-  voimassaolo-check-enabled: true

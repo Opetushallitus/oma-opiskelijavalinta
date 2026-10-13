@@ -8,8 +8,6 @@ import fi.oph.opiskelijavalinta.mockdata.VTSMockData.{
   hakutoiveEhdollisestiHyvaksytty
 }
 import fi.oph.opiskelijavalinta.model.{
-  Haku,
-  Hakuaika,
   Hakukohde,
   Ilmoittautumistapa,
   Ilmoittautumistila,
@@ -23,7 +21,7 @@ import fi.oph.opiskelijavalinta.model.{
 import fi.oph.opiskelijavalinta.security.{MigriJsonWebToken, OiliJsonWebToken}
 import org.junit.jupiter.api.{Assertions, Test, TestInstance}
 import org.junit.jupiter.api.TestInstance.Lifecycle
-import org.mockito.Mockito
+import org.mockito.{ArgumentMatchers, Mockito}
 
 @TestInstance(Lifecycle.PER_METHOD)
 class VTSServiceTest {
@@ -46,17 +44,8 @@ class VTSServiceTest {
       mockSupaService,
       mockKoutaService,
       migriToken,
-      oiliToken,
-      yosVoimassaoloAikarajatKaytossa = true
+      oiliToken
     )
-
-  val hakuYosPiirissa: Haku = Haku(
-    HAKU_OID,
-    TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
-    "hakutapa_01",
-    "haunkohdejoukko_20",
-    Seq(Hakuaika("2026-08-01T00:00:00", "2026-09-01T00:00:00"))
-  )
 
   val hakukohdeYosPiirissa: Hakukohde = Hakukohde(
     HAKUKOHDE_OID,
@@ -64,16 +53,15 @@ class VTSServiceTest {
     TranslatedName("Leikkipuisto, Liukumäki", "", ""),
     None,
     Some(PaateltyAlkamiskausi(kausiUri = Some("kausi_k"))),
-    Some(PaateltyAlkamisajankohta(pvm = Some("2027-01-01"), henkilokohtainenSuunnitelma = false))
+    Some(PaateltyAlkamisajankohta(pvm = Some("2027-01-01"), henkilokohtainenSuunnitelma = false)),
+    kuuluuYosinPiiriin = Some(true)
   )
 
-  val hakuEiYosPiirissa: Haku = hakuYosPiirissa.copy(
-    hakuajat = Seq(Hakuaika("2024-01-01T00:00:00", "2024-02-01T00:00:00"))
-  )
+  val hakukohdeEiYosPiirissa: Hakukohde = hakukohdeYosPiirissa.copy(kuuluuYosinPiiriin = Some(false))
 
   @Test
   def returnsEhdollisuudenSyyFromKoodisto(): Unit = {
-    Mockito.when(mockKoutaService.getHaku(HAKU_OID)).thenReturn(hakuEiYosPiirissa)
+    Mockito.when(mockKoutaService.getHakukohde(ArgumentMatchers.anyString())).thenReturn(hakukohdeEiYosPiirissa)
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(
@@ -111,7 +99,7 @@ class VTSServiceTest {
 
   @Test
   def doesNotCallKoodistoIfEhdollisuudenSyyMuu(): Unit = {
-    Mockito.when(mockKoutaService.getHaku(HAKU_OID)).thenReturn(hakuEiYosPiirissa)
+    Mockito.when(mockKoutaService.getHakukohde(ArgumentMatchers.anyString())).thenReturn(hakukohdeEiYosPiirissa)
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(
@@ -200,7 +188,6 @@ class VTSServiceTest {
           )
         )
       )
-    Mockito.when(mockKoutaService.getHaku(HAKU_OID)).thenReturn(hakuYosPiirissa)
     Mockito
       .when(mockKoutaService.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(hakukohdeYosPiirissa)
@@ -243,7 +230,6 @@ class VTSServiceTest {
           )
         )
       )
-    Mockito.when(mockKoutaService.getHaku(HAKU_OID)).thenReturn(hakuYosPiirissa)
     Mockito
       .when(mockKoutaService.getHakukohde(HAKUKOHDE_OID))
       .thenReturn(hakukohdeYosPiirissa)
@@ -256,7 +242,7 @@ class VTSServiceTest {
   }
 
   @Test
-  def eiKutsuSupaaJosHakuaikaAlkaaEnnenElokuuta2026(): Unit = {
+  def eiKutsuSupaaJosHakukohdeEiKuuluYosPiiriin(): Unit = {
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(
@@ -274,20 +260,16 @@ class VTSServiceTest {
         )
       )
     Mockito
-      .when(mockKoutaService.getHaku(HAKU_OID))
-      .thenReturn(
-        hakuYosPiirissa
-          .copy(hakuajat = Seq(Hakuaika("2026-07-31T23:59:59", "2026-09-01T00:00:00")))
-      )
+      .when(mockKoutaService.getHakukohde(HAKUKOHDE_OID))
+      .thenReturn(hakukohdeYosPiirissa.copy(kuuluuYosinPiiriin = Some(false)))
     val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Mockito.verifyNoInteractions(mockSupaService)
-    Mockito.verify(mockKoutaService, Mockito.never()).getHakukohde(HAKUKOHDE_OID)
     Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
     Assertions.assertEquals(false, tulos.get.hakutoiveet.head.yosCheckFailed)
   }
 
   @Test
-  def eiKutsuSupaaJosKoulutuksenAlkamisvuosiOnEnnenVuotta2027(): Unit = {
+  def eiKutsuSupaaJosKuuluuYosinPiiriinTietoPuuttuu(): Unit = {
     Mockito
       .when(vtsClient.getValinnanTulokset(HAKU_OID, HAKEMUS_OID))
       .thenReturn(
@@ -304,14 +286,9 @@ class VTSServiceTest {
           )
         )
       )
-    Mockito.when(mockKoutaService.getHaku(HAKU_OID)).thenReturn(hakuYosPiirissa)
     Mockito
       .when(mockKoutaService.getHakukohde(HAKUKOHDE_OID))
-      .thenReturn(
-        hakukohdeYosPiirissa.copy(paateltyAlkamisajankohta =
-          Some(PaateltyAlkamisajankohta(pvm = Some("2026-12-31"), henkilokohtainenSuunnitelma = false))
-        )
-      )
+      .thenReturn(hakukohdeYosPiirissa.copy(kuuluuYosinPiiriin = None))
     val tulos = vtsService.getValinnanTulokset(HAKIJA_OID, HAKU_OID, HAKEMUS_OID)
     Mockito.verifyNoInteractions(mockSupaService)
     Assertions.assertTrue(tulos.get.hakutoiveet.head.paatettavatOpiskeluOikeudet.isEmpty)
