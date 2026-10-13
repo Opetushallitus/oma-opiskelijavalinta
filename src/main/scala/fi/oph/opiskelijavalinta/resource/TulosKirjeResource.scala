@@ -71,11 +71,7 @@ class TulosKirjeResource @Autowired (
         .body("tuloskirjeen latauksesta puuttui kirjautumistoken")
     }
     try {
-      val verification = linkVerificationService
-        .verify(token)
-        .getOrElse(
-          throw new LinkAuthenticationException("tuloskirjeen kirjautumistokenin data puuttuu")
-        )
+      val verification = linkVerificationService.verify(token)
 
       if (!verification.exists || !verification.valid) {
         throw new LinkAuthenticationException(
@@ -114,7 +110,7 @@ class TulosKirjeResource @Autowired (
       }
     } catch {
       case ex: LinkAuthenticationException =>
-        LOG.error(s"Virhe tuloskirjeen latauksessa, token: $token", ex.getMessage)
+        LOG.warn(s"Autentikointivirhe tuloskirjeen latauksessa, token: $token | virhe: ${ex.getMessage}")
         val linkErrorUrl = s"https://$hostOppija/oma-opiskelijavalinta/link-error"
         new RedirectView(linkErrorUrl)
       case e: Exception =>

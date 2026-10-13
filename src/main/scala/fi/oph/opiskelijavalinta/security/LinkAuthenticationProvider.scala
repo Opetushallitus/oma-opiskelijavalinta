@@ -26,11 +26,7 @@ class LinkAuthenticationProvider(linkVerificationService: LinkVerificationServic
     val token = authentication.asInstanceOf[LinkAuthenticationToken].token
     LOG.debug(s"Autentikoidaan oppijan-tunnistus token: $token")
 
-    val verification = linkVerificationService
-      .verify(token)
-      .getOrElse(
-        throw new LinkAuthenticationException("kirjautumistokenin data puuttuu")
-      )
+    val verification = linkVerificationService.verify(token)
 
     if (!verification.exists || !verification.valid) {
       throw new LinkAuthenticationException(
