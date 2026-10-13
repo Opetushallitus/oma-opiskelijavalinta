@@ -13,7 +13,8 @@ case class Hakukohde(
   uudenOpiskelijanUrl: Option[TranslatedName],
   paateltyAlkamiskausi: Option[PaateltyAlkamiskausi],
   paateltyAlkamisajankohta: Option[PaateltyAlkamisajankohta],
-  yhdenPaikanSaanto: YhdenPaikanSaanto = YhdenPaikanSaanto(false)
+  yhdenPaikanSaanto: YhdenPaikanSaanto = YhdenPaikanSaanto(false),
+  kuuluuYosinPiiriin: Option[Boolean] = None
 )
 
 case class HakukohdeEnriched(
