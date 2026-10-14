@@ -17,7 +17,7 @@ oili:
   key: PLACEHOLDER
 
 viestinvalityspalvelu:
-  url: PLACEHOLDER
+  url: https://viestinvalitys.untuvaopintopolku.fi
 
 logging:
   level:
@@ -65,8 +65,3 @@ app:
   db:
     threads: 2
 
-yos:
-  voimassaolo-check-enabled: true
-
-viestinvalityspalvelu:
-  url: https://viestinvalitys.untuvaopintopolku.fi
