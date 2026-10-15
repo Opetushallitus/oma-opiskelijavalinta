@@ -13,7 +13,7 @@ import fi.oph.opiskelijavalinta.model.{
 }
 import fi.oph.opiskelijavalinta.util.TimeUtils.{KOUTA_DATETIME_FORMATTER, ZONE_FINLAND}
 
-import java.time.ZonedDateTime
+import java.time.{LocalDateTime, ZonedDateTime}
 
 object KoutaMockData {
   val koutaFormatFutureDate: String = KOUTA_DATETIME_FORMATTER.format(ZonedDateTime.now(ZONE_FINLAND).plusDays(1))
@@ -33,7 +33,7 @@ object KoutaMockData {
     "haunkohdejoukko_20",
     "hakutapa_01",
     Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01")),
-    Some(Metadata(Some("2024-11-21T09:00")))
+    Some(Metadata(Some(LocalDateTime.parse("2024-11-21T09:00"))))
   )
 
   val hakukohde1: Hakukohde = Hakukohde(
