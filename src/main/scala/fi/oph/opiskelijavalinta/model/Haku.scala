@@ -1,11 +1,13 @@
 package fi.oph.opiskelijavalinta.model
 
+import java.time.LocalDateTime
+
 case class Hakuaika(alkaa: String, paattyy: String)
 
 case class Koodi(koodiUri: Option[String])
 
 case class Metadata(
-  varasijatayttoPaattyy: Option[String] = None
+  varasijatayttoPaattyy: Option[LocalDateTime] = None
 )
 
 case class Haku(
@@ -24,5 +26,5 @@ case class HakuEnriched(
   viimeisinPaattynytHakuAika: Option[Long],
   kohdejoukkoKoodiUri: String,
   hakutapaKoodiUri: String,
-  varasijatayttoPaattyy: Option[String]
+  varasijatayttoPaattyy: Option[Long]
 )
