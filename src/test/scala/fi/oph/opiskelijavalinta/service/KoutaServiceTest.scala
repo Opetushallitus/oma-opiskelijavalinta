@@ -18,7 +18,7 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 
-import java.time.ZonedDateTime
+import java.time.{LocalDateTime, ZonedDateTime}
 
 @TestInstance(Lifecycle.PER_CLASS)
 class KoutaServiceTest {
@@ -43,7 +43,7 @@ class KoutaServiceTest {
               Hakuaika("2023-11-19T09:32:01", "2023-11-29T09:32:01"),
               Hakuaika("2022-11-19T09:32:01", "2022-11-29T09:32:01")
             ),
-            Some(Metadata(Some("2022-11-30T09:00")))
+            Some(Metadata(Some(LocalDateTime.parse("2022-11-30T09:00"))))
           )
         )
       )
