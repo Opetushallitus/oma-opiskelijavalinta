@@ -63,7 +63,7 @@ Playwright-testejä voi ajaa lokaalisti komennolla:
 
 Tai komentorivillä vain halutulla selaimella:
 
-`pnpm playwright --project=firefox`
+`pnpm playwright test --project=firefox`
 
 Komennot ajetaan oma-opiskelijavalinta-ui -hakemistossa.
 

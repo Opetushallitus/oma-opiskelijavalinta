@@ -4,14 +4,21 @@ import fi.oph.opiskelijavalinta.Constants.KOULUTUKSEN_ALKAMISKAUSI_KEVAT
 import fi.oph.opiskelijavalinta.TestUtils.{objectMapper, HAKUKOHDE_OID, HAKU_OID}
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.mockdata.KoutaMockData.hakukohde1
-import fi.oph.opiskelijavalinta.model.{Haku, Hakuaika, PaateltyAlkamisajankohta, PaateltyAlkamiskausi, TranslatedName}
+import fi.oph.opiskelijavalinta.model.{
+  Haku,
+  Hakuaika,
+  Metadata,
+  PaateltyAlkamisajankohta,
+  PaateltyAlkamiskausi,
+  TranslatedName
+}
 import fi.oph.opiskelijavalinta.util.TimeUtils
 import org.mockito.Mockito
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
 
-import java.time.ZonedDateTime
+import java.time.{LocalDateTime, ZonedDateTime}
 
 @TestInstance(Lifecycle.PER_CLASS)
 class KoutaServiceTest {
@@ -35,7 +42,8 @@ class KoutaServiceTest {
               Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"),
               Hakuaika("2023-11-19T09:32:01", "2023-11-29T09:32:01"),
               Hakuaika("2022-11-19T09:32:01", "2022-11-29T09:32:01")
-            )
+            ),
+            Some(Metadata(Some(LocalDateTime.parse("2022-11-30T09:00"))))
           )
         )
       )
