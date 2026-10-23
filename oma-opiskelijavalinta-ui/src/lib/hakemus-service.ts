@@ -29,6 +29,10 @@ export type HakemusResponse = {
   processing: boolean;
   formName: TranslatedName;
   hakemuksenTulokset: Array<HakutoiveenTulosDto>;
+  paymentState?: 'awaiting' | 'notRequired' | 'okByProxy' | 'overdue' | 'paid';
+  paymentDueDate?: string;
+  paymentSum?: string;
+  paymentLink?: string;
   tuloskirjeModified: number | null;
   enrichmentFailed?: boolean;
   vtsFailed?: boolean;
