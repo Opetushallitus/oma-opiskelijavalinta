@@ -35,7 +35,9 @@ class KoutaServiceTest {
               Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01"),
               Hakuaika("2023-11-19T09:32:01", "2023-11-29T09:32:01"),
               Hakuaika("2022-11-19T09:32:01", "2022-11-29T09:32:01")
-            )
+            ),
+            alkamiskausiKoodiUri = Some("kausi_k#1"),
+            alkamisvuosi = Some("2023")
           )
         )
       )

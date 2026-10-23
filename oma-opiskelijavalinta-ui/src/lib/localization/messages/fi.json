@@ -4,7 +4,8 @@
   "otsikko-linkki": "Opiskelupaikan vastaanotto",
   "yleinen": {
     "peruuta": "Peruuta",
-    "logout": "Kirjaudu ulos"
+    "logout": "Kirjaudu ulos",
+    "sulje": "Sulje"
   },
   "logout": {
     "otsikko": "Olet kirjautunut ulos",
@@ -301,5 +302,34 @@
       "haku": "({haku})",
       "ala-vastaa": "Älä vastaa tähän viestiin - viesti on lähetetty automaattisesti."
     }
+  },
+  "kk-hakemusmaksu": {
+    "info-dialog": {
+      "otsikko": "Hakemusmaksu",
+      "kuvaus": "Olet maksanut hakemusmaksun. Olet saanut vahvistuksen maksun onnistumisesta sähköpostiisi. Olet saanut myös kuitin maksustasi erillisellä sähköpostilla.",
+      "tila": "Tila",
+      "maksupaiva": "Maksupäivä"
+    },
+    "tiedot": "Hakemusmaksun tiedot",
+    "tila": {
+      "paid": "Maksettu",
+      "okByProxy": "Maksettu toisessa haussa"
+    },
+    "voimassa": "Maksu voimassa",
+    "alkamiskausi": {
+      "kausi_k": "keväällä {alkamisvuosi} (1.1.{alkamisvuosi} – 31.7.{alkamisvuosi}) alkavissa koulutuksissa",
+      "kausi_s": "syksyllä {alkamisvuosi} (1.8.{alkamisvuosi} – 31.12.{alkamisvuosi}) alkavissa koulutuksissa"
+    },
+    "otsikko": {
+      "maksamatta": "Hakemusmaksu maksamatta",
+      "eraantynyt": "Hakemusmaksu erääntynyt"
+    },
+    "kuvaus": {
+      "maksamatta": "Jos et maksa hakemusmaksua määräaikaan mennessä, hakemustasi ei käsitellä, etkä voi tulla hyväksytyksi koulutukseen.",
+      "eraantynyt": "Hakemusmaksun määräaika on erääntynyt, etkä voi enää maksaa hakemusmaksua. Hakemustasi ei käsitellä, etkä voi tulla valituksi koulutukseen. Mikäli hakuaikaa on vielä jäljellä, voit täyttää uuden hakemuksen."
+    },
+    "maara": "Määrä",
+    "erapaiva": "Eräpäivä",
+    "maksulinkki": "Siirry maksamaan"
   }
 }
