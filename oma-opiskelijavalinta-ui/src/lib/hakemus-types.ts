@@ -17,6 +17,10 @@ export type Hakemus = {
   sijoitteluKaytossa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
   processing: boolean;
+  paymentState?: 'awaiting' | 'notRequired' | 'okByProxy' | 'overdue' | 'paid';
+  paymentDueDate?: string;
+  paymentSum?: string;
+  paymentLink?: string;
   tuloskirjeModified?: number | null;
   enrichmentFailed?: boolean;
   tuloksetFailed?: boolean;

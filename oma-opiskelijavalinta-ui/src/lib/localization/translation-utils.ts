@@ -22,6 +22,7 @@ export function translateName(
 const toFinnishDate = (date: Date) => new TZDateMini(date, 'Europe/Helsinki');
 
 export const DEFAULT_DATE_FORMAT = `d.M.yyyy`;
+export const ENGLISH_DATE_FORMAT = `MMM. d, yyyy`;
 export const DEFAULT_DATE_TIME_FORMAT = `d.M.yyyy 'klo' HH:mm`;
 export const SWEDISH_DATE_TIME_FORMAT = `d.M.yyyy 'kl.' HH:mm`;
 export const ENGLISH_DATE_TIME_FORMAT = `MMM. d, yyyy 'at' HH:mm a z`;
@@ -60,5 +61,39 @@ export function toFormattedDateTimeStringWithLocale(
   return toFormattedDateTimeString(
     value,
     language === 'sv' ? SWEDISH_DATE_TIME_FORMAT : DEFAULT_DATE_TIME_FORMAT,
+  );
+}
+
+export function toFormattedDateString(
+  year: number | null | undefined,
+  month: number | null | undefined,
+  day: number | null | undefined,
+  formatStr: string = DEFAULT_DATE_TIME_FORMAT,
+): string {
+  if (isNullish(day) || isNullish(month) || isNullish(year)) {
+    return '';
+  }
+  try {
+    return format(new Date(year, month - 1, day), formatStr);
+  } catch (error) {
+    console.warn(error);
+    console.warn(
+      'Caught error when trying to format date, returning empty string',
+    );
+    return '';
+  }
+}
+
+export function toFormattedDateStringWithLocale(
+  year: number,
+  month: number,
+  day: number,
+  language: Language = 'fi',
+): string {
+  return toFormattedDateString(
+    year,
+    month,
+    day,
+    language === 'en' ? ENGLISH_DATE_FORMAT : DEFAULT_DATE_FORMAT,
   );
 }

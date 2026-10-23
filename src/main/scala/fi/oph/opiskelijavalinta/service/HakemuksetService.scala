@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.Constants.KOUTA_HAKU_OID_LENGTH
+import fi.oph.opiskelijavalinta.Constants.{
+  KOULUTUKSEN_ALKAMISKAUSI_KEVAT,
+  KOULUTUKSEN_ALKAMISKAUSI_SYKSY,
+  KOUTA_HAKU_OID_LENGTH
+}
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
@@ -71,6 +75,10 @@ class HakemuksetService @Autowired (
                     submitted = a.submitted,
                     hakemuksenTulokset = List.empty,
                     processing = a.processing,
+                    paymentState = a.paymentState,
+                    paymentDueDate = a.paymentDueDate,
+                    paymentSum = a.paymentSum,
+                    paymentLink = a.paymentLink,
                     formName = a.formName,
                     tuloskirjeModified = None,
                     enrichmentFailed = true
@@ -165,7 +173,13 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaIsOn.getOrElse(false),
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
-      haku.hakutapaKoodiUri
+      haku.hakutapaKoodiUri,
+      haku.alkamiskausiKoodiUri
+        .map(s =>
+          if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
+          else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
+        ),
+      haku.alkamisvuosi
     )
   }
 
@@ -209,16 +223,20 @@ class HakemuksetService @Autowired (
       }
     }
     HakemusEnriched(
-      hakemus.oid,
-      haku,
-      hakukohteet,
-      ohjausparametrit,
-      hakemus.secret,
-      hakemus.submitted,
-      hakutoiveidenTulokset,
-      hakemus.processing,
-      hakemus.formName,
-      tuloskirjeModified,
+      oid = hakemus.oid,
+      haku = haku,
+      hakukohteet = hakukohteet,
+      ohjausparametrit = ohjausparametrit,
+      secret = hakemus.secret,
+      submitted = hakemus.submitted,
+      hakemuksenTulokset = hakutoiveidenTulokset,
+      processing = hakemus.processing,
+      paymentState = hakemus.paymentState,
+      paymentDueDate = hakemus.paymentDueDate,
+      paymentSum = hakemus.paymentSum,
+      paymentLink = hakemus.paymentLink,
+      formName = hakemus.formName,
+      tuloskirjeModified = tuloskirjeModified,
       vtsFailed = vtsFailed
     )
   }

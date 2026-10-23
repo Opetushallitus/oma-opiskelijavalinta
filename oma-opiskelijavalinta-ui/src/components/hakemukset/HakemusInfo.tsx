@@ -71,7 +71,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
 
   if (isJoustavaOrJatkuva && !hakemus.processing) {
     return (
-      <InfoBox>
+      <InfoBox sx={{ width: '100%' }}>
         <OphTypography>
           {t('hakemukset.info.jatkuva.voit-muokata')}
         </OphTypography>
@@ -83,7 +83,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
 
   if (isJoustavaOrJatkuva && hakemus.processing) {
     return (
-      <InfoBox>
+      <InfoBox sx={{ width: '100%' }}>
         <OphTypography>
           {t('hakemukset.info.jatkuva.kasittelyssa')}
         </OphTypography>
@@ -99,7 +99,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
 
   if (isToisenAsteenYhteisHaku(haku) && haku.hakuaikaKaynnissa) {
     return (
-      <InfoBox>
+      <InfoBox sx={{ width: '100%' }}>
         <OphTypography>{t('hakemukset.info.lahettanyt')}</OphTypography>
         <OphTypography>
           {t('hakemukset.info.voit-muokata', { hakuaikaPaattyy })}
@@ -110,7 +110,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
 
   if (isToisenAsteenYhteisHaku(haku) && !haku.hakuaikaKaynnissa) {
     return (
-      <InfoBox>
+      <InfoBox sx={{ width: '100%' }}>
         <OphTypography>{t('hakemukset.info.hakuaika-paattynyt')}</OphTypography>
         <br />
         <OphTypography>{t('hakemukset.info.yhteystiedot')}</OphTypography>
@@ -124,7 +124,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
 
   if (isKKHaku && haku.hakuaikaKaynnissa) {
     return (
-      <InfoBox>
+      <InfoBox sx={{ width: '100%' }}>
         <OphTypography>{t('hakemukset.info.lahettanyt')}</OphTypography>
         <OphTypography>
           {t('hakemukset.info.voit-muokata', { hakuaikaPaattyy })}
@@ -137,7 +137,7 @@ function HakuMuokkausInfo({ hakemus, haku }: { hakemus: Hakemus; haku: Haku }) {
 
   if (isKKHaku && !haku.hakuaikaKaynnissa) {
     return (
-      <InfoBox>
+      <InfoBox sx={{ width: '100%' }}>
         <OphTypography>{t('hakemukset.info.hakuaika-paattynyt')}</OphTypography>
         <OphTypography>{t('hakemukset.info.yhteystiedot')}</OphTypography>
         <br />
@@ -163,6 +163,7 @@ export function HakemusInfo({
   tulokset: Array<HakutoiveenTulos>;
 }) {
   return isTruthy(hakemus.haku) &&
+    hakemus.paymentState !== 'overdue' &&
     (isEmpty(tulokset) ||
       onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? [])) &&
     !onkoVastaanottoTehty(tulokset) ? (
