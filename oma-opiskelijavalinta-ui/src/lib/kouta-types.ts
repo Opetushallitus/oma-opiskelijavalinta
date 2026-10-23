@@ -8,6 +8,8 @@ export type Haku = {
   kohdejoukkoKoodiUri: string;
   hakutapaKoodiUri: string;
   varasijatayttoPaattyy?: string;
+  alkamiskausi?: 'kausi_k' | 'kausi_s' | null;
+  alkamisvuosi?: string | null;
 };
 
 export type Hakukohde = {
