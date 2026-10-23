@@ -8,7 +8,7 @@ import fi.oph.opiskelijavalinta.Constants.{KOULUTUKSEN_ALKAMISKAUSI_KEVAT, KOULU
 import fi.oph.opiskelijavalinta.clients.KoutaClient
 import fi.oph.opiskelijavalinta.configuration.CacheConstants
 import fi.oph.opiskelijavalinta.model.{Haku, Hakukohde, HakukohdeEnriched, PaateltyAlkamisajankohta}
-import fi.oph.opiskelijavalinta.util.TimeUtils
+import fi.oph.opiskelijavalinta.util.{KoodistoUtil, TimeUtils}
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
@@ -88,13 +88,7 @@ class KoutaService @Autowired (cachedService: CachedKoutaService) {
       uudenOpiskelijanUrl = hk.uudenOpiskelijanUrl,
       yhdenPaikanSaanto = hk.yhdenPaikanSaanto,
       koulutuksenAlkamiskausi = hk.paateltyAlkamiskausi
-        .flatMap(pa =>
-          pa.kausiUri
-            .map(s =>
-              if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
-              else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
-            )
-        ),
+        .flatMap(pa => KoodistoUtil.normalizeAlkamiskausi(pa.kausiUri)),
       koulutuksenAlkamisPvm = alkupvm
     )
   }
