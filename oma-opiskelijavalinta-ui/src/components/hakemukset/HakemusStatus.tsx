@@ -32,7 +32,7 @@ export function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
           ),
         })}
       </OphTypography>
-      {isHakemusmaksuMaksettu(hakemus) && (
+      {isHakemusmaksuMaksettu(hakemus.paymentState) && (
         <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
@@ -66,8 +66,8 @@ function TuloksetJulkaistu({ hakemus }: { hakemus: Hakemus }) {
       {hakemus.modifyLink && hakemus.tuloskirjeModified && <VerticalDivider />}
       {hakemus.tuloskirjeModified && <KirjeLink hakemus={hakemus} />}
       {(hakemus.tuloskirjeModified || hakemus.modifyLink) &&
-        isHakemusmaksuMaksettu(hakemus) && <VerticalDivider />}
-      {isHakemusmaksuMaksettu(hakemus) && (
+        isHakemusmaksuMaksettu(hakemus.paymentState) && <VerticalDivider />}
+      {isHakemusmaksuMaksettu(hakemus.paymentState) && (
         <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
@@ -103,8 +103,8 @@ function ValinnatKesken({
       )}
       {naytaLinkkiHakemukseen &&
         hakemus.modifyLink &&
-        isHakemusmaksuMaksettu(hakemus) && <VerticalDivider />}
-      {isHakemusmaksuMaksettu(hakemus) && (
+        isHakemusmaksuMaksettu(hakemus.paymentState) && <VerticalDivider />}
+      {isHakemusmaksuMaksettu(hakemus.paymentState) && (
         <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
@@ -171,7 +171,7 @@ export function HakemusStatus({
           hakemus={hakemus}
         />
       );
-    } else if (isHakemusmaksuMaksettu(hakemus)) {
+    } else if (isHakemusmaksuMaksettu(hakemus.paymentState)) {
       tila = <KkHakemusmaksuInfo hakemus={hakemus} />;
     }
   }
