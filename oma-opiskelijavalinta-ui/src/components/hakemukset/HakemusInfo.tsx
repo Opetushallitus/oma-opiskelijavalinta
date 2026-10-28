@@ -164,7 +164,7 @@ export function HakemusInfo({
   tulokset: Array<HakutoiveenTulos>;
 }) {
   return isTruthy(hakemus.haku) &&
-    isHakemusmaksuEraantynyt(hakemus.paymentState) &&
+    !isHakemusmaksuEraantynyt(hakemus.paymentState) &&
     (isEmpty(tulokset) ||
       onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? [])) &&
     !onkoVastaanottoTehty(tulokset) ? (

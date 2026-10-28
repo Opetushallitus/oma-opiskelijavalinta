@@ -48,7 +48,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
 
   const hakemustaVoiMuokata =
     isTruthy(hakemus.modifyLink) &&
-    isHakemusmaksuEraantynyt(hakemus.paymentState) &&
+    !isHakemusmaksuEraantynyt(hakemus.paymentState) &&
     (!hakemus.processing || !isJatkuvaTaiJoustavaHaku(hakemus.haku)) &&
     (isNullish(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
