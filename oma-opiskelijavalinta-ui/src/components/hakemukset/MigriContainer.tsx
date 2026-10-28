@@ -37,6 +37,7 @@ export function MigriContainer({
           <ExternalLink
             href={MIGRI_GUIDE_LINKS[getLanguage()]}
             name={t('migri.ohjelinkki')}
+            title={t('migri.ohjelinkki-title')}
           />
         </BulletItem>
         <BulletItem>{t('migri.oppilasnumero')}</BulletItem>
@@ -45,6 +46,7 @@ export function MigriContainer({
         variant="outlined"
         href={getMigriUrl(tulokset)}
         name={t('migri.hae')}
+        title={t('migri.hae-title')}
       />
     </StyledBox>
   );
