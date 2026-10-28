@@ -19,26 +19,43 @@ class LinkVerificationServiceTest {
       .when(oppijanTunnistusClient.verifyToken(TOKEN))
       .thenReturn(Right("""{"exists": true, "valid": true}"""))
     val result = service.verify(TOKEN)
-    Assertions.assertTrue(result.isDefined)
-    Assertions.assertTrue(result.get.exists)
-    Assertions.assertTrue(result.get.valid)
+    Assertions.assertTrue(result.exists)
+    Assertions.assertTrue(result.valid)
   }
 
   @Test
-  def returnsNoneWhenClientFails(): Unit = {
+  def returnsVerificationForExpiredToken(): Unit = {
+    Mockito
+      .when(oppijanTunnistusClient.verifyToken(TOKEN))
+      .thenReturn(Right("""{"exists": true, "valid": false}"""))
+    val result = service.verify(TOKEN)
+    Assertions.assertTrue(result.exists)
+    Assertions.assertFalse(result.valid)
+  }
+
+  @Test
+  def returnsVerificationForUnknownToken(): Unit = {
+    Mockito
+      .when(oppijanTunnistusClient.verifyToken(TOKEN))
+      .thenReturn(Right("""{"exists": false, "valid": false}"""))
+    val result = service.verify(TOKEN)
+    Assertions.assertFalse(result.exists)
+    Assertions.assertFalse(result.valid)
+  }
+
+  @Test
+  def throwsWhenClientFails(): Unit = {
     Mockito
       .when(oppijanTunnistusClient.verifyToken(TOKEN))
       .thenReturn(Left(RuntimeException("verkkovirhe")))
-    val result = service.verify(TOKEN)
-    Assertions.assertTrue(result.isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => service.verify(TOKEN))
   }
 
   @Test
-  def returnsNoneWhenDeserializationFails(): Unit = {
+  def throwsWhenDeserializationFails(): Unit = {
     Mockito
       .when(oppijanTunnistusClient.verifyToken(TOKEN))
       .thenReturn(Right("invalid json"))
-    val result = service.verify(TOKEN)
-    Assertions.assertTrue(result.isEmpty)
+    Assertions.assertThrows(classOf[RuntimeException], () => service.verify(TOKEN))
   }
 }

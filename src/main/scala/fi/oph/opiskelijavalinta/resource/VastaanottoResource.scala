@@ -109,7 +109,7 @@ class VastaanottoResource @Autowired (
             .body("vastaanottoviesti.virhe")
         case e: Exception =>
           LOG.error(
-            "Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}",
+            "Vastaanoton tallentaminen epäonnistui hakemusOid: {}, hakukohdeOid: {}, virhe: {}",
             hakemusOid,
             hakukohdeOid,
             e.getMessage
