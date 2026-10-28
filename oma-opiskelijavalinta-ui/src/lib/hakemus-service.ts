@@ -7,7 +7,7 @@ import {
   type HakutoiveenTulosDto,
   Valintatila,
 } from './valinta-tulos-types';
-import type { Hakemus, Hakemukset } from './hakemus-types';
+import type { Hakemus, Hakemukset, PaymentState } from './hakemus-types';
 import { isTruthy } from 'remeda';
 
 type Ohjausparametrit = {
@@ -29,6 +29,10 @@ export type HakemusResponse = {
   processing: boolean;
   formName: TranslatedName;
   hakemuksenTulokset: Array<HakutoiveenTulosDto>;
+  paymentState?: PaymentState;
+  paymentDueDate?: string;
+  paymentSum?: string;
+  paymentLink?: string;
   tuloskirjeModified: number | null;
   enrichmentFailed?: boolean;
   vtsFailed?: boolean;

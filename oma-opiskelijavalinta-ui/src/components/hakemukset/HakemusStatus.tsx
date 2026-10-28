@@ -14,6 +14,8 @@ import { KirjeLink } from './KirjeLink';
 import { Divider } from '@mui/material';
 import { RowFlexBox } from '../FlexBox';
 import { EiOpiskelupaikkaaInfo } from '@/components/valinnantulos/EiOpiskelupaikkaaInfo';
+import KkHakemusmaksuInfo from '@/components/hakemukset/KkHakemusmaksuInfo';
+import { isHakemusmaksuMaksettu } from '@/lib/kk-hakemusmaksu-utils';
 
 export function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
   const { t, getLanguage } = useTranslations();
@@ -21,14 +23,29 @@ export function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
   const lang = getLanguage();
 
   return (
-    <OphTypography>
-      {t('hakemukset.tilankuvaukset.hakuaika-kesken', {
-        hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
-          hakemus.haku?.viimeisinPaattynytHakuAika,
-          lang,
-        ),
-      })}
-    </OphTypography>
+    <RowFlexBox>
+      <OphTypography>
+        {t('hakemukset.tilankuvaukset.hakuaika-kesken', {
+          hakuaikaPaattyy: toFormattedDateTimeStringWithLocale(
+            hakemus.haku?.viimeisinPaattynytHakuAika,
+            lang,
+          ),
+        })}
+      </OphTypography>
+      {isHakemusmaksuMaksettu(hakemus.paymentState) && (
+        <KkHakemusmaksuInfo hakemus={hakemus} />
+      )}
+    </RowFlexBox>
+  );
+}
+
+function VerticalDivider() {
+  return (
+    <Divider
+      sx={{ borderColor: ophColors.black }}
+      orientation="vertical"
+      flexItem
+    />
   );
 }
 
@@ -46,14 +63,13 @@ function TuloksetJulkaistu({ hakemus }: { hakemus: Hakemus }) {
           name={` ${t('hakemukset.nayta')}`}
         />
       )}
-      {hakemus.modifyLink && hakemus.tuloskirjeModified && (
-        <Divider
-          sx={{ borderColor: ophColors.black }}
-          orientation="vertical"
-          flexItem
-        />
-      )}
+      {hakemus.modifyLink && hakemus.tuloskirjeModified && <VerticalDivider />}
       {hakemus.tuloskirjeModified && <KirjeLink hakemus={hakemus} />}
+      {(hakemus.tuloskirjeModified || hakemus.modifyLink) &&
+        isHakemusmaksuMaksettu(hakemus.paymentState) && <VerticalDivider />}
+      {isHakemusmaksuMaksettu(hakemus.paymentState) && (
+        <KkHakemusmaksuInfo hakemus={hakemus} />
+      )}
     </RowFlexBox>
   );
 }
@@ -84,6 +100,12 @@ function ValinnatKesken({
           href={hakemus.modifyLink ?? ''}
           name={` ${t('hakemukset.nayta')}`}
         />
+      )}
+      {naytaLinkkiHakemukseen &&
+        hakemus.modifyLink &&
+        isHakemusmaksuMaksettu(hakemus.paymentState) && <VerticalDivider />}
+      {isHakemusmaksuMaksettu(hakemus.paymentState) && (
+        <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
   );
@@ -149,6 +171,8 @@ export function HakemusStatus({
           hakemus={hakemus}
         />
       );
+    } else if (isHakemusmaksuMaksettu(hakemus.paymentState)) {
+      tila = <KkHakemusmaksuInfo hakemus={hakemus} />;
     }
   }
 

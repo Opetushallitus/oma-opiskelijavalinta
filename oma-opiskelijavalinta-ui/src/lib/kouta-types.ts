@@ -7,6 +7,8 @@ export type Haku = {
   viimeisinPaattynytHakuAika?: number;
   kohdejoukkoKoodiUri: string;
   hakutapaKoodiUri: string;
+  alkamiskausi?: 'kausi_k' | 'kausi_s' | null;
+  alkamisvuosi?: string | null;
 };
 
 export type Hakukohde = {

@@ -512,3 +512,123 @@ test('Hakemusten saavutettavuus', async ({ page }) => {
   ).toBeVisible();
   await expectPageAccessibilityOk(page);
 });
+
+test('Näyttää varoituksen, kun hakemusmaksu on maksamatta', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        paymentState: 'awaiting',
+        paymentSum: '142',
+        paymentDueDate: '2025-10-22T23:59+03:00',
+        paymentLink: 'http://maksut.test/secret-6',
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const warning = page.getByTestId('warning-box');
+
+  await expect(
+    warning.getByText(
+      'Jos et maksa hakemusmaksua määräaikaan mennessä, hakemustasi ei käsitellä, etkä voi tulla hyväksytyksi koulutukseen.',
+    ),
+  ).toBeVisible();
+  await expect(warning.getByText('Määrä: 142€')).toBeVisible();
+  await expect(warning.getByText('Eräpäivä: 22.10.2025')).toBeVisible();
+  await expect(
+    warning.getByText(
+      'Maksu voimassa keväällä 2027 (1.1.2027 – 31.7.2027) alkavissa koulutuksissa',
+    ),
+  ).toBeVisible();
+  await expect(warning.getByRole('link')).toHaveAttribute(
+    'href',
+    'http://maksut.test/secret-6',
+  );
+  await expect(warning.getByRole('link')).toHaveText('Siirry maksamaan');
+  await expectPageAccessibilityOk(page);
+});
+
+test('Näyttää virheen, kun hakemusmaksu on erääntynyt', async ({ page }) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        paymentState: 'overdue',
+        paymentSum: '112',
+        paymentDueDate: '2025-09-17T23:59+03:00',
+        paymentLink: 'http://maksut.test/secret-6',
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const error = page.getByTestId('error-box');
+
+  await expect(
+    error.getByText(
+      'Hakemusmaksun määräaika on erääntynyt, etkä voi enää maksaa hakemusmaksua.',
+    ),
+  ).toBeVisible();
+  await expect(error.getByText('Määrä: 112€')).toBeVisible();
+  await expect(error.getByText('Eräpäivä: 17.9.2025')).toBeVisible();
+  await expectPageAccessibilityOk(page);
+});
+
+test('Näyttää maksun tiedot, kun hakemusmaksu on maksettu', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [
+      {
+        ...hakemus1,
+        paymentState: 'paid',
+        paymentSum: '112',
+        paymentDueDate: '2025-09-17T23:59+03:00',
+        paymentLink: 'http://maksut.test/secret-6',
+        haku: { ...hakemus1.haku, alkamiskausi: 'kausi_s' },
+      },
+    ],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await page.goto('');
+
+  const tiedotButton = page.getByRole('button', {
+    name: 'Hakemusmaksun tiedot',
+  });
+  const hakemusmaksuTitle = page.getByRole('heading', { name: 'Hakemusmaksu' });
+
+  await tiedotButton.click();
+  await expect(
+    page.getByText(
+      'Olet maksanut hakemusmaksun. Olet saanut vahvistuksen maksun onnistumisesta sähköpostiisi. Olet saanut myös kuitin maksustasi erillisellä sähköpostilla.',
+    ),
+  ).toBeVisible();
+  await expect(page.getByText('Maksettu')).toBeVisible();
+  await expect(page.getByText('112€')).toBeVisible();
+  await expect(
+    page.getByText(
+      'syksyllä 2027 (1.8.2027 – 31.12.2027) alkavissa koulutuksissa',
+    ),
+  ).toBeVisible();
+
+  await expect(hakemusmaksuTitle).toBeVisible();
+  const suljeIcon = page.getByLabel('Sulje');
+  await suljeIcon.click();
+  await expect(hakemusmaksuTitle).toBeHidden();
+
+  await tiedotButton.click();
+  await expect(hakemusmaksuTitle).toBeVisible();
+  const suljeButton = page.getByText('Sulje');
+  await suljeButton.click();
+  await expect(hakemusmaksuTitle).toBeHidden();
+
+  await expectPageAccessibilityOk(page);
+});
