@@ -23,6 +23,7 @@ import fi.oph.opiskelijavalinta.model.{
   MaksutilaDeserializer,
   Ohjausparametrit
 }
+import fi.oph.opiskelijavalinta.util.KoodistoUtil
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -174,11 +175,7 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
       haku.hakutapaKoodiUri,
-      haku.alkamiskausiKoodiUri
-        .map(s =>
-          if (s.startsWith(KOULUTUKSEN_ALKAMISKAUSI_KEVAT)) KOULUTUKSEN_ALKAMISKAUSI_KEVAT
-          else KOULUTUKSEN_ALKAMISKAUSI_SYKSY
-        ),
+      KoodistoUtil.normalizeAlkamiskausi(haku.alkamiskausiKoodiUri),
       haku.alkamisvuosi
     )
   }

@@ -15,12 +15,7 @@ import { Divider } from '@mui/material';
 import { RowFlexBox } from '../FlexBox';
 import { EiOpiskelupaikkaaInfo } from '@/components/valinnantulos/EiOpiskelupaikkaaInfo';
 import KkHakemusmaksuInfo from '@/components/hakemukset/KkHakemusmaksuInfo';
-
-function hakemusmaksuMaksettu(hakemus: Hakemus) {
-  return (
-    hakemus.paymentState === 'paid' || hakemus.paymentState === 'okByProxy'
-  );
-}
+import { isHakemusmaksuMaksettu } from '@/lib/kk-hakemusmaksu-utils';
 
 export function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
   const { t, getLanguage } = useTranslations();
@@ -37,7 +32,7 @@ export function HakuKaynnissa({ hakemus }: { hakemus: Hakemus }) {
           ),
         })}
       </OphTypography>
-      {hakemusmaksuMaksettu(hakemus) && (
+      {isHakemusmaksuMaksettu(hakemus) && (
         <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
@@ -71,8 +66,8 @@ function TuloksetJulkaistu({ hakemus }: { hakemus: Hakemus }) {
       {hakemus.modifyLink && hakemus.tuloskirjeModified && <VerticalDivider />}
       {hakemus.tuloskirjeModified && <KirjeLink hakemus={hakemus} />}
       {(hakemus.tuloskirjeModified || hakemus.modifyLink) &&
-        hakemusmaksuMaksettu(hakemus) && <VerticalDivider />}
-      {hakemusmaksuMaksettu(hakemus) && (
+        isHakemusmaksuMaksettu(hakemus) && <VerticalDivider />}
+      {isHakemusmaksuMaksettu(hakemus) && (
         <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
@@ -108,8 +103,8 @@ function ValinnatKesken({
       )}
       {naytaLinkkiHakemukseen &&
         hakemus.modifyLink &&
-        hakemusmaksuMaksettu(hakemus) && <VerticalDivider />}
-      {hakemusmaksuMaksettu(hakemus) && (
+        isHakemusmaksuMaksettu(hakemus) && <VerticalDivider />}
+      {isHakemusmaksuMaksettu(hakemus) && (
         <KkHakemusmaksuInfo hakemus={hakemus} />
       )}
     </RowFlexBox>
@@ -176,7 +171,7 @@ export function HakemusStatus({
           hakemus={hakemus}
         />
       );
-    } else if (hakemusmaksuMaksettu(hakemus)) {
+    } else if (isHakemusmaksuMaksettu(hakemus)) {
       tila = <KkHakemusmaksuInfo hakemus={hakemus} />;
     }
   }

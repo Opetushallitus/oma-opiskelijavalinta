@@ -522,7 +522,7 @@ test('Näyttää varoituksen, kun hakemusmaksu on maksamatta', async ({
         ...hakemus1,
         paymentState: 'awaiting',
         paymentSum: '142',
-        paymentDueDate: '2025-10-22',
+        paymentDueDate: '2025-10-22T23:59+03:00',
         paymentLink: 'http://maksut.test/secret-6',
       },
     ],
@@ -560,9 +560,8 @@ test('Näyttää virheen, kun hakemusmaksu on erääntynyt', async ({ page }) =>
         ...hakemus1,
         paymentState: 'overdue',
         paymentSum: '112',
-        paymentDueDate: '2025-09-17',
+        paymentDueDate: '2025-09-17T23:59+03:00',
         paymentLink: 'http://maksut.test/secret-6',
-        haku: { ...hakemus1.haku, aloituskausi: 'kausi_s' },
       },
     ],
     old: [],
@@ -591,8 +590,9 @@ test('Näyttää maksun tiedot, kun hakemusmaksu on maksettu', async ({
         ...hakemus1,
         paymentState: 'paid',
         paymentSum: '112',
-        paymentDueDate: '2025-09-17',
+        paymentDueDate: '2025-09-17T23:59+03:00',
         paymentLink: 'http://maksut.test/secret-6',
+        haku: { ...hakemus1.haku, alkamiskausi: 'kausi_s' },
       },
     ],
     old: [],
@@ -615,7 +615,7 @@ test('Näyttää maksun tiedot, kun hakemusmaksu on maksettu', async ({
   await expect(page.getByText('112€')).toBeVisible();
   await expect(
     page.getByText(
-      'keväällä 2027 (1.1.2027 – 31.7.2027) alkavissa koulutuksissa',
+      'syksyllä 2027 (1.8.2027 – 31.12.2027) alkavissa koulutuksissa',
     ),
   ).toBeVisible();
 

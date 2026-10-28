@@ -2,6 +2,14 @@ import type { Haku, Hakukohde } from './kouta-types';
 import type { TranslatedName } from './localization/localization-types';
 import type { HakutoiveenTulos } from './valinta-tulos-types';
 
+export type PaymentState =
+  | 'awaiting'
+  | 'notRequired'
+  | 'okByProxy'
+  | 'overdue'
+  | 'paid'
+  | null;
+
 export type Hakemus = {
   oid: string;
   haku?: Haku | null;
@@ -17,7 +25,7 @@ export type Hakemus = {
   sijoitteluKaytossa: boolean;
   hakemuksenTulokset: Array<HakutoiveenTulos>;
   processing: boolean;
-  paymentState?: 'awaiting' | 'notRequired' | 'okByProxy' | 'overdue' | 'paid';
+  paymentState?: PaymentState;
   paymentDueDate?: string;
   paymentSum?: string;
   paymentLink?: string;

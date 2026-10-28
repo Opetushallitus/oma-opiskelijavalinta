@@ -7,8 +7,8 @@ export type Haku = {
   viimeisinPaattynytHakuAika?: number;
   kohdejoukkoKoodiUri: string;
   hakutapaKoodiUri: string;
-  alkamiskausi?: 'kausi_k' | 'kausi_s';
-  alkamisvuosi?: string;
+  alkamiskausi?: 'kausi_k' | 'kausi_s' | null;
+  alkamisvuosi?: string | null;
 };
 
 export type Hakukohde = {
@@ -17,6 +17,6 @@ export type Hakukohde = {
   jarjestyspaikkaHierarkiaNimi: TranslatedName;
   uudenOpiskelijanUrl: TranslatedName | null;
   yhdenPaikanSaanto: { voimassa: boolean };
-  koulutuksenAlkamiskausi?: 'kausi_k' | 'kausi_s';
+  koulutuksenAlkamiskausi?: 'kausi_k' | 'kausi_s' | null;
   koulutuksenAlkamisPvm: string | null;
 };

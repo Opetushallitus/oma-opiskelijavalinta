@@ -18,6 +18,7 @@ import type { HakutoiveenTulos } from '@/lib/valinta-tulos-types';
 import { onkoVastaanottoTehty } from '@/lib/vastaanotto.service';
 import { onKeskeneraisiaValinnantiloja } from '@/components/valinnantulos/valinnan-tulos-utils';
 import { BulletedList, BulletItem } from '../BulletedList';
+import { isHakemusmaksuEraantynyt } from '@/lib/kk-hakemusmaksu-utils';
 
 function JulkaistaanJaVarasijatList({
   tuloksetJulkaistaan,
@@ -163,7 +164,7 @@ export function HakemusInfo({
   tulokset: Array<HakutoiveenTulos>;
 }) {
   return isTruthy(hakemus.haku) &&
-    hakemus.paymentState !== 'overdue' &&
+    isHakemusmaksuEraantynyt(hakemus.paymentState) &&
     (isEmpty(tulokset) ||
       onKeskeneraisiaValinnantiloja(tulokset, hakemus.hakukohteet ?? [])) &&
     !onkoVastaanottoTehty(tulokset) ? (

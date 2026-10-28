@@ -16,6 +16,7 @@ import {
 } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import CloseIcon from '@mui/icons-material/Close';
+import { isHakemusmaksuMaksettu } from '@/lib/kk-hakemusmaksu-utils';
 
 const PanelContent = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();
@@ -125,7 +126,7 @@ export default function KkHakemusmaksuInfo({ hakemus }: { hakemus: Hakemus }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  if (hakemus.paymentState === 'paid' || hakemus.paymentState === 'okByProxy')
+  if (isHakemusmaksuMaksettu(hakemus.paymentState))
     return (
       <>
         <OphLink

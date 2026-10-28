@@ -6,8 +6,16 @@ import { ErrorBox } from '@/components/ErrorBox';
 import { Box, useTheme } from '@mui/material';
 import React from 'react';
 import { getLanguage } from '@/lib/getLanguage';
-import { toFormattedDateStringWithLocale } from '@/lib/localization/translation-utils';
+import {
+  DEFAULT_DATE_FORMAT,
+  ENGLISH_DATE_FORMAT,
+  toFormattedDateTimeString,
+} from '@/lib/localization/translation-utils';
 import { ExternalLinkButton } from '@/components/ExternalLink';
+import {
+  isHakemusmaksuEraantynyt,
+  isHakemusmaksuMaksamatta,
+} from '@/lib/kk-hakemusmaksu-utils';
 
 function StatusHeader({
   text,
@@ -31,32 +39,15 @@ function StatusHeader({
         color: statusColors.text,
       }}
     >
-      {/*
-          <Box
-          style={{
-            height: '10px',
-            width: '10px',
-            borderRadius: '50%',
-            display: 'inline-block',
-            marginRight: theme.spacing(1),
-            backgroundColor: statusColors.dot,
-          }}
-
-        ></Box>*/}
       {text}
     </Box>
   );
 }
 
 function formatDate(date: string) {
-  const lang = getLanguage();
-  const [year, month, day] = date.split('-');
-  return toFormattedDateStringWithLocale(
-    Number(year),
-    Number(month),
-    Number(day),
-    lang,
-  );
+  const format =
+    getLanguage() === 'en' ? ENGLISH_DATE_FORMAT : DEFAULT_DATE_FORMAT;
+  return toFormattedDateTimeString(date, format);
 }
 
 function Maksamatta({ hakemus }: { hakemus: Hakemus }) {
@@ -135,9 +126,9 @@ export default function KkHakemusmaksuWarning({
 }: {
   hakemus: Hakemus;
 }) {
-  if (hakemus.paymentState === 'awaiting') {
+  if (isHakemusmaksuMaksamatta(hakemus.paymentState)) {
     return <Maksamatta hakemus={hakemus} />;
-  } else if (hakemus.paymentState === 'overdue') {
+  } else if (isHakemusmaksuEraantynyt(hakemus.paymentState)) {
     return <Myohassa hakemus={hakemus} />;
   }
   return null;
