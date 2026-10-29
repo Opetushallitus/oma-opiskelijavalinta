@@ -31,7 +31,6 @@ import org.springframework.security.cas.ServiceProperties
 import org.springframework.security.cas.authentication.CasAuthenticationProvider
 import org.springframework.security.cas.web.{CasAuthenticationEntryPoint, CasAuthenticationFilter}
 import org.springframework.security.config.Customizer
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
@@ -350,6 +349,10 @@ class SecurityConfiguration {
     casAuthenticationFilter.setServiceProperties(serviceProperties)
     casAuthenticationFilter.setFilterProcessesUrl(ApiConstants.CAS_TICKET_VALIDATION_PATH)
     casAuthenticationFilter.setSecurityContextRepository(securityContextRepository)
+    casAuthenticationFilter.setAuthenticationFailureHandler((request, response, exception) => {
+      LOG.warn(s"CAS-tiketin validointi epäonnistui: ${exception.getMessage}")
+      response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase)
+    })
     casAuthenticationFilter
 
   //
@@ -366,14 +369,12 @@ class SecurityConfiguration {
 
   @Bean
   @Primary
-  def authenticationManager(
-    http: HttpSecurity,
-    casAuthenticationProvider: CasAuthenticationProvider
-  ): AuthenticationManager =
-    http
-      .getSharedObject(classOf[AuthenticationManagerBuilder])
-      .authenticationProvider(casAuthenticationProvider)
-      .build()
+  def authenticationManager(casAuthenticationProvider: CasAuthenticationProvider): AuthenticationManager =
+    // Ei rakenneta HttpSecurityn AuthenticationManagerBuilderilla: sen parentiksi tulisi tämä sama bean, jolloin
+    // epäonnistunut tiketin validointi delegoitaisiin itselle loputtomasti (StackOverflowError)
+    new org.springframework.security.authentication.ProviderManager(
+      java.util.List.of(casAuthenticationProvider)
+    )
 
   @Bean(Array("linkAuthenticationManager"))
   def linkAuthenticationManager(linkAuthenticationProvider: LinkAuthenticationProvider): AuthenticationManager =
