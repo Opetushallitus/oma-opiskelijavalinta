@@ -71,6 +71,7 @@ export function IlmoittautuminenContainer({
         <ExternalLinkButton
           href={hakemuksenTulos.ilmoittautuminen.ilmoittautumistapa?.url ?? ''}
           name={t('ilmoittautuminen.siirry')}
+          title={t('ilmoittautuminen.siirry-title')}
         />
       </StyledBox>
     );
