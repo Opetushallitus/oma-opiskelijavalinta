@@ -35,7 +35,7 @@ import {
   VarasijoillaOlevatPaatettavatOikeudet,
 } from './PaatettavatOikeudetInfo';
 import type { Hakukohde } from '@/lib/kouta-types';
-import { isNonNullish } from 'remeda';
+import { isEmpty, isNonNullish } from 'remeda';
 
 export const getEhdollisestiVastaanottanutInfo = (
   application: Hakemus,
@@ -48,12 +48,22 @@ export const getEhdollisestiVastaanottanutInfo = (
   return (
     <OphTypography>
       <Translation
-        keyName={'vastaanotto.info.ylempi-automaattisesti'}
+        keyName={'vastaanotto.info.automaattisesti-ylempi'}
         params={{
-          varasijatayttoPaattyy,
           br: <br />,
         }}
       />
+      {!isEmpty(varasijatayttoPaattyy) && (
+        <>
+          {' '}
+          <Translation
+            keyName={'vastaanotto.info.jonottaminen-paattyy'}
+            params={{
+              varasijatayttoPaattyy,
+            }}
+          />
+        </>
+      )}
     </OphTypography>
   );
 };
