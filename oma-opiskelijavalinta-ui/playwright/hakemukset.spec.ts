@@ -332,6 +332,9 @@ test('Näyttää kelalinkin kun sellainen löytyy', async ({ page }) => {
   await expect(
     hakemukset.getByRole('link', { name: 'Siirry Kelan asiointipalveluun' }),
   ).toHaveCount(1);
+  await expect(
+    hakemukset.getByRole('link', { name: 'Siirry Kelan asiointipalveluun' }),
+  ).toHaveAttribute('title', 'Tämä linkki vie Kelan asiointipalveluun');
 });
 
 test('Näyttää migrilinkin kun sellainen löytyy', async ({ page }) => {
@@ -364,10 +367,16 @@ test('Näyttää migrilinkin kun sellainen löytyy', async ({ page }) => {
   await expect(
     hakemukset.getByRole('link', { name: 'opas opiskelijoille' }),
   ).toHaveAttribute('href', 'https://migri.fi/opiskelijan-opas');
+  await expect(
+    hakemukset.getByRole('link', { name: 'opas opiskelijoille' }),
+  ).toHaveAttribute('title', 'Tämä linkki vie Maahanmuuttoviraston palveluun');
 
   await expect(
     hakemukset.getByRole('link', { name: 'Hae oleskelulupaa' }),
   ).toHaveCount(1);
+  await expect(
+    hakemukset.getByRole('link', { name: 'Hae oleskelulupaa' }),
+  ).toHaveAttribute('title', 'Tämä linkki vie Maahanmuuttoviraston palveluun');
 });
 
 test('Näyttää tutustu opiskelupaikkaan linkin', async ({ page }) => {
@@ -388,6 +397,14 @@ test('Näyttää tutustu opiskelupaikkaan linkin', async ({ page }) => {
       name: 'Tietoa opiskelupaikasta uudelle opiskelijalle',
     }),
   ).toHaveAttribute('href', 'linkkioppilaitokseen.fi');
+  await expect(
+    hakemukset.getByRole('link', {
+      name: 'Tietoa opiskelupaikasta uudelle opiskelijalle',
+    }),
+  ).toHaveAttribute(
+    'title',
+    'Tämä linkki vie oppilaitoksen uuden opiskelijan ohjeisiin',
+  );
 });
 
 test('Näyttää ei hakemuksia tekstin kun käyttäjällä ei ole hakemuksia', async ({
