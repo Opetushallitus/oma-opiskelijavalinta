@@ -55,7 +55,8 @@ class VTSServiceTest {
     TranslatedName("Leikkipuiston jatkuva haku", "Samma på svenska", "Playground search"),
     "hakutapa_01",
     "haunkohdejoukko_20",
-    Seq(Hakuaika("2026-08-01T00:00:00", "2026-09-01T00:00:00"))
+    Seq(Hakuaika("2026-08-01T00:00:00", "2026-09-01T00:00:00")),
+    None
   )
 
   val hakukohdeYosPiirissa: Hakukohde = Hakukohde(
