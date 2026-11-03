@@ -218,6 +218,9 @@ test('Näyttää ilmoittauduttavan hakutoiveen korkeakouluhakuun', async ({
   await expect(
     ilmoittautuminen.getByRole('link', { name: 'Siirry ilmoittautumaan' }),
   ).toBeVisible();
+  await expect(
+    ilmoittautuminen.getByRole('link', { name: 'Siirry ilmoittautumaan' }),
+  ).toHaveAttribute('title', 'Tämä linkki vie Oili-ilmoittautumispalveluun');
 });
 
 test('Näyttää hakutoiveen jossa on ilmoittautuminen korkeakouluhaussa', async ({
