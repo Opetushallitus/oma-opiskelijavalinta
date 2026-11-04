@@ -16,6 +16,8 @@ case class Haku(
   hakutapaKoodiUri: String,
   kohdejoukkoKoodiUri: String,
   hakuajat: Seq[Hakuaika],
+  alkamiskausiKoodiUri: Option[String],
+  alkamisvuosi: Option[String],
   metadata: Option[Metadata]
 )
 
@@ -26,5 +28,7 @@ case class HakuEnriched(
   viimeisinPaattynytHakuAika: Option[Long],
   kohdejoukkoKoodiUri: String,
   hakutapaKoodiUri: String,
+  alkamiskausi: Option[String],
+  alkamisvuosi: Option[String],
   varasijatayttoPaattyy: Option[Long]
 )
