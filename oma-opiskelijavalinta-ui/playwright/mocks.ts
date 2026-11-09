@@ -32,6 +32,8 @@ export const hakemus1: HakemusResponse = {
     viimeisinPaattynytHakuAika: 1760868000000,
     hakutapaKoodiUri: 'hakutapa_02',
     kohdejoukkoKoodiUri: 'haunkohdejoukko_12',
+    alkamiskausi: 'kausi_k',
+    alkamisvuosi: '2027',
   },
   submitted: '2025-10-18T16:00:00',
   hakukohteet: [
