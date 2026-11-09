@@ -19,6 +19,7 @@ import fi.oph.opiskelijavalinta.model.{
   MaksutilaDeserializer,
   Ohjausparametrit
 }
+import fi.oph.opiskelijavalinta.util.TimeUtils.ZONE_FINLAND
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -166,7 +167,9 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
       haku.hakutapaKoodiUri,
-      haku.metadata.flatMap(metadata => metadata.varasijatayttoPaattyy)
+      haku.metadata.flatMap(metadata =>
+        metadata.varasijatayttoPaattyy.map(vstp => vstp.atZone(ZONE_FINLAND).toInstant.toEpochMilli)
+      )
     )
   }
 
