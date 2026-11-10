@@ -81,12 +81,14 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
         <ExternalLinkButton
           href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.muokkaa')}
+          title={t('hakemukset.muokkaa-title')}
         />
       ) : (
         naytaHakemusPainikeNakyvilla && (
           <ExternalLinkButton
             href={hakemus.modifyLink ?? ''}
             name={t('hakemukset.nayta')}
+            title={t('hakemukset.nayta-title')}
             variant="outlined"
           />
         )
@@ -154,6 +156,7 @@ function HakemusTuloksetErrorContainer({ hakemus }: { hakemus: Hakemus }) {
         <ExternalLinkButton
           href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.nayta')}
+          title={t('hakemukset.nayta-title')}
           variant="outlined"
         />
       )}

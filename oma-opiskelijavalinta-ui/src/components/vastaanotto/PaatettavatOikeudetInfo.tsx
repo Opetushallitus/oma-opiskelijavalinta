@@ -61,7 +61,11 @@ function PaatettavaOikeusInfoLink() {
   const yosHref = `${config.routes.yleiset.konfo}${LangYosLinkMap[getLanguage()]}`;
 
   return (
-    <ExternalLinkParagraph href={yosHref} name={t('vastaanotto.yos.linkki')} />
+    <ExternalLinkParagraph
+      href={yosHref}
+      name={t('vastaanotto.yos.linkki')}
+      title={t('vastaanotto.yos.linkki-title')}
+    />
   );
 }
 
