@@ -9,7 +9,7 @@ case class Koodi(koodiUri: Option[String])
 case class Metadata(
   koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
   varasijatayttoPaattyy: Option[LocalDateTime] = None
-                   )
+)
 
 case class KoulutuksenAlkamiskausi(koulutuksenAlkamiskausi: Option[Koodi])
 

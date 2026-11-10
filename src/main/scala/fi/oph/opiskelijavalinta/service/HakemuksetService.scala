@@ -180,7 +180,7 @@ class HakemuksetService @Autowired (
       haku.alkamisvuosi,
       haku.metadata.flatMap(metadata =>
         metadata.varasijatayttoPaattyy.map(vstp => vstp.atZone(ZONE_FINLAND).toInstant.toEpochMilli)
-      ),
+      )
     )
   }
 
