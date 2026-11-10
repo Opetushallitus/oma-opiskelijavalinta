@@ -39,10 +39,7 @@ async function fetchMockData(page: Page, application: any) {
 test('Näyttää varasijanumeron', async ({ page }) => {
   const varasijaApplication = {
     ...hakemus1,
-    ohjausparametrit: {
-      ...hakemus1.ohjausparametrit,
-      varasijatayttoPaattyy: 1768143600000,
-    },
+    haku: { ...hakemus1.haku, varasijatayttoPaattyy: '2026-01-11T17:00' },
     hakemuksenTulokset: [hakemuksenTulosVarasijalla],
   };
   await fetchMockData(page, varasijaApplication);
@@ -86,10 +83,7 @@ test('Ei näytä varasijatäytön päättymistekstiä jos päättymispäivä puu
 }) => {
   const varasijaApplication = {
     ...hakemus1,
-    ohjausparametrit: {
-      ...hakemus1.ohjausparametrit,
-      varasijatayttoPaattyy: null,
-    },
+    haku: { ...hakemus1.haku, varasijatayttoPaattyy: null },
     hakemuksenTulokset: [hakemuksenTulosVarasijalla],
   };
   await fetchMockData(page, varasijaApplication);
@@ -654,10 +648,6 @@ test('Näyttää ehdollisesti hyväksytyn tekstin varasijalta hyväksytylle', as
 test('Näyttää ehdollisuuden varasijalla', async ({ page }) => {
   const varasijaApplication = {
     ...hakemus1,
-    ohjausparametrit: {
-      ...hakemus1.ohjausparametrit,
-      varasijatayttoPaattyy: 1768143600000,
-    },
     hakemuksenTulokset: [
       { ...hakemuksenTulosVarasijalla, ehdollisestiHyvaksyttavissa: true },
     ],
