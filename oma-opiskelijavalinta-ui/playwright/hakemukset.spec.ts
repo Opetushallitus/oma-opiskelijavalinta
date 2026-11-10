@@ -82,6 +82,18 @@ test('Näyttää käyttäjän ajankohtaiset hakemukset', async ({ page }) => {
   ).toHaveCount(1);
 
   await expect(
+    activehakemukset
+      .getByRole('link', { name: 'Näytä valintaperusteet' })
+      .first(),
+  ).toHaveAttribute('title', 'Näytä valintaperusteet');
+  await expect(
+    activehakemukset.getByRole('link', { name: 'Muokkaa hakemusta' }),
+  ).toHaveAttribute('title', 'Muokkaa hakemusta');
+  await expect(
+    activehakemukset.getByRole('link', { name: 'Näytä hakemus' }),
+  ).toHaveAttribute('title', 'Näytä hakemus');
+
+  await expect(
     activehakemukset.getByRole('link', {
       name: 'Siirry Kelan asiointipalveluun',
     }),

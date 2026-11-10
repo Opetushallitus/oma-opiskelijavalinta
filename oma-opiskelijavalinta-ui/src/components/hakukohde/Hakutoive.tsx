@@ -79,8 +79,8 @@ export function Hakutoive({
 
   const odottaaYlempaa = Boolean(
     tulos &&
-    hakemus.priorisoidutHakutoiveet &&
-    isHyvaksyttyOdottaaYlempaa(hakemus, tulos),
+      hakemus.priorisoidutHakutoiveet &&
+      isHyvaksyttyOdottaaYlempaa(hakemus, tulos),
   );
   return (
     <HakutoiveContainer>
@@ -131,6 +131,7 @@ export function Hakutoive({
           <ValintaperusteetLinkContainer>
             <ExternalLink
               name={t('hakutoiveet.valintaperusteet')}
+              title={t('hakutoiveet.valintaperusteet-title')}
               href={valintaperusteetHref}
             />
           </ValintaperusteetLinkContainer>

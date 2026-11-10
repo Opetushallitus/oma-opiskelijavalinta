@@ -20,6 +20,7 @@ export function HautonHakemusContainer({ hakemus }: { hakemus: Hakemus }) {
         <ExternalLink
           href={hakemus.modifyLink ?? ''}
           name={t('hakemukset.nayta')}
+          title={t('hakemukset.nayta-title')}
         />
       )}
     </HakemusPaper>

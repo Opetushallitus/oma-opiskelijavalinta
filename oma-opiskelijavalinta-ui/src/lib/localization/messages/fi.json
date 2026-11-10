@@ -60,7 +60,9 @@
     "hakutoiveet": "Hakutoiveesi",
     "valintatilanne": "Valintatilanteesi",
     "muokkaa": "Muokkaa hakemusta",
+    "muokkaa-title": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
+    "nayta-title": "Näytä hakemus",
     "tutustu": "Tutustu uuteen opiskelupaikkaasi",
     "tutustu-linkki": "Tietoa opiskelupaikasta uudelle opiskelijalle",
     "tutustu-linkki-title": "Tämä linkki vie oppilaitoksen uuden opiskelijan ohjeisiin",
@@ -86,6 +88,7 @@
   },
   "hakutoiveet": {
     "valintaperusteet": "Näytä valintaperusteet",
+    "valintaperusteet-title": "Näytä valintaperusteet",
     "haitari": "Opiskelijavalintojen tulokset",
     "haitari-nimi": "Opiskelijavalintojen tulokset haulle {haku}'"
   },
@@ -124,6 +127,7 @@
       "varasija-ilmoitus-paattyy": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen. Voit tulla hyväksytyksi varasijalta {varasijatayttoPaattyy} asti.",
       "varalla-ylempaan-alempi-hyvaksytty": "Kun otat toisen opiskelupaikan vastaan, olet edelleen varasijalla tähän hakukohteeseen.",
       "varasija-lisatietoa": "Lisätietoa varasijoista",
+      "varasija-lisatietoa-title": "Lisätietoa varasijoista",
       "ehdollinen-otsikko": "Ehdollinen opiskelijavalinta",
       "ehdollinen-varalla": "Huomioithan, että valintatietosi on ehdollinen. Mikäli sinulle tarjotaan tätä opiskelupaikkaa, sinun on toimittava alla olevan ehdon mukaisesti:",
       "ehdollinen-hyvaksytty": "Huomioithan, että opiskelijavalintasi on ehdollinen. Tämä tarkoittaa, että sinun on toimittava alla olevan ehdon mukaisesti, muuten menetät sinulle tarjotun opiskelupaikan:",
@@ -184,6 +188,7 @@
       "jonottaminen-paattyy": "Jonottaminen päättyy viimeistään {varasijatayttoPaattyy}.",
       "yhden-paikan-saanto": "Huom! Voit ottaa vastaan vain yhden korkeakoulututkintoon johtavan opiskelupaikan samana lukukautena alkavista korkeakoulututkinnoista.",
       "ohje-kk": "Lue ohjeet paikan vastaanottamisesta ja korkeakouluun ilmoittautumisesta.",
+      "ohje-kk-title": "Lue ohjeet paikan vastaanottamisesta ja korkeakouluun ilmoittautumisesta.",
       "jonotus": "Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.",
       "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}.",
       "peru-alempi": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetun paikan.",
@@ -279,6 +284,7 @@
       "paattyy": "Opiskeluoikeutesi päätetään {paattymisAika}, ennen uuden opiskeluoikeutesti alkamista {alkamisAika}. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
+      "linkki-title": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
       "virhe": "Opiskeluoikeuksien hakemisessa on ongelmia. Valitettavasti tietojen haku ei nyt onnistunut.",
       "varasijat": {
         "otsikko": "Varasijoihin liittyvät päättyvät opiskeluoikeudet",

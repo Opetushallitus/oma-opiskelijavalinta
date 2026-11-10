@@ -61,7 +61,11 @@ function PaatettavaOikeusInfoLink() {
   const yosHref = `${config.routes.yleiset.konfo}${LangYosLinkMap[getLanguage()]}`;
 
   return (
-    <ExternalLinkParagraph href={yosHref} name={t('vastaanotto.yos.linkki')} />
+    <ExternalLinkParagraph
+      href={yosHref}
+      name={t('vastaanotto.yos.linkki')}
+      title={t('vastaanotto.yos.linkki-title')}
+    />
   );
 }
 
@@ -140,9 +144,9 @@ type HakukohdePaatettavatOikeudet = {
 };
 
 export function VarasijoillaOlevatPaatettavatOikeudet({
-                                                        hakemus,
-                                                        varallaOlevat,
-                                                      }: {
+  hakemus,
+  varallaOlevat,
+}: {
   hakemus: Hakemus;
   varallaOlevat: Array<HakutoiveenTulos>;
 }) {
@@ -199,7 +203,6 @@ export function VarasijoillaOlevatPaatettavatOikeudet({
   );
 }
 
-
 export function PaatettavatOikeudetInfoVastaanotetulle({
   hakemus,
   tulokset,
@@ -226,7 +229,7 @@ export function PaatettavatOikeudetInfoVastaanotetulle({
         kuvausSyyAvain={kuvausSyyAvain}
       />
     </MultiInfoContainer>
-    ) : isDefined(vastaanotettuTulos) && vastaanotettuTulos.yosCheckFailed ? (
-      <PaatettavatOikeudetError />
+  ) : isDefined(vastaanotettuTulos) && vastaanotettuTulos.yosCheckFailed ? (
+    <PaatettavatOikeudetError />
   ) : null;
 }

@@ -85,6 +85,7 @@ const getVarasijallaInfo = (
       <OphTypography>
         <ExternalLinkParagraph
           name={t('tulos.info.varasija-lisatietoa')}
+          title={t('tulos.info.varasija-lisatietoa-title')}
           href={`${config.routes.yleiset.konfo}/${lang}/sivu/${lisatietoUrl}`}
           underline={'always'}
         />
@@ -210,6 +211,7 @@ const getKkVastaanottoInfo = (
       )}
       <ExternalLinkParagraph
         name={t('vastaanotto.info.ohje-kk')}
+        title={t('vastaanotto.info.ohje-kk-title')}
         href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
         underline={'always'}
       />
