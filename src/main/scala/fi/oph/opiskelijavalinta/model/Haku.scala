@@ -13,9 +13,6 @@ case class Metadata(
 
 case class KoulutuksenAlkamiskausi(koulutuksenAlkamiskausi: Option[Koodi])
 
-case class Metadata(koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi])
-
-
 case class Haku(
   oid: String,
   nimi: TranslatedName,

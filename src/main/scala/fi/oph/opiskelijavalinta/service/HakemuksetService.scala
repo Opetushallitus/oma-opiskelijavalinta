@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, Ser
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import fi.oph.opiskelijavalinta.Constants.KOUTA_HAKU_OID_LENGTH
+import fi.oph.opiskelijavalinta.Constants.{
+  KOULUTUKSEN_ALKAMISKAUSI_KEVAT,
+  KOULUTUKSEN_ALKAMISKAUSI_SYKSY,
+  KOUTA_HAKU_OID_LENGTH
+}
 import fi.oph.opiskelijavalinta.clients.AtaruClient
 import fi.oph.opiskelijavalinta.model.{
   HakemuksetEnriched,
@@ -19,6 +23,8 @@ import fi.oph.opiskelijavalinta.model.{
   MaksutilaDeserializer,
   Ohjausparametrit
 }
+import fi.oph.opiskelijavalinta.util.KoodistoUtil
+import fi.oph.opiskelijavalinta.util.TimeUtils.ZONE_FINLAND
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -71,6 +77,10 @@ class HakemuksetService @Autowired (
                     submitted = a.submitted,
                     hakemuksenTulokset = List.empty,
                     processing = a.processing,
+                    paymentState = a.paymentState,
+                    paymentDueDate = a.paymentDueDate,
+                    paymentSum = a.paymentSum,
+                    paymentLink = a.paymentLink,
                     formName = a.formName,
                     tuloskirjeModified = None,
                     enrichmentFailed = true
@@ -170,7 +180,7 @@ class HakemuksetService @Autowired (
       haku.alkamisvuosi,
       haku.metadata.flatMap(metadata =>
         metadata.varasijatayttoPaattyy.map(vstp => vstp.atZone(ZONE_FINLAND).toInstant.toEpochMilli)
-      )
+      ),
     )
   }
 
