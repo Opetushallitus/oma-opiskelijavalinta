@@ -19,7 +19,6 @@ import fi.oph.opiskelijavalinta.model.{
   MaksutilaDeserializer,
   Ohjausparametrit
 }
-import fi.oph.opiskelijavalinta.util.TimeUtils.ZONE_FINLAND
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -167,6 +166,8 @@ class HakemuksetService @Autowired (
       hakemus.hakuaikaEnds,
       haku.kohdejoukkoKoodiUri,
       haku.hakutapaKoodiUri,
+      KoodistoUtil.normalizeAlkamiskausi(haku.alkamiskausiKoodiUri),
+      haku.alkamisvuosi,
       haku.metadata.flatMap(metadata =>
         metadata.varasijatayttoPaattyy.map(vstp => vstp.atZone(ZONE_FINLAND).toInstant.toEpochMilli)
       )
@@ -213,16 +214,20 @@ class HakemuksetService @Autowired (
       }
     }
     HakemusEnriched(
-      hakemus.oid,
-      haku,
-      hakukohteet,
-      ohjausparametrit,
-      hakemus.secret,
-      hakemus.submitted,
-      hakutoiveidenTulokset,
-      hakemus.processing,
-      hakemus.formName,
-      tuloskirjeModified,
+      oid = hakemus.oid,
+      haku = haku,
+      hakukohteet = hakukohteet,
+      ohjausparametrit = ohjausparametrit,
+      secret = hakemus.secret,
+      submitted = hakemus.submitted,
+      hakemuksenTulokset = hakutoiveidenTulokset,
+      processing = hakemus.processing,
+      paymentState = hakemus.paymentState,
+      paymentDueDate = hakemus.paymentDueDate,
+      paymentSum = hakemus.paymentSum,
+      paymentLink = hakemus.paymentLink,
+      formName = hakemus.formName,
+      tuloskirjeModified = tuloskirjeModified,
       vtsFailed = vtsFailed
     )
   }

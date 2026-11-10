@@ -44,6 +44,9 @@ class KoutaServiceTest {
               Hakuaika("2022-11-19T09:32:01", "2022-11-29T09:32:01")
             ),
             Some(Metadata(Some(LocalDateTime.parse("2022-11-30T09:00"))))
+            ),
+            alkamiskausiKoodiUri = Some("kausi_k#1"),
+            alkamisvuosi = Some("2023")
           )
         )
       )

@@ -7,8 +7,14 @@ case class Hakuaika(alkaa: String, paattyy: String)
 case class Koodi(koodiUri: Option[String])
 
 case class Metadata(
+  koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi],
   varasijatayttoPaattyy: Option[LocalDateTime] = None
 )
+
+case class KoulutuksenAlkamiskausi(koulutuksenAlkamiskausi: Option[Koodi])
+
+case class Metadata(koulutuksenAlkamiskausi: Option[KoulutuksenAlkamiskausi])
+
 
 case class Haku(
   oid: String,
@@ -16,7 +22,9 @@ case class Haku(
   hakutapaKoodiUri: String,
   kohdejoukkoKoodiUri: String,
   hakuajat: Seq[Hakuaika],
-  metadata: Option[Metadata]
+  metadata: Option[Metadata],
+  alkamiskausiKoodiUri: Option[String],
+  alkamisvuosi: Option[String]
 )
 
 case class HakuEnriched(
@@ -26,5 +34,7 @@ case class HakuEnriched(
   viimeisinPaattynytHakuAika: Option[Long],
   kohdejoukkoKoodiUri: String,
   hakutapaKoodiUri: String,
+  alkamiskausi: Option[String],
+  alkamisvuosi: Option[String],
   varasijatayttoPaattyy: Option[Long]
 )
