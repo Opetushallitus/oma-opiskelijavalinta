@@ -66,7 +66,6 @@ export const hakemus1: HakemusResponse = {
     hakukierrosPaattyy: 1763471212000,
     jarjestetytHakutoiveet: true,
     valintaTuloksetJulkaistaanHakijoilleAlkaa: 1779271212000,
-    varasijatayttoPaattyy: 1779471212000,
   },
   hakemuksenTulokset: [],
   processing: false,
@@ -356,7 +355,6 @@ export const hakemus5JatkuvaHaku: HakemusResponse = {
     jarjestetytHakutoiveet: false,
     valintaTuloksetJulkaistaanHakijoilleAlkaa: 1769271212000,
     valintaTuloksetJulkaistaanHakijoillePaattyy: 1769371212000,
-    varasijatayttoPaattyy: 1769471212000,
   },
   hakemuksenTulokset: [],
   formName: {
