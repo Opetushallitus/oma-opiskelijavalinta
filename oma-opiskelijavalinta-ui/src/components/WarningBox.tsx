@@ -20,13 +20,15 @@ const StyledWarning = styled(WarningIcon)(() => ({
 export const WarningBox = ({
   children,
   sx,
+  noIcon,
 }: {
   children: React.ReactNode;
   sx?: SxProps<Theme>;
+  noIcon?: boolean;
 }) => {
   return (
     <StyledBox sx={sx} data-test-id="warning-box">
-      <StyledWarning />
+      {!noIcon && <StyledWarning />}
       <Box>{children}</Box>
     </StyledBox>
   );
