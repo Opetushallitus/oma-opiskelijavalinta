@@ -35,7 +35,7 @@ object KoutaMockData {
     "haunkohdejoukko_20",
     "hakutapa_01",
     Seq(Hakuaika("2024-11-19T09:32:01", "2024-11-29T09:32:01")),
-    Some(Metadata(Some(LocalDateTime.parse("2024-11-21T09:00")))),
+    Some(Metadata(None, Some(LocalDateTime.parse("2024-11-21T09:00")))),
     None,
     None
   )
