@@ -6,6 +6,9 @@
     "peruuta": "Peruuta",
     "logout": "Kirjaudu ulos"
   },
+  "saavutettavuus": {
+    "linkki-uusi-ikkuna-oletus-loppuosa": ". Linkki aukeaa uuteen ikkunaan."
+  },
   "logout": {
     "otsikko": "Olet kirjautunut ulos",
     "info": "Sinut on kirjattu ulos palvelusta.",
@@ -57,9 +60,12 @@
     "hakutoiveet": "Hakutoiveesi",
     "valintatilanne": "Valintatilanteesi",
     "muokkaa": "Muokkaa hakemusta",
+    "muokkaa-title": "Muokkaa hakemusta",
     "nayta": "Näytä hakemus",
+    "nayta-title": "Näytä hakemus",
     "tutustu": "Tutustu uuteen opiskelupaikkaasi",
     "tutustu-linkki": "Tietoa opiskelupaikasta uudelle opiskelijalle",
+    "tutustu-linkki-title": "Tämä linkki vie oppilaitoksen uuden opiskelijan ohjeisiin",
     "info": {
       "lahettanyt": "Olet täyttänyt hakemuksen.",
       "voit-muokata": "Voit muokata hakemustasi hakuajan päättymiseen {hakuaikaPaattyy} asti. Yhteystietojasi voit muokata vielä hakuajan päättymisen jälkeen.",
@@ -82,6 +88,7 @@
   },
   "hakutoiveet": {
     "valintaperusteet": "Näytä valintaperusteet",
+    "valintaperusteet-title": "Näytä valintaperusteet",
     "haitari": "Opiskelijavalintojen tulokset",
     "haitari-nimi": "Opiskelijavalintojen tulokset haulle {haku}'"
   },
@@ -120,6 +127,7 @@
       "varasija-ilmoitus-paattyy": "Jos sinut hyväksytään varasijalta, saat sähköpostiisi asiasta ilmoituksen. Voit tulla hyväksytyksi varasijalta {varasijatayttoPaattyy} asti.",
       "varalla-ylempaan-alempi-hyvaksytty": "Kun otat toisen opiskelupaikan vastaan, olet edelleen varasijalla tähän hakukohteeseen.",
       "varasija-lisatietoa": "Lisätietoa varasijoista",
+      "varasija-lisatietoa-title": "Lisätietoa varasijoista",
       "ehdollinen-otsikko": "Ehdollinen opiskelijavalinta",
       "ehdollinen-varalla": "Huomioithan, että valintatietosi on ehdollinen. Mikäli sinulle tarjotaan tätä opiskelupaikkaa, sinun on toimittava alla olevan ehdon mukaisesti:",
       "ehdollinen-hyvaksytty": "Huomioithan, että opiskelijavalintasi on ehdollinen. Tämä tarkoittaa, että sinun on toimittava alla olevan ehdon mukaisesti, muuten menetät sinulle tarjotun opiskelupaikan:",
@@ -148,6 +156,7 @@
     "otsikko": "Lukuvuosi-ilmoittautuminen",
     "kk-muistathan-otsikko": "Muista tehdä lukuvuosi-ilmoittautuminen korkeakouluun",
     "siirry": "Siirry ilmoittautumaan",
+    "siirry-title": "Tämä linkki vie Oili-ilmoittautumispalveluun",
     "info": "Ilmoittaudu oppilaitokseen läsnäolevaksi lukuvuoden ajaksi. Jos olet poissa kauden tai lukuvuoden, ota yhteys oppilaitokseen.",
     "kk-info": "Saadaksesi opiskeluoikeuden vastaanottamassasi opiskelupaikassa sinun tulee tehdä lukuvuosi-ilmoittautuminen.",
     "laheta": "Lähetä ilmoittautuminen",
@@ -179,6 +188,7 @@
       "jonottaminen-paattyy": "Jonottaminen päättyy viimeistään {varasijatayttoPaattyy}.",
       "yhden-paikan-saanto": "Huom! Voit ottaa vastaan vain yhden korkeakoulututkintoon johtavan opiskelupaikan samana lukukautena alkavista korkeakoulututkinnoista.",
       "ohje-kk": "Lue ohjeet paikan vastaanottamisesta ja korkeakouluun ilmoittautumisesta.",
+      "ohje-kk-title": "Lue ohjeet paikan vastaanottamisesta ja korkeakouluun ilmoittautumisesta.",
       "jonotus": "Kun otat opiskelupaikan vastaan, valitse lisäksi jäätkö jonottamaan ylempiä varasijatoiveita.",
       "priorisoitu": "Sinulle tarjotaan opiskelupaikkaa hakutoiveesta {hakutoiveNro}.",
       "peru-alempi": "Kun otat tämän opiskelupaikan vastaan, voit samalla perua aiemmin vastaanotetun paikan.",
@@ -274,6 +284,7 @@
       "paattyy": "Opiskeluoikeutesi päätetään {paattymisAika}, ennen uuden opiskeluoikeutesti alkamista {alkamisAika}. Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "paattyy-ei-pvm": "Opiskeluoikeutesi päätetään ennen uuden opiskeluoikeuden alkamista (opiskelupaikan vastaanottohetki). Jos valmistut ennen uuden opiskeluoikeuden alkamispäivämäärää, opiskeluoikeutta ei ole tarvetta päättää.",
       "linkki": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
+      "linkki-title": "Lisätietoja yhden opiskeluoikeuden säännöksestä",
       "virhe": "Opiskeluoikeuksien hakemisessa on ongelmia. Valitettavasti tietojen haku ei nyt onnistunut.",
       "varasijat": {
         "otsikko": "Varasijoihin liittyvät päättyvät opiskeluoikeudet",
@@ -283,16 +294,20 @@
   },
   "kela": {
     "otsake": "Tee opintotukihakemus",
-    "linkki": "Siirry Kelan asiointipalveluun"
+    "linkki": "Siirry Kelan asiointipalveluun",
+    "linkki-title": "Tämä linkki vie Kelan asiointipalveluun"
   },
   "migri": {
     "otsake": "Voit nyt hakea oleskelulupaa",
     "ohjeet": "Katso ensin ohjeet oleskeluluvan hakemiseen: ",
     "ohjelinkki": "opas opiskelijoille",
+    "ohjelinkki-title": "Tämä linkki vie Maahanmuuttoviraston palveluun",
     "oppilasnumero": "Kansallinen oppilasnumerosi annetaan automaattisesti oleskelulupahakemuksessasi tämän linkin kautta:",
-    "hae": "Hae oleskelulupaa"
+    "hae": "Hae oleskelulupaa",
+    "hae-title": "Tämä linkki vie Maahanmuuttoviraston palveluun"
   },
   "tuloskirje": "Tuloskirje {pvm}",
+  "tuloskirje-saavutettava": "Lataa tuloskirje {pvm}",
   "vastaanottoviesti": {
     "virhe": "Vastaanoton vahvistusviestin lähetys epäonnistui",
     "otsikko": "Opintopolku: Vastauksesi on vastaanotettu",

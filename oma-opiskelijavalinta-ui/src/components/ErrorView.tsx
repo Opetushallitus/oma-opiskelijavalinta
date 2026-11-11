@@ -19,7 +19,7 @@ const ErrorComponent = ({
 }) => {
   return (
     <>
-      <title>t('otsikko')</title>
+      <title>{t('otsikko')}</title>
       <CenteredElementsContainer role="main">
         <ErrorPageIcon />
         <OphTypography variant="h1">{t(heading)}</OphTypography>

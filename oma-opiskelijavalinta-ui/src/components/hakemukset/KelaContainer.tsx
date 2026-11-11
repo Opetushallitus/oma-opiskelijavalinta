@@ -32,6 +32,7 @@ export function KelaContainer({
         variant="outlined"
         href={getKelaUrl(tulokset) ?? ''}
         name={t('kela.linkki')}
+        title={t('kela.linkki-title')}
       />
     </StyledBox>
   ) : null;

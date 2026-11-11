@@ -208,6 +208,7 @@ const getInfoText = (
         {kkHaku && (
           <ExternalLinkParagraph
             name={t('vastaanotto.info.ohje-kk')}
+            title={t('vastaanotto.info.ohje-kk-title')}
             href={`${config.routes.yleiset.konfo}/${lang}/sivu/paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun`}
             underline={'always'}
           />

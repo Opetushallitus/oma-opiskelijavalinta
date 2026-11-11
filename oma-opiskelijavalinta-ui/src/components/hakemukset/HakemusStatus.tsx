@@ -44,6 +44,7 @@ function TuloksetJulkaistu({ hakemus }: { hakemus: Hakemus }) {
         <ExternalLink
           href={hakemus.modifyLink ?? ''}
           name={` ${t('hakemukset.nayta')}`}
+          title={t('hakemukset.nayta-title')}
         />
       )}
       {hakemus.modifyLink && hakemus.tuloskirjeModified && (
@@ -83,6 +84,7 @@ function ValinnatKesken({
         <ExternalLink
           href={hakemus.modifyLink ?? ''}
           name={` ${t('hakemukset.nayta')}`}
+          title={t('hakemukset.nayta-title')}
         />
       )}
     </RowFlexBox>

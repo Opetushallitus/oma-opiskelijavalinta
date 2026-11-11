@@ -76,6 +76,7 @@ test('Näyttää varasijanumeron', async ({ page }) => {
     'href',
     /paikan-vastaanotto-ja-ilmoittautuminen-korkeakouluun/,
   );
+  await expect(link).toHaveAttribute('title', 'Lisätietoa varasijoista');
 });
 
 test('Ei näytä varasijatäytön päättymistekstiä jos päättymispäivä puuttuu', async ({
