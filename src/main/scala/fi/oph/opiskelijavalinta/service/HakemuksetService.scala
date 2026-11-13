@@ -95,21 +95,27 @@ class HakemuksetService @Autowired (
     }
   }
 
-  def getHakemusOids(oppijanumero: String): List[String] = {
+  /**
+   * Palauttaa henkilön hakemukset hakemuspalvelusta sellaisenaan, ilman rikastamista muiden palveluiden tiedoilla.
+   */
+  def getHakemuksetIlmanRikastusta(oppijanumero: String): List[Hakemus] = {
     ataruClient.getHakemukset(oppijanumero) match {
       case Left(e) =>
-        LOG.error(s"Virhe hakemus-oidien haussa oppijanumerolla $oppijanumero: ${e.getMessage}", e)
-        throw RuntimeException("Hakemusoidien haku oppijanumerolla epäonnistui")
+        LOG.error(s"Virhe hakemusten haussa oppijanumerolla $oppijanumero: ${e.getMessage}", e)
+        throw RuntimeException("Hakemusten haku oppijanumerolla epäonnistui")
       case Right(o) =>
         try {
-          mapper.readValue(o, classOf[Array[Hakemus]]).toList.map(h => h.oid)
+          mapper.readValue(o, classOf[Array[Hakemus]]).toList
         } catch {
           case e: Exception =>
             LOG.error(s"Hakemusten deserialisointi epäonnistui oppijanumerolla $oppijanumero: ${e.getMessage}", e)
-            throw RuntimeException("Hakemusoidien haku oppijanumerolla epäonnistui")
+            throw RuntimeException("Hakemusten haku oppijanumerolla epäonnistui")
         }
     }
   }
+
+  def getHakemusOids(oppijanumero: String): List[String] =
+    getHakemuksetIlmanRikastusta(oppijanumero).map(_.oid)
 
   def getHakemusEmailAndLang(oppijanumero: String, hakemusOid: String): (String, String) = {
     ataruClient.getHakemukset(oppijanumero) match {

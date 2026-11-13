@@ -5,14 +5,9 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { ErrorBox } from '@/components/ErrorBox';
 import { Box, useTheme } from '@mui/material';
 import React from 'react';
-import { getLanguage } from '@/lib/getLanguage';
-import {
-  DEFAULT_DATE_FORMAT,
-  ENGLISH_DATE_FORMAT,
-  toFormattedDateTimeString,
-} from '@/lib/localization/translation-utils';
 import { ExternalLinkButton } from '@/components/ExternalLink';
 import {
+  formatHakemusmaksuDate,
   isHakemusmaksuEraantynyt,
   isHakemusmaksuMaksamatta,
 } from '@/lib/kk-hakemusmaksu-utils';
@@ -44,12 +39,6 @@ function StatusHeader({
   );
 }
 
-function formatDate(date: string) {
-  const format =
-    getLanguage() === 'en' ? ENGLISH_DATE_FORMAT : DEFAULT_DATE_FORMAT;
-  return toFormattedDateTimeString(date, format);
-}
-
 function Maksamatta({ hakemus }: { hakemus: Hakemus }) {
   const { t } = useTranslations();
 
@@ -68,7 +57,7 @@ function Maksamatta({ hakemus }: { hakemus: Hakemus }) {
           <>
             {' '}
             &bull; {t('kk-hakemusmaksu.erapaiva')}:{' '}
-            {formatDate(hakemus.paymentDueDate)}
+            {formatHakemusmaksuDate(hakemus.paymentDueDate)}
           </>
         )}
         {hakemus.haku?.alkamiskausi && hakemus.haku?.alkamisvuosi && (
@@ -113,7 +102,7 @@ function Myohassa({ hakemus }: { hakemus: Hakemus }) {
           <>
             {' '}
             &bull; {t('kk-hakemusmaksu.erapaiva')}:{' '}
-            {formatDate(hakemus.paymentDueDate)}
+            {formatHakemusmaksuDate(hakemus.paymentDueDate)}
           </>
         )}
       </OphTypography>

@@ -47,3 +47,27 @@ export async function mockHakemuksetFetch(
     });
   });
 }
+
+// Palauttaa listan maksupäiväkutsujen hakemus-oideista, jotta testi voi tarkistaa milloin kutsu tehdään
+export async function mockHakemusmaksunMaksupaiva(
+  page: Page,
+  {
+    status = 200,
+    maksupaiva = null,
+  }: { status?: number; maksupaiva?: string | null },
+) {
+  const kutsututHakemukset: Array<string> = [];
+  await page.route(
+    '**/api/hakemusmaksu/hakemus/*/maksupaiva',
+    async (route) => {
+      const hakemusOid = route.request().url().split('/').at(-2) ?? '';
+      kutsututHakemukset.push(hakemusOid);
+      await route.fulfill({
+        status,
+        headers: { 'Content-Type': 'application/json' },
+        body: status === 200 ? JSON.stringify({ maksupaiva }) : '',
+      });
+    },
+  );
+  return kutsututHakemukset;
+}

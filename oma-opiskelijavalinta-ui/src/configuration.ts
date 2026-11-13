@@ -47,6 +47,7 @@ export const getConfiguration = async () => {
       vastaanotto: `${BACKEND_API}/vastaanotto`,
       valintatulos: `${BACKEND_API}/valintatulos`,
       tuloskirje: `${BACKEND_API}/tuloskirje/haku`,
+      hakemusmaksu: `${BACKEND_API}/hakemusmaksu`,
     },
   };
 };

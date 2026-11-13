@@ -16,7 +16,12 @@ import {
 } from '@opetushallitus/oph-design-system';
 import { useTranslations } from '@/hooks/useTranslations';
 import CloseIcon from '@mui/icons-material/Close';
-import { isHakemusmaksuMaksettu } from '@/lib/kk-hakemusmaksu-utils';
+import {
+  formatHakemusmaksuDate,
+  isHakemusmaksuMaksettu,
+} from '@/lib/kk-hakemusmaksu-utils';
+import { useQuery } from '@tanstack/react-query';
+import { getHakemusmaksunMaksupaiva } from '@/lib/hakemusmaksu-service';
 
 const PanelContent = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();
@@ -126,6 +131,14 @@ export default function KkHakemusmaksuInfo({ hakemus }: { hakemus: Hakemus }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // Maksupäivä haetaan vasta, kun hakija avaa maksun tiedot, eikä jokaisella sivun latauksella
+  const { data: maksupaiva } = useQuery({
+    queryKey: ['hakemusmaksun-maksupaiva', hakemus.oid],
+    queryFn: () => getHakemusmaksunMaksupaiva(hakemus.oid),
+    enabled: open && isHakemusmaksuMaksettu(hakemus.paymentState),
+    staleTime: Infinity,
+  });
+
   if (isHakemusmaksuMaksettu(hakemus.paymentState))
     return (
       <>
@@ -183,6 +196,15 @@ export default function KkHakemusmaksuInfo({ hakemus }: { hakemus: Hakemus }) {
                   }}
                 >
                   <StatusRow status={hakemus.paymentState} />
+                  {maksupaiva && (
+                    <>
+                      <Separator />
+                      <MaksuRow
+                        name={t('kk-hakemusmaksu.info-dialog.maksupaiva')}
+                        value={formatHakemusmaksuDate(maksupaiva)}
+                      />
+                    </>
+                  )}
                   {hakemus.paymentSum && (
                     <>
                       <Separator />
