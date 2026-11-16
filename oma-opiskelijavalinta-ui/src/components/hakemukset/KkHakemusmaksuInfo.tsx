@@ -184,9 +184,10 @@ export default function KkHakemusmaksuInfo({ hakemus }: { hakemus: Hakemus }) {
               <CloseIcon />
             </IconButton>
           </DialogTitle>
+          {/* Alareunus jättää tilaa Sulje-napin kohdistusreunukselle, jota vieritettävä sisältöalue muuten leikkaa */}
           <DialogContent
             id="modal-modal-description"
-            sx={{ pt: 0, pr: { xs: 3, sm: 6 } }}
+            sx={{ pt: 0, pr: { xs: 3, sm: 6 }, pb: 0.5 }}
           >
             <PanelContent>
               <OphTypography>

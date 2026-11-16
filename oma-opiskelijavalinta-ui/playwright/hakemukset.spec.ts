@@ -726,6 +726,42 @@ test('Hakemusmaksun tiedot mahtuvat dialogiin kapeassa näkymässä', async ({
   }
 });
 
+test('Hakemusmaksun tietojen Sulje-napin kohdistusreunus näkyy kokonaan', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, paymentState: 'paid', paymentSum: '100' }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await mockHakemusmaksunMaksupaiva(page, { maksupaiva: '2026-08-20' });
+  await page.goto('');
+
+  await page.getByRole('button', { name: 'Hakemusmaksun tiedot' }).click();
+  await expect(page.getByText('20.8.2026')).toBeVisible();
+  const suljeButton = page
+    .locator('#modal-modal-description')
+    .getByRole('button', { name: 'Sulje' });
+  // Kohdistusreunus näkyy vain näppäimistöllä kohdistettaessa: ensin sulkemisikoni, sitten Sulje-nappi
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  await expect(suljeButton).toBeFocused();
+
+  const reunuksenTila = await suljeButton.evaluate((nappi) => {
+    const tyyli = getComputedStyle(nappi);
+    const reunus =
+      parseFloat(tyyli.outlineWidth) + parseFloat(tyyli.outlineOffset);
+    const sisalto = document.getElementById('modal-modal-description');
+    const sisaltoAlareuna = sisalto?.getBoundingClientRect().bottom ?? 0;
+    return {
+      reunus,
+      tila: sisaltoAlareuna - (nappi.getBoundingClientRect().bottom + reunus),
+    };
+  });
+  expect(reunuksenTila.reunus).toBeGreaterThan(0);
+  expect(reunuksenTila.tila).toBeGreaterThanOrEqual(0);
+});
+
 test('Näyttää maksun tiedot ilman maksupäivää, kun maksupäivän haku epäonnistuu', async ({
   page,
 }) => {
