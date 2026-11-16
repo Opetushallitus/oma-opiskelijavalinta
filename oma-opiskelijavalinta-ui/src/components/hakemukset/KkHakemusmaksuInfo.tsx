@@ -64,8 +64,12 @@ const StatusRow = ({ status }: { status: 'paid' | 'okByProxy' }) => {
           padding: theme.spacing(0.5, 1, 0.5, 1),
           fontWeight: '600',
           fontSize: '14px',
-          whiteSpace: 'nowrap',
-          width: 'min-content',
+          // Rivikorkeus suhteessa fonttikokoon, jotta rivitetty tila ei peri leipätekstin väljää riviväliä
+          lineHeight: 1.3,
+          // Tilateksti saa rivittyä, jotta pitkä tila mahtuu kapeaankin näkymään
+          width: 'fit-content',
+          // Laatikkoa ei venytetä taulukon rivin korkuiseksi, jotta teksti pysyy laatikon keskellä
+          alignSelf: 'center',
           margin: theme.spacing(1, 0, 1, 0),
           backgroundColor: statusColors.backgroundColor,
           color: statusColors.text,
@@ -180,12 +184,16 @@ export default function KkHakemusmaksuInfo({ hakemus }: { hakemus: Hakemus }) {
               <CloseIcon />
             </IconButton>
           </DialogTitle>
-          <DialogContent id="modal-modal-description" sx={{ pt: 0, pr: 6 }}>
+          <DialogContent
+            id="modal-modal-description"
+            sx={{ pt: 0, pr: { xs: 3, sm: 6 } }}
+          >
             <PanelContent>
               <OphTypography>
                 {t('kk-hakemusmaksu.info-dialog.kuvaus')}
               </OphTypography>
-              <Box style={{ backgroundColor: ophColors.grey50 }}>
+              {/* Taulukko on dialogin levyinen, jotta se ei kasva sisältönsä mukaan dialogia leveämmäksi */}
+              <Box style={{ backgroundColor: ophColors.grey50, width: '100%' }}>
                 <Box
                   style={{
                     display: 'grid',

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, test } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
   mockHakemuksetFetch,
@@ -689,6 +689,41 @@ test('Näyttää maksupäivän, kun hakemusmaksu on maksettu toisessa haussa', a
   await expect(page.getByText('Maksettu toisessa haussa')).toBeVisible();
   await expect(page.getByText('Maksupäivä')).toBeVisible();
   await expect(page.getByText('3.8.2026')).toBeVisible();
+});
+
+const sijainti = async (locator: Locator) => {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error('Elementin sijaintia ei saatu');
+  return box;
+};
+
+test('Hakemusmaksun tiedot mahtuvat dialogiin kapeassa näkymässä', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 760 });
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, paymentState: 'okByProxy' }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await mockHakemusmaksunMaksupaiva(page, {
+    maksupaiva: '2026-08-03',
+  });
+  await page.goto('');
+
+  await page.getByRole('button', { name: 'Hakemusmaksun tiedot' }).click();
+  const dialoginSisalto = page.locator('#modal-modal-description');
+  await expect(page.getByText('3.8.2026')).toBeVisible();
+  const sisaltoBox = await sijainti(dialoginSisalto);
+  for (const teksti of ['Tila', 'Maksettu toisessa haussa', 'Maksupäivä']) {
+    const box = await sijainti(
+      dialoginSisalto.getByText(teksti, { exact: true }),
+    );
+    expect(box.x).toBeGreaterThanOrEqual(sisaltoBox.x);
+    expect(box.x + box.width).toBeLessThanOrEqual(
+      sisaltoBox.x + sisaltoBox.width,
+    );
+  }
 });
 
 test('Näyttää maksun tiedot ilman maksupäivää, kun maksupäivän haku epäonnistuu', async ({
