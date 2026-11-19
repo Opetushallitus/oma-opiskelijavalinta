@@ -25,6 +25,8 @@ import { useAdjustHeaderLevel } from '@/hooks/useAdjustHeaderLevel';
 import { toFormattedDateTimeStringWithLocale } from '@/lib/localization/translation-utils';
 import { getLanguage } from '@/lib/getLanguage';
 import { PaatettavatOikeudetInfoVastaanotetulle } from '../vastaanotto/PaatettavatOikeudetInfo';
+import KkHakemusmaksuWarnings from '@/components/hakemukset/KkHakemusmaksuWarning';
+import { isHakemusmaksuEraantynyt } from '@/lib/kk-hakemusmaksu-utils';
 
 export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
   const { t, translateEntity } = useTranslations();
@@ -46,6 +48,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
 
   const hakemustaVoiMuokata =
     isTruthy(hakemus.modifyLink) &&
+    !isHakemusmaksuEraantynyt(hakemus.paymentState) &&
     (!hakemus.processing || !isJatkuvaTaiJoustavaHaku(hakemus.haku)) &&
     (isNullish(hakemus.haku) ||
       (hakemus.haku.hakuaikaKaynnissa &&
@@ -72,6 +75,7 @@ export function HakemusContainer({ hakemus }: { hakemus: Hakemus }) {
           !(hakemustaVoiMuokata || naytaHakemusPainikeNakyvilla)
         }
       />
+      <KkHakemusmaksuWarnings hakemus={hakemus} />
       <HakemusInfo hakemus={hakemus} tulokset={tulokset} />
       {hakemustaVoiMuokata ? (
         <ExternalLinkButton

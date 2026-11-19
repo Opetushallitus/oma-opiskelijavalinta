@@ -21,13 +21,15 @@ const StyledError = styled(ErrorIcon)(() => ({
 export const ErrorBox = ({
   children,
   sx,
+  noIcon,
 }: {
   children: React.ReactNode;
   sx?: SxProps<Theme>;
+  noIcon?: boolean;
 }) => {
   return (
     <StyledBox sx={sx} data-test-id="error-box">
-      <StyledError />
+      {!noIcon && <StyledError />}
       <Box>{children}</Box>
     </StyledBox>
   );
