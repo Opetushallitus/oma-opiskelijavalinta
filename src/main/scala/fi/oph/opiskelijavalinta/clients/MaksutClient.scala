@@ -3,14 +3,14 @@ package fi.oph.opiskelijavalinta.clients
 import fi.vm.sade.javautils.nio.cas.CasClient
 import org.asynchttpclient.RequestBuilder
 import org.slf4j.{Logger, LoggerFactory}
-import org.springframework.beans.factory.annotation.{Autowired, Value}
+import org.springframework.beans.factory.annotation.Value
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 import scala.jdk.javaapi.FutureConverters.asScala
 
-class MaksutClient @Autowired (
+class MaksutClient(
   maksutCasClient: CasClient,
   httpExecutionContext: ExecutionContext,
   timeoutSeconds: Int
