@@ -1,13 +1,15 @@
 package fi.oph.opiskelijavalinta.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
- * Maksut-palvelun lasku. Kentät ovat maksut-palvelun rajapinnan mukaisesti snake_case-muotoisia.
+ * Maksut-palvelun lasku.
  */
 case class MaksutLasku(
   reference: String,
   status: String,
   origin: String,
-  paid_at: Option[String]
+  @JsonProperty("paid_at") paidAt: Option[String]
 )
 
 /**

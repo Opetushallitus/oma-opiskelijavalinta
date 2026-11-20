@@ -112,7 +112,7 @@ class HakemusmaksuService @Autowired (
           .readValue(body, classOf[Array[MaksutLasku]])
           .toList
           .filter(lasku => lasku.origin == HAKEMUSMAKSU_ORIGIN && lasku.status == MAKSETTU_STATUS)
-          .flatMap(lasku => lasku.paid_at.flatMap(parseMaksupaiva))
+          .flatMap(lasku => lasku.paidAt.flatMap(parseMaksupaiva))
           .minByOption(_.toEpochDay)
     }
 }
