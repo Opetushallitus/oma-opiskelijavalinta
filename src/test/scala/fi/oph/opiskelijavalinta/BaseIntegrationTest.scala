@@ -14,6 +14,7 @@ import fi.oph.opiskelijavalinta.clients.{
   AtaruClient,
   KoutaClient,
   LokalisointiClient,
+  MaksutClient,
   OnrClient,
   SuoritusPalveluClient,
   ValintaTulosServiceClient
@@ -151,6 +152,9 @@ class BaseIntegrationTest {
 
   @MockitoBean(reset = MockReset.NONE)
   val supaClient: SuoritusPalveluClient = Mockito.mock(classOf[SuoritusPalveluClient])
+
+  @MockitoBean(reset = MockReset.BEFORE)
+  val maksutClient: MaksutClient = Mockito.mock(classOf[MaksutClient])
 
   @BeforeAll def setup(): Unit = {
     val configurer: MockMvcConfigurer       = SecurityMockMvcConfigurers.springSecurity()

@@ -5,6 +5,7 @@ import fi.oph.opiskelijavalinta.clients.{
   KoodistoClient,
   KoutaClient,
   LokalisointiClient,
+  MaksutClient,
   OhjausparametritClient,
   OppijanTunnistusClient,
   SuoritusPalveluClient,
@@ -47,6 +48,14 @@ class ClientConfiguration(timeouts: ClientTimeoutProperties) {
     httpExecutionContext: ExecutionContext
   ): LokalisointiClient =
     new LokalisointiClient(asyncHttpClient, httpExecutionContext, timeouts.lokalisointi)
+
+  @Bean
+  def maksutClient(
+    @Autowired @Qualifier("maksutCasClient") maksutCasClient: CasClient,
+    httpExecutionContext: ExecutionContext
+  ): MaksutClient = {
+    new MaksutClient(maksutCasClient, httpExecutionContext, timeouts.maksut)
+  }
 
   @Bean
   def ohjausparametritClient(

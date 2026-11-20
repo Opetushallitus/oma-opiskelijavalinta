@@ -87,6 +87,26 @@ class SecurityConfiguration {
     )
   }
 
+  @Bean(Array("maksutCasClient"))
+  def createMaksutCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
+    CasClientBuilder.buildFromConfigAndHttpClient(
+      CasConfig
+        .CasConfigBuilder(
+          cas_username,
+          cas_password,
+          s"https://$opintopolku_virkailija_domain/cas",
+          s"https://$opintopolku_virkailija_domain/maksut",
+          Constants.CALLER_ID,
+          Constants.CALLER_ID,
+          "/auth/cas"
+        )
+        .setJsessionName("ring-session")
+        .setNumberOfRetries(2)
+        .build(),
+      sharedHttpClient
+    )
+  }
+
   @Bean(Array("koutaCasClient"))
   def createKoutaCasClient(@Autowired sharedHttpClient: AsyncHttpClient): CasClient = {
     CasClientBuilder.buildFromConfigAndHttpClient(
