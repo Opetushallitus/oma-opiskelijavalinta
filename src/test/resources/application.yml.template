@@ -1,23 +1,23 @@
 host:
-  virkailija: virkailija.untuvaopintopolku.fi
+  virkailija: virkailija.hahtuvaopintopolku.fi
 
 oma-opiskelijavalinta:
   cas:
-    username: PLACEHOLDER
-    password: PLACEHOLDER
+    username: PLACEHOLDER_PAKKOLLINEN
+    password: PLACEHOLDER_PAKKOLLINEN
   s3:
-    region: PLACEHOLDER
-    bucket: PLACEHOLDER
+    region: dummy
+    bucket: dummy
 
 migri:
-  key: PLACEHOLDER
-  url: PLACEHOLDER
+  key: verylongdummyplaceholdertosatisfyminimumlimit
+  url: verylongdummyplaceholdertosatisfyminimumlimit
 
 oili:
-  key: PLACEHOLDER
+  key: verylongdummyplaceholdertosatisfyminimumlimit
 
 viestinvalityspalvelu:
-  url: PLACEHOLDER
+  url: PLACEHOLDER_PAKKOLLINEN
 
 logging:
   level:
@@ -42,15 +42,15 @@ server:
       timeout: 4h
 
 oauth2:
-  client: PLACEHOLDER
-  secret: PLACEHOLDER
+  client: PLACEHOLDER_PAKKOLLINEN
+  secret: PLACEHOLDER_PAKKOLLINEN
 
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://dev.otuva.opintopolku.fi/kayttooikeus-service
+          issuer-uri: https://hahtuva.otuva.opintopolku.fi/kayttooikeus-service
   datasource:
     url: jdbc:postgresql://localhost:55455/test
     username: app

@@ -9,7 +9,7 @@ export default defineConfig(({ command }) => {
   const isDev = !isTest && command === 'serve'; // true when running `react-router dev`
 
   const HAKIJA_DOMAIN =
-    process.env.VITE_HAKIJA_DOMAIN ?? 'https://untuvaopintopolku.fi';
+    process.env.VITE_HAKIJA_DOMAIN ?? 'https://hahtuvaopintopolku.fi';
 
   const useHttps = process.env.VITE_USE_HTTPS === 'true';
   console.log('VITE_USE_HTTPS:', process.env.VITE_USE_HTTPS);

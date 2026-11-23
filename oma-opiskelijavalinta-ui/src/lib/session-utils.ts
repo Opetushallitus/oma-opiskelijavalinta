@@ -42,7 +42,7 @@ export async function logout() {
 
 async function createLogoutUrl() {
   const oppijaUrl = isDev
-    ? (import.meta.env.VITE_HAKIJA_DOMAIN ?? 'https://testiopintopolku.fi')
+    ? (import.meta.env.VITE_HAKIJA_DOMAIN ?? 'https://hahtuvaopintopolku.fi')
     : document.location.origin;
   return `${oppijaUrl}/cas-oppija/logout?service=${encodeURIComponent(oppijaUrl + '/oma-opintopolku')}`;
 }
