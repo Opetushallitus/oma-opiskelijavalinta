@@ -1,3 +1,6 @@
 packages:
   - 'oma-opiskelijavalinta-ui'
 minimumReleaseAge: 4320
+overrides:
+  # next on oph-design-systemin ja nuqs:n valinnainen peer-riippuvuus, jota tämä sovellus ei käytä
+  next: '-'
