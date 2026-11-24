@@ -32,10 +32,5 @@ object DevApp {
     System.setProperty("cas-service.sendRenew", "false")
     System.setProperty("cas-service.key", "oma-opiskelijavalinta")
 
-    val domain = sys.env.getOrElse("DOMAIN", "hahtuvaopintopolku.fi")
-    val casUrl = s"https://$domain/cas-oppija"
-    System.setProperty("web.url.cas-login", sys.env.getOrElse("CAS_LOGIN_URL", s"$casUrl/login"))
-    System.setProperty("web.url.cas", casUrl)
-
     App.main(args)
 }

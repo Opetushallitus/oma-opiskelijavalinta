@@ -16,6 +16,11 @@ migri:
 oili:
   key: verylongdummyplaceholdertosatisfyminimumlimit
 
+web:
+  url:
+    cas: PLACEHOLDER_MANDATORY
+    cas-login: ${web.url.cas}/login
+
 viestinvalityspalvelu:
   url: PLACEHOLDER_PAKKOLLINEN
 
