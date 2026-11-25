@@ -24,4 +24,6 @@ object AuditOperation {
   case object TallennaIlmoittautuminen extends AuditOperation("TALLENNA ILMOITTAUTUMINEN")
 
   case object HaeTulosKirje extends AuditOperation("HAE TULOSKIRJE")
+
+  case object HaeHakemusmaksunMaksupaiva extends AuditOperation("HAE HAKEMUSMAKSUN MAKSUPAIVA")
 }

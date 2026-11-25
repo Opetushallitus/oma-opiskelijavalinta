@@ -19,4 +19,5 @@ object ApiConstants {
   final val VASTAANOTTO_PATH           = API_PREFIX + "/vastaanotto"
   final val VALINTATULOS_PATH          = API_PREFIX + "/valintatulos"
   final val TULOSKIRJE_PATH            = API_PREFIX + "/tuloskirje"
+  final val HAKEMUSMAKSU_PATH          = API_PREFIX + "/hakemusmaksu"
 }

@@ -1,8 +1,9 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, test } from '@playwright/test';
 import {
   expectPageAccessibilityOk,
   mockHakemuksetFetch,
   mockAuthenticatedUser,
+  mockHakemusmaksunMaksupaiva,
 } from './lib/playwrightUtils';
 import {
   hakemuksenTulosHyvaksytty,
@@ -627,12 +628,18 @@ test('Näyttää maksun tiedot, kun hakemusmaksu on maksettu', async ({
     old: [],
   });
   await mockAuthenticatedUser(page);
+  const maksupaivaKutsut = await mockHakemusmaksunMaksupaiva(page, {
+    maksupaiva: '2026-08-20',
+  });
   await page.goto('');
 
   const tiedotButton = page.getByRole('button', {
     name: 'Hakemusmaksun tiedot',
   });
   const hakemusmaksuTitle = page.getByRole('heading', { name: 'Hakemusmaksu' });
+
+  await expect(tiedotButton).toBeVisible();
+  expect(maksupaivaKutsut).toEqual([]);
 
   await tiedotButton.click();
   await expect(
@@ -641,6 +648,9 @@ test('Näyttää maksun tiedot, kun hakemusmaksu on maksettu', async ({
     ),
   ).toBeVisible();
   await expect(page.getByText('Maksettu')).toBeVisible();
+  await expect(page.getByText('Maksupäivä')).toBeVisible();
+  await expect(page.getByText('20.8.2026')).toBeVisible();
+  expect(maksupaivaKutsut).toEqual([hakemus1.oid]);
   await expect(page.getByText('112€')).toBeVisible();
   await expect(
     page.getByText(
@@ -660,4 +670,114 @@ test('Näyttää maksun tiedot, kun hakemusmaksu on maksettu', async ({
   await expect(hakemusmaksuTitle).toBeHidden();
 
   await expectPageAccessibilityOk(page);
+});
+
+test('Näyttää maksupäivän, kun hakemusmaksu on maksettu toisessa haussa', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, paymentState: 'okByProxy' }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await mockHakemusmaksunMaksupaiva(page, {
+    maksupaiva: '2026-08-03',
+  });
+  await page.goto('');
+
+  await page.getByRole('button', { name: 'Hakemusmaksun tiedot' }).click();
+  await expect(page.getByText('Maksettu toisessa haussa')).toBeVisible();
+  await expect(page.getByText('Maksupäivä')).toBeVisible();
+  await expect(page.getByText('3.8.2026')).toBeVisible();
+});
+
+const sijainti = async (locator: Locator) => {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error('Elementin sijaintia ei saatu');
+  return box;
+};
+
+test('Hakemusmaksun tiedot mahtuvat dialogiin kapeassa näkymässä', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 760 });
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, paymentState: 'okByProxy' }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await mockHakemusmaksunMaksupaiva(page, {
+    maksupaiva: '2026-08-03',
+  });
+  await page.goto('');
+
+  await page.getByRole('button', { name: 'Hakemusmaksun tiedot' }).click();
+  const dialoginSisalto = page.locator('#modal-modal-description');
+  await expect(page.getByText('3.8.2026')).toBeVisible();
+  const sisaltoBox = await sijainti(dialoginSisalto);
+  for (const teksti of ['Tila', 'Maksettu toisessa haussa', 'Maksupäivä']) {
+    const box = await sijainti(
+      dialoginSisalto.getByText(teksti, { exact: true }),
+    );
+    expect(box.x).toBeGreaterThanOrEqual(sisaltoBox.x);
+    expect(box.x + box.width).toBeLessThanOrEqual(
+      sisaltoBox.x + sisaltoBox.width,
+    );
+  }
+});
+
+test('Hakemusmaksun tietojen Sulje-napin kohdistusreunus näkyy kokonaan', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, paymentState: 'paid', paymentSum: '100' }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  await mockHakemusmaksunMaksupaiva(page, { maksupaiva: '2026-08-20' });
+  await page.goto('');
+
+  await page.getByRole('button', { name: 'Hakemusmaksun tiedot' }).click();
+  await expect(page.getByText('20.8.2026')).toBeVisible();
+  const suljeButton = page
+    .locator('#modal-modal-description')
+    .getByRole('button', { name: 'Sulje' });
+  // Kohdistusreunus näkyy vain näppäimistöllä kohdistettaessa: ensin sulkemisikoni, sitten Sulje-nappi
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  await expect(suljeButton).toBeFocused();
+
+  const reunuksenTila = await suljeButton.evaluate((nappi) => {
+    const tyyli = getComputedStyle(nappi);
+    const reunus =
+      parseFloat(tyyli.outlineWidth) + parseFloat(tyyli.outlineOffset);
+    const sisalto = document.getElementById('modal-modal-description');
+    const sisaltoAlareuna = sisalto?.getBoundingClientRect().bottom ?? 0;
+    return {
+      reunus,
+      tila: sisaltoAlareuna - (nappi.getBoundingClientRect().bottom + reunus),
+    };
+  });
+  expect(reunuksenTila.reunus).toBeGreaterThan(0);
+  expect(reunuksenTila.tila).toBeGreaterThanOrEqual(0);
+});
+
+test('Näyttää maksun tiedot ilman maksupäivää, kun maksupäivän haku epäonnistuu', async ({
+  page,
+}) => {
+  await mockHakemuksetFetch(page, {
+    current: [{ ...hakemus1, paymentState: 'paid', paymentSum: '100' }],
+    old: [],
+  });
+  await mockAuthenticatedUser(page);
+  const maksupaivaKutsut = await mockHakemusmaksunMaksupaiva(page, {
+    status: 500,
+  });
+  await page.goto('');
+
+  await page.getByRole('button', { name: 'Hakemusmaksun tiedot' }).click();
+  await expect(page.getByText('Maksettu')).toBeVisible();
+  await expect(page.getByText('100€')).toBeVisible();
+  await expect.poll(() => maksupaivaKutsut.length).toBeGreaterThan(0);
+  await expect(page.getByText('Maksupäivä')).toBeHidden();
 });
