@@ -192,6 +192,9 @@ export function VastaanottoRadio({
           modalParams={modalParams}
           hakutoive={hakutoive}
           tulos={tulos}
+          jonottaaYlempaa={
+            valittuVastaanotto === VastaanottoOption.VASTAANOTA_EHDOLLISESTI_KK
+          }
         />
       ),
     });

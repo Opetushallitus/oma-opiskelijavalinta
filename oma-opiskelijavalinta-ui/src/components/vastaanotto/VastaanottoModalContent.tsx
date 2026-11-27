@@ -18,6 +18,7 @@ export function VastaanottoModalContent({
   hakutoive,
   modalParams,
   tulos,
+  jonottaaYlempaa,
 }: {
   hakutoive: Hakukohde;
   modalParams: {
@@ -28,6 +29,7 @@ export function VastaanottoModalContent({
     yps?: string;
   };
   tulos: HakutoiveenTulos;
+  jonottaaYlempaa: boolean;
 }) {
   const { t } = useTranslations();
   const YPS = hakutoive.yhdenPaikanSaanto?.voimassa;
@@ -46,6 +48,7 @@ export function VastaanottoModalContent({
           oikeudet={tulos.paatettavatOpiskeluOikeudet}
           hakutoive={hakutoive}
           showLink={false}
+          jonottaaYlempaa={jonottaaYlempaa}
         />
       )}
     </ModalBox>
