@@ -185,7 +185,7 @@ test('Näyttää päättyvät opiskeluoikeudet kun jonotetaan ylempää', async 
     luopumisModal.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
   ).toBeVisible();
   await expect(
-    vastaanotot.getByText(
+    luopumisModal.getByText(
       'Jos tulet hyväksytyksi ylempään hakutoiveeseen varasijalta',
     ),
   ).toBeHidden();
