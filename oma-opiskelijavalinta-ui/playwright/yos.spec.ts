@@ -95,6 +95,11 @@ test('Näyttää päättyvät opiskeluoikeudet kk-haun vastaanotossa', async ({
     vastaanotot.getByText('Opiskeluoikeutesi päätetään'),
   ).toBeVisible();
   await expect(
+    vastaanotot.getByText(
+      'Jos tulet hyväksytyksi ylempään hakutoiveeseen varasijalta',
+    ),
+  ).toBeHidden();
+  await expect(
     vastaanotot.getByRole('link', { name: 'Lisätietoja yhden' }),
   ).toBeVisible();
 
@@ -149,6 +154,11 @@ test('Näyttää päättyvät opiskeluoikeudet kun jonotetaan ylempää', async 
   await expect(
     vastaanotot.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
   ).toBeVisible();
+  await expect(
+    vastaanotot.getByText(
+      'Jos tulet hyväksytyksi ylempään hakutoiveeseen varasijalta',
+    ),
+  ).toBeVisible();
 
   await vastaanotot.getByText('Luovun jonotuksesta ja muutan').click();
   await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
@@ -174,7 +184,45 @@ test('Näyttää päättyvät opiskeluoikeudet kun jonotetaan ylempää', async 
   await expect(
     luopumisModal.getByText('Opiskeluoikeutesi päätetään ennen uuden'),
   ).toBeVisible();
+  await expect(
+    luopumisModal.getByText(
+      'Jos tulet hyväksytyksi ylempään hakutoiveeseen varasijalta',
+    ),
+  ).toBeHidden();
 });
+
+for (const jonottaaYlempaa of [true, false]) {
+  test(`Näyttää varasijalta hyväksymisen lisätiedon vastaanoton vahvistuksessa vain jonotettaessa: ${jonottaaYlempaa}`, async ({
+    page,
+  }) => {
+    const tulokset =
+      hakemuksenTuloksiaYlempiVarallaAlempiEhdollisestiVastaanotettavissa.map(
+        (tulos, index) => ({
+          ...tulos,
+          paatettavatOpiskeluOikeudet:
+            index === 1 ? PAATETTAVAT_OPISKELUOIKEUDET : [],
+        }),
+      );
+    await setup(page, { ...hakemus1, hakemuksenTulokset: tulokset });
+    const vastaanotot = page.getByTestId('vastaanotot-hakemus-oid-1');
+    await vastaanotot
+      .getByRole('radio', {
+        name: jonottaaYlempaa
+          ? 'Otan tämän opiskelupaikan vastaan. Jään myös jonottamaan'
+          : 'Otan tämän opiskelupaikan vastaan sitovasti. En jää jonottamaan',
+      })
+      .click();
+    await vastaanotot.getByRole('button', { name: 'Lähetä vastaus' }).click();
+
+    const modal = page.getByLabel('Vahvista opiskelupaikan vastaanotto');
+    await expect(modal.getByText('Opiskeluoikeutesi päätetään')).toBeVisible();
+    await expect(
+      modal.getByText(
+        'Jos tulet hyväksytyksi ylempään hakutoiveeseen varasijalta',
+      ),
+    ).toBeVisible({ visible: jonottaaYlempaa });
+  });
+}
 
 test('Näyttää päättyvät opiskeluoikeudet vastaanotetussa hakemuksessa', async ({
   page,

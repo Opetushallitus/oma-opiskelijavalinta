@@ -75,12 +75,14 @@ export function PaatettavatOikeudetInfo({
   showLink = true,
   kuvausSyyAvain = 'vastaanotto.yos.kuvaus',
   varaSijojenOikeudetChild,
+  jonottaaYlempaa = false,
 }: {
   oikeudet: Array<PaatettavaOpiskeluOikeus>;
   hakutoive: Hakukohde;
   kuvausSyyAvain?: string;
   showLink?: boolean;
   varaSijojenOikeudetChild?: React.ReactNode;
+  jonottaaYlempaa?: boolean;
 }) {
   const { t } = useTranslations();
   const dateInfo =
@@ -117,7 +119,11 @@ export function PaatettavatOikeudetInfo({
         </>
       )}
       {isDefined(varaSijojenOikeudetChild) && varaSijojenOikeudetChild}
-      <OphTypography>{dateInfo}</OphTypography>
+      <OphTypography>
+        {dateInfo}
+        {jonottaaYlempaa &&
+          ` ${t('vastaanotto.yos.paattyy-varasijalta-hyvaksyttaessa')}`}
+      </OphTypography>
       {showLink && <PaatettavaOikeusInfoLink />}
     </MultiInfoContainer>
   );

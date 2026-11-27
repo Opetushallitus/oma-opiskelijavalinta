@@ -19,6 +19,7 @@ import { ExternalLinkParagraph } from '../ExternalLink';
 import { useConfig } from '@/configuration';
 import {
   getAlemmatVastaanotot,
+  getVarallaOlevatYlemmatToiveet,
   getVarallaOlevatYlemmatTuloksetJoissaOnPaatettaviaOpiskeluoikeuksia,
   naytetaankoPeruuntuvatOpiskelupaikat,
   naytetaankoYosVirhe,
@@ -78,6 +79,10 @@ function paatettavatInfo(
     <PaatettavatOikeudetInfo
       oikeudet={tulos.paatettavatOpiskeluOikeudet}
       hakutoive={hakutoive}
+      jonottaaYlempaa={
+        tulos.vastaanottotila === VastaanottoTila.EHDOLLISESTI_VASTAANOTTANUT &&
+        getVarallaOlevatYlemmatToiveet(hakemus, hakutoive).length > 0
+      }
       varaSijojenOikeudetChild={
         varallaOlevatPaatettavat.length > 0 ? (
           <VarasijoillaOlevatPaatettavatOikeudet

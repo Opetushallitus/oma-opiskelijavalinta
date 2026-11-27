@@ -15,9 +15,9 @@ export const getConfiguration = async () => {
   if (isDev) {
     VIRKAILIJA_DOMAIN =
       import.meta.env.VITE_VIRKAILIJA_DOMAIN ??
-      'https://virkailija.testiopintopolku.fi';
+      'https://virkailija.hahtuvaopintopolku.fi';
     HAKIJA_DOMAIN =
-      import.meta.env.VITE_HAKIJA_DOMAIN ?? 'https://testiopintopolku.fi';
+      import.meta.env.VITE_HAKIJA_DOMAIN ?? 'https://hahtuvaopintopolku.fi';
   } else if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     const opintopolkuHost = host
